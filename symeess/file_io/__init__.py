@@ -55,14 +55,14 @@ def read_file_cor(file_name):
 
 def write(output_name, data, shape_label=None, shape_choices=None):
 
+    output = open(output_name, 'w') if output_name else sys.stdout
     if shape_choices:
         for label in shape_label:
-            output = open(output_name, 'w') if output_name else sys.stdout
-            output.write('-'*80 + '\n')
+            output.write('-'*40 + '\n')
             output.write('Shape measure/s with {} reference \n'.format(label))
-            output.write('-'*80 + '\n')
+            output.write('-'*40 + '\n')
             for element in shape_choices:
-                output.write('{}\n'.format((' '.join(element.split('_')[1:])).upper()))
+                output.write("{}\n".format((' '.join(element.split('_')[1:])).upper()))
                 for key in data:
                     results = getattr(data[key].geometry, element)(label)
                     if isinstance(results, np.ndarray):
@@ -74,3 +74,6 @@ def write(output_name, data, shape_label=None, shape_choices=None):
                     else:
                         output.write('{} {:4.3f}\n'.format(key, float(results)))
                 output.write('\n')
+    output.write('-'*40 + '\n')
+    output.write('{}'.format('END of CALCULATION'.rjust(26)))
+
