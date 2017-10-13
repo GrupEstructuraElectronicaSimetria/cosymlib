@@ -1,6 +1,6 @@
 from symeess import file_io
 from itertools import compress
-__version__ = 0.51
+__version__ = 0.55
 
 
 class Symeess:

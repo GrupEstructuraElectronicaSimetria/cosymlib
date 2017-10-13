@@ -56,7 +56,7 @@ class Geometry:
         n_atoms = self.get_n_atoms()
         if self._central_atom:
             n_atoms = self.get_n_atoms() - 1
-        self._shape_test_structure = test_structure(self.get_positions(), n_atoms,
+        self._shape_measures[shape_label]['test'] = test_structure(self.get_positions(), n_atoms,
                                                     self._shape_ideal, self._central_atom)
 
     def get_measure(self, shape_label, central_atom=None):
@@ -74,5 +74,8 @@ class Geometry:
         return self._shape_measures[shape_label]['structure']
 
     def get_test_structure(self, shape_label, central_atom=None):
-        self.set_test_structure(shape_label, central_atom)
-        return self._shape_test_structure
+        if shape_label not in self._shape_measures:
+            self._shape_measures[shape_label] = {}
+        if 'test' not in self._shape_measures[shape_label]:
+            self.set_test_structure(shape_label, central_atom)
+        return self._shape_measures[shape_label]['test']

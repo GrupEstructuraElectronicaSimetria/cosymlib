@@ -21,10 +21,10 @@ group_shape.add_argument('-label', dest='reference_polyhedra', action='store', d
                          help='Use labels from Shape manual for desire reference polyhedra')
 
 
-args = parser.parse_args(['-m', '-label', 'T-4',
+args = parser.parse_args(['-mst', '-label', 'T-4',
                           '-c', '1',
-                          # '-o', '../examples/coord.dat',
-                          '../examples/methane.xyz'])
+                          '-o', '../examples/coord.dat',
+                          '../examples/coord.xyz'])
 
 if args.measure or args.structure or args.test:
     if args.reference_polyhedra is None:
