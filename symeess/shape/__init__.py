@@ -24,7 +24,6 @@ def structure_measure(coordinates, n_atoms, label, central_atom):
 def test_structure(coordinates, n_atoms, label, central_atom):
     c_atom = False
     if central_atom is not None:
-        # coordinates = order_coordinates(coordinates, central_atom)
         c_atom = True
     code = get_ideal_structure(label, n_atoms)
     measure_structure = shp.test(coordinates, code, c_atom)
