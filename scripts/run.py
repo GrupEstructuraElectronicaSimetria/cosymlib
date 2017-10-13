@@ -17,14 +17,14 @@ group_shape.add_argument('-t', '--test', action='store_true', default=False,
                          help='Print the reference structure of the given label')
 group_shape.add_argument('-c', action='store', type=int, default=None,
                          help='Position of the central atom if exist')
-group_shape.add_argument('-label', dest='reference_polyhedra', action='store', default=None,
+group_shape.add_argument('-label', dest='reference_polyhedra', action='store',  default=None,
                          help='Use labels from Shape manual for desire reference polyhedra')
 
 
-args = parser.parse_args(['-mst', '-label', 'T-4',
+args = parser.parse_args(['-m', '-label', 'T-4 SP-4',
                           '-c', '1',
-                          '-o', '../examples/coord.dat',
-                          '../examples/coord.xyz'])
+                          # '-o', '../examples/coord.dat',
+                          '../examples/coord.cor'])
 
 if args.measure or args.structure or args.test:
     if args.reference_polyhedra is None:

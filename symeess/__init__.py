@@ -1,6 +1,6 @@
 from symeess import file_io
 from itertools import compress
-__version__ = 0.55
+__version__ = 0.6
 
 
 class Symeess:
@@ -8,7 +8,7 @@ class Symeess:
     def __init__(self, file_name, shape_label=None, shape_options=None, output_name=None):
 
         self._file_name = file_name
-        self._shape_label = shape_label
+        self._shape_label = shape_label.split()
         self._results = {}
         self._molecules = self.read_input()
 
@@ -16,10 +16,11 @@ class Symeess:
         shape_type_measures = ['get_ideal_structure', 'get_measure', 'get_test_structure']
         shape_choices = list(compress(shape_type_measures, shape_options[:-1]))
         if shape_choices:
-            for key, molecule in self._molecules.items():
-                for pattern in shape_choices:
-                    (getattr(molecule.geometry, pattern)(shape_label=self._shape_label,
-                                                         central_atom=shape_options[-1]))
+            for label in self._shape_label:
+                for key, molecule in self._molecules.items():
+                    for pattern in shape_choices:
+                        print('Symeess', shape_options[-1])
+                        (getattr(molecule.geometry, pattern)(shape_label=label, central_atom=shape_options[-1]))
 
             file_io.write(output_name, self._molecules, self._shape_label, shape_choices)
 
