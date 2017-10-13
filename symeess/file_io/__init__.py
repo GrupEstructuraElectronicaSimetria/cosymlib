@@ -1,5 +1,6 @@
 import os
 import sys
+from itertools import islice
 import numpy as np
 from molecule import Molecule
 
@@ -19,12 +20,18 @@ def read(input_name):
 
 def read_file_xyz(file_name):
     with open(file_name, mode='r') as lines:
-        lines.readline()
-        name = lines.readline()
-        input_molecule = lines.read().splitlines()
-        molecule = Molecule(structure=input_molecule)
+        molecules = {}
 
-        return molecule
+        while True:
+            try:
+                input_molecule = []
+                n_atoms = int(lines.readline())
+                name = lines.readline().split()[0]
+                for line in list(islice(lines, n_atoms)):
+                    input_molecule.append(line.split())
+                molecules[name] = Molecule(structure=input_molecule)
+            except ValueError:
+                return molecules
 
 
 def read_file_cor(file_name):
