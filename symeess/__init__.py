@@ -19,7 +19,6 @@ class Symeess:
             for label in self._shape_label:
                 for key, molecule in self._molecules.items():
                     for pattern in shape_choices:
-                        print('Symeess', shape_options[-1])
                         (getattr(molecule.geometry, pattern)(shape_label=label, central_atom=shape_options[-1]))
 
             file_io.write(output_name, self._molecules, self._shape_label, shape_choices)
