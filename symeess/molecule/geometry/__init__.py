@@ -29,29 +29,13 @@ class Geometry:
         self._n_atoms = len(self._positions)
         return self._n_atoms
 
-    def set_shape_positions(self, c_atom):
-        if c_atom is None:
-            self._c_positions = self.get_positions()
-        else:
-            c_atom = c_atom - 1
-            for idx, array in enumerate(self.get_positions()):
-                if idx == c_atom:
-                    self._c_positions.insert(0, array)
-                else:
-                    self._c_positions.append(array)
-
-    def get_shape_positions(self, c_atom=None):
-        if not self._c_positions:
-            self.set_shape_positions(c_atom)
-        return self._c_positions
-
     def set_measure(self, shape_ideal, central_atom):
         self._central_atom = central_atom
         self._shape_ideal = shape_ideal
         n_atoms = self.get_n_atoms()
         if self._central_atom:
             n_atoms = self.get_n_atoms() - 1
-        self._shape_references[shape_ideal]['measure'] = measure(self.get_shape_positions(), n_atoms,
+        self._shape_references[shape_ideal]['measure'] = measure(self.get_positions(), n_atoms,
                                                                  self._shape_ideal, self._central_atom)
 
     def set_ideal_structure(self, shape_ideal, central_atom):
@@ -61,7 +45,7 @@ class Geometry:
         if self._central_atom:
             n_atoms = self.get_n_atoms() - 1
         self._shape_references[shape_ideal]['measure'], self._shape_references[shape_ideal]['structure'] = \
-            structure_measure(self.get_shape_positions(), n_atoms,self._shape_ideal, self._central_atom)
+            structure_measure(self.get_positions(), n_atoms,self._shape_ideal, self._central_atom)
 
     def set_test_structure(self, shape_ideal, central_atom):
         self._central_atom = central_atom
@@ -69,24 +53,24 @@ class Geometry:
         n_atoms = self.get_n_atoms()
         if self._central_atom:
             n_atoms = self.get_n_atoms() - 1
-        self._shape_test_structure = test_structure(self.get_shape_positions(), n_atoms,
+        self._shape_test_structure = test_structure(self.get_positions(), n_atoms,
                                                     self._shape_ideal, self._central_atom)
 
-    def get_measure(self, shape_reference=None, central_atom=True):
+    def get_measure(self, shape_reference, central_atom):
         if shape_reference not in self._shape_references:
             self._shape_references[shape_reference] = {}
         if 'measure' not in self._shape_references[shape_reference]:
             self.set_measure(shape_reference, central_atom)
         return self._shape_references[shape_reference]['measure']
 
-    def get_ideal_structure(self, shape_reference=None, central_atom=True):
+    def get_ideal_structure(self, shape_reference, central_atom):
         if shape_reference not in self._shape_references:
             self._shape_references[shape_reference] = {}
         if 'structure' not in self._shape_references[shape_reference]:
             self.set_ideal_structure(shape_reference, central_atom)
         return self._shape_references[shape_reference]['structure']
 
-    def get_test_structure(self, shape_reference=None, central_atom=True):
+    def get_test_structure(self, shape_reference, central_atom):
         self.set_test_structure(shape_reference, central_atom)
         return self._shape_test_structure
 

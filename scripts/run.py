@@ -21,7 +21,8 @@ group_shape.add_argument('-label', dest='reference_polyhedra', action='store', d
                          help='Use labels from Shape manual for desire reference polyhedra')
 
 
-args = parser.parse_args(['-ms', '-label', 'T-4', '-c', '1',
+args = parser.parse_args(['-m', '-label', 'T-4',
+                          '-c', '1',
                           # '-o', '../examples/LEGFUY.dat',
                           '../examples/LEGFUY.cor'])
 

@@ -1,27 +1,33 @@
 from symeess.shape import shp
 
 
-def measure(coordinates, n_atoms, symbol=None, central_atom=True):
-    measure_number = 0
-    if symbol:
-        code = get_ideal_structure(symbol, n_atoms)
-        measure_number = shp.cshm(coordinates, code, central_atom)
+def measure(coordinates, n_atoms, label, central_atom):
+    c_atom = False
+    if central_atom is not None:
+        coordinates = order_coordinates(coordinates, central_atom)
+        c_atom = True
+    code = get_ideal_structure(label, n_atoms)
+    measure_number = shp.cshm(coordinates, code, c_atom)
     return measure_number
 
 
-def structure_measure(coordinates, n_atoms, symbol=None, central_atom=True):
-    measure_structure = []
-    if symbol:
-        code = get_ideal_structure(symbol, n_atoms)
-        measure_structure = shp.poly(coordinates, code, central_atom)
+def structure_measure(coordinates, n_atoms, label, central_atom):
+    c_atom = False
+    if central_atom is not None:
+        coordinates = order_coordinates(coordinates, central_atom)
+        c_atom = True
+    code = get_ideal_structure(label, n_atoms)
+    measure_structure = shp.poly(coordinates, code, c_atom)
     return measure_structure[1], measure_structure[0]
 
 
-def test_structure(coordinates, n_atoms, symbol=None, central_atom=True):
-    measure_structure = []
-    if symbol:
-        code = get_ideal_structure(symbol, n_atoms)
-        measure_structure = shp.test(coordinates, code, central_atom)
+def test_structure(coordinates, n_atoms, label, central_atom):
+    c_atom = False
+    if central_atom is not None:
+        # coordinates = order_coordinates(coordinates, central_atom)
+        c_atom = True
+    code = get_ideal_structure(label, n_atoms)
+    measure_structure = shp.test(coordinates, code, c_atom)
     return measure_structure
 
 
@@ -31,6 +37,17 @@ def get_ideal_structure(symbol, n_atoms):
         if structure[0] == symbol:
             return structure[1]
     raise NameError('Wrong ideal structure. Nº vertices != Nº atoms')
+
+
+def order_coordinates(coordinates, c_atom):
+        c_atom = c_atom - 1
+        new_coordinates = []
+        for idx, array in enumerate(coordinates):
+            if idx == c_atom:
+                new_coordinates.insert(0, array)
+            else:
+                new_coordinates.append(array)
+        return new_coordinates
 
 
 shape_structure_references = {'2 Vertices': [['L-2', 1, 'Dinfh', 'Linear'],
