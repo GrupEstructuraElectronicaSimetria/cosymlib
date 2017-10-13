@@ -29,6 +29,9 @@ class Geometry:
         self._n_atoms = len(self._positions)
         return self._n_atoms
 
+    def get_symbols(self):
+        return self._symbols
+
     def set_measure(self, shape_ideal, central_atom):
         self._central_atom = central_atom
         self._shape_ideal = shape_ideal

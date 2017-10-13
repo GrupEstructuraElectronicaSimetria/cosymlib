@@ -23,8 +23,8 @@ group_shape.add_argument('-label', dest='reference_polyhedra', action='store', d
 
 args = parser.parse_args(['-m', '-label', 'T-4',
                           '-c', '1',
-                          # '-o', '../examples/LEGFUY.dat',
-                          '../examples/LEGFUY.cor'])
+                          # '-o', '../examples/coord.dat',
+                          '../examples/coord.cor'])
 
 if args.measure or args.structure or args.test:
     if args.reference_polyhedra is None:
