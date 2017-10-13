@@ -61,12 +61,15 @@ def write(output_name, data, shape_label=None, shape_choices=None):
         output.write('Shape measure/s with {} reference \n'.format(shape_label))
         output.write('-'*80 + '\n')
         for element in shape_choices:
-            output.write('{}\n'.format(' '.join(element.split('_')[1:])))
+            output.write('{}\n'.format((' '.join(element.split('_')[1:])).upper()))
             for key in data:
-                if isinstance(data[key][element], np.ndarray):
+                results = getattr(data[key].geometry, element)(shape_label)
+                if isinstance(results, np.ndarray):
+                    symbols = data[key].geometry.get_symbols()
                     output.write('{} \n'.format(key))
-                    for item in data[key][element]:
-                        output.write('{:11.7f} {:11.7f} {:11.7f}\n'.format(item[0], item[1], item[2]))
+                    for idx, item in enumerate(results):
+                        output.write('{:3s} {:11.7f} {:11.7f} {:11.7f}\n'.format(symbols[idx],
+                                                                                 item[0], item[1], item[2]))
                 else:
-                    output.write('{} {:4.3f}\n'.format(key, float(data[key][element])))
+                    output.write('{} {:4.3f}\n'.format(key, float(results)))
             output.write('\n')

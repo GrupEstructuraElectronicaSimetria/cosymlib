@@ -1,6 +1,6 @@
 from symeess import file_io
 from itertools import compress
-__version__ = 0.2
+__version__ = 0.5
 
 
 class Symeess:
@@ -17,11 +17,15 @@ class Symeess:
         shape_choices = list(compress(shape_type_measures, shape_options[:-1]))
         if shape_choices:
             for key, molecule in self._molecules.items():
-                self._results[key] = {}
+            #     self._results[key] = {}
+            #     self._results[key]['symbols'] = self._molecules[key].geometry.get_symbols()
                 for pattern in shape_choices:
-                    self._results[key][pattern] = (getattr(molecule.geometry, pattern)
-                                                   (shape_reference=self._shape_label, central_atom=shape_options[-1]))
-            file_io.write(output_name, self._results, self._shape_label, shape_choices)
+                    (getattr(molecule.geometry, pattern)(shape_label=self._shape_label,
+                                                         central_atom=shape_options[-1]))
+                    # self._results[key][pattern] = (getattr(molecule.geometry, pattern)
+                    #                                (shape_reference=self._shape_label, central_atom=shape_options[-1]))
+
+            file_io.write(output_name, self._molecules, self._shape_label, shape_choices)
 
     def read_input(self):
         return file_io.read(self._file_name)
