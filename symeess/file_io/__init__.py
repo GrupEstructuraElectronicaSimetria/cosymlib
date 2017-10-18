@@ -61,7 +61,7 @@ def read_file_cor(file_name):
 #     output.close()
 
 
-def write_shape(output_name, data, shape_label=None, shape_choices=None):
+def write_shape(output_name, data, shape_label=None):
 
     output = open(output_name, 'w') if output_name else sys.stdout
     molecules = ['DOSDAQ', 'FUBWUU', 'LEGFOS', 'LEGFUY']
@@ -91,7 +91,6 @@ def write_shape(output_name, data, shape_label=None, shape_choices=None):
                 output.write('{}'.format(label.rjust(n)))
             output.write('\n')
 
-            n = 6
             for idx, symbol in enumerate(data[molecule]['symbols']):
                 output.write('{:3s}'.format(symbol))
                 for label in shape_label:
@@ -113,7 +112,6 @@ def write_shape(output_name, data, shape_label=None, shape_choices=None):
                 output.write('{}'.format(label.rjust(n)))
             output.write('\n')
 
-            n = 6
             for idx, symbol in enumerate(data[molecule]['symbols']):
                 output.write('{:3s}'.format(symbol))
                 for label in shape_label:

@@ -1,5 +1,5 @@
 import argparse
-import symeess
+from symeess import Symeess
 
 
 parser = argparse.ArgumentParser(description='Symeess')
@@ -26,9 +26,18 @@ args = parser.parse_args(['-mst', '-label', 'T-4 SP-4',
                           # '-o', '../examples/coord.dat',
                           '../examples/coord.cor'])
 
+symeess = Symeess(args.input_file)
+
 if args.measure or args.structure or args.test:
     if args.reference_polyhedra is None:
         print('Error. Shape needs a structure reference to compare')
         exit()
-    symeess.Symeess(args.input_file, shape_label=args.reference_polyhedra,
-                    shape_options=(args.structure, args.measure, args.test, args.c), output_name=args.output_name)
+
+if args.structure:
+    symeess.set_shape_structure(args.reference_polyhedra, args.c)
+if args.measure:
+    symeess.set_shape_measure(args.reference_polyhedra, args.c)
+if args.test:
+    symeess.set_shape_tstructure(args.reference_polyhedra, args.c)
+
+symeess.write_shape(args.output_name)
