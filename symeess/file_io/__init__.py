@@ -1,7 +1,6 @@
 import os
 import sys
 from itertools import islice
-import numpy as np
 from molecule import Molecule
 
 
@@ -53,27 +52,75 @@ def read_file_cor(file_name):
         return molecules
 
 
-def write(output_name, data, shape_label=None, shape_choices=None):
+# def write(output_name, data):
+#
+#     output = open(output_name, 'w') if output_name else sys.stdout
+#
+#     output.write('-'*40 + '\n')
+#     output.write('{}'.format('END of CALCULATION'.rjust(26)))
+#     output.close()
+
+
+def write_shape(output_name, data, shape_label=None, shape_choices=None):
 
     output = open(output_name, 'w') if output_name else sys.stdout
-    if shape_choices:
-        for label in shape_label:
-            output.write('-'*40 + '\n')
-            output.write('Shape measure/s with {} reference \n'.format(label))
-            output.write('-'*40 + '\n')
-            for element in shape_choices:
-                output.write("{}\n".format((' '.join(element.split('_')[1:])).upper()))
-                for key in data:
-                    results = getattr(data[key].geometry, element)(label)
-                    if isinstance(results, np.ndarray):
-                        symbols = data[key].geometry.get_symbols()
-                        output.write('{} \n'.format(key))
-                        for idx, item in enumerate(results):
-                            output.write('{:3s} {:11.7f} {:11.7f} {:11.7f}\n'.format(symbols[idx],
-                                                                                     item[0], item[1], item[2]))
-                    else:
-                        output.write('{} {:4.3f}\n'.format(key, float(results)))
-                output.write('\n')
-    output.write('-'*40 + '\n')
-    output.write('{}'.format('END of CALCULATION'.rjust(26)))
+    molecules = ['DOSDAQ', 'FUBWUU', 'LEGFOS', 'LEGFUY']
+    options = sorted(list(data[molecules[0]][shape_label[0]].keys()))
 
+    output.write('-'*40 + '\n')
+    output.write('Shape measure/s \n')
+    output.write('-'*40 + '\n')
+
+    if 'measure' in options:
+        output.write("{} {}\n".format('measure'.upper(),'   '.join(shape_label)))
+        for molecule in molecules:
+            output.write('{}'.format(molecule))
+            for label in shape_label:
+                output.write(' {:4.3f}'.format(data[molecule][label]['measure']))
+            output.write('\n')
+    output.write('\n')
+
+    if 'ideal_structure' in options:
+        output.write("{}\n".format('ideal_structure'.upper()))
+        for molecule in molecules:
+            output.write('\n')
+            output.write('{}'.format(molecule))
+            n = 0
+            for label in shape_label:
+                n += 15
+                output.write('{}'.format(label.rjust(n)))
+            output.write('\n')
+
+            n = 6
+            for idx, symbol in enumerate(data[molecule]['symbols']):
+                output.write('{:3s}'.format(symbol))
+                for label in shape_label:
+                    # print(' '.join(map(str, data[molecule][label]['ideal_structure'][idx])).ljust(20))
+                    array = data[molecule][label]['ideal_structure'][idx]
+                    output.write(' {:11.7f} {:11.7f} {:11.7f} |'.format(array[0], array[1], array[2]))
+                output.write('\n')
+
+    output.write('\n')
+
+    if 'test_structure' in options:
+        output.write("{}\n".format('test_structure'.upper()))
+        for molecule in molecules:
+            output.write('\n')
+            output.write('{}'.format(molecule))
+            n = 0
+            for label in shape_label:
+                n += 15
+                output.write('{}'.format(label.rjust(n)))
+            output.write('\n')
+
+            n = 6
+            for idx, symbol in enumerate(data[molecule]['symbols']):
+                output.write('{:3s}'.format(symbol))
+                for label in shape_label:
+                    array = data[molecule][label]['test_structure'][idx]
+                    output.write(' {:11.7f} {:11.7f} {:11.7f} |'.format(array[0], array[1], array[2]))
+                output.write('\n')
+
+    output.write('-'*40 + '\n')
+    output.write('-'*40 + '\n')
+    output.close()
