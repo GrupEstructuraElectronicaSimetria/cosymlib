@@ -78,7 +78,7 @@ def write_shape(output_name, data, shape_label=None, shape_choices=None):
             for label in shape_label:
                 output.write(' {:4.3f}'.format(data[molecule][label]['measure']))
             output.write('\n')
-    output.write('\n')
+        output.write('\n')
 
     if 'ideal_structure' in options:
         output.write("{}\n".format('ideal_structure'.upper()))
@@ -100,7 +100,7 @@ def write_shape(output_name, data, shape_label=None, shape_choices=None):
                     output.write(' {:11.7f} {:11.7f} {:11.7f} |'.format(array[0], array[1], array[2]))
                 output.write('\n')
 
-    output.write('\n')
+        output.write('\n')
 
     if 'test_structure' in options:
         output.write("{}\n".format('test_structure'.upper()))
