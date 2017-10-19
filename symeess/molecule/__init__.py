@@ -6,7 +6,7 @@ class Molecule:
     def __init__(self, structure=None, ee=None, name=None):
 
         self._geometry = Geometry(structure)
-        self._name = ''
+        self._name = None
         self.set_name(name)
 
     @property
@@ -14,8 +14,10 @@ class Molecule:
         return self._geometry
 
     def set_name(self, name):
-        if name is not None:
+        if name.strip() != '':
             self._name = name
+        else:
+            self._name = ' '*5
 
     def get_name(self):
         return self._name

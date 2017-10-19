@@ -25,7 +25,9 @@ def read_file_xyz(file_name):
             try:
                 input_molecule = []
                 n_atoms = int(lines.readline())
-                name = lines.readline().split()[0]
+                name = lines.readline()
+                if name.strip() != '':
+                    name = name.split()[0]
                 for line in list(islice(lines, n_atoms)):
                     input_molecule.append(line.split())
                 molecules.append(Molecule(structure=input_molecule, name=name))
@@ -70,11 +72,16 @@ def write_shape(output_name, data, shape_label, molecule_names):
     output.write('-'*40 + '\n')
 
     if 'measure' in options:
-        output.write("{} {}\n".format('measure'.upper(),'   '.join(shape_label)))
+        output.write("{} {}\n".format('measure'.upper(), '    '.join(shape_label).rjust(14)))
         for idx, molecule in enumerate(data):
             output.write('{}'.format(molecule_names[idx]))
+            if molecule_names[idx].strip() == '':
+                n = 4 + len(molecule_names[idx])
+            else:
+                n = 14 - len(molecule_names[idx])
             for label in shape_label:
-                output.write(' {:4.3f}'.format(molecule[label]['measure']))
+                output.write(' {:{width}.{prec}f}'.format(molecule[label]['measure'], width=n, prec=3))
+                n = 7
             output.write('\n')
         output.write('\n')
 
@@ -83,10 +90,11 @@ def write_shape(output_name, data, shape_label, molecule_names):
         for idx, molecule in enumerate(data):
             output.write('\n')
             output.write('{}'.format(molecule_names[idx]))
-            n = 18
+
+            n = int(23 - len(molecule_names[idx]))
             for label in shape_label:
                 output.write('{}'.format(label.rjust(n)))
-                n += 21
+                n = 36 + len(label)
             output.write('\n')
 
             for idn, symbol in enumerate(molecule['symbols']):
@@ -100,10 +108,10 @@ def write_shape(output_name, data, shape_label, molecule_names):
 
     if 'test_structure' in options:
         output.write("{}\n".format('test_structure'.upper()))
-        n = 21
+        n = 20
         for label in shape_label:
             output.write('{}'.format(label.rjust(n)))
-            n += 18
+            n = 36 + len(label)
         output.write('\n')
 
         for idx in list(range(len(data[0]['symbols']))):
