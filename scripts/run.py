@@ -21,15 +21,14 @@ group_shape.add_argument('-label', dest='reference_polyhedra', action='store',  
                          help='Use labels from Shape manual for desire reference polyhedra')
 
 
-args = parser.parse_args(['-ms', '-label', 'T-4 SP-4',
-                          '-c', '1',
-                          # '-o', 'coord.dat',
+args = parser.parse_args(['-m', '-label', 'T-4 SP-4',
+                          '-c', '4',
+                          # '-o', 'coord.out',
                           '../examples/coord.cor'])
 
-# output_file_name = str(args.output)
-output_file_name = 'my_test'
-input_data = file_io.read(args.input_file)
-symeess = Symeess(input_data)
 
-symeess.write_shape_structure(args.reference_polyhedra, central_atom=args.c, output_name=output_file_name)
-symeess.write_shape_measure(args.reference_polyhedra, central_atom=args.c, output_name=output_file_name)
+molecules = file_io.read(args.input_file)
+
+symeess = Symeess(molecules)
+# symeess.write_shape_structure_2file(args.reference_polyhedra, central_atom=args.c)
+symeess.write_shape_measure_2file(args.reference_polyhedra, central_atom=args.c)

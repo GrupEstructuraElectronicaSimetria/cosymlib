@@ -42,14 +42,14 @@ class Geometry:
         else:
             self._shape_measures[shape_label][measure] = getattr(shape, get_measure)(self)
 
-    def set_test_structure(self, shape_label, central_atom):
-        self._central_atom = central_atom
-        self._shape_ideal = shape_label
-        n_atoms = self.get_n_atoms()
-        if self._central_atom:
-            n_atoms = self.get_n_atoms() - 1
-        self._shape_measures[shape_label]['test'] = shape.test_structure(self.get_positions(), n_atoms,
-                                                                         self._shape_ideal, self._central_atom)
+    # def set_test_structure(self, shape_label, central_atom):
+    #     self._central_atom = central_atom
+    #     self._shape_ideal = shape_label
+    #     n_atoms = self.get_n_atoms()
+    #     if self._central_atom:
+    #         n_atoms = self.get_n_atoms() - 1
+    #     self._shape_measures[shape_label]['test'] = shape.test_structure(self.get_positions(), n_atoms,
+    #                                                                      self._shape_ideal, self._central_atom)
 
     def get_shape_measure(self, shape_label, central_atom=None):
         if shape_label not in self._shape_measures:
@@ -65,9 +65,9 @@ class Geometry:
             self._add_shape_info(shape_label, measure='structure', central_atom=central_atom)
         return self._shape_measures[shape_label]['structure']
 
-    def get_test_structure(self, shape_label, central_atom=None):
-        if shape_label not in self._shape_measures:
-            self._shape_measures[shape_label] = {}
-        if 'test' not in self._shape_measures[shape_label]:
-            self.set_test_structure(shape_label, central_atom)
-        return self._shape_measures[shape_label]['test']
+    # def get_test_structure(self, shape_label, central_atom=None):
+    #     if shape_label not in self._shape_measures:
+    #         self._shape_measures[shape_label] = {}
+    #     if 'test' not in self._shape_measures[shape_label]:
+    #         self.set_test_structure(shape_label, central_atom)
+    #     return self._shape_measures[shape_label]['test']

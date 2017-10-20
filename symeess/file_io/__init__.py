@@ -53,16 +53,7 @@ def read_file_cor(file_name):
         return molecules
 
 
-# def write(output_name, data):
-#
-#     output = open(output_name, 'w') if output_name else sys.stdout
-#
-#     output.write('-'*40 + '\n')
-#     output.write('{}'.format('END of CALCULATION'.rjust(26)))
-#     output.close()
-
-
-def write_shape_data(output_name, data, shape_label, molecule_names, option):
+def write_shape_data(data, shape_label, molecule_names, option, output_name=sys.stdout):
 
     extensions = {'measure': '.tab', 'structure': '.out', 'test': '.tst'}
     output = open('../examples/'+output_name + extensions[option], 'w')
@@ -74,14 +65,14 @@ def write_shape_data(output_name, data, shape_label, molecule_names, option):
     if 'measure' in option:
         output.write("{} {}\n".format('measure'.upper(), '    '.join(shape_label).rjust(14)))
         output.write('\n')
-        for idx, molecule in enumerate(data):
-            output.write('{}'.format(molecule_names[idx]))
+        for idx, molecule_name in enumerate(molecule_names):
+            output.write('{}'.format(molecule_name))
             if molecule_names[idx].strip() == '':
                 n = 4 + len(molecule_names[idx])
             else:
                 n = 14 - len(molecule_names[idx])
             for label in shape_label:
-                output.write(' {:{width}.{prec}f}'.format(molecule[label]['measure'], width=n, prec=3))
+                output.write(' {:{width}.{prec}f}'.format(data[label][idx], width=n, prec=3))
                 n = 7
             output.write('\n')
         output.write('\n')
