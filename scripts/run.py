@@ -23,11 +23,13 @@ group_shape.add_argument('-label', dest='reference_polyhedra', action='store',  
 
 args = parser.parse_args(['-ms', '-label', 'T-4 SP-4',
                           '-c', '1',
-                          # '-o', '../examples/coord.dat',
+                          # '-o', 'coord.dat',
                           '../examples/coord.cor'])
 
+# output_file_name = str(args.output)
+output_file_name = 'my_test'
 input_data = file_io.read(args.input_file)
 symeess = Symeess(input_data)
 
-symeess.write_shape_structure(args.reference_polyhedra, central_atom=args.c, output_name='my_test')
-symeess.write_shape_measure(args.reference_polyhedra, central_atom=args.c, output_name='my_test')
+symeess.write_shape_structure(args.reference_polyhedra, central_atom=args.c, output_name=output_file_name)
+symeess.write_shape_measure(args.reference_polyhedra, central_atom=args.c, output_name=output_file_name)
