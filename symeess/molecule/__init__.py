@@ -3,9 +3,9 @@ from molecule.geometry import Geometry
 
 class Molecule:
 
-    def __init__(self, structure=None, ee=None, name=None):
+    def __init__(self, structure_data, electronic_structure=None, name=None):
 
-        self._geometry = Geometry(structure)
+        self._geometry = Geometry(structure_data)
         self._name = None
         self.set_name(name)
 

@@ -1,4 +1,4 @@
-from symeess.shape import measure, structure_measure, test_structure
+from symeess import shape
 
 
 class Geometry:
@@ -32,23 +32,15 @@ class Geometry:
     def get_symbols(self):
         return self._symbols
 
-    def set_measure(self, shape_label, central_atom):
+    def _add_shape_info(self, shape_label, measure='measure', central_atom=None):
         self._central_atom = central_atom
         self._shape_ideal = shape_label
-        n_atoms = self.get_n_atoms()
-        if self._central_atom:
-            n_atoms = self.get_n_atoms() - 1
-        self._shape_measures[shape_label]['measure'] = measure(self.get_positions(), n_atoms,
-                                                               self._shape_ideal, self._central_atom)
-
-    def set_ideal_structure(self, shape_label, central_atom):
-        self._central_atom = central_atom
-        self._shape_ideal = shape_label
-        n_atoms = self.get_n_atoms()
-        if self._central_atom:
-            n_atoms = self.get_n_atoms() - 1
-        self._shape_measures[shape_label]['measure'], self._shape_measures[shape_label]['structure'] = \
-            structure_measure(self.get_positions(), n_atoms, self._shape_ideal, self._central_atom)
+        get_measure = 'get_'+measure
+        if measure == 'structure':
+            self._shape_measures[shape_label]['measure'], self._shape_measures[shape_label][measure] = \
+                getattr(shape, get_measure)(self)
+        else:
+            self._shape_measures[shape_label][measure] = getattr(shape, get_measure)(self)
 
     def set_test_structure(self, shape_label, central_atom):
         self._central_atom = central_atom
@@ -56,21 +48,21 @@ class Geometry:
         n_atoms = self.get_n_atoms()
         if self._central_atom:
             n_atoms = self.get_n_atoms() - 1
-        self._shape_measures[shape_label]['test'] = test_structure(self.get_positions(), n_atoms,
-                                                    self._shape_ideal, self._central_atom)
+        self._shape_measures[shape_label]['test'] = shape.test_structure(self.get_positions(), n_atoms,
+                                                                         self._shape_ideal, self._central_atom)
 
-    def get_measure(self, shape_label, central_atom=None):
+    def get_shape_measure(self, shape_label, central_atom=None):
         if shape_label not in self._shape_measures:
             self._shape_measures[shape_label] = {}
         if 'measure' not in self._shape_measures[shape_label]:
-            self.set_measure(shape_label, central_atom)
+            self._add_shape_info(shape_label, measure='measure', central_atom=central_atom)
         return self._shape_measures[shape_label]['measure']
 
-    def get_ideal_structure(self, shape_label, central_atom=None):
+    def get_shape_structure(self, shape_label, central_atom=None):
         if shape_label not in self._shape_measures:
             self._shape_measures[shape_label] = {}
         if 'structure' not in self._shape_measures[shape_label]:
-            self.set_ideal_structure(shape_label, central_atom)
+            self._add_shape_info(shape_label, measure='structure', central_atom=central_atom)
         return self._shape_measures[shape_label]['structure']
 
     def get_test_structure(self, shape_label, central_atom=None):

@@ -1,22 +1,28 @@
 from symeess.shape import shp
 
 
-def measure(coordinates, n_atoms, label, central_atom):
-    c_atom = False
-    if central_atom is not None:
-        coordinates = order_coordinates(coordinates, central_atom)
+def get_measure(geometry):
+    if geometry._central_atom is not None:
+        coordinates = order_coordinates(geometry.get_positions(), geometry._central_atom)
+        code = get_ideal_structure(geometry._shape_ideal, geometry.get_n_atoms() - 1)
         c_atom = True
-    code = get_ideal_structure(label, n_atoms)
+    else:
+        coordinates = geometry.get_positions()
+        code = get_ideal_structure(geometry._shape_ideal, geometry.get_n_atoms())
+        c_atom = False
     measure_number = shp.cshm(coordinates, code, c_atom)
     return measure_number
 
 
-def structure_measure(coordinates, n_atoms, label, central_atom):
-    c_atom = False
-    if central_atom is not None:
-        coordinates = order_coordinates(coordinates, central_atom)
+def get_structure(geometry):
+    if geometry._central_atom is not None:
+        coordinates = order_coordinates(geometry.get_positions(), geometry._central_atom)
+        code = get_ideal_structure(geometry._shape_ideal, geometry.get_n_atoms() - 1)
         c_atom = True
-    code = get_ideal_structure(label, n_atoms)
+    else:
+        coordinates = geometry.get_positions()
+        code = get_ideal_structure(geometry._shape_ideal, geometry.get_n_atoms())
+        c_atom = False
     measure_structure = shp.poly(coordinates, code, c_atom)
     return measure_structure[1], measure_structure[0]
 

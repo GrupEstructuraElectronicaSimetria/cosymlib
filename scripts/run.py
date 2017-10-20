@@ -1,5 +1,5 @@
 import argparse
-from symeess import Symeess
+from symeess import Symeess, file_io
 
 
 parser = argparse.ArgumentParser(description='Symeess')
@@ -21,23 +21,13 @@ group_shape.add_argument('-label', dest='reference_polyhedra', action='store',  
                          help='Use labels from Shape manual for desire reference polyhedra')
 
 
-args = parser.parse_args(['-mst', '-label', 'T-4 SP-4',
+args = parser.parse_args(['-ms', '-label', 'T-4 SP-4',
                           '-c', '1',
                           # '-o', '../examples/coord.dat',
                           '../examples/coord.cor'])
 
-symeess = Symeess(args.input_file)
+input_data = file_io.read(args.input_file)
+symeess = Symeess(input_data)
 
-if args.measure or args.structure or args.test:
-    if args.reference_polyhedra is None:
-        print('Error. Shape needs a structure reference to compare')
-        exit()
-
-if args.structure:
-    symeess.set_shape_structure(args.reference_polyhedra, args.c)
-if args.measure:
-    symeess.set_shape_measure(args.reference_polyhedra, args.c)
-if args.test:
-    symeess.set_shape_tstructure(args.reference_polyhedra, args.c)
-
-symeess.write_shape(args.output_name)
+symeess.write_shape_structure(args.reference_polyhedra, central_atom=args.c, output_name='my_test')
+symeess.write_shape_measure(args.reference_polyhedra, central_atom=args.c, output_name='my_test')

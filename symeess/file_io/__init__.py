@@ -30,7 +30,7 @@ def read_file_xyz(file_name):
                     name = name.split()[0]
                 for line in list(islice(lines, n_atoms)):
                     input_molecule.append(line.split())
-                molecules.append(Molecule(structure=input_molecule, name=name))
+                molecules.append(Molecule(input_molecule, name=name))
             except ValueError:
                 return molecules
 
@@ -45,10 +45,10 @@ def read_file_cor(file_name):
                 float(line.split()[1])
                 input_molecule.append(line.split()[:-1])
             except ValueError:
-                molecules.append(Molecule(structure=input_molecule, name=name))
+                molecules.append(Molecule(input_molecule, name=name))
                 input_molecule = []
                 name = line.split()[0]
-        molecules.append(Molecule(structure=input_molecule, name=name))
+        molecules.append(Molecule(input_molecule, name=name))
 
         return molecules
 
@@ -62,17 +62,18 @@ def read_file_cor(file_name):
 #     output.close()
 
 
-def write_shape(output_name, data, shape_label, molecule_names):
+def write_shape_data(output_name, data, shape_label, molecule_names, option):
 
-    output = open(output_name, 'w') if output_name else sys.stdout
-    options = sorted(list(data[0][shape_label[0]].keys()))
+    extensions = {'measure': '.tab', 'structure': '.out', 'test': '.tst'}
+    output = open('../examples/'+output_name + extensions[option], 'w')
 
     output.write('-'*40 + '\n')
     output.write('Shape measure/s \n')
     output.write('-'*40 + '\n')
 
-    if 'measure' in options:
+    if 'measure' in option:
         output.write("{} {}\n".format('measure'.upper(), '    '.join(shape_label).rjust(14)))
+        output.write('\n')
         for idx, molecule in enumerate(data):
             output.write('{}'.format(molecule_names[idx]))
             if molecule_names[idx].strip() == '':
@@ -85,7 +86,7 @@ def write_shape(output_name, data, shape_label, molecule_names):
             output.write('\n')
         output.write('\n')
 
-    if 'ideal_structure' in options:
+    if 'structure' in option:
         output.write("{}\n".format('ideal_structure'.upper()))
         for idx, molecule in enumerate(data):
             output.write('\n')
@@ -100,13 +101,13 @@ def write_shape(output_name, data, shape_label, molecule_names):
             for idn, symbol in enumerate(molecule['symbols']):
                 output.write('{:3s}'.format(molecule['symbols'][idn]))
                 for label in shape_label:
-                    array = molecule[label]['ideal_structure'][idn]
+                    array = molecule[label]['structure'][idn]
                     output.write(' {:11.7f} {:11.7f} {:11.7f} |'.format(array[0], array[1], array[2]))
                 output.write('\n')
 
         output.write('\n')
 
-    if 'test_structure' in options:
+    if 'test_structure' in option:
         output.write("{}\n".format('test_structure'.upper()))
         n = 20
         for label in shape_label:
@@ -120,6 +121,6 @@ def write_shape(output_name, data, shape_label, molecule_names):
                 output.write(' {:11.7f} {:11.7f} {:11.7f} |'.format(array[0], array[1], array[2]))
             output.write('\n')
 
-    output.write('-'*40 + '\n')
-    output.write('-'*40 + '\n')
+    # output.write('-'*40 + '\n')
+    # output.write('-'*40 + '\n')
     output.close()
