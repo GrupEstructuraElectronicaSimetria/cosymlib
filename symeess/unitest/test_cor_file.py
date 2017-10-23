@@ -17,18 +17,6 @@ class TestShapeCorFile(unittest.TestCase):
         good_results = np.loadtxt('data/results_cor_file')
         self.assertTrue(np.allclose(good_results, calculated_results))
 
-    def test_measure_xyz(self):
-
-        molecules = file_io.read('data/coord.xyz')
-        symeess = Symeess(molecules)
-
-        results = list()
-        results.append([molecule.geometry.get_shape_measure('SP-4', central_atom=1) for molecule in symeess._molecules])
-        results.append([molecule.geometry.get_shape_measure('T-4', central_atom=1) for molecule in symeess._molecules])
-        calculated_results = np.column_stack((results[0], results[1]))
-        good_results = np.loadtxt('data/results_xyz_file')
-        self.assertTrue(np.allclose(good_results, calculated_results))
-
     def test_structure_file(self):
         molecules = file_io.read('data/coord.xyz')
         symeess = Symeess(molecules)
