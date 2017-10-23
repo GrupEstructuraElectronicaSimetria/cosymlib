@@ -1,6 +1,5 @@
 from symeess import file_io
-from symeess.molecule import Molecule
-__version__ = 0.61
+__version__ = 0.7
 
 
 class Symeess:
@@ -36,4 +35,5 @@ class Symeess:
         for label in shape_label.split():
             shape[label] = [molecule.geometry.get_shape_structure(label, central_atom=central_atom)
                             for molecule in self._molecules]
+        shape['symbols'] = [molecule.geometry.get_symbols() for molecule in self._molecules]
         file_io.write_shape_data(shape, shape_label.split(), names_order, 'structure', output_name)

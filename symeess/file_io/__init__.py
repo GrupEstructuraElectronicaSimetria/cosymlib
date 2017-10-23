@@ -79,7 +79,7 @@ def write_shape_data(data, shape_label, molecule_names, option, output_name=sys.
 
     if 'structure' in option:
         output.write("{}\n".format('ideal_structure'.upper()))
-        for idx, molecule in enumerate(data):
+        for idx, molecule_name in enumerate(molecule_names):
             output.write('\n')
             output.write('{}'.format(molecule_names[idx]))
 
@@ -89,10 +89,10 @@ def write_shape_data(data, shape_label, molecule_names, option, output_name=sys.
                 n = 36 + len(label)
             output.write('\n')
 
-            for idn, symbol in enumerate(molecule['symbols']):
-                output.write('{:3s}'.format(molecule['symbols'][idn]))
+            for idn, symbol in enumerate(data['symbols']):
+                output.write('{:3s}'.format(symbol[idn]))
                 for label in shape_label:
-                    array = molecule[label]['structure'][idn]
+                    array = data[label][idx][idn]
                     output.write(' {:11.7f} {:11.7f} {:11.7f} |'.format(array[0], array[1], array[2]))
                 output.write('\n')
 
