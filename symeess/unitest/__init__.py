@@ -1,6 +1,6 @@
 import unittest
-from unitest.test_cor_file import TestShapeCorFile
 
 
 if __name__ == '__main__':
-    unittest.main(verbosity=2)
+    testsuite = unittest.TestLoader().discover('.')
+    unittest.TextTestRunner(verbosity=2).run(testsuite)
