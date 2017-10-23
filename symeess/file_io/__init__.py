@@ -86,11 +86,11 @@ def write_shape_data(data, shape_label, molecule_names, option, output_name=sys.
             n = int(23 - len(molecule_names[idx]))
             for label in shape_label:
                 output.write('{}'.format(label.rjust(n)))
-                n = 36 + len(label)
+                n = 37
             output.write('\n')
 
-            for idn, symbol in enumerate(data['symbols']):
-                output.write('{:3s}'.format(symbol[idn]))
+            for idn, symbol in enumerate(data['symbols'][idx]):
+                output.write('{:2s}'.format(symbol))
                 for label in shape_label:
                     array = data[label][idx][idn]
                     output.write(' {:11.7f} {:11.7f} {:11.7f} |'.format(array[0], array[1], array[2]))

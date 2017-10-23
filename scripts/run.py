@@ -23,9 +23,8 @@ group_shape.add_argument('-label', dest='reference_polyhedra', action='store',  
 
 args = parser.parse_args(['-m', '-label', 'SP-4 T-4',
                           '-c', '1',
-                          # '-o', 'coord.out',
-                          '../examples/coord.cor'])
-
+                          # '-o', '../examples/coord.tab',
+                          '../examples/coord.xyz'])
 
 molecules = file_io.read(args.input_file)
 
