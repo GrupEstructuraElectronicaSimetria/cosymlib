@@ -1,4 +1,4 @@
-from molecule.geometry import Geometry
+from symeess.molecule.geometry import Geometry
 
 
 class Molecule:

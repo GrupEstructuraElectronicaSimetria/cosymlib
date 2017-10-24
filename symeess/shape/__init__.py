@@ -2,6 +2,15 @@ from symeess.shape import shp
 
 
 def measure(coordinates, n_atoms, label, central_atom):
+    """
+    This function returns the shape measure
+
+    :param coordinates: coord
+    :param n_atoms: number of atoms
+    :param label: label corresponding
+    :param central_atom: define central atom coordinate (0 if no central atom)
+    :return: shape measure
+    """
     c_atom = False
     if central_atom is not None:
         coordinates = order_coordinates(coordinates, central_atom)
@@ -12,6 +21,15 @@ def measure(coordinates, n_atoms, label, central_atom):
 
 
 def structure_measure(coordinates, n_atoms, label, central_atom):
+    """
+    Calculate structure
+
+    :param coordinates: Coordinates
+    :param n_atoms: Number of atoms
+    :param label: Labels
+    :param central_atom: define central atom coordinate (0 if no central atom)
+    :return: measure structure
+    """
     c_atom = False
     if central_atom is not None:
         coordinates = order_coordinates(coordinates, central_atom)
@@ -35,7 +53,7 @@ def get_ideal_structure(symbol, n_atoms):
     for structure in shape_structure_references[n_vertices]:
         if structure[0] == symbol:
             return structure[1]
-    raise NameError('Wrong ideal structure. Nº vertices != Nº atoms')
+    raise NameError('Wrong ideal structure. N vertices != N atoms')
 
 
 def order_coordinates(coordinates, c_atom):

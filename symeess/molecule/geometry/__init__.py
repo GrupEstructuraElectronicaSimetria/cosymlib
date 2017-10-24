@@ -1,6 +1,5 @@
 from symeess.shape import measure, structure_measure, test_structure
 
-
 class Geometry:
     def __init__(self, structure=None):
 

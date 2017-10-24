@@ -2,6 +2,9 @@
 
 shape
 =====
+This is the shape modules
 
-Usage of shape
-example
+.. automodule:: symeess.shape
+  :members:
+  :show-inheritance:
+
