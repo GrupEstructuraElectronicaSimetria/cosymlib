@@ -24,7 +24,7 @@ this software
 ---------------------------------------------------------
 Contact info
 ---------------------------------------------------------
-Electronic Structure & Symmetry group
+Electronic Structure & Symmetry group.
 Department of ...
 Institut de Química Teòrica i Computacional (IQTC-UB)
 University of Barcelona
