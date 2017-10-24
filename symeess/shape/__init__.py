@@ -41,7 +41,7 @@ def get_ideal_structure(symbol, n_atoms):
     for structure in shape_structure_references[n_vertices]:
         if structure[0] == symbol:
             return structure[1]
-    raise NameError('Wrong ideal structure. Nº vertices != Nº atoms')
+    raise NameError('Wrong ideal structure. N vertices != N atoms')
 
 
 def order_coordinates(coordinates, c_atom):

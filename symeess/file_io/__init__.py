@@ -1,7 +1,7 @@
 import os
 import sys
 from itertools import islice
-from molecule import Molecule
+from symeess.molecule import Molecule
 
 
 def read(input_name):

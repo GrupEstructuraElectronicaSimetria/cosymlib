@@ -1,6 +1,5 @@
 from symeess import shape
 
-
 class Geometry:
     def __init__(self, structure=None):
 
