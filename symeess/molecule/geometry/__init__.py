@@ -11,9 +11,9 @@ class Geometry:
         for elements in structure:
             try:
                 int(elements[0][1])
-                self._symbols.append(elements[0][0])
+                self._symbols.append(elements[0][0].capitalize())
             except (ValueError, TypeError, IndexError):
-                self._symbols.append(elements[0][:2])
+                self._symbols.append(elements[0][:2].capitalize())
             self._positions.append([float(j) for j in elements[1:]])
 
         self._n_atoms = None
