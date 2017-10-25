@@ -1,5 +1,5 @@
 from symeess import file_io
-__version__ = 0.7
+__version__ = 0.1
 
 
 class Symeess:

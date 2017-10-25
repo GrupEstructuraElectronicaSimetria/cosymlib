@@ -10,7 +10,7 @@ Installation instructions
 Python 2.7 or higher
 Matplotlib
 numpy
-Scipy
+arparse
 
 2. Download the source code and place it in the installation 
 directory
@@ -25,6 +25,6 @@ this software
 Contact info
 ---------------------------------------------------------
 Electronic Structure & Symmetry group.
-Department of ...
+Department of Materials Science and Physical Chemistry.
 Institut de Química Teòrica i Computacional (IQTC-UB)
 University of Barcelona
