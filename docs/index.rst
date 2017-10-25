@@ -10,7 +10,10 @@ i Computacional (IQTCUB). University of Barcelona.
 .. toctree::
    :maxdepth: 2
    :caption: Table of contents
+   :includehidden:
 
    install
+   symeess
    shape
+
 

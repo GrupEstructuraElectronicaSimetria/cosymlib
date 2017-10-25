@@ -1,6 +1,6 @@
 .. highlight:: rst
 
-symeess
+Symeess
 =======
 This is the main module
 
