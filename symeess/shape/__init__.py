@@ -2,6 +2,13 @@ from symeess.shape import shp
 
 
 def get_measure(geometry):
+    """
+    Compute the shape measure of the given geometry
+
+    :param geometry: this object contains information about the positions of the molecule as well as the information
+    needed to carry out the shape's module
+    :return:
+    """
     if geometry._central_atom is not None:
         coordinates = order_coordinates(geometry.get_positions(), geometry._central_atom)
         code = get_ideal_structure(geometry._shape_ideal, geometry.get_n_atoms() - 1)
@@ -15,6 +22,12 @@ def get_measure(geometry):
 
 
 def get_structure(geometry):
+    """
+    Calculate the ideal structure of the given geometry from a reference structure
+
+    :param geometry: same object as before
+    :return:
+    """
     if geometry._central_atom is not None:
         coordinates = order_coordinates(geometry.get_positions(), geometry._central_atom)
         code = get_ideal_structure(geometry._shape_ideal, geometry.get_n_atoms() - 1)

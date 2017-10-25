@@ -1,9 +1,5 @@
 from numpy.distutils.core import setup, Extension
-#from numpy.distutils.misc_util import Configuration
 
-#from setuptools import setup, Extension
-import numpy
-#include_dirs_numpy = [numpy.get_include()]
 
 shape = Extension('symeess.shape.shp',
                   # extra_compile_args=['-std=c99'],
@@ -20,4 +16,3 @@ setup(name='symeess',
                 'symeess.molecule'],
       # scripts=['scripts/dynaphopy'],
       ext_modules=[shape])
-
