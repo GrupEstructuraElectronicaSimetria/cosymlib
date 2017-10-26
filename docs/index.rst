@@ -13,6 +13,7 @@ i Computacional (IQTCUB). University of Barcelona.
    :includehidden:
 
    install
+   run
    symeess
    shape
 
