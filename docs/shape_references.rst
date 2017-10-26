@@ -227,8 +227,8 @@ Shape's references
 | ‡ A regular polyhedron with one or two vertices removed.
 | § Spherical distribution of vertices with mass center at the origin (apical-basal bond angles of 104.45°).
 | † For polyhedra with more than 12 vertices the calculation times may be unpractical, for now avoid this calculations
-an upgrade is comming soon.
+    an upgrade is comming soon.
 | # This is a chiral polyhedron. It must be noticed that the algorithm used by Shape does not distinguish
-the two enantiomers of a chiral shape. Therefore, whenever a chiral reference polyhedron is used, the resulting shape
-measures may not refer to that specific polyhedron but to its enantiomer.
+    the two enantiomers of a chiral shape. Therefore, whenever a chiral reference polyhedron is used, the resulting shape
+    measures may not refer to that specific polyhedron but to its enantiomer.
 
