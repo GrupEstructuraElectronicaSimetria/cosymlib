@@ -6,8 +6,9 @@ def get_measure(geometry):
     Compute the shape measure of the given geometry
 
     :param geometry: this object contains information about the positions of the molecule as well as the information
-    needed to carry out the shape's module
-    :return:
+                     needed to carry out the shape's module
+    :return: difference between user's structure and the one's that is compared. While 0 is no difference and 100
+             is completly different
     """
     if geometry._central_atom is not None:
         coordinates = order_coordinates(geometry.get_positions(), geometry._central_atom)
@@ -25,8 +26,8 @@ def get_structure(geometry):
     """
     Calculate the ideal structure of the given geometry from a reference structure
 
-    :param geometry: same object as before
-    :return:
+    :param geometry: same as before
+    :return: ideal structure if user's structure had the compared structure's shape
     """
     if geometry._central_atom is not None:
         coordinates = order_coordinates(geometry.get_positions(), geometry._central_atom)

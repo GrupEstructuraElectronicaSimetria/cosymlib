@@ -8,7 +8,7 @@ developed in Electronic Structure & Symmetry group in Department of blablabla. I
 i Computacional (IQTCUB). University of Barcelona.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Table of contents
    :includehidden:
 

@@ -3,6 +3,10 @@ __version__ = 0.1
 
 
 class Symeess:
+    """
+    Main class of symeess program that perform all the jobs
+
+    """
 
     def __init__(self, input_data):
 
@@ -22,13 +26,6 @@ class Symeess:
     #             self._results[idx][label]['test_structure'] = molecule.geometry.get_test_structure(label, central_atom)
 
     def write_shape_measure_2file(self, shape_label, central_atom=None, output_name='../examples/symeess_shape'):
-        """
-
-        :param shape_label:
-        :param central_atom: position of central atom if exist (default None)
-        :param output_name: custom name without extension (default ../examples/symeess_shape)
-        :return:
-        """
         names_order = [molecule.get_name() for molecule in self._molecules]
         shape = {}
         for label in shape_label.split():
