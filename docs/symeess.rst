@@ -4,7 +4,7 @@ Symeess
 =======
 This is the main module
 
-.. autoclass:: symeess.Symeess
+.. py:class:: symeess.Symeess
 
    .. py:method:: write_shape_measure_2file(shape_label, central_atom=None, output_name='../examples/symeess_shape')
       Method that prints to file shape's measure
