@@ -35,8 +35,6 @@ Shape's references
 .. |Oh| replace:: O\ :sub:`h`
 .. |Ih| replace:: I\ :sub:`h`
 
-.. rst:directive:: .. tabularcolumns:: column |l|l|l|l|
-
 
 +---------+------------+------------------------------------------------------------------+----------+
 | Vertices| Label      | Shape                                                            | Symmetry |
