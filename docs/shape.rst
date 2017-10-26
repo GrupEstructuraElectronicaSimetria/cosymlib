@@ -11,6 +11,7 @@ This is the shape module
 
 .. automodule:: symeess.shape
    :members:
+   :show-inheritance:
 
 .. py:class:: symeess.shape
 

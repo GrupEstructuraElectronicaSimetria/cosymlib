@@ -6,6 +6,7 @@ This is the main module
 
 .. automodule:: symeess
    :members:
+   :show-inheritance:
 
 .. py:class:: symeess.Symeess
 
