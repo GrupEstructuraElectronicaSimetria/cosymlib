@@ -22,10 +22,10 @@ This is the main module
       Method that prints to file shape's structure
 
       :param str shape_label: reference polyhedra label which user will compare with his polyhedra.
-                                  Reference labels can be found in [#f1]_
+                              Reference labels can be found in [#f1]_
       :param int central_atom: position of the central atom in molecule if exist
       :param str output_name: custom name without extension
-      :return: shape's structur in the output_name.out file
+      :return: shape's structure in the output_name.out file
 
 
 .. [#f1] :doc:`shape_references`

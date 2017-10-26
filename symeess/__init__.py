@@ -26,6 +26,15 @@ class Symeess:
     #             self._results[idx][label]['test_structure'] = molecule.geometry.get_test_structure(label, central_atom)
 
     def write_shape_measure_2file(self, shape_label, central_atom=None, output_name='../examples/symeess_shape'):
+        """
+        Method that prints to file shape's measure
+
+        :param shape_label: reference polyhedra label which user will compare with his polyhedra.
+                            Reference labels can be found in [#f1]_
+        :param central_atom: position of the central atom in molecule if exist
+        :param output_name: custom name without extension
+        :return: shape's measure in the output_name.tab file
+        """
         names_order = [molecule.get_name() for molecule in self._molecules]
         shape = {}
         for label in shape_label.split():
@@ -34,6 +43,15 @@ class Symeess:
         file_io.write_shape_data(shape, shape_label.split(), names_order, 'measure', output_name)
 
     def write_shape_structure_2file(self, shape_label, central_atom=None, output_name='../examples/symeess_shape'):
+        """
+        Method that prints to file shape's structure
+
+        :param shape_label: reference polyhedra label which user will compare with his polyhedra.
+                            Reference labels can be found in [#f1]_
+        :param central_atom: position of the central atom in molecule if exist
+        :param output_name: custom name without extension
+        :return: shape's structure in the output_name.out file
+        """
         names_order = [molecule.get_name() for molecule in self._molecules]
         shape = {}
         for label in shape_label.split():
