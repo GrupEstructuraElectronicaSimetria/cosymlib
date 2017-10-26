@@ -10,6 +10,7 @@ This is the shape module
   shape_references
 
 .. automodule:: symeess.shape
+   :members:
 
 .. py:class:: symeess.shape
 

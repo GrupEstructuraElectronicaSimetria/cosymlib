@@ -4,7 +4,8 @@ Symeess
 =======
 This is the main module
 
-.. automodule::symeess
+.. automodule:: symeess
+   :members:
 
 .. py:class:: symeess.Symeess
 
