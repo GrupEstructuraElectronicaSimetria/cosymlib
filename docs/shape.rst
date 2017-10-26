@@ -9,6 +9,8 @@ This is the shape module
 
   shape_references
 
+.. automodule:: symeess.shape
+
 .. py:class:: symeess.shape
 
    .. py:method:: get_measure(geometry)
