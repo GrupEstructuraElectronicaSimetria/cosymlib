@@ -39,3 +39,4 @@ To save it in a specific folder ::
 
   $ python run.py input_file -m -label T-4 -c 1 -o example_output_name
 
+the output will be in the results folder.

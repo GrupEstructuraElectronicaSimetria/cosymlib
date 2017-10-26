@@ -25,7 +25,7 @@ class Symeess:
     #                 self._results[idx][label] = {}
     #             self._results[idx][label]['test_structure'] = molecule.geometry.get_test_structure(label, central_atom)
 
-    def write_shape_measure_2file(self, shape_label, central_atom=None, output_name='../examples/symeess_shape'):
+    def write_shape_measure_2file(self, shape_label, central_atom=None, output_name='symeess_shape'):
         """
         Method that prints to file shape's measure
 
@@ -42,7 +42,7 @@ class Symeess:
                             for molecule in self._molecules]
         file_io.write_shape_data(shape, shape_label.split(), names_order, 'measure', output_name)
 
-    def write_shape_structure_2file(self, shape_label, central_atom=None, output_name='../examples/symeess_shape'):
+    def write_shape_structure_2file(self, shape_label, central_atom=None, output_name='symeess_shape'):
         """
         Method that prints to file shape's structure
 
