@@ -56,14 +56,19 @@ def read_file_cor(file_name):
 def write_shape_data(data, shape_label, molecule_names, option, output_name=sys.stdout):
 
     extensions = {'measure': '.tab', 'structure': '.out', 'test': '.tst'}
-    output = open('../examples/'+output_name + extensions[option], 'w')
+    if not os.path.exists('./results'):
+        os.makedirs('./results')
+    output = open('results/'+output_name + extensions[option], 'w')
 
     output.write('-'*40 + '\n')
     output.write('Shape measure/s \n')
     output.write('-'*40 + '\n')
 
     if 'measure' in option:
-        output.write("{} {}\n".format('measure'.upper(), '    '.join(shape_label).rjust(14)))
+        output.write('{}'.format('measure'.upper()))
+        for label in shape_label:
+            n = len(label) + 4
+            output.write('{}'.format(label.rjust(n)))
         output.write('\n')
         for idx, molecule_name in enumerate(molecule_names):
             output.write('{}'.format(molecule_name))
@@ -112,6 +117,4 @@ def write_shape_data(data, shape_label, molecule_names, option, output_name=sys.
                 output.write(' {:11.7f} {:11.7f} {:11.7f} |'.format(array[0], array[1], array[2]))
             output.write('\n')
 
-    # output.write('-'*40 + '\n')
-    # output.write('-'*40 + '\n')
     output.close()

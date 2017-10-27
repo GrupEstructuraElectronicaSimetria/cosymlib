@@ -1,4 +1,7 @@
-from symeess.shape import shp
+try:
+    from symeess.shape import shp
+except ImportError:
+    pass
 
 
 def get_measure(geometry):

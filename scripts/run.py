@@ -21,10 +21,11 @@ group_shape.add_argument('-label', dest='reference_polyhedra', action='store',  
                          help='Use labels from Shape manual for desire reference polyhedra')
 
 
-args = parser.parse_args(['-m', '-label', 'SP-4 T-4',
-                          '-c', '1',
-                          # '-o', '../examples/coord.tab',
-                          '../examples/coord.cor'])
+# args = parser.parse_args(['-m', '-label', 'T-4',
+#                           '-c', '1',
+#                           '-o', '../examples/coord.tab',
+#                           '../examples/coord.cor'])
+args = parser.parse_args()
 
 molecules = file_io.read(args.input_file)
 
