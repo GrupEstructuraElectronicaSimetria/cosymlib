@@ -1,18 +1,18 @@
 .. highlight:: rst
 
-Introduction
-============
+Symmess program
+===============
 
-Symeess is a software package that includes tools to calculate continuous shape and symmetry measurements
-developed in Electronic Structure & Symmetry group in Department of Materials Science and Physical Chemistry.
+This program was developed by the Electronic Structure & Symmetry group in Department of Materials Science and
+Physical Chemistry.
 Institut de Química Teòrica i Computacional (IQTCUB). University of Barcelona.
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
    :caption: Table of contents
-   :includehidden:
    :numbered:
 
+   introduction
    install
    run
    symeess
