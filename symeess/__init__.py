@@ -1,4 +1,4 @@
-from symeess import file_io
+import symeess.file_io as file_io
 __version__ = 0.1
 
 
