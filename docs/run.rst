@@ -1,7 +1,9 @@
 .. highlight:: rst
 
-Run
-===
+=================
+Executing program
+=================
+
 This script run symeess from terminal
 
 .. module:: scripts/run
@@ -9,6 +11,10 @@ This script run symeess from terminal
 To run the program from terminal just use ::
 
    $ python run.py input_file
+
+
+Shape
+#####
 
 The list of flags to run shape in symeess are the following ::
 
@@ -22,10 +28,10 @@ Optional flags for shape are ::
   * -c int
   * -o output_name
 
-where :param:`int` flag is the position of the central atom in your molecule if exist.
+where *int* is the position of the central atom in your molecule if exist.
 
 Examples
---------
+********
 
 If you want to make a simple measure of a tetrahedron molecule and compared to the ideal tetrahedron structure ::
 
