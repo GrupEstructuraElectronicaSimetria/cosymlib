@@ -22,7 +22,7 @@ The list of flags to run shape in symeess are the following ::
   * -s *Calculate the ideal structure for the input structure*
   * -t *Print the reference structure of the given label*
 
-This flags requires the "-label reference_polyhedra".
+This flags requires the "-label reference_polyhedra" flag.
 Optional flags for shape are ::
 
   * -c int
