@@ -1,6 +1,6 @@
 .. highlight:: rst
 
-install
+Install
 =======
 
 Download the code and use :file:`setup.py` to install the code using :program:`setuptools`

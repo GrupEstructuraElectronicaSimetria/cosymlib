@@ -11,6 +11,7 @@ i Computacional (IQTCUB). University of Barcelona.
    :maxdepth: 3
    :caption: Table of contents
    :includehidden:
+   :numbered:
 
    install
    run
