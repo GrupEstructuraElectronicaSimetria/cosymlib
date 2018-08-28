@@ -44,13 +44,25 @@ def get_structure(geometry):
     return measure_structure[1], measure_structure[0]
 
 
-def test_structure(coordinates, n_atoms, label, central_atom):
-    c_atom = False
-    if central_atom is not None:
-        c_atom = True
-    code = get_ideal_structure(label, n_atoms)
+def test_structure(shape_label, c_atom):
+    for key, value in shape_structure_references.items():
+        for reference in value:
+            if reference[0] == shape_label:
+                code = reference[1]
+
+    # if c_atom is not None:
+    #     coordinates = np.zeros(, 3)
+    #     print(c_atom)
+    #     quit()
+    coordinates = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0] ]
     measure_structure = shp.test(coordinates, code, c_atom)
     return measure_structure
+#     c_atom = False
+#     if central_atom is not None:
+#         c_atom = True
+#     code = get_ideal_structure(label, n_atoms)
+#     measure_structure = shp.test(coordinates, code, c_atom)
+#     return measure_structure
 
 
 def get_ideal_structure(symbol, n_atoms):
@@ -71,6 +83,8 @@ def order_coordinates(coordinates, c_atom):
                 new_coordinates.append(array)
         return new_coordinates
 
+def get_shape_references(number_vertices):
+    return shape_structure_references[number_vertices+' Vertices']
 
 shape_structure_references = {'2 Vertices': [['L-2', 1, 'Dinfh', 'Linear'],
                                              ['vT-2', 2, 'C2v', 'Divacant tetrahedron'],

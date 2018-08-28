@@ -1,5 +1,5 @@
 from symeess.molecule.geometry import Geometry
-
+# import symmetry
 
 class Molecule:
 
@@ -21,3 +21,6 @@ class Molecule:
 
     def get_name(self):
         return self._name
+
+    # def calculate_pointgroup(self):
+    #     symmetry.get_pointgroup(self._geometry.get_symbols(), self._geometry.get_positions())
