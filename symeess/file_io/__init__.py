@@ -118,3 +118,12 @@ def write_shape_data(data, shape_label, molecule_names, option, output_name=sys.
             output.write('\n')
 
     output.close()
+
+
+def write_shape_map_2file(shape_label1, shape_label2, path, output_name='symeess_shape_map'):
+    output = open('results/' + output_name + '.pth', 'w')
+    # output.write("{}\n".format("minimal distortion path"))
+    output.write(" {:6} {:6}\n".format(shape_label1, shape_label2))
+    for idx, value in enumerate(path[0]):
+        output.write('{:6.3f} {:6.3f}'.format(path[0][idx], path[1][idx]))
+        output.write('\n')

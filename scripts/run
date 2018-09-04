@@ -23,8 +23,8 @@ group_shape.add_argument('-label', dest='reference_polyhedra', action='store',  
 group_shape.add_argument('-n', action='store', type=str, default=None,
                          help='Print all the possible reference structures of n vertices')
 
-args = parser.parse_args(['-n', '2'])
-print(shape.get_shape_references(args.n))
+# args = parser.parse_args(['-n', '4'])
+# print(shape.get_shape_references(args.n))
 # quit()
 args = parser.parse_args(['-m', '-label', 'SP-4 T-4',
                           '-c', '1',
@@ -36,4 +36,4 @@ molecules = file_io.read(args.input_file)
 symeess = Symeess(molecules)
 symeess.write_shape_structure_2file(args.reference_polyhedra, central_atom=args.c)
 symeess.write_shape_measure_2file(args.reference_polyhedra, central_atom=args.c)
-symeess.print_shape_map('SP-4', 'T-4', central_atom=args.c, num_points=50)
+symeess.minimum_distortion_path_shape('SP-4', 'T-4', central_atom=args.c, num_points=50)

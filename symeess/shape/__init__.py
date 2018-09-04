@@ -45,17 +45,12 @@ def get_structure(geometry):
     return measure_structure[1], measure_structure[0]
 
 
-def test_structure(shape_label, c_atom):
+def get_test_structure(shape_label, c_atom):
     with open("../symeess/shape/ideal_structures.yaml", 'r') as stream:
         ideal_structures = yaml.load(stream)
+    if c_atom is None:
+        ideal_structures[shape_label].pop(0)
     measure_structure = np.array(ideal_structures[shape_label])
-    # for key, value in shape_structure_references.items():
-    #     for reference in value:
-    #         if reference[0] == shape_label:
-    #             code = reference[1]
-    #
-    # coordinates = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0] ]
-    # measure_structure = shp.test(coordinates, code, c_atom)
     return measure_structure
 
 def get_ideal_structure(symbol, n_atoms):

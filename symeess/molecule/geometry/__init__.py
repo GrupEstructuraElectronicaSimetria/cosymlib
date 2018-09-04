@@ -6,7 +6,6 @@ class Geometry:
 
         self._symbols = []
         self._positions = []
-        # self._c_positions = []
 
         for elements in structure:
             try:
@@ -42,15 +41,6 @@ class Geometry:
         else:
             self._shape_measures[shape_label][measure] = getattr(shape, get_measure)(self)
 
-    # def set_test_structure(self, shape_label, central_atom):
-    #     self._central_atom = central_atom
-    #     self._shape_ideal = shape_label
-    #     n_atoms = self.get_n_atoms()
-    #     if self._central_atom:
-    #         n_atoms = self.get_n_atoms() - 1
-    #     self._shape_measures[shape_label]['test'] = shape.test_structure(self.get_positions(), n_atoms,
-    #                                                                      self._shape_ideal, self._central_atom)
-
     def get_shape_measure(self, shape_label, central_atom=None):
         if shape_label not in self._shape_measures:
             self._shape_measures[shape_label] = {}
@@ -64,7 +54,3 @@ class Geometry:
         if 'structure' not in self._shape_measures[shape_label]:
             self._add_shape_info(shape_label, measure='structure', central_atom=central_atom)
         return self._shape_measures[shape_label]['structure']
-
-def get_test_structure(shape_label, central_atom=None):
-    ideal_structure = shape.test_structure(shape_label, central_atom)
-    return ideal_structure
