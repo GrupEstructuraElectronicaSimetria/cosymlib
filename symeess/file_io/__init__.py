@@ -36,6 +36,7 @@ def read_file_xyz(file_name):
         molecules.append(Molecule(input_molecule, name=name))
     return molecules
 
+
 def read_file_cor(file_name):
     input_molecule = []
     molecules = []
@@ -48,7 +49,7 @@ def read_file_cor(file_name):
                 try:
                     float(line.split()[1])
                     input_molecule.append(line.split()[:-1])
-                except ValueError:
+                except (ValueError, IndexError):
                     if input_molecule:
                         molecules.append(Molecule(input_molecule, name=name))
                     input_molecule = []
