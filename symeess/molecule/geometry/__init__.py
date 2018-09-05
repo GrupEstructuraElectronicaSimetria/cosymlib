@@ -1,6 +1,5 @@
 from symeess import shape
 
-
 class Geometry:
     def __init__(self, structure=None):
 
@@ -16,10 +15,10 @@ class Geometry:
             self._positions.append([float(j) for j in elements[1:]])
 
         self._n_atoms = None
-        self._shape_ideal = 0
+        self._shape_label = 0
         self._central_atom = None
-        self._shape_test_structure = []
         self._shape_measures = {}
+        self._path_deviation = {}
 
     def get_positions(self):
         return self._positions
@@ -33,7 +32,7 @@ class Geometry:
 
     def _add_shape_info(self, shape_label, measure='measure', central_atom=None):
         self._central_atom = central_atom
-        self._shape_ideal = shape_label
+        self._shape_label = shape_label
         get_measure = 'get_'+measure
         if measure == 'structure':
             self._shape_measures[shape_label]['measure'], self._shape_measures[shape_label][measure] = \
@@ -54,3 +53,18 @@ class Geometry:
         if 'structure' not in self._shape_measures[shape_label]:
             self._add_shape_info(shape_label, measure='structure', central_atom=central_atom)
         return self._shape_measures[shape_label]['structure']
+
+    def get_path_deviation(self, shape_label1, shape_label2, central_atom):
+        if shape_label1+'_'+shape_label2 not in self._path_deviation:
+            if shape_label2+'_'+shape_label1 not in self._path_deviation:
+                labels = shape_label1+'_'+shape_label2
+                self._path_deviation[labels] = None
+            else:
+                labels = shape_label2 + '_' + shape_label1
+        else:
+            labels = shape_label1 + '_' + shape_label2
+        if self._path_deviation[labels] is None:
+            Sx = self.get_shape_measure(shape_label1, central_atom)
+            Sy = self.get_shape_measure(shape_label2, central_atom)
+            self._path_deviation[labels] = shape.get_path_deviation(Sx, Sy, shape_label1, shape_label2)
+        return self._path_deviation[labels]
