@@ -23,7 +23,7 @@ def get_shape_map(shape_label1, shape_label2, central_atom=None, num_points=50):
     except KeyError:
         theta = minimum_distortion_angles[shape_label2][shape_label1]
     dtheta = np.linspace(0, theta, num_points)
-    for angle in dtheta:
+    for angle in dtheta[1:]:
         a_label1 = angle
         a_label2 = theta - a_label1
         S_label1.append(100 * (np.sin(np.radians(a_label1)) ** 2))
@@ -31,18 +31,17 @@ def get_shape_map(shape_label1, shape_label2, central_atom=None, num_points=50):
     return S_label1, S_label2
 
 
-# def get_path_deviation(Sx, Sy, shape_label1, shape_label2):
-#     path_deviation = []
-#     for idx, x in enumerate(Sx):
-#         new_theta = np.arcsin(np.sqrt(x)/10) + np.arcsin(np.sqrt(Sy[idx])/10)
-#         new_theta = np.radians(new_theta)
-#         try:
-#             theta = minimum_distortion_angles[shape_label1][shape_label2]
-#         except KeyError:
-#             theta = minimum_distortion_angles[shape_label2][shape_label1]
-#         print(new_theta, theta)
-#         path_deviation.append((new_theta/theta)-1)
-#     return path_deviation
+def get_path_deviation(Sx, Sy, shape_label1, shape_label2):
+    path_deviation = []
+    for idx, x in enumerate(Sx):
+        new_theta = np.arcsin(np.sqrt(x)/10) + np.arcsin(np.sqrt(Sy[idx])/10)
+        try:
+            theta = minimum_distortion_angles[shape_label1][shape_label2]
+        except KeyError:
+            theta = minimum_distortion_angles[shape_label2][shape_label1]
+        path_deviation.append(((new_theta/np.radians(theta))-1)*100)
+
+    return path_deviation
 
 minimum_distortion_angles = {'T-4': {'SS-4': 18.234, 'SP-4': 35.264}, 'SS-4': {'SP-4': 25.878},
                              'vOC-5': {'SPY-5': 7.582, 'TBPY-5': 15.722, 'PP-5': 34.588},

@@ -11,7 +11,6 @@ class Symeess:
 
     def __init__(self, input_data):
 
-        self._results = []
         self._molecules = input_data
 
     def get_shape_measure(self, label, type, central_atom=None):
@@ -66,8 +65,7 @@ class Symeess:
              for molecule in self._molecules]
         y = [molecule.geometry.get_shape_measure(shape_label2, central_atom=central_atom)
              for molecule in self._molecules]
-        # path_deviation_function = maps.get_path_deviation(x, y, shape_label1, shape_label2)
-        # print(path_deviation_function)
+        path_deviation_function = maps.get_path_deviation(x, y, shape_label1, shape_label2)
         path = self.get_shape_map(shape_label1, shape_label2, central_atom, num_points)
         file_io.write_shape_map_2file(shape_label1, shape_label2, path)
         # plt.plot(path[0], path[1], linewidth=2.0)
