@@ -15,6 +15,7 @@ class TestShapeCorFile(unittest.TestCase):
         results.append([molecule.geometry.get_shape_measure('T-4', central_atom=1) for molecule in symeess._molecules])
         calculated_results = np.column_stack((results[0], results[1]))
         good_results = np.loadtxt('data/results_cor_file')
+        print(good_results)
         self.assertTrue(np.allclose(good_results, calculated_results))
 
     def test_structure_file(self):

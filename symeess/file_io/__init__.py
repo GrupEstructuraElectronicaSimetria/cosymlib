@@ -1,6 +1,5 @@
 import os
 import sys
-from itertools import islice
 from symeess.molecule import Molecule
 
 
@@ -12,45 +11,50 @@ def read(input_name):
     possibles.update(locals())
     method = possibles.get(method_name)
     if not method:
-        raise NotImplementedError("Method %s not implemented" % method_name)
-
+        raise NotImplementedError("Method %s not implemented yet" % method_name)
     return method(input_name)
 
 
 def read_file_xyz(file_name):
+    input_molecule = []
+    molecules = []
+    name = ''
     with open(file_name, mode='r') as lines:
-        molecules = []
-
-        while True:
-            try:
-                input_molecule = []
-                n_atoms = int(lines.readline())
-                name = lines.readline()
-                if name.strip() != '':
-                    name = name.split()[0]
-                for line in list(islice(lines, n_atoms)):
+        for line in lines:
+            if '#' in line:
+                pass
+            else:
+                try:
+                    float(line.split()[1])
                     input_molecule.append(line.split())
-                molecules.append(Molecule(input_molecule, name=name))
-            except ValueError:
-                return molecules
-
+                except (ValueError, IndexError):
+                    if input_molecule:
+                        molecules.append(Molecule(input_molecule, name=name))
+                    input_molecule = []
+                    lines.readline()
+                    name = line.split()[0]
+        molecules.append(Molecule(input_molecule, name=name))
+    return molecules
 
 def read_file_cor(file_name):
+    input_molecule = []
+    molecules = []
+    name = ''
     with open(file_name, mode='r') as lines:
-        input_molecule = []
-        molecules = []
-        name = lines.readline().split()[0]
         for line in lines:
-            try:
-                float(line.split()[1])
-                input_molecule.append(line.split()[:-1])
-            except ValueError:
-                molecules.append(Molecule(input_molecule, name=name))
-                input_molecule = []
-                name = line.split()[0]
+            if '#' in line:
+                pass
+            else:
+                try:
+                    float(line.split()[1])
+                    input_molecule.append(line.split()[:-1])
+                except ValueError:
+                    if input_molecule:
+                        molecules.append(Molecule(input_molecule, name=name))
+                    input_molecule = []
+                    name = line.split()[0]
         molecules.append(Molecule(input_molecule, name=name))
-
-        return molecules
+    return molecules
 
 
 def write_shape_data(data, shape_label, molecule_names, option, output_name=sys.stdout):
@@ -122,7 +126,6 @@ def write_shape_data(data, shape_label, molecule_names, option, output_name=sys.
 
 def write_shape_map_2file(shape_label1, shape_label2, path, output_name='symeess_shape_map'):
     output = open('results/' + output_name + '.pth', 'w')
-    # output.write("{}\n".format("minimal distortion path"))
     output.write(" {:6} {:6}\n".format(shape_label1, shape_label2))
     for idx, value in enumerate(path[0]):
         output.write('{:6.3f} {:6.3f}'.format(path[0][idx], path[1][idx]))

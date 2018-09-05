@@ -184,4 +184,6 @@ shape_structure_references = {'2 Vertices': [['L-2', 1, 'Dinfh', 'Linear'],
                                               ['JSPMC-12', 13, 'Cs', 'Sphenomegacorona J88']],
                               '20 Vertices': [['DD-20', 1, 'Ih', 'Dodecahedron']],
                               '24 Vertices': [['TCU-24', 1, 'Oh', 'Truncated cube'],
-                                              ['TOC-24', 2, 'Oh', 'Truncated octahedron']]}
+                                              ['TOC-24', 2, 'Oh', 'Truncated octahedron']],
+                              '48 Vertices' : ['TCOC-48', 1, 'Oh', 'Truncated cuboctahedron'],
+                              '60 Vertices': ['TRIC-60', 1, 'Ih', 'Truncated icosahedron (fullerene)']}

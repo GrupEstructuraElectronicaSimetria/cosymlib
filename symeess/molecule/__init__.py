@@ -5,6 +5,9 @@ class Molecule:
 
     def __init__(self, structure_data, electronic_structure=None, name=None):
 
+        if not structure_data:
+            print('No molecule found in the input file, check out for possible errors')
+            quit()
         self._geometry = Geometry(structure_data)
         self._name = None
         self.set_name(name)

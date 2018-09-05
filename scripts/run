@@ -28,13 +28,13 @@ group_shape.add_argument('-n', action='store', type=str, default=None,
 # quit()
 args = parser.parse_args(['-m', '-label', 'SP-4 T-4',
                           '-c', '1',
-                          '-o', '../examples/coord.tab',
+                          # '-o', '../examples/coord.tab',
                           '-input_file' , '../examples/coord.cor'])
 # args = parser.parse_args()
 molecules = file_io.read(args.input_file)
-
 symeess = Symeess(molecules)
 symeess.write_shape_structure_2file(args.reference_polyhedra, central_atom=args.c)
 symeess.write_shape_measure_2file(args.reference_polyhedra, central_atom=args.c)
+quit()
 symeess.get_molecule_path_deviation('SP-4', 'T-4', central_atom=args.c)
 symeess.minimum_distortion_path_shape_2file('SP-4', 'T-4', central_atom=args.c, num_points=50)
