@@ -1,5 +1,6 @@
 import symeess.file_io as file_io
 from symeess import maps
+import matplotlib.pyplot as plt
 __version__ = 0.1
 
 
@@ -65,19 +66,15 @@ class Symeess:
                           in self._molecules]
         return path_deviation
 
-    # def minimum_distortion_path_shape(self, shape_label1, shape_label2, central_atom=None, num_points=50):
-    #     x = [molecule.geometry.get_shape_measure(shape_label1, central_atom=central_atom)
-    #          for molecule in self._molecules]
-    #     y = [molecule.geometry.get_shape_measure(shape_label2, central_atom=central_atom)
-    #          for molecule in self._molecules]
-    #     path_deviation_function = maps.get_path_deviation(x, y, shape_label1, shape_label2)
-    #     path = self.get_shape_map(shape_label1, shape_label2, central_atom, num_points)
-    #     file_io.write_shape_map_2file(shape_label1, shape_label2, path)
-    #     plt.plot(path[0], path[1], linewidth=2.0)
-    #     plt.xlabel(shape_label1)
-    #     plt.ylabel(shape_label2)
-    #     plt.scatter(x, y,  color='g', s=5)
-    #     plt.savefig('./results/'+shape_label1+'_'+shape_label2+'.png')
+    def minimum_distortion_path_shape_2file(self, shape_label1, shape_label2, central_atom=None, num_points=50, show=False):
+        path = self.get_shape_map(shape_label1, shape_label2, central_atom, num_points)
+        file_io.write_shape_map_2file(shape_label1, shape_label2, path)
+        if show:
+            plt.plot(path[0], path[1], linewidth=2.0)
+            plt.xlabel(shape_label1)
+            plt.ylabel(shape_label2)
+            plt.show()
+
 
     def get_shape_map(self, shape_label1, shape_label2, central_atom, num_points):
         x, y = maps.get_shape_map(shape_label1, shape_label2, central_atom, num_points)
