@@ -7,7 +7,7 @@ def get_shape_map(shape_label1, shape_label2, central_atom=None, num_points=50):
     ideal_structure = get_test_structure(shape_label1, central_atom)
     ideal_label_structure = []
     for idx, atom in enumerate(ideal_structure):
-        if idx == central_atom-1:
+        if idx == 0:
             atom = np.ndarray.tolist(atom)
             atom.insert(0, 'M')
         else:
@@ -17,7 +17,7 @@ def get_shape_map(shape_label1, shape_label2, central_atom=None, num_points=50):
 
     geometry = Geometry(ideal_label_structure)
     S_label1 = [0]
-    S_label2 = [geometry.get_shape_measure(shape_label2, central_atom=central_atom)]
+    S_label2 = [geometry.get_shape_measure(shape_label2, 0)]
     theta = _get_symmetry_angle(shape_label1, shape_label2)
     dtheta = np.linspace(0, theta, num_points)
     for angle in dtheta[1:]:

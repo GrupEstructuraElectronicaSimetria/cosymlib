@@ -1,10 +1,10 @@
 from symeess.molecule.geometry import Geometry
 # import symmetry
 
+
 class Molecule:
 
     def __init__(self, structure_data, electronic_structure=None, name=None):
-
         if not structure_data:
             print('No molecule found in the input file, check out for possible errors')
             quit()

@@ -1,5 +1,6 @@
 from symeess import shape
 
+
 class Geometry:
     def __init__(self, structure=None):
 
@@ -19,6 +20,7 @@ class Geometry:
         self._central_atom = None
         self._shape_measures = {}
         self._path_deviation = {}
+        self._GenCoord = {}
 
     def get_positions(self):
         return self._positions
@@ -68,3 +70,17 @@ class Geometry:
             Sy = self.get_shape_measure(shape_label2, central_atom)
             self._path_deviation[labels] = shape.get_path_deviation(Sx, Sy, shape_label1, shape_label2)
         return self._path_deviation[labels]
+
+    def get_GenCoord(self, shape_label1, shape_label2, central_atom):
+        if shape_label1+'_'+shape_label2 not in self._GenCoord:
+            if shape_label2+'_'+shape_label1 not in self._GenCoord:
+                labels = shape_label1+'_'+shape_label2
+                self._GenCoord[labels] = None
+            else:
+                labels = shape_label2 + '_' + shape_label1
+        else:
+            labels = shape_label1 + '_' + shape_label2
+        if self._GenCoord[labels] is None:
+            Sq = self.get_shape_measure(shape_label1,  central_atom)
+            self._GenCoord[labels] = shape.get_GenCoord(Sq, shape_label1, shape_label2)
+        return self._GenCoord[labels]

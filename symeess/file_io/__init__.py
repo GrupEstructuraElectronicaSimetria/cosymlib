@@ -3,8 +3,7 @@ import sys
 from symeess.molecule import Molecule
 
 
-def read(input_name):
-
+def read(input_name, parameters=False):
     file_name, file_extension = os.path.splitext(input_name)
     method_name = 'read_file_' + file_extension[1:]
     possibles = globals().copy()
@@ -12,50 +11,65 @@ def read(input_name):
     method = possibles.get(method_name)
     if not method:
         raise NotImplementedError("Method %s not implemented yet" % method_name)
-    return method(input_name)
+    return method(input_name, parameters)
 
 
-def read_file_xyz(file_name):
+def read_file_xyz(file_name, parameters):
     input_molecule = []
     molecules = []
+    options = []
+    n_atoms = True
+    name = ''
+    with open(file_name, mode='r') as lines:
+        for line in lines:
+            if '$' in line or '#' in line:
+                pass
+            else:
+                if parameters:
+                    options.append(line.split())
+                    if len(options) >= 2:
+                        parameters = False
+                        n_atoms = False
+                else:
+                    try:
+                        float(line.split()[1])
+                        input_molecule.append(line.split())
+                    except (ValueError, IndexError):
+                        if input_molecule:
+                            molecules.append(Molecule(input_molecule, name=name))
+                        input_molecule = []
+                        if n_atoms:
+                            lines.readline()
+                        name = line.split()[0]
+        molecules.append(Molecule(input_molecule, name=name))
+    return molecules, options
+
+
+def read_file_cor(file_name, parameters):
+    input_molecule = []
+    molecules = []
+    options = []
     name = ''
     with open(file_name, mode='r') as lines:
         for line in lines:
             if '#' in line:
                 pass
             else:
-                try:
-                    float(line.split()[1])
-                    input_molecule.append(line.split())
-                except (ValueError, IndexError):
-                    if input_molecule:
-                        molecules.append(Molecule(input_molecule, name=name))
-                    input_molecule = []
-                    lines.readline()
-                    name = line.split()[0]
+                if parameters:
+                    options.append(line.split())
+                    if len(options) >= 2:
+                        parameters = False
+                else:
+                    try:
+                        float(line.split()[1])
+                        input_molecule.append(line.split()[:-1])
+                    except (ValueError, IndexError):
+                        if input_molecule:
+                            molecules.append(Molecule(input_molecule, name=name))
+                        input_molecule = []
+                        name = line.split()[0]
         molecules.append(Molecule(input_molecule, name=name))
-    return molecules
-
-
-def read_file_cor(file_name):
-    input_molecule = []
-    molecules = []
-    name = ''
-    with open(file_name, mode='r') as lines:
-        for line in lines:
-            if '#' in line:
-                pass
-            else:
-                try:
-                    float(line.split()[1])
-                    input_molecule.append(line.split()[:-1])
-                except (ValueError, IndexError):
-                    if input_molecule:
-                        molecules.append(Molecule(input_molecule, name=name))
-                    input_molecule = []
-                    name = line.split()[0]
-        molecules.append(Molecule(input_molecule, name=name))
-    return molecules
+    return molecules, options
 
 
 def write_shape_data(data, shape_label, molecule_names, option, output_name=sys.stdout):

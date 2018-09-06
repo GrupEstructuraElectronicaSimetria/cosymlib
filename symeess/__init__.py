@@ -66,6 +66,11 @@ class Symeess:
                           in self._molecules]
         return path_deviation
 
+    def get_molecule_GenCoord(self, shape_label1, shape_label2, central_atom=None):
+        GenCoord = [molecule.geometry.get_GenCoord(shape_label1, shape_label2, central_atom)
+                    for molecule in self._molecules]
+        return GenCoord
+
     def minimum_distortion_path_shape_2file(self, shape_label1, shape_label2, central_atom=None, num_points=50, show=False):
         path = self.get_shape_map(shape_label1, shape_label2, central_atom, num_points)
         file_io.write_shape_map_2file(shape_label1, shape_label2, path)
@@ -74,7 +79,6 @@ class Symeess:
             plt.xlabel(shape_label1)
             plt.ylabel(shape_label2)
             plt.show()
-
 
     def get_shape_map(self, shape_label1, shape_label2, central_atom, num_points):
         x, y = maps.get_shape_map(shape_label1, shape_label2, central_atom, num_points)

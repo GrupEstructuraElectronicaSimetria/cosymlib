@@ -70,6 +70,12 @@ def get_path_deviation(Sx, Sy, shape_label1, shape_label2):
     return path_deviation
 
 
+def get_GenCoord(Sq, shape_label1, shape_label2):
+    theta = _get_symmetry_angle(shape_label1, shape_label2)
+    GenCoord = 100*np.arcsin(np.sqrt(Sq)/10)/np.radians(theta)
+    return GenCoord
+
+
 def _order_coordinates(coordinates, c_atom):
         c_atom = c_atom - 1
         new_coordinates = []
@@ -91,6 +97,12 @@ def _get_symmetry_angle(shape_label1, shape_label2):
     except KeyError:
         theta = minimum_distortion_angles[shape_label2][shape_label1]
     return theta
+
+
+def get_shape_label(code, n_atoms):
+    vertices = str(n_atoms)+' Vertices'
+    label = shape_structure_references[vertices][code-1]
+    return label[0]
 
 
 minimum_distortion_angles = {'T-4': {'SS-4': 18.234, 'SP-4': 35.264}, 'SS-4': {'SP-4': 25.878},
