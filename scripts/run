@@ -47,6 +47,7 @@ else:
 symeess = Symeess(molecules)
 symeess.write_shape_structure_2file(reference_polyhedra, central_atom=args.c)
 symeess.write_shape_measure_2file(reference_polyhedra, central_atom=args.c)
+symeess.write_path_parameters_2file('SP-4', 'T-4' , central_atom=args.c)
 quit()
 symeess.get_molecule_path_deviation('SP-4', 'T-4', central_atom=args.c)
 symeess.minimum_distortion_path_shape_2file('SP-4', 'T-4', central_atom=args.c, num_points=50)

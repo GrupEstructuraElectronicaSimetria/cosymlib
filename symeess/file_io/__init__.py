@@ -107,9 +107,9 @@ def write_shape_data(data, shape_label, molecule_names, option, output_name=sys.
     output.write('-'*40 + '\n')
 
     if 'measure' in option:
-        output.write('{}'.format('measure'.upper()))
+        output.write('{}'.format('structure'.upper()))
         for label in shape_label:
-            n = len(label) + 4
+            n = len(label) + 3
             output.write('{}'.format(label.rjust(n)))
         output.write('\n')
         for idx, molecule_name in enumerate(molecule_names):
@@ -167,4 +167,27 @@ def write_shape_map_2file(shape_label1, shape_label2, path, output_name='symeess
     output.write(" {:6} {:6}\n".format(shape_label1, shape_label2))
     for idx, value in enumerate(path[0]):
         output.write('{:6.3f} {:6.3f}'.format(path[0][idx], path[1][idx]))
+        output.write('\n')
+
+
+def write_minimal_distortion_path_analysis_2file(shape_label1, shape_label2, measures, pathdev, GenCoord,
+                                                 maxdev, mindev, molecule_names, output_name='symeess_shape'):
+    output = open('results/' + output_name + '.flt', 'w')
+    output.write("Deviation threshold to calculate Generalized Coordinate: "
+                 "{:2.1f}% - {:2.1f}%\n".format(mindev, maxdev))
+    output.write("\n")
+    output.write('{:11}'.format('structure'.upper()))
+    output.write(" {:7} {:7}".format(shape_label1, shape_label2))
+    output.write("{:6} {:6}".format('DevPath', 'GenCoord'))
+    output.write("\n")
+    for idx, molecule_name in enumerate(molecule_names):
+        output.write('{}'.format(molecule_name))
+        if molecule_names[idx].strip() == '':
+            n = 4 + len(molecule_names[idx])
+        else:
+            n = 15 - len(molecule_names[idx])
+        for label in [shape_label1, shape_label2]:
+            output.write(' {:{width}.{prec}f}'.format(measures[label][idx], width=n, prec=3))
+            n = 7
+        output.write('{:8.1f} {:8.1f}'.format(pathdev[idx], GenCoord[idx]))
         output.write('\n')

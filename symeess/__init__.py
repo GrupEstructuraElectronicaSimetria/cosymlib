@@ -61,6 +61,21 @@ class Symeess:
         shape['symbols'] = [molecule.geometry.get_symbols() for molecule in self._molecules]
         file_io.write_shape_data(shape, shape_label.split(), names_order, 'structure', output_name)
 
+    def write_path_parameters_2file(self, shape_label1, shape_label2, central_atom=None, maxdev=15, mindev=0):
+        shape = {}
+        shape[shape_label1] = self.get_shape_measure(shape_label1, 'measure', central_atom)
+        shape[shape_label2] = self.get_shape_measure(shape_label2, 'measure', central_atom)
+        pathdev = self.get_molecule_path_deviation(shape_label1, shape_label2, central_atom)
+        GenCoord = self.get_molecule_GenCoord(shape_label1, shape_label2, central_atom)
+        pathdev_filter = [True if x <= maxdev and x >= mindev else False for x in pathdev]
+        pathdev = [i for indx, i in enumerate(pathdev) if pathdev_filter[indx] == True]
+        GenCoord = [i for indx, i in enumerate(GenCoord) if pathdev_filter[indx] == True]
+        shape[shape_label1] = [i for indx, i in enumerate(shape[shape_label1]) if pathdev_filter[indx] == True]
+        shape[shape_label2] = [i for indx, i in enumerate(shape[shape_label2]) if pathdev_filter[indx] == True]
+        names_order = [molecule.get_name() for molecule in self._molecules]
+        file_io.write_minimal_distortion_path_analysis_2file(shape_label1, shape_label2, shape, pathdev,
+                                                 GenCoord, maxdev, mindev, names_order, output_name='symeess_shape')
+
     def get_molecule_path_deviation(self, shape_label1, shape_label2, central_atom=None):
         path_deviation = [molecule.geometry.get_path_deviation(shape_label1, shape_label2, central_atom) for molecule
                           in self._molecules]

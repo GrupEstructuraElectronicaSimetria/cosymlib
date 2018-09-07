@@ -1,7 +1,7 @@
 $ PtL4 structures
-# Ligands Metal
+! Ligands Metal
 4 5
-# Tetrahedron Square
+! Tetrahedron Square
 2 1
  Methane
    C      0.0000      0.0000      0.0000
