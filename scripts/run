@@ -30,11 +30,12 @@ args = parser.parse_args(['-m', '-label', 'SP-4 T-4',
                           '-c', '1',
                           # '-o', '../examples/coord.tab',
                           '-old_input',
-                          '-input_file' , '../examples/coord.xyz'])
+                          '-input_file' , '../examples/coord.dat'])
 
 # args = parser.parse_args()
-molecules, options = file_io.read(args.input_file, args.old_input)
-if options:
+molecules = file_io.read(args.input_file, args.old_input)
+if args.old_input:
+    molecules, options = molecules
     central_atom = options[0][1]
     if central_atom == 0:
         central_atom = None
