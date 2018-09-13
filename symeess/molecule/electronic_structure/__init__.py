@@ -22,7 +22,7 @@ class ElectronicStructure:
 
     def get_wyfsym_measure(self, label, VAxis1, VAxis2, RCread):
 
-        if '-2' in self._wfnsym_dict['shell_type']:
+        if -2 in self._wfnsym_dict['shell_type']:
             pure_d = True
         else:
             pure_d = False
