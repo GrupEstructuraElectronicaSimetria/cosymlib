@@ -1,6 +1,7 @@
 from symeess.shape import shp
 import yaml
 import numpy as np
+import os
 
 
 def get_measure(geometry, shape_label, central_atom=None):
@@ -44,7 +45,8 @@ def get_structure(geometry, shape_label, central_atom=None):
 
 
 def get_test_structure(shape_label, central_atom):
-    with open("../symeess/shape/ideal_structures.yaml", 'r') as stream:
+    file_path = os.path.dirname(os.path.abspath(__file__))+'/ideal_structures.yaml'
+    with open(file_path, 'r') as stream:
         ideal_structures = yaml.load(stream)
     if central_atom is None:
         ideal_structures[shape_label].pop(0)
