@@ -143,7 +143,7 @@ def read_old_input(file_name):
                         input_molecule[1].append(line[1:-1])
                     else:
                         sys.exit('Wrong input format')
-            if input_molecule:
+            if input_molecule[0]:
                 molecules.append(Molecule(input_molecule, name=name))
                 input_molecule = [[], []]
     return [molecules, options]

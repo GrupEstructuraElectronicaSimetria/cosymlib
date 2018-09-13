@@ -23,7 +23,7 @@ class Geometry:
             for element in structure[1]:
                 self._positions.append(float(element))
             self._positions = list(chunks(self._positions, 3))
-        except (ValueError, TypeError):
+        except (ValueError, TypeError, IndexError):
             for element in structure[1]:
                 self._positions.append([float(j) for j in element])
 
@@ -44,28 +44,19 @@ class Geometry:
     def get_symbols(self):
         return self._symbols
 
-    def _add_shape_info(self, shape_label, measure='measure', central_atom=None):
-        self._central_atom = central_atom
-        self._shape_label = shape_label
-        get_measure = 'get_'+measure
-        if measure == 'structure':
-            self._shape_measures[shape_label]['measure'], self._shape_measures[shape_label][measure] = \
-                getattr(shape, get_measure)(self)
-        else:
-            self._shape_measures[shape_label][measure] = getattr(shape, get_measure)(self)
-
     def get_shape_measure(self, shape_label, central_atom=None):
         if shape_label not in self._shape_measures:
             self._shape_measures[shape_label] = {}
         if 'measure' not in self._shape_measures[shape_label]:
-            self._add_shape_info(shape_label, measure='measure', central_atom=central_atom)
+            self._shape_measures[shape_label]['measure'] = shape.get_measure(self, shape_label, central_atom)
         return self._shape_measures[shape_label]['measure']
 
     def get_shape_structure(self, shape_label, central_atom=None):
         if shape_label not in self._shape_measures:
             self._shape_measures[shape_label] = {}
         if 'structure' not in self._shape_measures[shape_label]:
-            self._add_shape_info(shape_label, measure='structure', central_atom=central_atom)
+            self._shape_measures[shape_label]['measure'], self._shape_measures[shape_label]['structure'] = \
+                shape.get_structure(self, shape_label, central_atom)
         return self._shape_measures[shape_label]['structure']
 
     def get_path_deviation(self, shape_label1, shape_label2, central_atom):
@@ -94,7 +85,7 @@ class Geometry:
             labels = shape_label1 + '_' + shape_label2
         if self._GenCoord[labels] is None:
             Sq = self.get_shape_measure(shape_label1,  central_atom)
-            self._GenCoord[labels] = shape.get_GenCoord(Sq, shape_label1, shape_label2)
+            self._GenCoord[labels] = shape.get_generalized_coordinate(Sq, shape_label1, shape_label2)
         return self._GenCoord[labels]
 
 

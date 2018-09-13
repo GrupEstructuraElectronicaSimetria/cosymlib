@@ -1,12 +1,9 @@
-try:
-    from symeess.shape import shp
-except ImportError:
-    pass
+from symeess.shape import shp
 import yaml
 import numpy as np
 
 
-def get_measure(geometry):
+def get_measure(geometry, shape_label, central_atom=None):
     """
     Compute the shape measure of the given geometry
 
@@ -15,41 +12,41 @@ def get_measure(geometry):
     :return: difference between user's structure and the one's that is compared. While 0 is no difference and 100
              is completly different
     """
-    if geometry._central_atom is not None:
-        coordinates = _order_coordinates(geometry.get_positions(), geometry._central_atom)
-        code = get_ideal_structure(geometry._shape_label, geometry.get_n_atoms() - 1)
+    if central_atom is not None:
+        coordinates = _order_coordinates(geometry.get_positions(), central_atom)
+        code = get_ideal_structure(shape_label, geometry.get_n_atoms() - 1)
         c_atom = True
     else:
         coordinates = geometry.get_positions()
-        code = get_ideal_structure(geometry._shape_ideal, geometry.get_n_atoms())
+        code = get_ideal_structure(shape_label, geometry.get_n_atoms())
         c_atom = False
     measure_number = shp.cshm(coordinates, code, c_atom)
     return measure_number
 
 
-def get_structure(geometry):
+def get_structure(geometry, shape_label, central_atom=None):
     """
     Calculate the ideal structure of the given geometry from a reference structure
 
     :param geometry: same as before
     :return: ideal structure if user's structure had the compared structure's shape
     """
-    if geometry._central_atom is not None:
-        coordinates = _order_coordinates(geometry.get_positions(), geometry._central_atom)
-        code = get_ideal_structure(geometry._shape_label, geometry.get_n_atoms() - 1)
+    if central_atom is not None:
+        coordinates = _order_coordinates(geometry.get_positions(), central_atom)
+        code = get_ideal_structure(shape_label, geometry.get_n_atoms() - 1)
         c_atom = True
     else:
         coordinates = geometry.get_positions()
-        code = get_ideal_structure(geometry._shape_ideal, geometry.get_n_atoms())
+        code = get_ideal_structure(shape_label, geometry.get_n_atoms())
         c_atom = False
     measure_structure = shp.poly(coordinates, code, c_atom)
     return measure_structure[1], measure_structure[0]
 
 
-def get_test_structure(shape_label, c_atom):
+def get_test_structure(shape_label, central_atom):
     with open("../symeess/shape/ideal_structures.yaml", 'r') as stream:
         ideal_structures = yaml.load(stream)
-    if c_atom is None:
+    if central_atom is None:
         ideal_structures[shape_label].pop(0)
     measure_structure = np.array(ideal_structures[shape_label])
     return measure_structure
@@ -70,7 +67,7 @@ def get_path_deviation(Sx, Sy, shape_label1, shape_label2):
     return path_deviation
 
 
-def get_GenCoord(Sq, shape_label1, shape_label2):
+def get_generalized_coordinate(Sq, shape_label1, shape_label2):
     theta = _get_symmetry_angle(shape_label1, shape_label2)
     GenCoord = round(100*np.arcsin(np.sqrt(Sq)/10)/np.radians(theta), 1)
     return GenCoord
