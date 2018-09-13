@@ -20,11 +20,14 @@ class ElectronicStructure:
 
         self._wfnsym_dict['N_Val'] = self._get_valence_electrons()
 
-    def get_wyfsym_measure(self, iGroup, nGroup, VAxis1, VAxis2, RCread):
+    def get_wyfsym_measure(self, label, VAxis1, VAxis2, RCread):
+
         if '-2' in self._wfnsym_dict['shell_type']:
             pure_d = True
         else:
             pure_d = False
+
+        iGroup, nGroup = self.get_group_label(label)
         results = WfnSympy(Etot=self._wfnsym_dict['N_e'],
                            NEval=self._wfnsym_dict['N_Val'],
                            AtLab=self._geometry.get_symbols(),
@@ -42,17 +45,6 @@ class ElectronicStructure:
                            ngroup=nGroup,
                            do_operation=False,
                            use_pure_d_functions=pure_d)
-        # results.print_alpha_mo_IRD()
-        # results.print_beta_mo_IRD()
-        # results.print_wf_mo_IRD()
-        # results.print_CSM()
-        # results.print_ideal_group_table()
-        # results.print_overlap_mo_alpha()
-        # results.print_overlap_mo_beta()
-        # results.print_overlap_wf()
-        # for i in range(results.dgroup):
-        #     results.print_symmetry_operation_matrix(i)
-        #     results.print_symmetry_transformed_coordinates(i)
         return results
 
     def _get_valence_electrons(self):
@@ -61,6 +53,26 @@ class ElectronicStructure:
             n_valence += atoms_electrons[symbol]
         return n_valence
 
+    def get_group_label(self, label):
+        iGroup = 0
+        nGroup = 0
+        try:
+            nGroup = int(label[1])
+            if nGroup == 1 or label == 'S2':
+                iGroup = 0
+            elif len(label) == 2:
+                iGroup = group_label[label[0]][label[0]+'n'][0]
+            else:
+                iGroup = group_label[label[0]][label[0] + 'n'+label[-1]][0]
+        except (ValueError, TypeError, IndexError):
+            nGroup = None
+            for subgroups, parameters in group_label[label[0]].items():
+                if subgroups == label:
+                    iGroup = parameters[0]
+                    nGroup = parameters[1]
+        if iGroup == 0 and nGroup == 0:
+            raise NameError('Wrong label')
+        return iGroup, nGroup
 
 atoms_electrons = {
         'H': 1,
@@ -99,3 +111,25 @@ atoms_electrons = {
         'Se': 16,
         'Br': 17,
         'Kr': 18}
+
+group_label = {'C' : {'Cnh' : [2, 0],
+                      'Cnv': [3, 0],
+                      'C1': [0, 1],
+                      'Ci': [0, 2],
+                      'Cs': [0, 3],
+                      'Cinf' : [9, 1],
+                      'Cn' : [1, 0]},
+               'D' : {'Dnh' : [5, 0],
+                      'Dnd' : [6, 0],
+                      'Dinf' : [9, 2],
+                      'Dn': [4, 0]},
+               'S' : {'S2' : [0, 2],
+                      'Sn' : [1, 0]},
+               'T' : {'T' : [8, 1],
+                      'Th' : [8, 2],
+                      'Td': [8, 3]},
+               'O' : {'O' : [8, 4],
+                      'Oh': [8, 5]},
+               'I' : {'I' : [8, 6],
+                      'Ih' : [8, 7]}
+               }

@@ -133,6 +133,6 @@ class Symeess:
         return results
 
     def get_wyfsym_measure(self, label, VAxis1, VAxis2, RCread):
-        results = [molecule.electronic_structure.get_wyfsym_measure(8, 3, VAxis1, VAxis2, RCread)
+        results = [molecule.electronic_structure.get_wyfsym_measure(label, VAxis1, VAxis2, RCread)
                    for molecule in self._molecules]
         return results[0]
