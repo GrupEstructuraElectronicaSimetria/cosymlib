@@ -72,7 +72,7 @@ def get_path_deviation(Sx, Sy, shape_label1, shape_label2):
 
 def get_GenCoord(Sq, shape_label1, shape_label2):
     theta = _get_symmetry_angle(shape_label1, shape_label2)
-    GenCoord = 100*np.arcsin(np.sqrt(Sq)/10)/np.radians(theta)
+    GenCoord = round(100*np.arcsin(np.sqrt(Sq)/10)/np.radians(theta), 1)
     return GenCoord
 
 

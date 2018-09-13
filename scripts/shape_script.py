@@ -2,7 +2,6 @@
 import argparse
 from symeess import Symeess, file_io, shape
 
-
 parser = argparse.ArgumentParser(description='Symeess')
 
 parser.add_argument('-input_file', type=str, help='input file name(+extension)')
@@ -32,7 +31,6 @@ args = parser.parse_args(['-m', '-label', 'SP-4 T-4',
                           '-old_input',
                           '-input_file' , '../examples/coord.dat'])
 
-# args = parser.parse_args()
 molecules = file_io.read(args.input_file, args.old_input)
 if args.old_input:
     molecules, options = molecules
@@ -48,6 +46,4 @@ symeess = Symeess(molecules)
 symeess.write_shape_structure_2file(reference_polyhedra, central_atom=args.c)
 symeess.write_shape_measure_2file(reference_polyhedra, central_atom=args.c)
 symeess.write_path_parameters_2file('SP-4', 'T-4' , central_atom=args.c)
-quit()
-symeess.get_molecule_path_deviation('SP-4', 'T-4', central_atom=args.c)
-symeess.minimum_distortion_path_shape_2file('SP-4', 'T-4', central_atom=args.c, num_points=50)
+symeess.write_minimum_distortion_path_shape_2file('SP-4', 'T-4', central_atom=args.c, num_points=50)

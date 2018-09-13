@@ -17,5 +17,5 @@ setup(name='symeess',
                 'symeess.molecule.geometry',
                 'symeess.file_io',
                 'symeess.unitest'],
-      scripts=['scripts/run'],
+      scripts=['scripts/wyfsym_script.py'],
       ext_modules=[shape])
