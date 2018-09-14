@@ -28,5 +28,5 @@ args = parser.parse_args(['-input_file' , '../examples/CpTiCl3_cart.fchk'])
 # args = parser.parse_args()
 molecules = file_io.read(args.input_file, args.old_input)
 symeess = Symeess(molecules)
-symeess.write_wyfsym_measure_2file('Td', [-2.027247, 0.000133, -0.898469], [ 0.40757934076903307, 1.746331, -0.919377],
+symeess.write_wnfsym_measure_2file('Td', [-2.027247, 0.000133, -0.898469], [0.40757934076903307, 1.746331, -0.919377],
                                    [0.002440, -0.000122, 0.017307])

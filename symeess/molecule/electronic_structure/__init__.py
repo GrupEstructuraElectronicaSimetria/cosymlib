@@ -20,7 +20,7 @@ class ElectronicStructure:
 
         self._wfnsym_dict['N_Val'] = self._get_valence_electrons()
 
-    def get_wyfsym_measure(self, label, VAxis1, VAxis2, RCread):
+    def get_wfnsym_measure(self, label, VAxis1, VAxis2, RCread):
 
         if -2 in self._wfnsym_dict['shell_type']:
             pure_d = True
@@ -45,7 +45,11 @@ class ElectronicStructure:
                            ngroup=nGroup,
                            do_operation=False,
                            use_pure_d_functions=pure_d)
+
         return results
+
+    def get_basis(self):
+        return self._wfnsym_dict
 
     def _get_valence_electrons(self):
         n_valence = 0

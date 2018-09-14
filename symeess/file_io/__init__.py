@@ -1,7 +1,7 @@
 import os
 import sys
 from symeess.molecule import Molecule
-
+import numpy as np
 
 # INPUT part
 def read(input_name, old_input=False):
@@ -148,21 +148,122 @@ def read_old_input(file_name):
                 input_molecule = [[], []]
     return [molecules, options]
 
-# OUTPUT part
-def write_wyfsym_measure(results, output_name):
-    output = open('results/' + output_name + '.wout', 'w')
 
-    results.print_alpha_mo_IRD()
-    results.print_beta_mo_IRD()
-    results.print_wf_mo_IRD()
-    results.print_CSM()
-    results.print_ideal_group_table()
-    results.print_overlap_mo_alpha()
-    results.print_overlap_mo_beta()
-    results.print_overlap_wf()
-    for i in range(results.dgroup):
-        results.print_symmetry_operation_matrix(i)
-        results.print_symmetry_transformed_coordinates(i)
+# OUTPUT part
+def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
+    filename = 'results/' + output_name + '.wout'
+    output = open(filename, 'w')
+
+    # Print Outputs
+    output.write('MEASURES OF THE SYMMETRY GROUP:   {}\n'.format(label))
+    output.write('Basis: {}\n'.format('6-31G(d)'))
+    output.write('--------------------------------------------\n')
+    output.write(' Atomic Coordinates (Angstroms)\n')
+    output.write('--------------------------------------------\n')
+    for array in geometry.get_positions():
+        output.write(' {:10.7f} {:10.7f} {:10.7f}\n'.format(array[0], array[1], array[2]))
+    output.write('--------------------------------------------\n')
+    for i in range(wfnsym_results.dgroup):
+        output.write('\n')
+        output.write('@@@ Operation {0}: {1}'.format(i + 1, wfnsym_results.SymLab[i]))
+        output.write('\nSymmetry Transformation matrix\n')
+        for array in wfnsym_results.SymMat[i]:
+            output.write(' {:10.7f} {:10.7f} {:10.7f}\n'.format(array[0], array[1], array[2]))
+        output.write('\n')
+        output.write('Symmetry Transformed Atomic Coordinates (Angstroms)\n')
+        for array in np.dot(geometry.get_positions(), wfnsym_results._SymMat[i].T):
+            output.write(' {:10.7f} {:10.7f} {:10.7f}\n'.format(array[0], array[1], array[2]))
+
+    output.write('\nIdeal Group Table\n')
+    output.write('   -------------------------------------------------------------------------------'
+                 '------------------------------------------------------------------------\n')
+    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.get_SymLab()]))
+    output.write('\n')
+    output.write('   -------------------------------------------------------------------------------'
+                 '------------------------------------------------------------------------\n')
+    for i, line in enumerate(wfnsym_results.get_ideal_gt()):
+        output.write('{:4}'.format(wfnsym_results.get_IRLab()[i]) + '  '.join(['{:7.3f}'.format(s) for s in line]))
+        output.write('\n')
+    output.write('   -------------------------------------------------------------------------------'
+                 '------------------------------------------------------------------------\n')
+
+    output.write('\nAlpha MOs: Symmetry Overlap Expectation Values\n')
+    output.write('   -------------------------------------------------------------------------------'
+                 '------------------------------------------------------------------------\n')
+    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.get_SymLab()]))
+    output.write('\n')
+    output.write('   -------------------------------------------------------------------------------'
+                 '------------------------------------------------------------------------\n')
+    for i, line in enumerate(wfnsym_results.get_mo_SOEVs_a()):
+        output.write('{:4d}'.format(i + 1) + '  '.join(['{:7.3f}'.format(s) for s in line]))
+        output.write('\n')
+
+    output.write('\nBeta MOs: Symmetry Overlap Expectation Values\n')
+    output.write('   -------------------------------------------------------------------------------'
+                 '------------------------------------------------------------------------\n')
+    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.get_SymLab()]))
+    output.write('\n')
+    output.write('   -------------------------------------------------------------------------------'
+                 '------------------------------------------------------------------------\n')
+    for i, line in enumerate(wfnsym_results.get_mo_SOEVs_b()):
+        output.write('{:4d}'.format(i + 1) + '  '.join(['{:7.3f}'.format(s) for s in line]))
+        output.write('\n')
+
+    output.write('\nWaveFunction: Symmetry Overlap Expectation Values\n')
+    output.write('   -------------------------------------------------------------------------------'
+                 '------------------------------------------------------------------------\n')
+    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.get_SymLab()]))
+    output.write('\n')
+    output.write('   -------------------------------------------------------------------------------'
+                 '------------------------------------------------------------------------\n')
+    output.write('a-wf' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.get_wf_SOEVs_a()]))
+    output.write('\n')
+    output.write('b-wf' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.get_wf_SOEVs_b()]))
+    output.write('\n')
+    output.write('WFN ' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.get_wf_SOEVs()]))
+    output.write('\n')
+
+    output.write('\nWaveFunction: CSM-like values\n')
+    output.write('   -------------------------------------------------------------------------------'
+                 '------------------------------------------------------------------------\n')
+    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.get_SymLab()]))
+    output.write('\n')
+    output.write('   -------------------------------------------------------------------------------'
+                 '------------------------------------------------------------------------\n')
+    output.write('Grim' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.get_grim_coef()]))
+    output.write('\n')
+    output.write('CSM ' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.get_csm_coef()]))
+    output.write('\n')
+
+    output.write('\nAlpha MOs: Irred. Rep. Decomposition\n')
+    output.write('   ---------------------------------------------\n')
+    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.get_IRLab()]))
+    output.write('\n')
+    output.write('   ---------------------------------------------\n')
+    for i, line in enumerate(wfnsym_results.get_mo_IRd_a()):
+        output.write('{:4d}'.format(i + 1) + '  '.join(['{:7.3f}'.format(s) for s in line]))
+        output.write('\n')
+
+    output.write('\nBeta MOs: Irred. Rep. Decomposition\n')
+    output.write('   ---------------------------------------------\n')
+    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.get_IRLab()]))
+    output.write('\n')
+    output.write('   ---------------------------------------------\n')
+    for i, line in enumerate(wfnsym_results.get_mo_IRd_b()):
+        output.write('{:4d}'.format(i + 1) + '  '.join(['{:7.3f}'.format(s) for s in line]))
+        output.write('\n')
+
+    output.write('\nWaveFunction: Irred. Rep. Decomposition\n')
+    output.write('   ---------------------------------------------\n')
+    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.get_IRLab()]))
+    output.write('\n')
+    output.write('   ---------------------------------------------\n')
+    output.write('a-wf' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.get_wf_IRd_a()]))
+    output.write('\n')
+    output.write('b-wf' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.get_wf_IRd_b()]))
+    output.write('\n')
+    output.write('WFN ' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.get_wf_IRd()]))
+    output.write('\n')
 
 
 def reformat_input(array):

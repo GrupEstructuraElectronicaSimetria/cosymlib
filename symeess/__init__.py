@@ -80,9 +80,11 @@ class Symeess:
             plt.ylabel(shape_label2)
             plt.show()
 
-    def write_wyfsym_measure_2file(self, label, VAxis1, VAxis2, RCread, output_name='symeess_wyfsym'):
-        results = self.get_wyfsym_measure(label, VAxis1, VAxis2, RCread)
-        file_io.write_wyfsym_measure(results, output_name)
+    def write_wnfsym_measure_2file(self, label, VAxis1, VAxis2, RCread, output_name='symeess_wfnsym'):
+        geometry = [molecule.geometry for molecule in self._molecules]
+        wfnsym_results = self.get_wfnsym_measure(label, VAxis1, VAxis2, RCread)
+        file_io.write_wfnsym_measure(label, geometry[0], wfnsym_results, output_name)
+        basis = [molecule.electronic_structure.get_basis for molecule in self._molecules]
 
     def get_shape_measure(self, label, type, central_atom=None):
         """
@@ -132,7 +134,7 @@ class Symeess:
         results = [i for indx, i in enumerate(results) if pathdev_filter[indx] == True]
         return results
 
-    def get_wyfsym_measure(self, label, VAxis1, VAxis2, RCread):
-        results = [molecule.electronic_structure.get_wyfsym_measure(label, VAxis1, VAxis2, RCread)
+    def get_wfnsym_measure(self, label, VAxis1, VAxis2, RCread):
+        results = [molecule.electronic_structure.get_wfnsym_measure(label, VAxis1, VAxis2, RCread)
                    for molecule in self._molecules]
         return results[0]
