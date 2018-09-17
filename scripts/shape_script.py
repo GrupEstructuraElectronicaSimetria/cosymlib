@@ -25,7 +25,7 @@ group_shape.add_argument('-n', action='store', type=str, default=None,
 
 # args = parser.parse_args(['-n', '4'])
 # print(shape.get_structure_references(args.n))
-args = parser.parse_args(['-m', '-label', 'SP-4 T-4',
+args = parser.parse_args(['-m', '-label', 'T-4 SP-4',
                           '-c', '1',
                           # '-o', '../examples/coord',
                           '-input_file' , '../examples/coord.xyz'])
@@ -37,5 +37,6 @@ reference_polyhedra = args.reference_polyhedra.split()
 # Write all posible measures to file
 symeess.write_shape_structure_2file(reference_polyhedra, central_atom=args.c)
 symeess.write_shape_measure_2file(reference_polyhedra, central_atom=args.c)
+quit()
 symeess.write_path_parameters_2file('SP-4', 'T-4' , central_atom=args.c)
 symeess.write_minimum_distortion_path_shape_2file(reference_polyhedra[0], reference_polyhedra[1], central_atom=args.c)

@@ -23,11 +23,9 @@ class Symeess:
         :param output_name: custom name without extension
         :return: shape's measure in the output_name.tab file
         """
-        molecule_name = [molecule.get_name() for molecule in self._molecules]
-        shape = {}
-        for label in shape_label:
-            shape[label] = self.get_shape_measure(label, 'measure', central_atom)
-        shape2file.write_shape_data(shape, shape_label, molecule_name, 'measure', output_name)
+        shape_results_measures = [self.get_shape_measure(label, 'measure', central_atom) for label in shape_label]
+        molecules_name = [molecule.get_name() for molecule in self._molecules]
+        shape2file.write_shape_measure_data(shape_results_measures, molecules_name, shape_label, output_name=output_name)
 
     def write_shape_structure_2file(self, shape_label, central_atom=None, output_name='symeess_shape'):
         """
@@ -38,12 +36,14 @@ class Symeess:
         :param output_name: custom name without extension
         :return: shape's structure in the output_name.out file
         """
-        molecule_name = [molecule.get_name() for molecule in self._molecules]
-        shape = {}
-        for label in shape_label:
-            shape[label] = self.get_shape_measure(label, 'structure', central_atom)
-        shape['symbols'] = [molecule.geometry.get_symbols() for molecule in self._molecules]
-        shape2file.write_shape_data(shape, shape_label, molecule_name, 'structure', output_name)
+        initial_geometry = [molecule.geometry.get_positions() for molecule in self._molecules]
+        shape_results_structures = [self.get_shape_measure(label, 'structure', central_atom) for label in shape_label]
+        molecules_name = [molecule.get_name() for molecule in self._molecules]
+        symbols = [molecule.geometry.get_symbols() for molecule in self._molecules]
+        shape_results_measures = [self.get_shape_measure(label, 'measure', central_atom) for label in shape_label]
+        shape2file.write_shape_structure_data(initial_geometry, shape_results_structures, shape_results_measures,
+                                              symbols, molecules_name, shape_label,
+                                              output_name=output_name)
 
     def write_path_parameters_2file(self, shape_label1, shape_label2, central_atom=None,
                                     maxdev=15, mindev=0, maxgco=101, mingco=0):
@@ -78,9 +78,9 @@ class Symeess:
         :return:
         """
         get_measure = 'get_shape_' + type
-        shape = [getattr(molecule.geometry, get_measure)(label, central_atom=central_atom)
+        shape_data = [getattr(molecule.geometry, get_measure)(label, central_atom=central_atom)
                  for molecule in self._molecules]
-        return shape
+        return shape_data
 
     def get_molecule_path_deviation(self, shape_label1, shape_label2, central_atom=None):
         path_deviation = [molecule.geometry.get_path_deviation(shape_label1, shape_label2, central_atom) for molecule

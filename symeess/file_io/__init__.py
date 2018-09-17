@@ -161,8 +161,10 @@ def read_file_fchk(file_name):
 
 # OUTPUT part
 def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
-    filename = 'results/' + output_name + '.wout'
-    output = open(filename, 'w')
+
+    if not os.path.exists('./results'):
+        os.makedirs('./results')
+    output = open('results/' + output_name + '.wout', 'w')
 
     # Print Outputs
     output.write('MEASURES OF THE SYMMETRY GROUP:   {}\n'.format(label))
