@@ -37,6 +37,5 @@ reference_polyhedra = args.reference_polyhedra.split()
 # Write all posible measures to file
 symeess.write_shape_structure_2file(reference_polyhedra, central_atom=args.c)
 symeess.write_shape_measure_2file(reference_polyhedra, central_atom=args.c)
-quit()
 symeess.write_path_parameters_2file('SP-4', 'T-4' , central_atom=args.c)
 symeess.write_minimum_distortion_path_shape_2file(reference_polyhedra[0], reference_polyhedra[1], central_atom=args.c)
