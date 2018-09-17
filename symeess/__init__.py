@@ -55,7 +55,6 @@ class Symeess:
                                                           maxdev, mindev, mingco, maxgco, names_order,
                                                           output_name='symeess_shape')
 
-
     def write_minimum_distortion_path_shape_2file(self, shape_label1, shape_label2, central_atom=None,
                                                   num_points=50, show=False):
         path = self.get_shape_map(shape_label1, shape_label2, central_atom, num_points)
@@ -120,6 +119,4 @@ class Symeess:
 
     def get_wfnsym_measure(self, label, VAxis1, VAxis2, RCread):
         results = self._molecules.electronic_structure.get_wfnsym_measure(label, VAxis1, VAxis2, RCread)
-        # results = [molecule.electronic_structure.get_wfnsym_measure(label, VAxis1, VAxis2, RCread)
-        #            for molecule in self._molecules]
         return results
