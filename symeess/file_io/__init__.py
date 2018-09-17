@@ -1,76 +1,35 @@
 import os
 import sys
-from symeess.molecule import Molecule
+from itertools import islice
+from symeess.molecule import Molecule, Geometry
 import numpy as np
 
+
 # INPUT part
-def read(input_name, old_input=False):
-    if old_input:
-        return read_old_input(input_name)
-    else:
-        file_name, file_extension = os.path.splitext(input_name)
-        method_name = 'read_file_' + file_extension[1:]
-        possibles = globals().copy()
-        possibles.update(locals())
-        method = possibles.get(method_name)
-        if not method:
-            raise NotImplementedError("Method %s not implemented yet" % method_name)
-        return method(input_name)
+def read_input_file(input_name):
 
+    file_name, file_extension = os.path.splitext(input_name)
+    method_name = 'read_file_' + file_extension[1:]
+    possibles = globals().copy()
+    possibles.update(locals())
+    method = possibles.get(method_name)
+    if not method:
+        raise NotImplementedError("Method %s not implemented" % method_name)
 
-def read_file_fchk(file_name):
-    key_list = ['Charge', 'Multiplicity', 'Number of electrons', 'Atomic numbers', 'Current cartesian coordinates',
-                'Shell type', 'Number of primitives per shell', 'Shell to atom map', 'Primitive exponents',
-                'Contraction coefficients', 'P(S=P) Contraction coefficients',
-                'Alpha MO coefficients', 'Beta MO coefficients']
-    input_molecule = [[] for _ in range(len(key_list))]
-    read = False
-    with open(file_name, mode='r') as lines:
-        name = lines.readline()
-        line = lines.readline().split()
-        if 'R' in line[1]:
-            del key_list[-1]
-
-        n = 0
-        options = True
-        for line in lines:
-            if read:
-                try:
-                    float(line.split()[0])
-                    input_molecule[n].append(line.split())
-
-                except ValueError:
-                    input_molecule[n] = reformat_input(input_molecule[n])
-                    read = False
-
-
-            for idn, key in enumerate(key_list):
-                if key in line:
-                    if n == len(key_list) - 1:
-                        break
-                    if options and idn != 3:
-                        input_molecule[idn].append(int(line.split()[-1]))
-                        n = idn
-                        break
-                    else:
-                        options = False
-                    if n == idn:
-                        n += 1
-                    else:
-                        n = idn
-                    read = True
-                    break
-        return [Molecule(structure_data=input_molecule[3:5],
-                         electronic_structure=input_molecule[:3]+input_molecule[5:],
-                         name=name)]
+    return method(input_name)
 
 
 def read_file_xyz(file_name):
+    """
+    Reads a XYZ file and returns the geometry of all structures in it
+    :param file_name: file name
+    :return: list of Geometry objects
+    """
     input_molecule = [[], []]
     molecules = []
     with open(file_name, mode='r') as lines:
-        name = lines.readline().split()[0]
         lines.readline()
+        name = lines.readline().split()[0]
         for line in lines:
             if '$' in line or '#' in line:
                 pass
@@ -83,13 +42,17 @@ def read_file_xyz(file_name):
                     if input_molecule:
                         molecules.append(Molecule(input_molecule, name=name))
                     input_molecule = [[], []]
-                    lines.readline()
-                    name = line.split()[0]
+                    name = lines.readline().split()[0]
         molecules.append(Molecule(input_molecule, name=name))
     return molecules
 
 
 def read_file_cor(file_name):
+    """
+    Reads a Conquest formatted file and the geometry of all structures in it
+    :param file_name: file name
+    :return: list of Geometry objects
+    """
     input_molecule = [[], []]
     molecules = []
     with open(file_name, mode='r') as lines:
@@ -149,6 +112,53 @@ def read_old_input(file_name):
     return [molecules, options]
 
 
+def read_file_fchk(file_name):
+    key_list = ['Charge', 'Multiplicity', 'Number of electrons', 'Atomic numbers', 'Current cartesian coordinates',
+                'Shell type', 'Number of primitives per shell', 'Shell to atom map', 'Primitive exponents',
+                'Contraction coefficients', 'P(S=P) Contraction coefficients',
+                'Alpha MO coefficients', 'Beta MO coefficients']
+    input_molecule = [[] for _ in range(len(key_list))]
+    read = False
+    with open(file_name, mode='r') as lines:
+        name = lines.readline()
+        line = lines.readline().split()
+        if 'R' in line[1]:
+            del key_list[-1]
+
+        n = 0
+        options = True
+        for line in lines:
+            if read:
+                try:
+                    float(line.split()[0])
+                    input_molecule[n].append(line.split())
+
+                except ValueError:
+                    input_molecule[n] = reformat_input(input_molecule[n])
+                    read = False
+
+
+            for idn, key in enumerate(key_list):
+                if key in line:
+                    if n == len(key_list) - 1:
+                        break
+                    if options and idn != 3:
+                        input_molecule[idn].append(int(line.split()[-1]))
+                        n = idn
+                        break
+                    else:
+                        options = False
+                    if n == idn:
+                        n += 1
+                    else:
+                        n = idn
+                    read = True
+                    break
+        return Molecule(structure=input_molecule[3:5],
+                        ee=input_molecule[:3] + input_molecule[5:],
+                        name=name)
+
+
 # OUTPUT part
 def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
     filename = 'results/' + output_name + '.wout'
@@ -177,12 +187,12 @@ def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
     output.write('\nIdeal Group Table\n')
     output.write('   -------------------------------------------------------------------------------'
                  '------------------------------------------------------------------------\n')
-    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.get_SymLab()]))
+    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.SymLab]))
     output.write('\n')
     output.write('   -------------------------------------------------------------------------------'
                  '------------------------------------------------------------------------\n')
-    for i, line in enumerate(wfnsym_results.get_ideal_gt()):
-        output.write('{:4}'.format(wfnsym_results.get_IRLab()[i]) + '  '.join(['{:7.3f}'.format(s) for s in line]))
+    for i, line in enumerate(wfnsym_results.ideal_gt):
+        output.write('{:4}'.format(wfnsym_results.IRLab[i]) + '  '.join(['{:7.3f}'.format(s) for s in line]))
         output.write('\n')
     output.write('   -------------------------------------------------------------------------------'
                  '------------------------------------------------------------------------\n')
@@ -190,79 +200,80 @@ def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
     output.write('\nAlpha MOs: Symmetry Overlap Expectation Values\n')
     output.write('   -------------------------------------------------------------------------------'
                  '------------------------------------------------------------------------\n')
-    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.get_SymLab()]))
+    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.SymLab]))
     output.write('\n')
     output.write('   -------------------------------------------------------------------------------'
                  '------------------------------------------------------------------------\n')
-    for i, line in enumerate(wfnsym_results.get_mo_SOEVs_a()):
+
+    for i, line in enumerate(wfnsym_results.mo_SOEVs_a):
         output.write('{:4d}'.format(i + 1) + '  '.join(['{:7.3f}'.format(s) for s in line]))
         output.write('\n')
 
     output.write('\nBeta MOs: Symmetry Overlap Expectation Values\n')
     output.write('   -------------------------------------------------------------------------------'
                  '------------------------------------------------------------------------\n')
-    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.get_SymLab()]))
+    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.SymLab]))
     output.write('\n')
     output.write('   -------------------------------------------------------------------------------'
                  '------------------------------------------------------------------------\n')
-    for i, line in enumerate(wfnsym_results.get_mo_SOEVs_b()):
+    for i, line in enumerate(wfnsym_results.mo_SOEVs_b):
         output.write('{:4d}'.format(i + 1) + '  '.join(['{:7.3f}'.format(s) for s in line]))
         output.write('\n')
 
     output.write('\nWaveFunction: Symmetry Overlap Expectation Values\n')
     output.write('   -------------------------------------------------------------------------------'
                  '------------------------------------------------------------------------\n')
-    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.get_SymLab()]))
+    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.SymLab]))
     output.write('\n')
     output.write('   -------------------------------------------------------------------------------'
                  '------------------------------------------------------------------------\n')
-    output.write('a-wf' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.get_wf_SOEVs_a()]))
+    output.write('a-wf' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.wf_SOEVs_a]))
     output.write('\n')
-    output.write('b-wf' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.get_wf_SOEVs_b()]))
+    output.write('b-wf' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.wf_SOEVs_b]))
     output.write('\n')
-    output.write('WFN ' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.get_wf_SOEVs()]))
+    output.write('WFN ' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.wf_SOEVs]))
     output.write('\n')
 
     output.write('\nWaveFunction: CSM-like values\n')
     output.write('   -------------------------------------------------------------------------------'
                  '------------------------------------------------------------------------\n')
-    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.get_SymLab()]))
+    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.SymLab]))
     output.write('\n')
     output.write('   -------------------------------------------------------------------------------'
                  '------------------------------------------------------------------------\n')
-    output.write('Grim' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.get_grim_coef()]))
+    output.write('Grim' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.grim_coef]))
     output.write('\n')
-    output.write('CSM ' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.get_csm_coef()]))
+    output.write('CSM ' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.csm_coef]))
     output.write('\n')
 
     output.write('\nAlpha MOs: Irred. Rep. Decomposition\n')
     output.write('   ---------------------------------------------\n')
-    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.get_IRLab()]))
+    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.IRLab]))
     output.write('\n')
     output.write('   ---------------------------------------------\n')
-    for i, line in enumerate(wfnsym_results.get_mo_IRd_a()):
+    for i, line in enumerate(wfnsym_results.mo_IRd_a):
         output.write('{:4d}'.format(i + 1) + '  '.join(['{:7.3f}'.format(s) for s in line]))
         output.write('\n')
 
     output.write('\nBeta MOs: Irred. Rep. Decomposition\n')
     output.write('   ---------------------------------------------\n')
-    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.get_IRLab()]))
+    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.IRLab]))
     output.write('\n')
     output.write('   ---------------------------------------------\n')
-    for i, line in enumerate(wfnsym_results.get_mo_IRd_b()):
+    for i, line in enumerate(wfnsym_results.mo_IRd_b):
         output.write('{:4d}'.format(i + 1) + '  '.join(['{:7.3f}'.format(s) for s in line]))
         output.write('\n')
 
     output.write('\nWaveFunction: Irred. Rep. Decomposition\n')
     output.write('   ---------------------------------------------\n')
-    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.get_IRLab()]))
+    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.IRLab]))
     output.write('\n')
     output.write('   ---------------------------------------------\n')
-    output.write('a-wf' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.get_wf_IRd_a()]))
+    output.write('a-wf' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.wf_IRd_a]))
     output.write('\n')
-    output.write('b-wf' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.get_wf_IRd_b()]))
+    output.write('b-wf' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.wf_IRd_b]))
     output.write('\n')
-    output.write('WFN ' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.get_wf_IRd()]))
+    output.write('WFN ' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.wf_IRd]))
     output.write('\n')
 
 

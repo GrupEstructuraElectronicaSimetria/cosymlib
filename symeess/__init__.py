@@ -2,66 +2,52 @@ import symeess.file_io as file_io
 from symeess.file_io import shape2file
 from symeess.shape import maps
 import matplotlib.pyplot as plt
-__version__ = 0.1
+__version__ = 0.6
 
 
 class Symeess:
     """
     Main class of symeess program that perform all the jobs
-
     """
 
     def __init__(self, input_data):
 
         self._molecules = input_data
 
-
     def write_shape_measure_2file(self, shape_label, central_atom=None, output_name='symeess_shape'):
         """
         Method that prints to file shape's measure
-
         :param shape_label: reference polyhedra label which user will compare with his polyhedra.
                             Reference labels can be found in [#f1]_
         :param central_atom: position of the central atom in molecule if exist
         :param output_name: custom name without extension
         :return: shape's measure in the output_name.tab file
         """
-        names_order = [molecule.get_name() for molecule in self._molecules]
+        molecule_name = [molecule.get_name() for molecule in self._molecules]
         shape = {}
-        for label in shape_label.split():
+        for label in shape_label:
             shape[label] = self.get_shape_measure(label, 'measure', central_atom)
-        shape2file.write_shape_data(shape, shape_label.split(), names_order, 'measure', output_name)
+        shape2file.write_shape_data(shape, shape_label, molecule_name, 'measure', output_name)
 
     def write_shape_structure_2file(self, shape_label, central_atom=None, output_name='symeess_shape'):
         """
         Method that prints to file shape's structure
-
         :param shape_label: reference polyhedra label which user will compare with his polyhedra.
                             Reference labels can be found in [#f1]_
         :param central_atom: position of the central atom in molecule if exist
         :param output_name: custom name without extension
         :return: shape's structure in the output_name.out file
         """
-        names_order = [molecule.get_name() for molecule in self._molecules]
+        molecule_name = [molecule.get_name() for molecule in self._molecules]
         shape = {}
-        for label in shape_label.split():
+        for label in shape_label:
             shape[label] = self.get_shape_measure(label, 'structure', central_atom)
         shape['symbols'] = [molecule.geometry.get_symbols() for molecule in self._molecules]
-        shape2file.write_shape_data(shape, shape_label.split(), names_order, 'structure', output_name)
+        shape2file.write_shape_data(shape, shape_label, molecule_name, 'structure', output_name)
 
     def write_path_parameters_2file(self, shape_label1, shape_label2, central_atom=None,
                                     maxdev=15, mindev=0, maxgco=101, mingco=0):
-        """
 
-        :param shape_label1:
-        :param shape_label2:
-        :param central_atom:
-        :param maxdev:
-        :param mindev:
-        :param maxgco:
-        :param mingco:
-        :return:
-        """
         shape, devpath, GenCoord = self.get_path_parameters(shape_label1, shape_label2, central_atom=central_atom,
                                                             maxdev=maxdev, mindev=mindev, maxgco=maxgco, mingco=mingco)
         names_order = [molecule.get_name() for molecule in self._molecules]
@@ -81,14 +67,11 @@ class Symeess:
             plt.show()
 
     def write_wnfsym_measure_2file(self, label, VAxis1, VAxis2, RCread, output_name='symeess_wfnsym'):
-        geometry = [molecule.geometry for molecule in self._molecules]
         wfnsym_results = self.get_wfnsym_measure(label, VAxis1, VAxis2, RCread)
-        file_io.write_wfnsym_measure(label, geometry[0], wfnsym_results, output_name)
-        basis = [molecule.electronic_structure.get_basis for molecule in self._molecules]
+        file_io.write_wfnsym_measure(label, self._molecules.geometry, wfnsym_results, output_name)
 
     def get_shape_measure(self, label, type, central_atom=None):
         """
-
         :param label: reference polyhedra label which user will compare with his polyhedra.
                       Reference labels can be found in [#f1]_
         :param type: type of measure that the user is going to use
@@ -116,6 +99,7 @@ class Symeess:
 
     def get_path_parameters(self, shape_label1, shape_label2, central_atom=None, maxdev=15, mindev=0,
                             maxgco=101, mingco=0):
+
         shape = {}
         shape[shape_label1] = self.get_shape_measure(shape_label1, 'measure', central_atom)
         shape[shape_label2] = self.get_shape_measure(shape_label2, 'measure', central_atom)
@@ -135,6 +119,7 @@ class Symeess:
         return results
 
     def get_wfnsym_measure(self, label, VAxis1, VAxis2, RCread):
-        results = [molecule.electronic_structure.get_wfnsym_measure(label, VAxis1, VAxis2, RCread)
-                   for molecule in self._molecules]
-        return results[0]
+        results = self._molecules.electronic_structure.get_wfnsym_measure(label, VAxis1, VAxis2, RCread)
+        # results = [molecule.electronic_structure.get_wfnsym_measure(label, VAxis1, VAxis2, RCread)
+        #            for molecule in self._molecules]
+        return results

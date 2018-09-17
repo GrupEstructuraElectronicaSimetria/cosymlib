@@ -1,11 +1,18 @@
 from symeess import shape
-
+import numpy as np
 
 class Geometry:
-    def __init__(self, structure=None):
+    def __init__(self, structure=None, name=None):
 
+
+        self._shape_label = 0
+        self._central_atom = None
+        self._shape_measures = {}
+        self._path_deviation = {}
+        self._GenCoord = {}
         self._symbols = []
         self._positions = []
+        self._name = name
 
         for element in structure[0]:
             try:
@@ -27,37 +34,35 @@ class Geometry:
             for element in structure[1]:
                 self._positions.append([float(j) for j in element])
 
-        self._n_atoms = None
-        self._shape_label = 0
-        self._central_atom = None
-        self._shape_measures = {}
-        self._path_deviation = {}
-        self._GenCoord = {}
+        self._positions = np.array(self._positions)
+        self._shape = shape.Shape(self._positions)
+
+    def get_name(self):
+        return self._name
+
+    def set_name(self, name):
+        self._name = name
 
     def get_positions(self):
         return self._positions
 
     def get_n_atoms(self):
-        self._n_atoms = len(self._positions)
-        return self._n_atoms
+        return len(self.get_positions())
 
     def get_symbols(self):
         return self._symbols
 
     def get_shape_measure(self, shape_label, central_atom=None):
-        if shape_label not in self._shape_measures:
-            self._shape_measures[shape_label] = {}
-        if 'measure' not in self._shape_measures[shape_label]:
-            self._shape_measures[shape_label]['measure'] = shape.get_measure(self, shape_label, central_atom)
-        return self._shape_measures[shape_label]['measure']
+        return self._shape.measure(shape_label,
+                                   central_atom=central_atom)
 
     def get_shape_structure(self, shape_label, central_atom=None):
-        if shape_label not in self._shape_measures:
-            self._shape_measures[shape_label] = {}
-        if 'structure' not in self._shape_measures[shape_label]:
-            self._shape_measures[shape_label]['measure'], self._shape_measures[shape_label]['structure'] = \
-                shape.get_structure(self, shape_label, central_atom)
-        return self._shape_measures[shape_label]['structure']
+        return self._shape.structure(shape_label,
+                                     central_atom=central_atom)
+
+    # def get_test_structure(self, shape_label, central_atom=None):
+    #     return self._shape.test_structure(shape_label,
+    #                                       central_atom=central_atom)
 
     def get_path_deviation(self, shape_label1, shape_label2, central_atom):
         if shape_label1+'_'+shape_label2 not in self._path_deviation:
@@ -92,7 +97,6 @@ class Geometry:
 def chunks(l, n):
     for i in range(0, len(l), n):
         yield l[i:i+n]
-
 
 def get_element_symbol(atomic_number):
     for key, Z in symbol_map.items():
