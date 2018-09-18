@@ -20,10 +20,10 @@ class Geometry:
                 self._symbols.append(get_element_symbol(int(element)))
             except (ValueError, TypeError):
                 try:
-                    int(element[0][1])
-                    self._symbols.append(element[0][0].capitalize())
+                    int(element[-1])
+                    self._symbols.append(element[:-1].capitalize())
                 except (ValueError, TypeError, IndexError):
-                    self._symbols.append(element[0][:2].capitalize())
+                    self._symbols.append(element.capitalize())
 
         try:
             float(structure[1][0])

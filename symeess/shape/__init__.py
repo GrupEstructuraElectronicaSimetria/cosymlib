@@ -92,14 +92,14 @@ def get_structure_references(vertices):
 
 # Function description
 def order_coordinates(coordinates, c_atom):
-        c_atom = c_atom - 1
-        new_coordinates = []
-        for idx, array in enumerate(coordinates):
-            if idx == c_atom:
-                new_coordinates.insert(0, array)
-            else:
-                new_coordinates.append(array)
-        return new_coordinates
+    c_atom = c_atom - 1
+    new_coordinates = []
+    for idx, array in enumerate(coordinates):
+        if idx == c_atom:
+            new_coordinates.insert(0, array)
+        else:
+            new_coordinates.append(array)
+    return new_coordinates
 
 
 def get_path_deviation(Sx, Sy, shape_label1, shape_label2):

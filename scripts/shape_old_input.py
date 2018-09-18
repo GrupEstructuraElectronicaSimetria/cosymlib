@@ -29,7 +29,7 @@ args = parser.parse_args(['-m', '-label', 'SP-4 T-4',
 
 molecules = file_io.read_old_input(args.input_file)
 molecules, options = molecules
-central_atom = options[0][1]
+central_atom = int(options[0][1])
 if central_atom == 0:
     central_atom = None
 reference_polyhedra = ''
@@ -39,7 +39,7 @@ reference_polyhedra = reference_polyhedra.split()
 
 symeess = Symeess(molecules)
 
-symeess.write_shape_structure_2file(reference_polyhedra, central_atom=args.c)
-symeess.write_shape_measure_2file(reference_polyhedra, central_atom=args.c)
-symeess.write_path_parameters_2file('SP-4', 'T-4' , central_atom=args.c)
-symeess.write_minimum_distortion_path_shape_2file('SP-4', 'T-4', central_atom=args.c, num_points=50)
+symeess.write_shape_structure_2file(reference_polyhedra, central_atom=central_atom)
+symeess.write_shape_measure_2file(reference_polyhedra, central_atom=central_atom)
+symeess.write_path_parameters_2file('SP-4', 'T-4' , central_atom=central_atom)
+symeess.write_minimum_distortion_path_shape_2file('SP-4', 'T-4', central_atom=central_atom, num_points=50)

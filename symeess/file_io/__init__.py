@@ -1,7 +1,6 @@
 import os
 import sys
-from itertools import islice
-from symeess.molecule import Molecule, Geometry
+from symeess.molecule import Molecule
 import numpy as np
 
 
@@ -75,6 +74,11 @@ def read_file_cor(file_name):
 
 
 def read_old_input(file_name):
+    """
+    Reads the old Shape's program input
+    :param file_name: file name
+    :return: list of Geometry objects and
+    """
     input_molecule = [[], []]
     molecules = []
     options = []
