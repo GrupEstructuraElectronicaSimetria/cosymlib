@@ -5,7 +5,7 @@ from symeess import Symeess, file_io, shape
 parser = argparse.ArgumentParser(description='Symeess')
 
 parser.add_argument('-input_file', type=str, help='input file name(+extension)')
-# parser.add_argument('-o', '-output', dest='output_name', default=None, help='output_name')
+parser.add_argument('-o', '-output', dest='output_name', default=None, help='output_name')
 
 # Shape input flags
 group_shape = parser.add_argument_group('Shape', 'Shape_options')
@@ -23,10 +23,23 @@ group_shape.add_argument('-label', dest='reference_polyhedra', action='store',  
 group_shape.add_argument('-n', action='store', type=str, default=None,
                          help='Print all the possible reference structures of n vertices')
 
-args = parser.parse_args(['-input_file' , '../examples/CpTiCl3_cart.fchk'])
+args = parser.parse_args(['-m', '-label', 'SP-4 T-4',
+                          '-c', '1',
+                          '-input_file' , '../examples/coord.dat'])
 
-# args = parser.parse_args()
-molecules = file_io.read(args.input_file, args.old_input)
+molecules = file_io.read_old_input(args.input_file)
+molecules, options = molecules
+central_atom = int(options[0][1])
+if central_atom == 0:
+    central_atom = None
+reference_polyhedra = ''
+for reference in options[1]:
+    reference_polyhedra += shape.get_shape_label(int(reference), int(options[0][0]))+' '
+reference_polyhedra = reference_polyhedra.split()
+
 symeess = Symeess(molecules)
-symeess.write_wyfsym_measure_2file('Td', [-2.027247, 0.000133, -0.898469], [ 0.40757934076903307, 1.746331, -0.919377],
-                                   [0.002440, -0.000122, 0.017307])
+
+symeess.write_shape_structure_2file(reference_polyhedra, central_atom=central_atom)
+symeess.write_shape_measure_2file(reference_polyhedra, central_atom=central_atom)
+symeess.write_path_parameters_2file('SP-4', 'T-4' , central_atom=central_atom)
+symeess.write_minimum_distortion_path_shape_2file('SP-4', 'T-4', central_atom=central_atom, num_points=50)

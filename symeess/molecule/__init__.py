@@ -5,15 +5,16 @@ from symeess.molecule.electronic_structure import ElectronicStructure
 
 class Molecule:
 
-    def __init__(self, structure_data, electronic_structure=None, name=None):
-        if not structure_data:
+    def __init__(self, structure=None, ee=None, name=None):
+
+        if not structure:
             print('No molecule found in the input file, check out for possible errors')
             quit()
-        self._geometry = Geometry(structure_data)
+        self._geometry = Geometry(structure)
         self._name = None
         self.set_name(name)
-        if electronic_structure is not None:
-            self._electronic_structure = ElectronicStructure(electronic_structure, self.geometry)
+        if ee is not None:
+            self._electronic_structure = ElectronicStructure(ee, self.geometry)
 
     def set_name(self, name):
         if name.strip() != '':

@@ -1,65 +1,105 @@
-from symeess.shape import shp
-import yaml
-import numpy as np
 import os
+import yaml
+from symeess.shape import shp
+import numpy as np
+import hashlib
 
 
-def get_measure(geometry, shape_label, central_atom=None):
-    """
-    Compute the shape measure of the given geometry
+class Shape:
+    def __init__(self, geometry):
 
-    :param geometry: this object contains information about the positions of the molecule as well as the information
-                     needed to carry out the shape's module
-    :return: difference between user's structure and the one's that is compared. While 0 is no difference and 100
-             is completly different
-    """
-    if central_atom is not None:
-        coordinates = _order_coordinates(geometry.get_positions(), central_atom)
-        code = get_ideal_structure(shape_label, geometry.get_n_atoms() - 1)
-        c_atom = True
-    else:
-        coordinates = geometry.get_positions()
-        code = get_ideal_structure(shape_label, geometry.get_n_atoms())
+        # Allow geometry or molecule to be imported instead of crude Cartesian coordinates
+        try:
+            self._coordinates = geometry.get_positions()
+        except AttributeError:
+            try:
+                self._coordinates = geometry.geometry.get_positions()
+            except AttributeError:
+                self._coordinates = geometry
+
+        self._coordinates = np.ascontiguousarray(self._coordinates)
+
+        self._measures = {}
+        self._structures = {}
+        self._test_structures = {}
+
+    # Function description
+    def measure(self, label, central_atom=None):
         c_atom = False
-    measure_number = shp.cshm(coordinates, code, c_atom)
-    return measure_number
+        n_atoms = len(self._coordinates)
+        if central_atom is not None:
+            coordinates = order_coordinates(self._coordinates, central_atom)
+            c_atom = True
+            n_atoms -= 1
+        else:
+            coordinates = self._coordinates
+        code = get_ideal_structure(label, n_atoms)
 
+        hash = hashlib.md5('{}{}{}'.format(coordinates, code, c_atom).encode()).hexdigest()
+        if hash not in self._measures:
+            self._measures[hash] = shp.cshm(coordinates, code, c_atom)
 
-def get_structure(geometry, shape_label, central_atom=None):
-    """
-    Calculate the ideal structure of the given geometry from a reference structure
+        return self._measures[hash]
 
-    :param geometry: same as before
-    :return: ideal structure if user's structure had the compared structure's shape
-    """
-    if central_atom is not None:
-        coordinates = _order_coordinates(geometry.get_positions(), central_atom)
-        code = get_ideal_structure(shape_label, geometry.get_n_atoms() - 1)
-        c_atom = True
-    else:
-        coordinates = geometry.get_positions()
-        code = get_ideal_structure(shape_label, geometry.get_n_atoms())
+    # Function description
+    def structure(self, label, central_atom=None):
         c_atom = False
-    measure_structure = shp.poly(coordinates, code, c_atom)
-    return measure_structure[1], measure_structure[0]
+        n_atoms = len(self._coordinates)
+        if central_atom is not None:
+            coordinates = order_coordinates(self._coordinates, central_atom)
+            c_atom = True
+            n_atoms -= 1
+        else:
+            coordinates = self._coordinates
+        code = get_ideal_structure(label, n_atoms)
+
+        hash = hashlib.md5('{}{}{}'.format(coordinates, code, c_atom).encode()).hexdigest()
+        if hash not in self._structures:
+            self._structures[hash], self._measures[hash] = shp.poly(coordinates, code, c_atom)
+
+        return self._structures[hash]
 
 
-def get_test_structure(shape_label, central_atom):
-    file_path = os.path.dirname(os.path.abspath(__file__))+'/ideal_structures.yaml'
+# Function description
+def get_test_structure(label, central_atom=None):
+    file_path = os.path.dirname(os.path.abspath(__file__)) + '/ideal_structures.yaml'
     with open(file_path, 'r') as stream:
         ideal_structures = yaml.load(stream)
     if central_atom is None:
-        ideal_structures[shape_label].pop(0)
-    measure_structure = np.array(ideal_structures[shape_label])
+        ideal_structures[label].pop(0)
+    measure_structure = np.array(ideal_structures[label])
     return measure_structure
 
 
+# Function description
 def get_ideal_structure(symbol, n_atoms):
     n_vertices = str(n_atoms)+' Vertices'
     for structure in shape_structure_references[n_vertices]:
         if structure[0] == symbol:
             return structure[1]
-    raise NameError('Wrong ideal structure. N vertices != N atoms')
+    raise NameError('Reference structure does not exists. '
+                    'Available references: {}'.format(get_structure_references(n_atoms)))
+
+
+# Function description
+def get_structure_references(vertices):
+    print('Available reference structure with {} Vertices'.format(vertices))
+    references_list = []
+    for ref in shape_structure_references['{} Vertices'.format(vertices)]:
+        references_list.append(ref[0])
+    return references_list
+
+
+# Function description
+def order_coordinates(coordinates, c_atom):
+    c_atom = c_atom - 1
+    new_coordinates = []
+    for idx, array in enumerate(coordinates):
+        if idx == c_atom:
+            new_coordinates.insert(0, array)
+        else:
+            new_coordinates.append(array)
+    return new_coordinates
 
 
 def get_path_deviation(Sx, Sy, shape_label1, shape_label2):
@@ -73,21 +113,6 @@ def get_generalized_coordinate(Sq, shape_label1, shape_label2):
     theta = _get_symmetry_angle(shape_label1, shape_label2)
     GenCoord = round(100*np.arcsin(np.sqrt(Sq)/10)/np.radians(theta), 1)
     return GenCoord
-
-
-def _order_coordinates(coordinates, c_atom):
-        c_atom = c_atom - 1
-        new_coordinates = []
-        for idx, array in enumerate(coordinates):
-            if idx == c_atom:
-                new_coordinates.insert(0, array)
-            else:
-                new_coordinates.append(array)
-        return new_coordinates
-
-
-def _get_shape_references(number_vertices):
-    return shape_structure_references[number_vertices+' Vertices']
 
 
 def _get_symmetry_angle(shape_label1, shape_label2):
