@@ -1,6 +1,6 @@
 import os
 import sys
-from symeess.molecule import Molecule
+from symeess.molecule import Molecule, Geometry
 import numpy as np
 
 
@@ -18,14 +18,14 @@ def read_input_file(input_name):
     return method(input_name)
 
 
-def read_file_xyz(file_name):
+def read_geometry_from_xyz_file(file_name):
     """
     Reads a XYZ file and returns the geometry of all structures in it
     :param file_name: file name
     :return: list of Geometry objects
     """
     input_molecule = [[], []]
-    molecules = []
+    structures = []
     with open(file_name, mode='r') as lines:
         lines.readline()
         name = lines.readline().split()[0]
@@ -39,21 +39,21 @@ def read_file_xyz(file_name):
                     input_molecule[1].append(line.split()[1:])
                 except (ValueError, IndexError):
                     if input_molecule:
-                        molecules.append(Molecule(input_molecule, name=name))
+                        structures.append(Geometry(input_molecule, name=name))
                     input_molecule = [[], []]
                     name = lines.readline().split()[0]
-        molecules.append(Molecule(input_molecule, name=name))
-    return molecules
+        structures.append(Geometry(input_molecule, name=name))
+    return structures
 
 
-def read_file_cor(file_name):
+def read_geometry_from_cor_file(file_name):
     """
     Reads a Conquest formatted file and the geometry of all structures in it
     :param file_name: file name
     :return: list of Geometry objects
     """
     input_molecule = [[], []]
-    molecules = []
+    structures = []
     with open(file_name, mode='r') as lines:
         name = lines.readline().split()[0]
         for line in lines:
@@ -66,11 +66,11 @@ def read_file_cor(file_name):
                     input_molecule[1].append(line.split()[1:-1])
                 except (ValueError, IndexError):
                     if input_molecule:
-                        molecules.append(Molecule(input_molecule, name=name))
+                        structures.append(Geometry(input_molecule, name=name))
                     input_molecule = [[], []]
                     name = line.split()[0]
-        molecules.append(Molecule(input_molecule, name=name))
-    return molecules
+        structures.append(Geometry(input_molecule, name=name))
+    return structures
 
 
 def read_old_input(file_name):

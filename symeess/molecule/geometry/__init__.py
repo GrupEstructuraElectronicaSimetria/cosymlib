@@ -1,9 +1,9 @@
 from symeess import shape
 import numpy as np
 
+
 class Geometry:
     def __init__(self, structure=None, name=None):
-
 
         self._shape_label = 0
         self._central_atom = None
