@@ -1,6 +1,6 @@
 import os
 import sys
-from symeess.molecule import Molecule
+from symeess.molecule import Molecule, Geometry
 import numpy as np
 
 
@@ -39,7 +39,7 @@ def read_file_xyz(file_name):
                     input_molecule[1].append(line.split()[1:])
                 except (ValueError, IndexError):
                     if input_molecule:
-                        molecules.append(Molecule(input_molecule, name=name))
+                        molecules.append(Geometry(input_molecule, name=name))
                     input_molecule = [[], []]
                     name = lines.readline().split()[0]
         molecules.append(Molecule(input_molecule, name=name))
@@ -66,7 +66,7 @@ def read_file_cor(file_name):
                     input_molecule[1].append(line.split()[1:-1])
                 except (ValueError, IndexError):
                     if input_molecule:
-                        molecules.append(Molecule(input_molecule, name=name))
+                        molecules.append(Geometry(input_molecule, name=name))
                     input_molecule = [[], []]
                     name = line.split()[0]
         molecules.append(Molecule(input_molecule, name=name))
@@ -89,6 +89,7 @@ def read_old_input(file_name):
                 pass
             else:
                 options.append(line)
+
         n_atoms = int(options[0][0])
         if int(options[0][1]) != 0:
             n_atoms += 1
@@ -111,7 +112,7 @@ def read_old_input(file_name):
                     else:
                         sys.exit('Wrong input format')
             if input_molecule[0]:
-                molecules.append(Molecule(input_molecule, name=name))
+                molecules.append(Geometry(input_molecule, name=name))
                 input_molecule = [[], []]
     return [molecules, options]
 
@@ -161,6 +162,21 @@ def read_file_fchk(file_name):
         return Molecule(structure=input_molecule[3:5],
                         ee=input_molecule[:3] + input_molecule[5:],
                         name=name)
+
+
+def read_ref_structure(file_name):
+    input_molecule = []
+    with open(file_name, mode='r') as lines:
+        for line in lines:
+            if '$' in line or '#' in line:
+                pass
+            else:
+                try:
+                    float(line.split()[0])
+                    input_molecule.append([float(x) for x in line.split()])
+                except (ValueError, IndexError):
+                    pass
+    return np.array(input_molecule)
 
 
 # OUTPUT part

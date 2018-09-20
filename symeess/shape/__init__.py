@@ -31,12 +31,17 @@ class Shape:
             c_atom = True
         else:
             coordinates = self._coordinates
-        id_str = get_test_structure(label, central_atom, normalize=True)
-        id_str = _order_coordinates(id_str, 1)
+        if isinstance(label, str):
+            reference_structure = get_test_structure(label, central_atom)
+            reference_structure = _order_coordinates(reference_structure, 1)
+        else:
+            reference_structure = np.array(label)
+        # print(reference_structure)
+        # quit()
 
-        hash = hashlib.md5('{}{}{}'.format(coordinates, c_atom, id_str).encode()).hexdigest()
+        hash = hashlib.md5('{}{}{}'.format(coordinates, c_atom, reference_structure).encode()).hexdigest()
         if hash not in self._measures:
-            self._measures[hash] = shp.cshm(coordinates, c_atom, id_str)
+            self._measures[hash] = shp.cshm(coordinates, c_atom, reference_structure)
 
         return self._measures[hash]
 
@@ -48,29 +53,24 @@ class Shape:
             c_atom = True
         else:
             coordinates = self._coordinates
-        # code = get_ideal_structure(label, n_atoms)
-        id_str = get_test_structure(label, central_atom, normalize=True)
-        id_str = _order_coordinates(id_str, 1)
+        reference_structure = get_test_structure(label, central_atom)
+        reference_structure = _order_coordinates(reference_structure, 1)
 
-        hash = hashlib.md5('{}{}{}'.format(coordinates, c_atom, id_str).encode()).hexdigest()
+        hash = hashlib.md5('{}{}{}'.format(coordinates, c_atom, reference_structure).encode()).hexdigest()
         if hash not in self._structures:
-            self._structures[hash], self._measures[hash] = shp.poly(coordinates, c_atom, id_str)
+            self._structures[hash], self._measures[hash] = shp.poly(coordinates, c_atom, reference_structure)
 
         return self._structures[hash]
 
 
 # Function description
-def get_test_structure(label, central_atom=None, normalize=False):
+def get_test_structure(label, central_atom=None):
     file_path = os.path.dirname(os.path.abspath(__file__)) + '/ideal_structures.yaml'
     with open(file_path, 'r') as stream:
         ideal_structures = yaml.load(stream)
     if central_atom is None:
         ideal_structures[label].pop(0)
     measure_structure = np.array(ideal_structures[label])
-    # if normalize:
-    #     cm = measure_structure.sum(axis=0)
-    #     measure_structure -= cm
-    #     measure_structure *= np.sqrt(len(measure_structure) / np.sum(measure_structure ** 2))
     return measure_structure
 
 
