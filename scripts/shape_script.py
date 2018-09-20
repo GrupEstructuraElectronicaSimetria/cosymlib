@@ -25,7 +25,7 @@ group_shape.add_argument('-n', action='store', type=str, default=None,
 
 # args = parser.parse_args(['-n', '4'])
 # print(shape.get_structure_references(args.n))
-args = parser.parse_args(['-m', '-label', 'T-4 SP-4',
+args = parser.parse_args(['-m', '-label', 'SP-4 T-4',
                           '-c', '1',
                           # '-o', '../examples/coord',
                           '-input_file' , '../examples/coord.xyz'])

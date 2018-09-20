@@ -26,59 +26,62 @@ class Shape:
     # Function description
     def measure(self, label, central_atom=None):
         c_atom = False
-        n_atoms = len(self._coordinates)
         if central_atom is not None:
-            coordinates = order_coordinates(self._coordinates, central_atom)
+            coordinates = _order_coordinates(self._coordinates, central_atom)
             c_atom = True
-            n_atoms -= 1
         else:
             coordinates = self._coordinates
-        code = get_ideal_structure(label, n_atoms)
+        id_str = get_test_structure(label, central_atom, normalize=True)
+        id_str = _order_coordinates(id_str, 1)
 
-        hash = hashlib.md5('{}{}{}'.format(coordinates, code, c_atom).encode()).hexdigest()
+        hash = hashlib.md5('{}{}{}'.format(coordinates, c_atom, id_str).encode()).hexdigest()
         if hash not in self._measures:
-            self._measures[hash] = shp.cshm(coordinates, code, c_atom)
+            self._measures[hash] = shp.cshm(coordinates, c_atom, id_str)
 
         return self._measures[hash]
 
     # Function description
     def structure(self, label, central_atom=None):
         c_atom = False
-        n_atoms = len(self._coordinates)
         if central_atom is not None:
-            coordinates = order_coordinates(self._coordinates, central_atom)
+            coordinates = _order_coordinates(self._coordinates, central_atom)
             c_atom = True
-            n_atoms -= 1
         else:
             coordinates = self._coordinates
-        code = get_ideal_structure(label, n_atoms)
+        # code = get_ideal_structure(label, n_atoms)
+        id_str = get_test_structure(label, central_atom, normalize=True)
+        id_str = _order_coordinates(id_str, 1)
 
-        hash = hashlib.md5('{}{}{}'.format(coordinates, code, c_atom).encode()).hexdigest()
+        hash = hashlib.md5('{}{}{}'.format(coordinates, c_atom, id_str).encode()).hexdigest()
         if hash not in self._structures:
-            self._structures[hash], self._measures[hash] = shp.poly(coordinates, code, c_atom)
+            self._structures[hash], self._measures[hash] = shp.poly(coordinates, c_atom, id_str)
 
         return self._structures[hash]
 
 
 # Function description
-def get_test_structure(label, central_atom=None):
+def get_test_structure(label, central_atom=None, normalize=False):
     file_path = os.path.dirname(os.path.abspath(__file__)) + '/ideal_structures.yaml'
     with open(file_path, 'r') as stream:
         ideal_structures = yaml.load(stream)
     if central_atom is None:
         ideal_structures[label].pop(0)
     measure_structure = np.array(ideal_structures[label])
+    # if normalize:
+    #     cm = measure_structure.sum(axis=0)
+    #     measure_structure -= cm
+    #     measure_structure *= np.sqrt(len(measure_structure) / np.sum(measure_structure ** 2))
     return measure_structure
 
 
 # Function description
-def get_ideal_structure(symbol, n_atoms):
-    n_vertices = str(n_atoms)+' Vertices'
-    for structure in shape_structure_references[n_vertices]:
-        if structure[0] == symbol:
-            return structure[1]
-    raise NameError('Reference structure does not exists. '
-                    'Available references: {}'.format(get_structure_references(n_atoms)))
+# def get_ideal_structure(symbol, n_atoms):
+#     n_vertices = str(n_atoms)+' Vertices'
+#     for structure in shape_structure_references[n_vertices]:
+#         if structure[0] == symbol:
+#             return structure[1]
+#     raise NameError('Reference structure does not exists. '
+#                     'Available references: {}'.format(get_structure_references(n_atoms)))
 
 
 # Function description
@@ -91,15 +94,17 @@ def get_structure_references(vertices):
 
 
 # Function description
-def order_coordinates(coordinates, c_atom):
+def _order_coordinates(coordinates, c_atom):
     c_atom = c_atom - 1
     new_coordinates = []
     for idx, array in enumerate(coordinates):
-        if idx == c_atom:
-            new_coordinates.insert(0, array)
-        else:
+        # if idx == c_atom:
+        #     new_coordinates.insert(0, array)
+        # else:
+        if idx != c_atom:
             new_coordinates.append(array)
-    return new_coordinates
+    new_coordinates.append(coordinates[c_atom])
+    return np.array(new_coordinates)
 
 
 def get_path_deviation(Sx, Sy, shape_label1, shape_label2):
@@ -123,10 +128,10 @@ def _get_symmetry_angle(shape_label1, shape_label2):
     return theta
 
 
-def get_shape_label(code, n_atoms):
-    vertices = str(n_atoms)+' Vertices'
-    label = shape_structure_references[vertices][code-1]
-    return label[0]
+# def get_shape_label(code, n_atoms):
+#     vertices = str(n_atoms)+' Vertices'
+#     label = shape_structure_references[vertices][code-1]
+#     return label[0]
 
 
 minimum_distortion_angles = {'T-4': {'SS-4': 18.234, 'SP-4': 35.264}, 'SS-4': {'SP-4': 25.878},

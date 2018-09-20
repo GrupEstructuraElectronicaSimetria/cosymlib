@@ -19,11 +19,14 @@ class Geometry:
                 int(element)
                 self._symbols.append(get_element_symbol(int(element)))
             except (ValueError, TypeError):
-                try:
-                    int(element[-1])
-                    self._symbols.append(element[:-1].capitalize())
-                except (ValueError, TypeError, IndexError):
-                    self._symbols.append(element.capitalize())
+                self._symbols.append(element.capitalize())
+                for ida, a in enumerate(element):
+                    try:
+                        int(a)
+                        self._symbols[-1] = self._symbols[-1][:ida]
+                        break
+                    except (ValueError, TypeError, IndexError):
+                        pass
 
         try:
             float(structure[1][0])

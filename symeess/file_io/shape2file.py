@@ -141,6 +141,7 @@ def write_shape_map(shape_label1, shape_label2, path, output_name='symeess_shape
     if not os.path.exists('./results'):
         os.makedirs('./results')
     output = open('results/' + output_name + '.pth', 'w')
+    shape_header(output)
 
     output.write(" {:6} {:6}\n".format(shape_label1, shape_label2))
     for idx, value in enumerate(path[0]):
@@ -156,6 +157,7 @@ def write_minimal_distortion_path_analysis(shape_label1, shape_label2, measures,
     if not os.path.exists('./results'):
         os.makedirs('./results')
     output = open('results/' + output_name + '.flt', 'w')
+    shape_header(output)
 
     output.write("Deviation threshold to calculate Path deviation function: "
                  "{:2.1f}% - {:2.1f}%\n".format(mindev, maxdev))
