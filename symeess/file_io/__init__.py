@@ -1,6 +1,6 @@
 import os
 import sys
-from symeess.molecule import Molecule, Geometry
+from symeess.molecule import Molecule, Geometry, ElectronicStructure
 import numpy as np
 
 
@@ -39,10 +39,14 @@ def read_file_xyz(file_name):
                     input_molecule[1].append(line.split()[1:])
                 except (ValueError, IndexError):
                     if input_molecule:
-                        molecules.append(Geometry(input_molecule, name=name))
+                        molecules.append(Geometry(symbols=input_molecule[0],
+                                                  positions=input_molecule[1],
+                                                  name=name))
                     input_molecule = [[], []]
                     name = lines.readline().split()[0]
-        molecules.append(Molecule(input_molecule, name=name))
+        molecules.append(Geometry(symbols=input_molecule[0],
+                                  positions=input_molecule[1],
+                                  name=name))
     return molecules
 
 
@@ -66,10 +70,14 @@ def read_file_cor(file_name):
                     input_molecule[1].append(line.split()[1:-1])
                 except (ValueError, IndexError):
                     if input_molecule:
-                        molecules.append(Geometry(input_molecule, name=name))
+                        molecules.append(Geometry(symbols=input_molecule[0],
+                                                  positions=input_molecule[1],
+                                                  name=name))
                     input_molecule = [[], []]
                     name = line.split()[0]
-        molecules.append(Molecule(input_molecule, name=name))
+        molecules.append(Geometry(symbols=input_molecule[0],
+                                  positions=input_molecule[1],
+                                  name=name))
     return molecules
 
 
@@ -112,13 +120,15 @@ def read_old_input(file_name):
                     else:
                         sys.exit('Wrong input format')
             if input_molecule[0]:
-                molecules.append(Geometry(input_molecule, name=name))
+                molecules.append(Geometry(symbols=input_molecule[0],
+                                  positions=input_molecule[1],
+                                  name=name))
                 input_molecule = [[], []]
     return [molecules, options]
 
 
 def read_file_fchk(file_name):
-    key_list = ['Charge', 'Multiplicity', 'Number of electrons', 'Atomic numbers', 'Current cartesian coordinates',
+    key_list = ['Charge', 'Multiplicity', 'Atomic numbers', 'Current cartesian coordinates',
                 'Shell type', 'Number of primitives per shell', 'Shell to atom map', 'Primitive exponents',
                 'Contraction coefficients', 'P(S=P) Contraction coefficients',
                 'Alpha MO coefficients', 'Beta MO coefficients']
@@ -137,17 +147,15 @@ def read_file_fchk(file_name):
                 try:
                     float(line.split()[0])
                     input_molecule[n].append(line.split())
-
                 except ValueError:
                     input_molecule[n] = reformat_input(input_molecule[n])
                     read = False
-
 
             for idn, key in enumerate(key_list):
                 if key in line:
                     if n == len(key_list) - 1:
                         break
-                    if options and idn != 3:
+                    if options and idn != 2:
                         input_molecule[idn].append(int(line.split()[-1]))
                         n = idn
                         break
@@ -159,9 +167,27 @@ def read_file_fchk(file_name):
                         n = idn
                     read = True
                     break
-        return Molecule(structure=input_molecule[3:5],
-                        ee=input_molecule[:3] + input_molecule[5:],
-                        name=name)
+
+        basis = basis_format(symbols=input_molecule[2],
+                             shell_type=input_molecule[4],
+                             n_primitives=input_molecule[5],
+                             atom_map=input_molecule[6],
+                             p_exponents=input_molecule[7],
+                             c_coefficients=input_molecule[8],
+                             p_c_coefficients=input_molecule[9])
+
+        geometry = Geometry(symbols=input_molecule[2],
+                            positions=input_molecule[3],
+                            name=name)
+
+        ee = ElectronicStructure(geometry,
+                                 charge=input_molecule[0],
+                                 mult=input_molecule[1],
+                                 basis=basis,
+                                 Ca=input_molecule[10],
+                                 Cb=input_molecule[11])
+        quit()
+        return Molecule(geometry, ee)
 
 
 def read_ref_structure(file_name):
@@ -179,6 +205,45 @@ def read_ref_structure(file_name):
     return np.array(input_molecule)
 
 
+def basis_format(symbols,
+                 shell_type,
+                 n_primitives,
+                 atom_map,
+                 p_exponents,
+                 c_coefficients,
+                 p_c_coefficients):
+
+    typeList = {'0': ['s', 1],
+                '1': ['p', 3],
+                '2': ['d', 6],
+                '3': ['f', 10],
+                '-1': ['sp', 4],
+                '-2': ['d', 5],
+                '-3': ['f', 7]}
+
+    basis_set = {}
+    n_coef = 0
+    for n_atom, atom  in enumerate(symbols):
+        if atom not in basis_set:
+            basis_set[atom] = []
+            for n, atom_type in enumerate(atom_map):
+                if int(atom_type) == n_atom + 1:
+                    basis_set[atom].append([])
+                    basis_set[atom][-1].append(typeList[shell_type[n]][0].upper())
+                    basis_set[atom][-1].append([float(x) for x in
+                                                p_exponents[n_coef:int(n_primitives[n]) + n_coef]])
+                    basis_set[atom][-1].append([float(x) for x in
+                                                c_coefficients[n_coef:int(n_primitives[n]) + n_coef]])
+                    if typeList[shell_type[n]][0] == 'sp':
+                        basis_set[atom][-1].append([float(x) for x in
+                                                    p_c_coefficients[n_coef:int(n_primitives[n]) + n_coef]])
+                    n_coef += int(n_primitives[n])
+        else:
+            for values in basis_set[atom]:
+                n_coef += len(values[1])
+
+    return basis_set
+
 # OUTPUT part
 def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
 
@@ -193,6 +258,7 @@ def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
     output.write(' Atomic Coordinates (Angstroms)\n')
     output.write('--------------------------------------------\n')
     for array in geometry.get_positions():
+        array = bhor2A(array)
         output.write(' {:10.7f} {:10.7f} {:10.7f}\n'.format(array[0], array[1], array[2]))
     output.write('--------------------------------------------\n')
     for i in range(wfnsym_results.dgroup):
@@ -204,6 +270,7 @@ def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
         output.write('\n')
         output.write('Symmetry Transformed Atomic Coordinates (Angstroms)\n')
         for array in np.dot(geometry.get_positions(), wfnsym_results._SymMat[i].T):
+            array = bhor2A(array)
             output.write(' {:10.7f} {:10.7f} {:10.7f}\n'.format(array[0], array[1], array[2]))
 
     output.write('\nIdeal Group Table\n')
@@ -308,3 +375,10 @@ def reformat_input(array):
             else:
                 flat_list.append(item)
     return flat_list
+
+
+def bhor2A(array):
+    new_array = []
+    for xyz in array:
+        new_array.append(xyz * 0.529177249)
+    return new_array

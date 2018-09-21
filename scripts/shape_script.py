@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import argparse
-from symeess import Symeess, file_io
+import symeess
+# from symeess import file_io
 
 parser = argparse.ArgumentParser(description='Symeess')
 
@@ -30,12 +31,19 @@ args = parser.parse_args(['-m', '-label', 'SP-4 T-4',
                           # '-o', '../examples/coord',
                           '-input_file' , '../examples/coord.xyz'])
 
-molecules = file_io.read_input_file(args.input_file)
-symeess = Symeess(molecules)
+molecules = symeess.file_io.read_input_file(args.input_file)
+print(molecules)
+quit()
 reference_polyhedra = args.reference_polyhedra.split()
 
+symeess.Symeess(molecules).write_shape_structure_2file(reference_polyhedra, central_atom=args.c)
+symeess.Symeess(molecules).write_shape_measure_2file(reference_polyhedra, central_atom=args.c)
+symeess.Symeess(molecules).write_path_parameters_2file('SP-4', 'T-4' , central_atom=args.c)
+symeess.write_minimum_distortion_path_shape_2file(reference_polyhedra[0],
+                                                             reference_polyhedra[1], central_atom=args.c)
+
 # Write all posible measures to file
-symeess.write_shape_structure_2file(reference_polyhedra, central_atom=args.c)
-symeess.write_shape_measure_2file(reference_polyhedra, central_atom=args.c)
-symeess.write_path_parameters_2file('SP-4', 'T-4' , central_atom=args.c)
-symeess.write_minimum_distortion_path_shape_2file(reference_polyhedra[0], reference_polyhedra[1], central_atom=args.c)
+# symeess.write_shape_structure_2file(reference_polyhedra, central_atom=args.c)
+# symeess.write_shape_measure_2file(reference_polyhedra, central_atom=args.c)
+# symeess.write_path_parameters_2file('SP-4', 'T-4' , central_atom=args.c)
+# symeess.write_minimum_distortion_path_shape_2file(reference_polyhedra[0], reference_polyhedra[1], central_atom=args.c)

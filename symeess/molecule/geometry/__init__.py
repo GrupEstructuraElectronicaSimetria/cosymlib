@@ -2,19 +2,21 @@ from symeess import shape
 import numpy as np
 
 class Geometry:
-    def __init__(self, structure=None, name=None):
-
+    def __init__(self,
+                 symbols=None,
+                 positions=None,
+                 name=None):
 
         self._shape_label = 0
         self._central_atom = None
-        self._shape_measures = {}
+        # self._shape_measures = {}
         self._path_deviation = {}
         self._GenCoord = {}
         self._symbols = []
         self._positions = []
         self._name = name
 
-        for element in structure[0]:
+        for element in symbols:
             try:
                 int(element)
                 self._symbols.append(get_element_symbol(int(element)))
@@ -29,12 +31,12 @@ class Geometry:
                         pass
 
         try:
-            float(structure[1][0])
-            for element in structure[1]:
+            float(positions[0])
+            for element in positions:
                 self._positions.append(float(element))
             self._positions = list(chunks(self._positions, 3))
         except (ValueError, TypeError, IndexError):
-            for element in structure[1]:
+            for element in positions:
                 self._positions.append([float(j) for j in element])
 
         self._positions = np.array(self._positions)
@@ -100,6 +102,7 @@ class Geometry:
 def chunks(l, n):
     for i in range(0, len(l), n):
         yield l[i:i+n]
+
 
 def get_element_symbol(atomic_number):
     for key, Z in symbol_map.items():

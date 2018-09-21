@@ -36,10 +36,10 @@ class Symeess:
         :param output_name: custom name without extension
         :return: shape's structure in the output_name.out file
         """
-        initial_geometry = [molecule.geometry.get_positions() for molecule in self._molecules]
+        initial_geometry = [molecule.get_positions() for molecule in self._molecules]
         shape_results_structures = [self.get_shape_measure(label, 'structure', central_atom) for label in shape_label]
         molecules_name = [molecule.get_name() for molecule in self._molecules]
-        symbols = [molecule.geometry.get_symbols() for molecule in self._molecules]
+        symbols = [molecule.get_symbols() for molecule in self._molecules]
         shape_results_measures = [self.get_shape_measure(label, 'measure', central_atom) for label in shape_label]
         shape2file.write_shape_structure_data(initial_geometry, shape_results_structures, shape_results_measures,
                                               symbols, molecules_name, shape_label,
@@ -55,15 +55,15 @@ class Symeess:
                                                           maxdev, mindev, mingco, maxgco, names_order,
                                                           output_name='symeess_shape')
 
-    def write_minimum_distortion_path_shape_2file(self, shape_label1, shape_label2, central_atom=None,
-                                                  num_points=50, show=False):
-        path = self.get_shape_map(shape_label1, shape_label2, central_atom, num_points)
-        shape2file.write_shape_map(shape_label1, shape_label2, path)
-        if show:
-            plt.plot(path[0], path[1], linewidth=2.0)
-            plt.xlabel(shape_label1)
-            plt.ylabel(shape_label2)
-            plt.show()
+    # def write_minimum_distortion_path_shape_2file(self, shape_label1, shape_label2, central_atom=None,
+    #                                               num_points=50, show=False):
+    #     path = self.get_shape_map(shape_label1, shape_label2, central_atom, num_points)
+    #     shape2file.write_shape_map(shape_label1, shape_label2, path)
+    #     if show:
+    #         plt.plot(path[0], path[1], linewidth=2.0)
+    #         plt.xlabel(shape_label1)
+    #         plt.ylabel(shape_label2)
+    #         plt.show()
 
     def write_wnfsym_measure_2file(self, label, VAxis1, VAxis2, RCread, output_name='symeess_wfnsym'):
         wfnsym_results = self.get_wfnsym_measure(label, VAxis1, VAxis2, RCread)
@@ -78,23 +78,23 @@ class Symeess:
         :return:
         """
         get_measure = 'get_shape_' + type
-        shape_data = [getattr(molecule.geometry, get_measure)(label, central_atom=central_atom)
+        shape_data = [getattr(molecule, get_measure)(label, central_atom=central_atom)
                  for molecule in self._molecules]
         return shape_data
 
     def get_molecule_path_deviation(self, shape_label1, shape_label2, central_atom=None):
-        path_deviation = [molecule.geometry.get_path_deviation(shape_label1, shape_label2, central_atom) for molecule
+        path_deviation = [molecule.get_path_deviation(shape_label1, shape_label2, central_atom) for molecule
                           in self._molecules]
         return path_deviation
 
     def get_molecule_GenCoord(self, shape_label1, shape_label2, central_atom=None):
-        GenCoord = [molecule.geometry.get_generalized_coordinate(shape_label1, shape_label2, central_atom)
+        GenCoord = [molecule.get_generalized_coordinate(shape_label1, shape_label2, central_atom)
                     for molecule in self._molecules]
         return GenCoord
 
-    def get_shape_map(self, shape_label1, shape_label2, central_atom, num_points):
-        x, y = maps.get_shape_map(shape_label1, shape_label2, central_atom, num_points)
-        return x, y
+    # def get_shape_map(self, shape_label1, shape_label2, central_atom, num_points):
+    #     x, y = maps.get_shape_map(shape_label1, shape_label2, central_atom, num_points)
+    #     return x, y
 
     def get_path_parameters(self, shape_label1, shape_label2, central_atom=None, maxdev=15, mindev=0,
                             maxgco=101, mingco=0):
@@ -120,3 +120,17 @@ class Symeess:
     def get_wfnsym_measure(self, label, VAxis1, VAxis2, RCread):
         results = self._molecules.electronic_structure.get_wfnsym_measure(label, VAxis1, VAxis2, RCread)
         return results
+
+def write_minimum_distortion_path_shape_2file(shape_label1, shape_label2, central_atom=None, num_points=50, show=False):
+    path = get_shape_map(shape_label1, shape_label2, central_atom, num_points)
+    shape2file.write_shape_map(shape_label1, shape_label2, path)
+    if show:
+        plt.plot(path[0], path[1], linewidth=2.0)
+        plt.xlabel(shape_label1)
+        plt.ylabel(shape_label2)
+        plt.show()
+
+
+def get_shape_map(shape_label1, shape_label2, central_atom, num_points):
+    x, y = maps.get_shape_map(shape_label1, shape_label2, central_atom, num_points)
+    return x, y

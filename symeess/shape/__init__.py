@@ -27,17 +27,15 @@ class Shape:
     def measure(self, label, central_atom=None):
         c_atom = False
         if central_atom is not None:
-            coordinates = _order_coordinates(self._coordinates, central_atom)
+            coordinates = _order_coordinates(self._coordinates, [central_atom, len(self._coordinates)])
             c_atom = True
         else:
             coordinates = self._coordinates
         if isinstance(label, str):
             reference_structure = get_test_structure(label, central_atom)
-            reference_structure = _order_coordinates(reference_structure, 1)
+            # reference_structure = _order_coordinates(reference_structure, [1, len(reference_structure)])
         else:
             reference_structure = np.array(label)
-        # print(reference_structure)
-        # quit()
 
         hash = hashlib.md5('{}{}{}'.format(coordinates, c_atom, reference_structure).encode()).hexdigest()
         if hash not in self._measures:
@@ -49,12 +47,16 @@ class Shape:
     def structure(self, label, central_atom=None):
         c_atom = False
         if central_atom is not None:
-            coordinates = _order_coordinates(self._coordinates, central_atom)
+            coordinates = _order_coordinates(self._coordinates, [central_atom, len(self._coordinates)])
             c_atom = True
         else:
             coordinates = self._coordinates
-        reference_structure = get_test_structure(label, central_atom)
-        reference_structure = _order_coordinates(reference_structure, 1)
+        if isinstance(label, str):
+            reference_structure = get_test_structure(label, central_atom)
+        else:
+            reference_structure = np.array(label)
+        # reference_structure = get_test_structure(label, central_atom)
+        # reference_structure = _order_coordinates(reference_structure, 1)
 
         hash = hashlib.md5('{}{}{}'.format(coordinates, c_atom, reference_structure).encode()).hexdigest()
         if hash not in self._structures:
@@ -70,7 +72,9 @@ def get_test_structure(label, central_atom=None):
         ideal_structures = yaml.load(stream)
     if central_atom is None:
         ideal_structures[label].pop(0)
-    measure_structure = np.array(ideal_structures[label])
+        measure_structure = np.array(ideal_structures[label])
+    else:
+        measure_structure = _order_coordinates(ideal_structures[label], [1, len(ideal_structures[label])])
     return measure_structure
 
 
@@ -95,16 +99,20 @@ def get_structure_references(vertices):
 
 # Function description
 def _order_coordinates(coordinates, c_atom):
-    c_atom = c_atom - 1
-    new_coordinates = []
-    for idx, array in enumerate(coordinates):
-        # if idx == c_atom:
-        #     new_coordinates.insert(0, array)
-        # else:
-        if idx != c_atom:
-            new_coordinates.append(array)
-    new_coordinates.append(coordinates[c_atom])
-    return np.array(new_coordinates)
+
+    old_position = c_atom[0] - 1
+    new_position = c_atom[1] - 1
+    array_to_change = coordinates[old_position]
+    coordinates = np.delete(coordinates, old_position, 0)
+    coordinates = np.insert(coordinates, new_position, array_to_change, 0)
+    # new_coordinates = []
+    # for idx, array in enumerate(coordinates):
+    #     if idx == new_position:
+    #         new_coordinates.append(coordinates[old_position])
+    #     else:
+    #         new_coordinates.append(array)
+    # new_coordinates.append(coordinates[c_atom])
+    return np.array(coordinates)
 
 
 def get_path_deviation(Sx, Sy, shape_label1, shape_label2):
