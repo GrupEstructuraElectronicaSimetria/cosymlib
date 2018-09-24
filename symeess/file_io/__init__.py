@@ -168,13 +168,13 @@ def read_file_fchk(file_name):
                     read = True
                     break
 
-        basis = basis_format(symbols=input_molecule[2],
-                             shell_type=input_molecule[4],
-                             n_primitives=input_molecule[5],
-                             atom_map=input_molecule[6],
-                             p_exponents=input_molecule[7],
-                             c_coefficients=input_molecule[8],
-                             p_c_coefficients=input_molecule[9])
+        basis = _basis_format(symbols=input_molecule[2],
+                              shell_type=input_molecule[4],
+                              n_primitives=input_molecule[5],
+                              atom_map=input_molecule[6],
+                              p_exponents=input_molecule[7],
+                              c_coefficients=input_molecule[8],
+                              p_c_coefficients=input_molecule[9])
 
         geometry = Geometry(symbols=input_molecule[2],
                             positions=input_molecule[3],
@@ -182,11 +182,11 @@ def read_file_fchk(file_name):
 
         ee = ElectronicStructure(geometry,
                                  charge=input_molecule[0],
-                                 mult=input_molecule[1],
+                                 multiplicity=input_molecule[1],
                                  basis=basis,
                                  Ca=input_molecule[10],
                                  Cb=input_molecule[11])
-        quit()
+
         return Molecule(geometry, ee)
 
 
@@ -205,13 +205,13 @@ def read_ref_structure(file_name):
     return np.array(input_molecule)
 
 
-def basis_format(symbols,
-                 shell_type,
-                 n_primitives,
-                 atom_map,
-                 p_exponents,
-                 c_coefficients,
-                 p_c_coefficients):
+def _basis_format(symbols,
+                  shell_type,
+                  n_primitives,
+                  atom_map,
+                  p_exponents,
+                  c_coefficients,
+                  p_c_coefficients):
 
     typeList = {'0': ['s', 1],
                 '1': ['p', 3],

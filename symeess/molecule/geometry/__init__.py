@@ -1,6 +1,7 @@
 from symeess import shape
 import numpy as np
 
+
 class Geometry:
     def __init__(self,
                  symbols=None,
@@ -14,7 +15,11 @@ class Geometry:
         self._GenCoord = {}
         self._symbols = []
         self._positions = []
-        self._name = name
+
+        if name.strip() != '':
+            self._name = name
+        else:
+            self._name = ' ' * 5
 
         for element in symbols:
             try:
@@ -108,6 +113,7 @@ def get_element_symbol(atomic_number):
     for key, Z in symbol_map.items():
         if Z == atomic_number:
             return key
+
 
 symbol_map = {
     "H": 1,

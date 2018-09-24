@@ -5,14 +5,14 @@ class ElectronicStructure:
     def __init__(self,
                  geometry,
                  charge=0,
-                 mult=1,
+                 multiplicity=1,
                  basis=None,
                  Ca=None,
                  Cb=None):
 
         self._wfnsym_dict = {}
         self._charge = charge
-        self._mult = mult
+        self._mult = multiplicity
         self._basis = basis
         self._Ca = Ca
         if not Cb:
@@ -21,28 +21,18 @@ class ElectronicStructure:
             self._Cb = Cb
 
         self._geometry = geometry
-        key_list = ['Charge', 'Mult', 'N_e', 'shell_type', 'n_primitive', 'atom_map',
-                    'p_exponents', 'con_coefficients', 'p_con_coefficients', 'Ca', 'Cb']
+        # key_list = ['Charge', 'Mult', 'shell_type', 'n_primitive', 'atom_map',
+        #             'p_exponents', 'con_coefficients', 'p_con_coefficients', 'Ca', 'Cb']
 
-
-        # for idn, key in enumerate(key_list[:6]):
-        #     self._wfnsym_dict[key] = [int(j) for j in electronic_data[idn]]
-        #
-        # for idn, key in enumerate(key_list[6:-1]):
-        #     self._wfnsym_dict[key] = [float(j) for j in electronic_data[idn + 6]]
-        #
-        # if not electronic_data[-1]:
-        #     self._wfnsym_dict[key_list[-1]] = [float(j) for j in electronic_data[-2]]
-        #
         self._Ne_val = self._get_valence_electrons()
-        quit()
 
     def get_wfnsym_measure(self, label, VAxis1, VAxis2, RCread):
 
-        if -2 in self._wfnsym_dict['shell_type']:
-            pure_d = True
-        else:
-            pure_d = False
+        # if -2 in self._wfnsym_dict['shell_type']:
+        #     pure_d = True
+        # else:
+        #     pure_d = False
+        self._basis_to_wfnsym_format()
 
         results = WfnSympy(NEval=self._Ne_val,
                            AtLab=self._geometry.get_symbols(),
@@ -58,7 +48,7 @@ class ElectronicStructure:
                            iCharge=self._charge, iMult=self._mult,
                            group=label.upper(),
                            do_operation=False,
-                           use_pure_d_functions=pure_d)
+                           use_pure_d_functions=False)
 
         return results
 
@@ -67,6 +57,39 @@ class ElectronicStructure:
         for symbol in self._geometry.get_symbols():
             n_valence += atoms_electrons[symbol]
         return n_valence
+
+    def _basis_to_wfnsym_format(self):
+
+        typeList = {'0': ['s', 1],
+                    '1': ['p', 3],
+                    '2': ['d', 6],
+                    '3': ['f', 10],
+                    '-1': ['sp', 4]}
+
+        self._wfnsym_dict['shell_type'] = []
+        self._wfnsym_dict['n_primitive'] = []
+        self._wfnsym_dict['atom_map'] = []
+        p_exponents = []
+        con_coefficients = []
+        p_con_coefficients = []
+        for idn, symbol in enumerate(self._geometry.get_symbols()):
+            for orbital_type in self._basis[str(symbol_map[symbol])]:
+                self._wfnsym_dict['n_primitive'].append(len(orbital_type[1]))
+                self._wfnsym_dict['atom_map'].append(idn+1)
+                p_exponents.append(orbital_type[1])
+                con_coefficients.append(orbital_type[2])
+                if len(orbital_type) == 3:
+                    p_con_coefficients.append([0. for _ in range(len(orbital_type[2]))])
+                else:
+                    p_con_coefficients.append(orbital_type[3])
+                for key, kind in typeList.items():
+                    if kind[0].upper() == orbital_type[0]:
+                        self._wfnsym_dict['shell_type'].append(int(key))
+                        break
+        self._wfnsym_dict['p_exponents'] = [item for sublist in p_exponents for item in sublist]
+        self._wfnsym_dict['con_coefficients'] = [item for sublist in con_coefficients for item in sublist]
+        self._wfnsym_dict['p_con_coefficients'] = [item for sublist in p_con_coefficients for item in sublist]
+
 
 atoms_electrons = {
         'H': 1,
