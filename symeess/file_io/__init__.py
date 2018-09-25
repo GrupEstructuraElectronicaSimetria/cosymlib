@@ -2,6 +2,7 @@ import os
 import sys
 from symeess.molecule import Molecule, Geometry, ElectronicStructure
 import numpy as np
+from symeess import tools
 
 
 # INPUT part
@@ -223,26 +224,30 @@ def _basis_format(symbols,
 
     basis_set = {}
     n_coef = 0
-    for n_atom, atom  in enumerate(symbols):
+    for n_atom, atom in enumerate(symbols):
+        atom = tools.atomic_number_to_element(atom)
         if atom not in basis_set:
             basis_set[atom] = []
             for n, atom_type in enumerate(atom_map):
                 if int(atom_type) == n_atom + 1:
-                    basis_set[atom].append([])
-                    basis_set[atom][-1].append(typeList[shell_type[n]][0].upper())
-                    basis_set[atom][-1].append([float(x) for x in
-                                                p_exponents[n_coef:int(n_primitives[n]) + n_coef]])
-                    basis_set[atom][-1].append([float(x) for x in
-                                                c_coefficients[n_coef:int(n_primitives[n]) + n_coef]])
+                    basis_set[atom].append({})
+                    basis_set[atom][-1]['shell_type'] = typeList[shell_type[n]][0].upper()
+                    basis_set[atom][-1]['p_exponents'] = [float(x) for x in
+                                                          p_exponents[n_coef:int(n_primitives[n]) + n_coef]]
+                    basis_set[atom][-1]['con_coefficients'] = ([float(x) for x in
+                                                                c_coefficients[n_coef:int(n_primitives[n]) + n_coef]])
                     if typeList[shell_type[n]][0] == 'sp':
-                        basis_set[atom][-1].append([float(x) for x in
-                                                    p_c_coefficients[n_coef:int(n_primitives[n]) + n_coef]])
+                        basis_set[atom][-1]['p_con_coefficients'] = ([float(x) for x in
+                                                                      p_c_coefficients[n_coef:int(n_primitives[n])
+                                                                                              + n_coef]])
+
                     n_coef += int(n_primitives[n])
         else:
             for values in basis_set[atom]:
-                n_coef += len(values[1])
+                n_coef += len(values['p_exponents'])
 
     return basis_set
+
 
 # OUTPUT part
 def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
@@ -257,9 +262,10 @@ def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
     output.write('--------------------------------------------\n')
     output.write(' Atomic Coordinates (Angstroms)\n')
     output.write('--------------------------------------------\n')
-    for array in geometry.get_positions():
+    for idn, array in enumerate(geometry.get_positions()):
         array = bhor2A(array)
-        output.write(' {:10.7f} {:10.7f} {:10.7f}\n'.format(array[0], array[1], array[2]))
+        output.write('{:2} {:10.7f} {:10.7f} {:10.7f}\n'.format(geometry.get_symbols()[idn],
+                                                                array[0], array[1], array[2]))
     output.write('--------------------------------------------\n')
     for i in range(wfnsym_results.dgroup):
         output.write('\n')
@@ -269,9 +275,12 @@ def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
             output.write(' {:10.7f} {:10.7f} {:10.7f}\n'.format(array[0], array[1], array[2]))
         output.write('\n')
         output.write('Symmetry Transformed Atomic Coordinates (Angstroms)\n')
-        for array in np.dot(geometry.get_positions(), wfnsym_results._SymMat[i].T):
-            array = bhor2A(array)
-            output.write(' {:10.7f} {:10.7f} {:10.7f}\n'.format(array[0], array[1], array[2]))
+
+        for idn, array in enumerate(geometry.get_positions()):
+            array2 = np.dot(array, wfnsym_results._SymMat[i].T)
+            array2 = bhor2A(array2)
+            output.write('{:2} {:10.7f} {:10.7f} {:10.7f}\n'.format(geometry.get_symbols()[idn],
+                                                                    array2[0], array2[1], array2[2]))
 
     output.write('\nIdeal Group Table\n')
     output.write('   -------------------------------------------------------------------------------'
@@ -380,5 +389,5 @@ def reformat_input(array):
 def bhor2A(array):
     new_array = []
     for xyz in array:
-        new_array.append(xyz * 0.529177249)
+        new_array.append(float(xyz)/1.889726124993590)
     return new_array

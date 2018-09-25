@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import argparse
 from symeess import Symeess, file_io
+import numpy as np
+
 
 parser = argparse.ArgumentParser(description='Symeess')
 
@@ -11,6 +13,15 @@ parser.add_argument('-o', '-output', dest='output_name', default=None, help='out
 args = parser.parse_args(['-input_file' , '../examples/CpTiCl3_cart.fchk'])
 
 molecule = file_io.read_input_file(args.input_file)
-symeess = Symeess(molecule)
-symeess.write_wnfsym_measure_2file('Oh', [-2.027247, 0.000133, -0.898469], [0.40757934076903307, 1.746331, -0.919377],
-                                   [0.002440,   -0.000122, 0.017307])
+example = Symeess()
+example.set_molecules(molecule)
+VAxis1 = [-2.027247, 0.000133, -0.898469]
+norm = np.linalg.norm(VAxis1)
+VAxis1 = VAxis1/norm
+RCread = [0.002440, -0.000122, 0.017307]
+VAxis2 = [0.000000000, 0.000000000, 1.000000000]
+angsb = 1.889726124993590
+# print([x*angsb for x in RCread])
+example.write_wnfsym_measure_2file('Td', VAxis1=VAxis2,
+                                   VAxis2=VAxis1,
+                                   RCread=RCread)

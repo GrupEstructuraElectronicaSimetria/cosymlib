@@ -10,13 +10,12 @@ class Geometry:
 
         self._shape_label = 0
         self._central_atom = None
-        # self._shape_measures = {}
         self._path_deviation = {}
         self._GenCoord = {}
         self._symbols = []
         self._positions = []
 
-        if name.strip() != '':
+        if name is not None:
             self._name = name
         else:
             self._name = ' ' * 5

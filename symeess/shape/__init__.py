@@ -33,7 +33,6 @@ class Shape:
             coordinates = self._coordinates
         if isinstance(label, str):
             reference_structure = get_test_structure(label, central_atom)
-            # reference_structure = _order_coordinates(reference_structure, [1, len(reference_structure)])
         else:
             reference_structure = np.array(label)
 
@@ -55,8 +54,6 @@ class Shape:
             reference_structure = get_test_structure(label, central_atom)
         else:
             reference_structure = np.array(label)
-        # reference_structure = get_test_structure(label, central_atom)
-        # reference_structure = _order_coordinates(reference_structure, 1)
 
         hash = hashlib.md5('{}{}{}'.format(coordinates, c_atom, reference_structure).encode()).hexdigest()
         if hash not in self._structures:
@@ -105,13 +102,6 @@ def _order_coordinates(coordinates, c_atom):
     array_to_change = coordinates[old_position]
     coordinates = np.delete(coordinates, old_position, 0)
     coordinates = np.insert(coordinates, new_position, array_to_change, 0)
-    # new_coordinates = []
-    # for idx, array in enumerate(coordinates):
-    #     if idx == new_position:
-    #         new_coordinates.append(coordinates[old_position])
-    #     else:
-    #         new_coordinates.append(array)
-    # new_coordinates.append(coordinates[c_atom])
     return np.array(coordinates)
 
 
@@ -134,12 +124,6 @@ def _get_symmetry_angle(shape_label1, shape_label2):
     except KeyError:
         theta = minimum_distortion_angles[shape_label2][shape_label1]
     return theta
-
-
-# def get_shape_label(code, n_atoms):
-#     vertices = str(n_atoms)+' Vertices'
-#     label = shape_structure_references[vertices][code-1]
-#     return label[0]
 
 
 minimum_distortion_angles = {'T-4': {'SS-4': 18.234, 'SP-4': 35.264}, 'SS-4': {'SP-4': 25.878},
