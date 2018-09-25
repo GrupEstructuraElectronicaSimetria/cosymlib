@@ -250,6 +250,54 @@ def _basis_format(symbols,
 
 
 # OUTPUT part
+def write_symgroup_measure(label, geometries, symgroup_results, output_name):
+
+    if not os.path.exists('./results'):
+        os.makedirs('./results')
+    output = open('results/' + output_name + '.zout', 'w')
+    output2 = open('results/' + output_name + '.ztab', 'w')
+
+    output.write('Evaluating symmetry operation : {}\n'.format(label))
+    output2.write('Evaluating symmetry operation : {}\n \n'.format(label))
+    for idx, geometry in enumerate(geometries):
+        output.write('{}\n'.format(geometry.get_name()))
+        output.write('\n')
+        output.write('Centered Structure\n')
+        output.write('--------------------------------------------\n')
+        for idn, array in enumerate(geometry.get_positions()):
+            output.write('{:2} {:12.8f} {:12.8f} {:12.8f}\n'.format(geometry.get_symbols()[idn],
+                                                                    array[0], array[1], array[2]))
+        output.write('--------------------------------------------\n')
+
+        output.write('Optimal permutation\n')
+        for idn, permutation in enumerate(symgroup_results[idx].optimum_permutation):
+            output.write('{:2} {:2}\n'.format(idn+1, permutation))
+        output.write('\n')
+
+        output.write('Inverted structure\n')
+        for idn, axis in enumerate(symgroup_results[idx].nearest_structure):
+            output.write('{:2} {:12.8f} {:12.8f} {:12.8f}\n'.format(geometry.get_symbols()[idn],
+                                                                    axis[0], axis[1], axis[2]))
+        output.write('\n')
+
+        output.write('Reference axis\n')
+        for array in symgroup_results[idx].reference_axis:
+            output.write('{:12.8f} {:12.8f} {:12.8f}\n'.format(array[0], array[1], array[2]))
+        output.write('\n')
+
+        output.write('Symmetry measure {:.5f}\n'.format(symgroup_results[idx].csm))
+        output.write('..................................................\n')
+        output2.write('{:>5} {:10.5f}\n'.format(geometry.get_name(), symgroup_results[idx].csm))
+
+    output.close()
+    output2.close()
+    # output.write('multi CMS')
+    # output.write(symgroup_results.cms_multi)
+    # output.write('multi axis')
+    # output.write(symgroup_results.axis_multi)
+
+
+
 def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
 
     if not os.path.exists('./results'):

@@ -9,7 +9,7 @@ parser.add_argument('-o', '-output', dest='output_name', default=None, help='out
 
 # Shape input flags
 group_shape = parser.add_argument_group('Shape', 'Shape_options')
-group_shape.add_argument('-old_input', action='store_true', default=False)
+group_shape.add_argument('--old_input', action='store_true', default=False)
 group_shape.add_argument('-m', '--measure', action='store_true', default=False,
                          help='Shape measure of input structure with reference polyhedra')
 group_shape.add_argument('-s', '--structure', action='store_true', default=False,

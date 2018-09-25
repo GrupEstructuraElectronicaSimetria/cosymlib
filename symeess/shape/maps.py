@@ -1,6 +1,6 @@
 import numpy as np
 from symeess.molecule.geometry import Geometry
-from symeess.shape import get_test_structure, _get_symmetry_angle
+from symeess.shape.shape_tools import get_test_structure, _get_symmetry_angle
 
 
 def get_shape_map(shape_label1, shape_label2, central_atom=None, num_points=50):

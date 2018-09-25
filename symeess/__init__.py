@@ -76,6 +76,10 @@ class Symeess:
                                                           maxdev, mindev, mingco, maxgco, names_order,
                                                           output_name='symeess_shape')
 
+    def write_symgroup_measure(self, group, multi=1, central_atom=None, output_name='symeess_symgroup'):
+        results = self.get_symgroup_measure(group=group, multi=multi, central_atom=central_atom)
+        file_io.write_symgroup_measure(group, [molecule.geometry for molecule in self._molecules], results, output_name)
+
     def write_wnfsym_measure_2file(self, label, VAxis1, VAxis2, RCread, output_name='symeess_wfnsym'):
         wfnsym_results = self.get_wfnsym_measure(label, VAxis1, VAxis2, RCread)
         file_io.write_wfnsym_measure(label, self._molecules[0].geometry, wfnsym_results, output_name)
@@ -123,8 +127,16 @@ class Symeess:
         results = [i for indx, i in enumerate(results) if pathdev_filter[indx] == True]
         return results
 
+    def get_symgroup_measure(self, group, multi=1, central_atom=None):
+        results = [molecule.geometry.get_symgroup_measure(label=group, multi=multi, central_atom=central_atom) for
+                   molecule in self._molecules]
+        return results
+
     def get_wfnsym_measure(self, label, VAxis1, VAxis2, RCread):
-        results = self._molecules[0].electronic_structure.get_wfnsym_measure(label, VAxis1, VAxis2, RCread)
+        results = self._molecules[0].electronic_structure.get_wfnsym_measure(label,
+                                                                             VAxis1,
+                                                                             VAxis2,
+                                                                             RCread)
         return results
 
 
