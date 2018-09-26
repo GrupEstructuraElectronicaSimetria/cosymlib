@@ -15,11 +15,15 @@ class ElectronicStructure:
         self._charge = charge
         self._mult = multiplicity
         self._basis = basis
-        self._Ca = Ca
+        # Ca = []
+        # with open('../examples/test.txt') as infile:
+        #     for line in infile:
+        #         Ca.append(line.split()[0])
+        self._Ca = [float(i) for i in Ca]
         if not Cb:
-            self._Cb = Ca
+            self._Cb = [float(i) for i in Ca]
         else:
-            self._Cb = Cb
+            self._Cb = [float(i) for i in Cb]
 
         self._geometry = geometry
         self._Ne_val = self._get_valence_electrons()

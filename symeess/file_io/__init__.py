@@ -297,14 +297,13 @@ def write_symgroup_measure(label, geometries, symgroup_results, output_name):
     # output.write(symgroup_results.axis_multi)
 
 
-
 def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
 
     if not os.path.exists('./results'):
         os.makedirs('./results')
     output = open('results/' + output_name + '.wout', 'w')
 
-    # Print Outputs
+    RC = [0.002440, -0.000122, 0.017307]
     output.write('MEASURES OF THE SYMMETRY GROUP:   {}\n'.format(label))
     output.write('Basis: {}\n'.format('6-31G(d)'))
     output.write('--------------------------------------------\n')
@@ -312,7 +311,7 @@ def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
     output.write('--------------------------------------------\n')
     for idn, array in enumerate(geometry.get_positions()):
         array = bhor2A(array)
-        output.write('{:2} {:10.7f} {:10.7f} {:10.7f}\n'.format(geometry.get_symbols()[idn],
+        output.write('{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idn],
                                                                 array[0], array[1], array[2]))
     output.write('--------------------------------------------\n')
     for i in range(wfnsym_results.dgroup):
@@ -320,14 +319,14 @@ def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
         output.write('@@@ Operation {0}: {1}'.format(i + 1, wfnsym_results.SymLab[i]))
         output.write('\nSymmetry Transformation matrix\n')
         for array in wfnsym_results.SymMat[i]:
-            output.write(' {:10.7f} {:10.7f} {:10.7f}\n'.format(array[0], array[1], array[2]))
+            output.write(' {:11.6f} {:11.6f} {:11.6f}\n'.format(array[0], array[1], array[2]))
         output.write('\n')
         output.write('Symmetry Transformed Atomic Coordinates (Angstroms)\n')
 
         for idn, array in enumerate(geometry.get_positions()):
-            array2 = np.dot(array, wfnsym_results._SymMat[i].T)
-            array2 = bhor2A(array2)
-            output.write('{:2} {:10.7f} {:10.7f} {:10.7f}\n'.format(geometry.get_symbols()[idn],
+            centered_array = bhor2A(array) - RC
+            array2 = np.dot(centered_array, wfnsym_results._SymMat[i].T)
+            output.write('{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idn],
                                                                     array2[0], array2[1], array2[2]))
 
     output.write('\nIdeal Group Table\n')
@@ -387,6 +386,7 @@ def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
     output.write('\n')
     output.write('   -------------------------------------------------------------------------------'
                  '------------------------------------------------------------------------\n')
+
     output.write('Grim' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.grim_coef]))
     output.write('\n')
     output.write('CSM ' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.csm_coef]))
@@ -438,4 +438,4 @@ def bhor2A(array):
     new_array = []
     for xyz in array:
         new_array.append(float(xyz)/1.889726124993590)
-    return new_array
+    return np.array(new_array)
