@@ -1,25 +1,25 @@
 import numpy as np
 from symeess.molecule.geometry import Geometry
-from symeess.shape import get_test_structure, _get_symmetry_angle
+from symeess.shape.shape_tools import get_test_structure, _get_symmetry_angle
 
 
 def get_shape_map(shape_label1, shape_label2, central_atom=None, num_points=50):
-    ideal_structure = get_test_structure(shape_label1, central_atom)
+    ideal_structure = get_test_structure(shape_label1)
     ideal_label_structure = []
-    symbol = []
+    symbols = []
     for idx, atom in enumerate(ideal_structure):
-        if idx == 0:
+        if idx == 0 and central_atom is not None:
             atom = np.ndarray.tolist(atom)
-            symbol.append('M')
+            symbols.append('M')
         else:
             atom = np.ndarray.tolist(atom)
-            symbol.append('L')
+            symbols.append('L')
         ideal_label_structure.append(atom)
-    ideal_label_structure = [symbol, ideal_label_structure]
 
-    geometry = Geometry(ideal_label_structure)
+    geometry = Geometry(symbols=symbols,
+                        positions=ideal_label_structure)
     S_label1 = [0]
-    S_label2 = [geometry.get_shape_measure(shape_label2, 0)]
+    S_label2 = [geometry.get_shape_measure(shape_label2)]
     theta = _get_symmetry_angle(shape_label1, shape_label2)
     dtheta = np.linspace(0, theta, num_points)
     for angle in dtheta[1:]:
