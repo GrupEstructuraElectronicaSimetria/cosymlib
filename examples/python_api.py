@@ -2,7 +2,8 @@ import symeess.file_io as file_io
 import symeess.shape as shape
 import symeess.symmetry.symgroup as symgroup
 
-def print_data(geometries):
+
+def print_shape_data(geometries):
     print('{:10} {:^10} {:^10} {:^10}'.format('name', 'SP-4', 'SS-4', 'PP-5'))
     print('-'*43)
     for geometry in geometries:
@@ -14,13 +15,20 @@ def print_data(geometries):
     print()
 
 
+def print_csm(data):
+    print('\nWaveFunction: CSM-like values')
+    print('     ' + '  '.join(['{:^7}'.format(s) for s in data.SymLab]))
+    print('Grim' + '  '.join(['{:7.3f}'.format(s) for s in data.grim_coef]))
+    print('CSM ' + '  '.join(['{:7.3f}'.format(s) for s in data.csm_coef]))
+
+
 # Get structures from files
 molecules_set = file_io.read_file_xyz('coord.xyz')
 fragments_set = file_io.read_file_cor('coord.cor')
 
 # Call shape as method of Geometry class
-print_data(molecules_set)
-print_data(fragments_set)
+print_shape_data(molecules_set)
+print_shape_data(fragments_set)
 
 
 # Check multiple calls of shape one calculatioin
@@ -55,9 +63,8 @@ print('\nWFNSYM\n--------')
 
 molecule = file_io.read_input_file('pirrol.fchk')
 data = molecule.electronic_structure.get_wfnsym_measure('Td',
-                                                        VAxis1=[0.000000000, 0.000000000, 1.000000000],
-                                                        VAxis2=[-2.027247, 0.000133, -0.898469],
-                                                        RCread=[0.002440, -0.000122, 0.017307])
+                                                        VAxis1=[ 0.000000,  0.000000,  1.000000],
+                                                        VAxis2=[-2.027247,  0.000133, -0.898469],
+                                                        RCread=[ 0.002440, -0.000122,  0.017307])
 
-print(data.SymLab)
-print(data.grim_coef)
+print_csm(data)
