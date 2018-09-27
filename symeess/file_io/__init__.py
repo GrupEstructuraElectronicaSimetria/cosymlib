@@ -421,7 +421,7 @@ def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
     output.write('\n')
     output.write('WFN ' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.wf_IRd]))
     output.write('\n')
-
+    print('WFNSYM : Calculation has finished normally ')
 
 def reformat_input(array):
     flat_list = []

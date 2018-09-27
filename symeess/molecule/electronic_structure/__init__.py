@@ -15,10 +15,6 @@ class ElectronicStructure:
         self._charge = charge
         self._mult = multiplicity
         self._basis = basis
-        # Ca = []
-        # with open('../examples/test.txt') as infile:
-        #     for line in infile:
-        #         Ca.append(line.split()[0])
         self._Ca = [float(i) for i in Ca]
         if not Cb:
             self._Cb = [float(i) for i in Ca]
