@@ -17,7 +17,7 @@ def get_test_structure(label, central_atom=None):
         measure_structure = np.array(ideal_structures[label][1:])
     else:
         last = len(ideal_structures[label])
-        measure_structure = _order_coordinates(ideal_structures[label], [1, last])
+        measure_structure = order_coordinates(ideal_structures[label], [1, last])
     return measure_structure
 
 
@@ -45,7 +45,7 @@ def get_generalized_coordinate(Sq, shape_label1, shape_label2):
     return GenCoord
 
 
-def _order_coordinates(coordinates, indices):
+def order_coordinates(coordinates, indices):
     indices = [i - 1 for i in indices]
     coordinates = np.array(coordinates).copy()
     coordinates[indices, :] = coordinates[indices[::-1], :]

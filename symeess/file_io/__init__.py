@@ -19,7 +19,7 @@ def read_input_file(input_name):
     return method(input_name)
 
 
-def read_file_xyz(file_name):
+def get_geometry_from_file_xyz(file_name):
     """
     Reads a XYZ file and returns the geometry of all structures in it
     :param file_name: file name
@@ -51,7 +51,7 @@ def read_file_xyz(file_name):
     return molecules
 
 
-def read_file_cor(file_name):
+def get_geometry_from_file_cor(file_name):
     """
     Reads a Conquest formatted file and the geometry of all structures in it
     :param file_name: file name

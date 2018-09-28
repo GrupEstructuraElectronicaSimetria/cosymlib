@@ -1,5 +1,4 @@
 from symeess import shape, tools
-from symgroupy import Symgroupy
 from symeess.symmetry import symgroup
 import numpy as np
 
@@ -72,7 +71,7 @@ class Geometry:
         return self._shape.structure(shape_label,
                                      central_atom=central_atom)
 
-    def get_symgroup_measure(self, label, central_atom=None):
+    def get_symmetry_measure(self, label, central_atom=None):
         return self._symgroup.measure(label, central_atom=central_atom)
 
     def get_path_deviation(self, shape_label1, shape_label2, central_atom):

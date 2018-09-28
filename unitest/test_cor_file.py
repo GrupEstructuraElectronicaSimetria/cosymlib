@@ -124,9 +124,9 @@ class TestShapeCorFile(unittest.TestCase):
 
         central_atom = 1
         ref_str1 = shape.shape_tools.get_test_structure('EP-9', central_atom)
-        ref_str1 = shape.shape_tools._order_coordinates(ref_str1, [len(ref_str1), central_atom])
+        ref_str1 = shape.shape_tools.order_coordinates(ref_str1, [len(ref_str1), central_atom])
         ref_str2 = shape.shape_tools.get_test_structure('CSAPR-9', central_atom)
-        ref_str2 = shape.shape_tools._order_coordinates(ref_str2, [len(ref_str2), central_atom])
+        ref_str2 = shape.shape_tools.order_coordinates(ref_str2, [len(ref_str2), central_atom])
         good_results = np.loadtxt('data/shape_examples/example09_results')
         self.assertTrue(np.allclose(good_results, ref_str1, atol=1e-3))
 

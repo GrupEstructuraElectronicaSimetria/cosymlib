@@ -27,7 +27,7 @@ class Shape:
         hash = hashlib.md5('{}{}'.format(c_atom, label).encode()).hexdigest()
         if hash not in self._measures:
             if central_atom is not None:
-                coordinates = shape_tools._order_coordinates(self._coordinates, [central_atom, len(self._coordinates)])
+                coordinates = shape_tools.order_coordinates(self._coordinates, [central_atom, len(self._coordinates)])
                 c_atom = True
             else:
                 coordinates = self._coordinates
@@ -48,7 +48,7 @@ class Shape:
         hash = hashlib.md5('{}{}'.format(c_atom, label).encode()).hexdigest()
         if hash not in self._structures:
             if central_atom is not None:
-                coordinates = shape_tools._order_coordinates(self._coordinates, [central_atom, len(self._coordinates)])
+                coordinates = shape_tools.order_coordinates(self._coordinates, [central_atom, len(self._coordinates)])
                 c_atom = True
             else:
                 coordinates = self._coordinates
