@@ -184,8 +184,7 @@ def read_file_fchk(file_name):
         ee = ElectronicStructure(charge=input_molecule[0],
                                  multiplicity=input_molecule[1],
                                  basis=basis,
-                                 Ca=input_molecule[10],
-                                 Cb=input_molecule[11])
+                                 orbital_coefficients=[input_molecule[10], input_molecule[11]])
 
         return Molecule(geometry, ee)
 
@@ -309,11 +308,11 @@ def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
     output.write(' Atomic Coordinates (Angstroms)\n')
     output.write('--------------------------------------------\n')
     for idn, array in enumerate(geometry.get_positions()):
-        array = bhor2A(array)
+        array = bhor2a(array)
         output.write('{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idn],
                                                                 array[0], array[1], array[2]))
     output.write('--------------------------------------------\n')
-    for i in range(wfnsym_results.dgroup):
+    for i, label in enumerate(wfnsym_results.SymLab):
         output.write('\n')
         output.write('@@@ Operation {0}: {1}'.format(i + 1, wfnsym_results.SymLab[i]))
         output.write('\nSymmetry Transformation matrix\n')
@@ -323,7 +322,7 @@ def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
         output.write('Symmetry Transformed Atomic Coordinates (Angstroms)\n')
 
         for idn, array in enumerate(geometry.get_positions()):
-            centered_array = bhor2A(array) - RC
+            centered_array = bhor2a(array) - RC
             array2 = np.dot(centered_array, wfnsym_results._SymMat[i].T)
             output.write('{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idn],
                                                                     array2[0], array2[1], array2[2]))
@@ -422,6 +421,7 @@ def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
     output.write('\n')
     print('WFNSYM : Calculation has finished normally ')
 
+
 def reformat_input(array):
     flat_list = []
     for sublist in array:
@@ -433,7 +433,7 @@ def reformat_input(array):
     return flat_list
 
 
-def bhor2A(array):
+def bhor2a(array):
     new_array = []
     for xyz in array:
         new_array.append(float(xyz)/1.889726124993590)

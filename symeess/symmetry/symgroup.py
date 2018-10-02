@@ -4,6 +4,7 @@ from symgroupy import Symgroupy
 
 
 class Symgroup:
+
     def __init__(self, geometry):
 
         # Allow geometry or molecule to be imported instead of crude Cartesian coordinates
@@ -34,6 +35,7 @@ class Symgroup:
 
         return self._results[hash].csm
 
+    # Function description
     def nearest_structure(self, label, central_atom=None):
 
         hash = hashlib.md5('{}{}'.format(label, central_atom).encode()).hexdigest()

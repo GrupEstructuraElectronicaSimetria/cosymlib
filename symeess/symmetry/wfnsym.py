@@ -10,35 +10,68 @@ class WFNSYM:
         self._molecule = molecule
         self._Ne_val = self._get_valence_electrons()
         self._wfnsym_dict = {}
-
+        self._basis_to_wfnsym_format()
         self._results = {}
 
-    def measure(self, label, vector_axis2, vector_axis1=None, center=None):
-        if center is None:
-            center = [0., 0., 0.]
-        if vector_axis1 is None:
-            vector_axis1 = [0., 0., 1.]
+    def symmetry_overlap_analysis(self,
+                                  label,
+                                  vector_axis2,
+                                  vector_axis1=[0., 0., 1.],
+                                  center=[0., 0., 0.]):
+
         hash = hashlib.md5('{}{}'.format(label, vector_axis1, vector_axis2, center).encode()).hexdigest()
         if hash not in self._results:
-            self._basis_to_wfnsym_format()
+            self._get_results(label, vector_axis1, vector_axis2, center)
+        return [self._results[hash].ideal_gt, self._results[hash].SymLab, self._results[hash].mo_SOEVs_a,
+                self._results[hash].mo_SOEVs_b, self._results[hash].mo_SOEVs, self._results[hash].wf_SOEVs_a,
+                self._results[hash].wf_SOEVs_b, self._results[hash].wf_SOEVs, self._results[hash].grim_coef,
+                self._results[hash].csm_coef]
 
-            self._results[hash] = WfnSympy(NEval=self._Ne_val,
-                                           AtLab=self._molecule.geometry.get_symbols(),
-                                           shell_type=self._wfnsym_dict['shell_type'],
-                                           p_exp=self._wfnsym_dict['p_exponents'],
-                                           con_coef=self._wfnsym_dict['con_coefficients'],
-                                           p_con_coef=self._wfnsym_dict['p_con_coefficients'],
-                                           RAt=self._molecule.geometry.get_positions(),
-                                           n_prim=self._wfnsym_dict['n_primitive'],
-                                           atom_map=self._wfnsym_dict['atom_map'],
-                                           Ca=self._molecule.electronic_structure.coefficients_a,
-                                           Cb=self._molecule.electronic_structure.coefficients_b,
-                                           RCread=center, VAxis=vector_axis1, VAxis2=vector_axis2,
-                                           iCharge=self._molecule.electronic_structure.charge,
-                                           iMult=self._molecule.electronic_structure.multiplicity,
-                                           group=label.upper(),
-                                           do_operation=False)
+    def symmetry_ireducible_representation_analysis(self, label,
+                                                    vector_axis2,
+                                                    vector_axis1=[0., 0., 1.],
+                                                    center=[0., 0., 0.]):
+
+        hash = hashlib.md5('{}{}'.format(label, vector_axis1, vector_axis2, center).encode()).hexdigest()
+        if hash not in self._results:
+            self._get_results(label, vector_axis1, vector_axis2, center)
+        return [self._results[hash].IRLab, self._results[hash].mo_IRd_a, self._results[hash].mo_IRd_b,
+                self._results[hash].wf_IRd_a, self._results[hash].wf_IRd_b, self._results[hash].wf_IRd]
+
+    def get_symmetry_matrix(self, label,
+                            vector_axis2,
+                            vector_axis1=[0., 0., 1.],
+                            center=[0., 0., 0.]):
+
+        hash = hashlib.md5('{}{}'.format(label, vector_axis1, vector_axis2, center).encode()).hexdigest()
+        if hash not in self._results:
+            self._get_results(label, vector_axis1, vector_axis2, center)
+        return self._results[hash].SymMat
+
+    def results(self, label, vector_axis2, vector_axis1=[0., 0., 1.], center=[0., 0., 0.]):
+
+        hash = hashlib.md5('{}{}'.format(label, vector_axis1, vector_axis2, center).encode()).hexdigest()
+        if hash not in self._results:
+            self._get_results(label, vector_axis1, vector_axis2, center)
         return self._results[hash]
+
+    def _get_results(self, label, vector_axis1, vector_axis2, center):
+        hash = hashlib.md5('{}{}'.format(label, vector_axis1, vector_axis2, center).encode()).hexdigest()
+        self._results[hash] = WfnSympy(NEval=self._Ne_val,
+                                       AtLab=self._molecule.geometry.get_symbols(),
+                                       shell_type=self._wfnsym_dict['shell_type'],
+                                       p_exp=self._wfnsym_dict['p_exponents'],
+                                       con_coef=self._wfnsym_dict['con_coefficients'],
+                                       p_con_coef=self._wfnsym_dict['p_con_coefficients'],
+                                       RAt=self._molecule.geometry.get_positions(),
+                                       n_prim=self._wfnsym_dict['n_primitive'],
+                                       atom_map=self._wfnsym_dict['atom_map'],
+                                       Ca=self._molecule.electronic_structure.coefficients_a,
+                                       Cb=self._molecule.electronic_structure.coefficients_b,
+                                       RCread=center, VAxis=vector_axis1, VAxis2=vector_axis2,
+                                       iCharge=self._molecule.electronic_structure.charge,
+                                       iMult=self._molecule.electronic_structure.multiplicity,
+                                       group=label.upper())
 
     def _get_valence_electrons(self):
         n_valence = 0

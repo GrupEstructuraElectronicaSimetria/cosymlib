@@ -30,7 +30,7 @@ class Molecule:
         return self._electronic_structure
 
     def get_mo_symmetry(self, label, vector_axis2, vector_axis1, center):
-        return self._wfnsym.measure(label, vector_axis2, vector_axis1, center)
+        return self._wfnsym.results(label, vector_axis2, vector_axis1, center)
 
     # get_shape(*)  ????
     #   return self.geometry.get_shape_measure(*)
