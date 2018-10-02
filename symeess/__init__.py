@@ -80,8 +80,8 @@ class Symeess:
         results = self.get_symgroup_measure(group=group, multi=multi, central_atom=central_atom)
         file_io.write_symgroup_measure(group, [molecule.geometry for molecule in self._molecules], results, output_name)
 
-    def write_wnfsym_measure_2file(self, label, VAxis1, VAxis2, RCread, output_name='symeess_wfnsym'):
-        wfnsym_results = self.get_wfnsym_measure(label, VAxis1, VAxis2, RCread)
+    def write_wnfsym_measure_2file(self, label, vector_axis1, vector_axis2, center, output_name='symeess_wfnsym'):
+        wfnsym_results = self.get_wfnsym_measure(label, vector_axis1, vector_axis2, center)
         file_io.write_wfnsym_measure(label, self._molecules[0].geometry, wfnsym_results, output_name)
 
     def get_shape_measure(self, label, type, central_atom=None):
@@ -132,11 +132,11 @@ class Symeess:
                    molecule in self._molecules]
         return results
 
-    def get_wfnsym_measure(self, label, VAxis1, VAxis2, RCread):
-        results = self._molecules[0].electronic_structure.get_wfnsym_measure(label,
-                                                                             VAxis1,
-                                                                             VAxis2,
-                                                                             RCread)
+    def get_wfnsym_measure(self, label, vector_axis1, vector_axis2, center):
+        results = self._molecules[0].get_mo_symmetry(label,
+                                                     vector_axis2=vector_axis2,
+                                                     vector_axis1=vector_axis1,
+                                                     center=center)
         return results
 
 

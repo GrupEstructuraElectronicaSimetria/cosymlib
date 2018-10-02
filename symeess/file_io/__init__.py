@@ -181,8 +181,7 @@ def read_file_fchk(file_name):
                             positions=input_molecule[3],
                             name=name)
 
-        ee = ElectronicStructure(geometry,
-                                 charge=input_molecule[0],
+        ee = ElectronicStructure(charge=input_molecule[0],
                                  multiplicity=input_molecule[1],
                                  basis=basis,
                                  Ca=input_molecule[10],

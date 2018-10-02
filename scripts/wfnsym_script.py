@@ -17,11 +17,9 @@ example = Symeess()
 example.set_molecules(molecule)
 VAxis1 = [0.000000000, 0.000000000, 1.000000000]
 VAxis2 = [-2.027247, 0.000133, -0.898469]
-norm = np.linalg.norm(VAxis2)
-VAxis2 = VAxis2/norm
+# norm = np.linalg.norm(VAxis2)
+# VAxis2 = VAxis2/norm
 RCread = [0.002440, -0.000122, 0.017307]
-angsb = 1.889726124993590
-# print([x*angsb for x in RCread])
-example.write_wnfsym_measure_2file('Td', VAxis1=VAxis1,
-                                   VAxis2=VAxis2,
-                                   RCread=RCread)
+example.write_wnfsym_measure_2file('Td', vector_axis1=VAxis1,
+                                   vector_axis2=VAxis2,
+                                   center=RCread)
