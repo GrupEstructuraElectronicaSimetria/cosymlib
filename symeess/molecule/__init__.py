@@ -15,6 +15,7 @@ class Molecule:
         if ee is not None:
             self._electronic_structure = ee
 
+        # self._wfnsym = symmetry.wfnsym.Wfnsym(self)
     def get_name(self):
         return self._name
 
@@ -26,6 +27,15 @@ class Molecule:
     @property
     def electronic_structure(self):
         return self._electronic_structure
+
+
+    # def get_mo_symmetry()
+
+    # get_shape(*)  ????
+    #   return self.geometry.get_shape_measure(*)
+
+    # get_structural_symmetry()  ???
+
 
     # def calculate_pointgroup(self):
     #     symmetry.get_pointgroup(self._geometry.get_symbols(), self._geometry.get_positions())

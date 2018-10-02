@@ -1,5 +1,5 @@
 from symeess import shape, tools
-from symgroupy import Symgroupy
+from symeess.symmetry import symgroup
 import numpy as np
 
 
@@ -45,7 +45,8 @@ class Geometry:
                 self._positions.append([float(j) for j in element])
 
         self._positions = np.array(self._positions)
-        self._shape = shape.Shape(self._positions)
+        self._shape = shape.Shape(self)
+        self._symgroup = symgroup.Symgroup(self)
 
     def get_name(self):
         return self._name
@@ -70,13 +71,8 @@ class Geometry:
         return self._shape.structure(shape_label,
                                      central_atom=central_atom)
 
-    def get_symgroup_measure(self, label, multi, central_atom=None):
-        results = Symgroupy(self.get_positions(),
-                            group=label,
-                            multi=multi,
-                            labels=self.get_symbols(),
-                            central_atom=central_atom)
-        return results
+    def get_symmetry_measure(self, label, central_atom=None):
+        return self._symgroup.measure(label, central_atom=central_atom)
 
     def get_path_deviation(self, shape_label1, shape_label2, central_atom):
         if shape_label1+'_'+shape_label2 not in self._path_deviation:

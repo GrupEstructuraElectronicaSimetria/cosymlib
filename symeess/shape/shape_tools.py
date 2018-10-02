@@ -2,16 +2,22 @@ import os
 import yaml
 import numpy as np
 
+ideal_structures = None
+
+
 def get_test_structure(label, central_atom=None):
 
-    file_path = os.path.dirname(os.path.abspath(__file__)) + '/ideal_structures.yaml'
-    with open(file_path, 'r') as stream:
-        ideal_structures = yaml.load(stream)
+    global ideal_structures
+    if ideal_structures is None:
+        file_path = os.path.dirname(os.path.abspath(__file__)) + '/ideal_structures.yaml'
+        with open(file_path, 'r') as stream:
+            ideal_structures = yaml.load(stream)
+
     if central_atom is None:
-        ideal_structures[label].pop(0)
-        measure_structure = np.array(ideal_structures[label])
+        measure_structure = np.array(ideal_structures[label][1:])
     else:
-        measure_structure = _order_coordinates(ideal_structures[label], [1, len(ideal_structures[label])])
+        last = len(ideal_structures[label])
+        measure_structure = order_coordinates(ideal_structures[label], [1, last])
     return measure_structure
 
 
@@ -39,14 +45,11 @@ def get_generalized_coordinate(Sq, shape_label1, shape_label2):
     return GenCoord
 
 
-def _order_coordinates(coordinates, c_atom):
-
-    old_position = c_atom[0] - 1
-    new_position = c_atom[1] - 1
-    array_to_change = coordinates[old_position]
-    coordinates = np.delete(coordinates, old_position, 0)
-    coordinates = np.insert(coordinates, new_position, array_to_change, 0)
-    return np.array(coordinates)
+def order_coordinates(coordinates, indices):
+    indices = [i - 1 for i in indices]
+    coordinates = np.array(coordinates).copy()
+    coordinates[indices, :] = coordinates[indices[::-1], :]
+    return coordinates
 
 
 def _get_symmetry_angle(shape_label1, shape_label2):

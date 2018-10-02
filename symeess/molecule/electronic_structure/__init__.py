@@ -4,12 +4,12 @@ from symeess import tools
 
 class ElectronicStructure:
     def __init__(self,
-                 geometry,
+                 geometry,  # fora!
                  charge=0,
                  multiplicity=1,
                  basis=None,
-                 Ca=None,
-                 Cb=None):
+                 Ca=None, # nomes coeficients
+                 Cb=None): # fora
 
         self._wfnsym_dict = {}
         self._charge = charge
