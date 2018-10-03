@@ -128,7 +128,7 @@ class Symeess:
         return results
 
     def get_symgroup_measure(self, group, multi=1, central_atom=None):
-        results = [molecule.geometry.get_symgroup_measure(label=group, multi=multi, central_atom=central_atom) for
+        results = [molecule.geometry.get_symmetry_measure(label=group, multi=multi, central_atom=central_atom) for
                    molecule in self._molecules]
         return results
 

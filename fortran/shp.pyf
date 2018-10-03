@@ -15,7 +15,7 @@ python module shp ! in
             use cominfo
             real(kind=8) dimension(na_py,3) :: cd_py
             integer, check(shape(cd_py,0)==na_py),depend(cd_py), intent(hide) :: na_py=shape(cd_py,0)
-            logical, :: mt_py
+            logical :: mt_py
             real(kind=8) dimension(na_py,3) :: id_py
             real(kind=8) dimension(na_py,3),intent(out),depend(na_py) :: pl_py
             real(kind=8) intent(out) :: cm_py

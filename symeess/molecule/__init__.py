@@ -1,6 +1,6 @@
 from symeess.molecule.geometry import Geometry
 from symeess.molecule.electronic_structure import ElectronicStructure
-from symmetry.wfnsym import WFNSYM
+from symmetry.wfnsym import Wfnsym
 
 
 class Molecule:
@@ -14,8 +14,7 @@ class Molecule:
         self._name = geometry.get_name()
         if ee is not None:
             self._electronic_structure = ee
-
-        self._wfnsym = WFNSYM(self)
+            self._wfnsym = Wfnsym(self)
 
     def get_name(self):
         return self._name
@@ -30,7 +29,7 @@ class Molecule:
         return self._electronic_structure
 
     def get_mo_symmetry(self, label, vector_axis2, vector_axis1, center):
-        return self._wfnsym.results(label, vector_axis2, vector_axis1, center)
+        return self._wfnsym.get_results(label, vector_axis2, vector_axis1, center)
 
     # get_shape(*)  ????
     #   return self.geometry.get_shape_measure(*)

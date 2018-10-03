@@ -9,7 +9,7 @@ class Geometry:
                  positions=None,
                  name=None):
 
-        self._shape_label = 0
+        # self._shape_label = 0
         self._central_atom = None
         self._path_deviation = {}
         self._GenCoord = {}
@@ -71,8 +71,8 @@ class Geometry:
         return self._shape.structure(shape_label,
                                      central_atom=central_atom)
 
-    def get_symmetry_measure(self, label, central_atom=None):
-        return self._symgroup.measure(label, central_atom=central_atom)
+    def get_symmetry_measure(self, label, central_atom=None, multi=None):
+        return self._symgroup.get_results(label, central_atom=central_atom, multi=multi)
 
     def get_path_deviation(self, shape_label1, shape_label2, central_atom):
         if shape_label1+'_'+shape_label2 not in self._path_deviation:

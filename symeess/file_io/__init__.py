@@ -9,7 +9,7 @@ from symeess import tools
 def read_input_file(input_name):
 
     file_name, file_extension = os.path.splitext(input_name)
-    method_name = 'read_file_' + file_extension[1:]
+    method_name = 'get_geometry_from_file_' + file_extension[1:]
     possibles = globals().copy()
     possibles.update(locals())
     method = possibles.get(method_name)

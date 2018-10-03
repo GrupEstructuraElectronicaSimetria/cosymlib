@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import argparse
 from symeess import Symeess, file_io
-import numpy as np
 
 
 parser = argparse.ArgumentParser(description='Symeess')

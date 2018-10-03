@@ -30,10 +30,10 @@ args = parser.parse_args(['-m', '-label', 'SP-4 T-4',
                           '-o', '../examples/coord',
                           '-input_file' , '../examples/coord.xyz'])
 
-molecules = symeess.file_io.read_input_file(args.input_file)
+geometries = symeess.file_io.read_input_file(args.input_file)
 reference_polyhedra = args.reference_polyhedra.split()
 example = symeess.Symeess()
-example.set_molecules(molecules)
+example.set_molecules(geometries)
 example.write_shape_structure_2file(reference_polyhedra, central_atom=args.c)
 example.write_shape_measure_2file(reference_polyhedra, central_atom=args.c)
 example.write_path_parameters_2file('SP-4', 'T-4' , central_atom=args.c)

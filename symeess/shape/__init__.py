@@ -44,7 +44,6 @@ class Shape:
     # Function description
     def structure(self, label, central_atom=None):
         c_atom = False
-
         hash = hashlib.md5('{}{}'.format(c_atom, label).encode()).hexdigest()
         if hash not in self._structures:
             if central_atom is not None:
