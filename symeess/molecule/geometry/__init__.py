@@ -72,7 +72,7 @@ class Geometry:
                                      central_atom=central_atom)
 
     def get_symmetry_measure(self, label, central_atom=None, multi=None):
-        return self._symgroup.get_results(label, central_atom=central_atom, multi=multi)
+        return self._symgroup.results(label, central_atom=central_atom, multi=multi)
 
     def get_path_deviation(self, shape_label1, shape_label2, central_atom):
         if shape_label1+'_'+shape_label2 not in self._path_deviation:

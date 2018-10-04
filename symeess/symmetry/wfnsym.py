@@ -13,11 +13,11 @@ class Wfnsym:
         self._basis_to_wfnsym_format()
         self._results = {}
 
-    def get_symmetry_overlap_analysis(self,
-                                      label,
-                                      vector_axis2,
-                                      vector_axis1=[0., 0., 1.],
-                                      center=[0., 0., 0.]):
+    def symmetry_overlap_analysis(self,
+                                  label,
+                                  vector_axis2,
+                                  vector_axis1=[0., 0., 1.],
+                                  center=[0., 0., 0.]):
 
         hash = hashlib.md5('{}{}'.format(label, vector_axis1, vector_axis2, center).encode()).hexdigest()
         if hash not in self._results:
@@ -27,10 +27,10 @@ class Wfnsym:
                 self._results[hash].wf_SOEVs_b, self._results[hash].wf_SOEVs, self._results[hash].grim_coef,
                 self._results[hash].csm_coef]
 
-    def get_symmetry_ireducible_representation_analysis(self, label,
-                                                        vector_axis2,
-                                                        vector_axis1=[0., 0., 1.],
-                                                        center=[0., 0., 0.]):
+    def symmetry_ireducible_representation_analysis(self, label,
+                                                    vector_axis2,
+                                                    vector_axis1=[0., 0., 1.],
+                                                    center=[0., 0., 0.]):
 
         hash = hashlib.md5('{}{}'.format(label, vector_axis1, vector_axis2, center).encode()).hexdigest()
         if hash not in self._results:
@@ -38,22 +38,15 @@ class Wfnsym:
         return [self._results[hash].IRLab, self._results[hash].mo_IRd_a, self._results[hash].mo_IRd_b,
                 self._results[hash].wf_IRd_a, self._results[hash].wf_IRd_b, self._results[hash].wf_IRd]
 
-    def get_symmetry_matrix(self, label,
-                            vector_axis2,
-                            vector_axis1=[0., 0., 1.],
-                            center=[0., 0., 0.]):
+    def symmetry_matrix(self, label,
+                        vector_axis2,
+                        vector_axis1=[0., 0., 1.],
+                        center=[0., 0., 0.]):
 
         hash = hashlib.md5('{}{}'.format(label, vector_axis1, vector_axis2, center).encode()).hexdigest()
         if hash not in self._results:
             self._do_measure(label, vector_axis1, vector_axis2, center)
         return self._results[hash].SymMat
-
-    def get_results(self, label, vector_axis2, vector_axis1=[0., 0., 1.], center=[0., 0., 0.]):
-
-        hash = hashlib.md5('{}{}'.format(label, vector_axis1, vector_axis2, center).encode()).hexdigest()
-        if hash not in self._results:
-            self._do_measure(label, vector_axis1, vector_axis2, center)
-        return self._results[hash]
 
     def _do_measure(self, label, vector_axis1, vector_axis2, center):
 
@@ -73,6 +66,13 @@ class Wfnsym:
                                        iCharge=self._molecule.electronic_structure.charge,
                                        iMult=self._molecule.electronic_structure.multiplicity,
                                        group=label.upper())
+
+    def results(self, label, vector_axis2, vector_axis1=[0., 0., 1.], center=[0., 0., 0.]):
+
+        hash = hashlib.md5('{}{}'.format(label, vector_axis1, vector_axis2, center).encode()).hexdigest()
+        if hash not in self._results:
+            self._do_measure(label, vector_axis1, vector_axis2, center)
+        return self._results[hash]
 
     def _get_valence_electrons(self):
         n_valence = 0

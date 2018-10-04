@@ -60,6 +60,13 @@ def _get_symmetry_angle(shape_label1, shape_label2):
     return theta
 
 
+def get_shape_label(code, vertices):
+
+    for label in shape_structure_references[str(vertices)+' Vertices']:
+        if label[1] == code:
+            return label[0]
+
+
 minimum_distortion_angles = {'T-4': {'SS-4': 18.234, 'SP-4': 35.264}, 'SS-4': {'SP-4': 25.878},
                              'vOC-5': {'SPY-5': 7.582, 'TBPY-5': 15.722, 'PP-5': 34.588},
                              'SPY-5': {'TBPY-5': 13.417, 'PP-5': 35.243}, 'TBPY-5': {'PP-5': 37.506},

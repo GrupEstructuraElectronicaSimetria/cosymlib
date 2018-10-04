@@ -73,7 +73,7 @@ class TestShapeCorFile(unittest.TestCase):
         path = [molecule.get_path_deviation('OC-6', 'TPR-6', central_atom=int(options[0][1]))
                     for molecule in molecules]
 
-        map = maps.get_shape_map('OC-6', 'TPR-6', central_atom=int(options[0][1]), num_points=20)
+        map = maps.get_shape_map_old('OC-6', 'TPR-6', central_atom=int(options[0][1]), num_points=20)
         good_results = np.loadtxt('data/shape_examples/example05_results_gencoord')
         self.assertTrue(np.allclose(good_results, GenCoord, atol=1e-1))
         good_results = np.loadtxt('data/shape_examples/example05_results_measure')

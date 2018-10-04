@@ -53,8 +53,8 @@ print('measure: {:^10.3f} '.format(measure))
 print('measure: {:^10.3f} '.format(methane.get_symmetry_measure('C4', central_atom=1)))
 
 # Call symgroup as method of Symgroup class (semi function call)
-print('measure: {:^10.3f} '.format(symgroup.Symgroup(methane).get_measure('C4', central_atom=1)))
-print(symgroup.Symgroup(methane).get_nearest_structure('C4', central_atom=1))
+print('measure: {:^10.3f} '.format(symgroup.Symgroup(methane).measure('C4', central_atom=1)))
+print(symgroup.Symgroup(methane).nearest_structure('C4', central_atom=1))
 
 
 # test WFNSYM

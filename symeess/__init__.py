@@ -1,8 +1,7 @@
-import symeess.file_io as file_io
-from symeess.file_io import shape2file
-from symeess.shape import maps
 from symeess.molecule import Molecule
 from symeess import file_io
+from symeess.file_io import shape2file
+from symeess.shape import maps
 import matplotlib.pyplot as plt
 __version__ = 0.6
 

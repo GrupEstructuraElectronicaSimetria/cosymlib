@@ -36,6 +36,8 @@ class Shape:
                 reference_structure = shape_tools.get_test_structure(label, central_atom)
             else:
                 reference_structure = np.array(label)
+                reference_structure = shape_tools.order_coordinates(reference_structure, [central_atom,
+                                                                                          len(reference_structure)])
 
             self._measures[hash] = shp.cshm(coordinates, c_atom, reference_structure)
 
