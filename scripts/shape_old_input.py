@@ -11,7 +11,7 @@ parser.add_argument('-o', '-output', dest='output_name', default=None, help='out
 
 # Shape input flags
 group_shape = parser.add_argument_group('Shape', 'Shape_options')
-group_shape.add_argument('-old_input', action='store_true', default=False)
+# group_shape.add_argument('-old_input', action='store_true', default=False)
 group_shape.add_argument('-m', '--measure', action='store_true', default=False,
                          help='Shape measure of input structure with reference polyhedra')
 group_shape.add_argument('-s', '--structure', action='store_true', default=False,
@@ -22,38 +22,44 @@ group_shape.add_argument('-n', action='store', type=str, default=None,
                          help='Print all the possible reference structures of n vertices')
 
 args = parser.parse_args(['-m',
-                          '-input_file' , '../examples/coord.dat'])
+                          '-s',
+                          '-input_file', '../examples/coord.dat'])
 
 
-# Reading and inizializing
+# Reading and initializing
 geometries = symeess.file_io.read_old_input(args.input_file)
 geometries, options = geometries
+reference_polyhedra = []
+for reference in options[1]:
+    reference_polyhedra.append(shape_tools.get_shape_label(int(reference), int(options[0][0])))
 central_atom = int(options[0][1])
 if central_atom == 0:
     central_atom = None
 
-reference_polyhedron = []
-for reference in options[1]:
-    reference_polyhedron.append(shape_tools.get_shape_label(int(reference), int(options[0][0])))
+if args.output_name is not None:
+    output_name = args.output_name
+else:
+    output_name = 'symeess'
 
 example = symeess.Symeess()
 example.set_molecules(geometries)
 
 # Shape's commands
 if args.structure:
-    example.write_shape_structure_2file(reference_polyhedron, central_atom=central_atom)
+    example.write_shape_structure_2file(reference_polyhedra, central_atom=central_atom, output_name=output_name)
 if args.measure:
-    example.write_shape_measure_2file(reference_polyhedron, central_atom=central_atom)
+    example.write_shape_measure_2file(reference_polyhedra, central_atom=central_atom, output_name=output_name)
 if args.test:
-    for reference in reference_polyhedron:
+    for reference in reference_polyhedra:
         print(reference)
-        print(shape_tools.get_test_structure(reference, central_atom=central_atom))
+        print(symeess.shape.shape_tools.get_test_structure(reference, central_atom=central_atom))
 if args.n:
     args = parser.parse_args(['-n', '4'])
-    print(shape_tools.get_structure_references(args.n))
+    print(symeess.shape.shape_tools.get_structure_references(args.n))
 
-example.write_path_parameters_2file('SP-4', 'T-4' , central_atom=central_atom)
-symeess.write_minimum_distortion_path_shape_2file(reference_polyhedron[0],
-                                                  reference_polyhedron[1],
+# needs parsing
+example.write_path_parameters_2file('SP-4', 'T-4', central_atom=central_atom, output_name=output_name)
+symeess.write_minimum_distortion_path_shape_2file(reference_polyhedra[0],
+                                                  reference_polyhedra[1],
                                                   central_atom=central_atom,
-                                                  num_points=20)
+                                                  num_points=20, output_name=output_name)

@@ -1,5 +1,5 @@
 # Store the periodic table's information
-# Z Atomic number, A Mass number
+# Z Atomic number, A Mass number, valence electrons
 periodic_table_info = dict(H=[1, 1.0079, 1], He=[2, 4.0026, 2], Li=[3, 6.941, 1], Be=[4, 9.0122, 2], B=[5, 10.811, 3],
                            C=[6, 12.0107, 4], N=[7, 14.0067, 5], O=[8, 15.9994, 6], F=[9, 18.9984, 7],
                            Ne=[10, 20.1797, 8], Na=[11, 22.9897, 1], Mg=[12, 24.305, 2], Al=[13, 26.9815, 3],
