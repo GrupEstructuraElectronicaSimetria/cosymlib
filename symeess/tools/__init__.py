@@ -44,7 +44,23 @@ def element_to_atomic_number(symbol):
             return info[0]
 
 
+def element_mass(symbol):
+    for element, info in periodic_table_info.items():
+        if symbol.capitalize() == element:
+            return info[1]
+
+
 def element_valence_electron(symbol):
     for element, info in periodic_table_info.items():
         if symbol.capitalize() == element:
             return info[2]
+
+
+def center_mass(elements, coordinates):
+    cm = [0., 0., 0.]
+    m = 0
+    for ide, element in enumerate(elements):
+        cm += coordinates[ide] * element_mass(element)
+        m += element_mass(element)
+    cm = cm/m
+    return cm

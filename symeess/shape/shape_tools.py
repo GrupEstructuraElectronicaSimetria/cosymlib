@@ -9,16 +9,19 @@ def get_test_structure(label, central_atom=None):
 
     global ideal_structures
     if ideal_structures is None:
-        file_path = os.path.dirname(os.path.abspath(__file__)) + '/ideal_structures.yaml'
+        if central_atom is None:
+            file_path = os.path.dirname(os.path.abspath(__file__)) + '/ideal_structures_no_center.yaml'
+        else:
+            file_path = os.path.dirname(os.path.abspath(__file__)) + '/ideal_structures_center.yaml'
         with open(file_path, 'r') as stream:
             ideal_structures = yaml.load(stream)
 
-    if central_atom is None:
-        measure_structure = np.array(ideal_structures[label][1:])
-    else:
-        last = len(ideal_structures[label])
-        measure_structure = order_coordinates(ideal_structures[label], [1, last])
-    return measure_structure
+    # if central_atom is None:
+    #     measure_structure = np.array(ideal_structures[label][1:])
+    # else:
+    #     last = len(ideal_structures[label])
+    #     measure_structure = order_coordinates(ideal_structures[label], [1, last])
+    return ideal_structures[label]
 
 
 def get_structure_references(vertices):

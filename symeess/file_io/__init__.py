@@ -128,7 +128,7 @@ def read_old_input(file_name):
     return [molecules, options]
 
 
-def read_file_fchk(file_name):
+def get_molecule_from_file_fchk(file_name):
     key_list = ['Charge', 'Multiplicity', 'Atomic numbers', 'Current cartesian coordinates',
                 'Shell type', 'Number of primitives per shell', 'Shell to atom map', 'Primitive exponents',
                 'Contraction coefficients', 'P(S=P) Contraction coefficients',
@@ -138,10 +138,11 @@ def read_file_fchk(file_name):
     with open(file_name, mode='r') as lines:
         name = lines.readline()
         line = lines.readline().split()
+        basis_set = line[-1]
         if 'R' in line[1]:
             del key_list[-1]
 
-        n = 0
+        n = 1
         options = True
         for line in lines:
             if read:
@@ -169,7 +170,8 @@ def read_file_fchk(file_name):
                     read = True
                     break
 
-        basis = _basis_format(symbols=input_molecule[2],
+        basis = _basis_format(basis_set_name=basis_set,
+                              symbols=input_molecule[2],
                               shell_type=input_molecule[4],
                               n_primitives=input_molecule[5],
                               atom_map=input_molecule[6],
@@ -204,7 +206,8 @@ def read_ref_structure(file_name):
     return np.array(input_molecule)
 
 
-def _basis_format(symbols,
+def _basis_format(basis_set_name,
+                  symbols,
                   shell_type,
                   n_primitives,
                   atom_map,
@@ -220,28 +223,28 @@ def _basis_format(symbols,
                 '-2': ['d', 5],
                 '-3': ['f', 7]}
 
-    basis_set = {}
+    basis_set = {basis_set_name : {}}
     n_coef = 0
     for n_atom, atom in enumerate(symbols):
         atom = tools.atomic_number_to_element(atom)
-        if atom not in basis_set:
-            basis_set[atom] = []
+        if atom not in basis_set[basis_set_name]:
+            basis_set[basis_set_name][atom] = []
             for n, atom_type in enumerate(atom_map):
                 if int(atom_type) == n_atom + 1:
-                    basis_set[atom].append({})
-                    basis_set[atom][-1]['shell_type'] = typeList[shell_type[n]][0].upper()
-                    basis_set[atom][-1]['p_exponents'] = [float(x) for x in
+                    basis_set[basis_set_name][atom].append({})
+                    basis_set[basis_set_name][atom][-1]['shell_type'] = typeList[shell_type[n]][0].upper()
+                    basis_set[basis_set_name][atom][-1]['p_exponents'] = [float(x) for x in
                                                           p_exponents[n_coef:int(n_primitives[n]) + n_coef]]
-                    basis_set[atom][-1]['con_coefficients'] = ([float(x) for x in
+                    basis_set[basis_set_name][atom][-1]['con_coefficients'] = ([float(x) for x in
                                                                 c_coefficients[n_coef:int(n_primitives[n]) + n_coef]])
                     if typeList[shell_type[n]][0] == 'sp':
-                        basis_set[atom][-1]['p_con_coefficients'] = ([float(x) for x in
+                        basis_set[basis_set_name][atom][-1]['p_con_coefficients'] = ([float(x) for x in
                                                                       p_c_coefficients[n_coef:int(n_primitives[n])
                                                                                               + n_coef]])
 
                     n_coef += int(n_primitives[n])
         else:
-            for values in basis_set[atom]:
+            for values in basis_set[basis_set_name][atom]:
                 n_coef += len(values['p_exponents'])
 
     return basis_set
@@ -262,7 +265,9 @@ def write_symgroup_measure(label, geometries, symgroup_results, output_name):
         output.write('\n')
         output.write('Centered Structure\n')
         output.write('--------------------------------------------\n')
+        center_mass = tools.center_mass(geometry.get_symbols(), geometry.get_positions())
         for idn, array in enumerate(geometry.get_positions()):
+            array = array - center_mass
             output.write('{:2} {:12.8f} {:12.8f} {:12.8f}\n'.format(geometry.get_symbols()[idn],
                                                                     array[0], array[1], array[2]))
         output.write('--------------------------------------------\n')
@@ -289,21 +294,18 @@ def write_symgroup_measure(label, geometries, symgroup_results, output_name):
 
     output.close()
     output2.close()
-    # output.write('multi CMS')
-    # output.write(symgroup_results.cms_multi)
-    # output.write('multi axis')
-    # output.write(symgroup_results.axis_multi)
 
 
-def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
+def write_wfnsym_measure(label, molecule, wfnsym_results, output_name):
 
     if not os.path.exists('./results'):
         os.makedirs('./results')
     output = open('results/' + output_name + '.wout', 'w')
 
+    geometry = molecule.geometry
     RC = [0.002440, -0.000122, 0.017307]
     output.write('MEASURES OF THE SYMMETRY GROUP:   {}\n'.format(label))
-    output.write('Basis: {}\n'.format('6-31G(d)'))
+    output.write('Basis: {}\n'.format(list(molecule.electronic_structure.basis.keys())[0]))
     output.write('--------------------------------------------\n')
     output.write(' Atomic Coordinates (Angstroms)\n')
     output.write('--------------------------------------------\n')
@@ -420,6 +422,7 @@ def write_wfnsym_measure(label, geometry, wfnsym_results, output_name):
     output.write('WFN ' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.wf_IRd]))
     output.write('\n')
     print('WFNSYM : Calculation has finished normally ')
+    output.close()
 
 
 def reformat_input(array):

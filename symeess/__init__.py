@@ -86,7 +86,7 @@ class Symeess:
     def write_wnfsym_measure_2file(self, label, vector_axis1, vector_axis2, center, output_name='symeess'):
         output_name = output_name + '_wfnsym'
         wfnsym_results = self.get_wfnsym_measure(label, vector_axis1, vector_axis2, center)
-        file_io.write_wfnsym_measure(label, self._molecules[0].geometry, wfnsym_results, output_name)
+        file_io.write_wfnsym_measure(label, self._molecules[0], wfnsym_results, output_name)
 
     def get_shape_measure(self, label, type, central_atom=None):
         """

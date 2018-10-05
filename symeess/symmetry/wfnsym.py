@@ -88,6 +88,8 @@ class Wfnsym:
                     '3': ['f', 10],
                     '-1': ['sp', 4]}
 
+        key = list(self._molecule.electronic_structure.basis.keys())[0]
+        basis = self._molecule.electronic_structure.basis[key]
         self._wfnsym_dict['shell_type'] = []
         self._wfnsym_dict['n_primitive'] = []
         self._wfnsym_dict['atom_map'] = []
@@ -95,7 +97,7 @@ class Wfnsym:
         con_coefficients = []
         p_con_coefficients = []
         for idn, symbol in enumerate(self._molecule.geometry.get_symbols()):
-            for orbital_type in self._molecule.electronic_structure.basis[symbol]:
+            for orbital_type in basis[symbol]:
                 self._wfnsym_dict['n_primitive'].append(len(orbital_type['p_exponents']))
                 self._wfnsym_dict['atom_map'].append(idn+1)
                 p_exponents.append(orbital_type['p_exponents'])

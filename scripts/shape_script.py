@@ -23,6 +23,7 @@ group_shape.add_argument('-label', dest='reference_polyhedra', action='store',  
 group_shape.add_argument('-n', action='store', type=str, default=None,
                          help='Print all the possible reference structures of n vertices')
 
+# args = parser.parse_args()
 args = parser.parse_args(['-m', '-label', 'SP-4 T-4',
                           '-s',
                           '-c', '1',

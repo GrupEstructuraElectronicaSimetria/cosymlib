@@ -10,7 +10,7 @@ class ElectronicStructure:
                  orbital_coefficients=None):
 
         self._charge = charge
-        self._mult = multiplicity
+        self._multiplicity = multiplicity
         self._basis = basis
         self._Ca = [float(i) for i in orbital_coefficients[0]]
         if not orbital_coefficients[1]:
@@ -24,7 +24,7 @@ class ElectronicStructure:
 
     @property
     def multiplicity(self):
-        return self._mult
+        return self._multiplicity
 
     @property
     def basis(self):
