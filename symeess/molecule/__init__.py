@@ -1,6 +1,6 @@
 from symeess.molecule.geometry import Geometry
 from symeess.molecule.electronic_structure import ElectronicStructure
-from symmetry.wfnsym import Wfnsym
+from symeess.symmetry.wfnsym import Wfnsym
 
 
 class Molecule:

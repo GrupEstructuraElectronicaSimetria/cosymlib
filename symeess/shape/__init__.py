@@ -52,4 +52,20 @@ class Shape:
 
         return self._structures[hash]
 
+    def get_path_deviation(self, Sx, Sy, shape_label1, shape_label2, central_atom=0):
+
+        new_theta = np.arcsin(np.sqrt(Sx) / 10) + np.arcsin(np.sqrt(Sy) / 10)
+        structure_a = shape_tools.get_test_structure(shape_label1, central_atom=central_atom)
+        theta = np.arcsin(np.sqrt(Shape(structure_a).measure(shape_label2, central_atom=len(structure_a))) / 10)
+        path_deviation = ((new_theta / theta) - 1) * 100
+        return path_deviation
+
+    def get_generalized_coordinate(self, Sq, shape_label1, shape_label2, central_atom=0):
+
+        structure_a = shape_tools.get_test_structure(shape_label1, central_atom=central_atom)
+        theta = np.arcsin(np.sqrt(Shape(structure_a).measure(shape_label2, central_atom=len(structure_a))) / 10)
+        gen_coord = round(100 * np.arcsin(np.sqrt(Sq) / 10) / theta, 1)
+        return gen_coord
+
+
 

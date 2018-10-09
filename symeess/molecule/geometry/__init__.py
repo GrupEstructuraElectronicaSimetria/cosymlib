@@ -79,24 +79,16 @@ class Geometry:
         if hash not in self._path_deviation:
             Sx = self.get_shape_measure(shape_label1, central_atom)
             Sy = self.get_shape_measure(shape_label2, central_atom)
-            self._path_deviation[hash] = shape.shape_tools.get_path_deviation(Sx, Sy, shape_label1, shape_label2,
-                                                                              central_atom)
+            self._path_deviation[hash] = self._shape.get_path_deviation(Sx, Sy, shape_label1, shape_label2,
+                                                                        central_atom)
         return self._path_deviation[hash]
 
     def get_generalized_coordinate(self, shape_label1, shape_label2, central_atom):
         hash = hashlib.md5('{}{}{}'.format(shape_label1, shape_label2, central_atom).encode()).hexdigest()
-        # if shape_label1+'_'+shape_label2 not in self._GenCoord:
-        #     if shape_label2+'_'+shape_label1 not in self._GenCoord:
-        #         labels = shape_label1+'_'+shape_label2
-        #         self._GenCoord[labels] = None
-        #     else:
-        #         labels = shape_label2 + '_' + shape_label1
-        # else:
-        #     labels = shape_label1 + '_' + shape_label2
         if hash not in self._GenCoord:
             Sq = self.get_shape_measure(shape_label1, central_atom)
-            self._GenCoord[hash] = shape.shape_tools.get_generalized_coordinate(Sq, shape_label1, shape_label2,
-                                                                                central_atom)
+            self._GenCoord[hash] = self._shape.get_generalized_coordinate(Sq, shape_label1, shape_label2,
+                                                                          central_atom)
         return self._GenCoord[hash]
 
 

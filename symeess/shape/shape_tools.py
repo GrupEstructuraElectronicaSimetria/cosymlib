@@ -1,7 +1,7 @@
 import os
 import yaml
 import numpy as np
-from shape import Shape
+# import shape
 
 
 ideal_structures = None
@@ -31,24 +31,24 @@ def get_structure_references(vertices):
     return references_list
 
 
-def get_path_deviation(Sx, Sy, shape_label1, shape_label2, central_atom=0):
-
-    new_theta = np.arcsin(np.sqrt(Sx)/10) + np.arcsin(np.sqrt(Sy)/10)
-    structure_a = get_test_structure(shape_label1, central_atom=central_atom)
-    theta = np.arcsin(np.sqrt(Shape(structure_a).measure(shape_label2, central_atom=len(structure_a))) / 10)
-    # theta = measure_label2[0]
-    # theta = _get_symmetry_angle(shape_label1, shape_label2)
-    path_deviation = ((new_theta/theta)-1)*100
-    return path_deviation
-
-
-def get_generalized_coordinate(Sq, shape_label1, shape_label2, central_atom=0):
-
-    # theta = _get_symmetry_angle(shape_label1, shape_label2)
-    structure_a = get_test_structure(shape_label1, central_atom=central_atom)
-    theta = np.arcsin(np.sqrt(Shape(structure_a).measure(shape_label2, central_atom=len(structure_a))) / 10)
-    gen_coord = round(100*np.arcsin(np.sqrt(Sq)/10)/theta, 1)
-    return gen_coord
+# def get_path_deviation(Sx, Sy, shape_label1, shape_label2, central_atom=0):
+#
+#     new_theta = np.arcsin(np.sqrt(Sx)/10) + np.arcsin(np.sqrt(Sy)/10)
+#     structure_a = get_test_structure(shape_label1, central_atom=central_atom)
+#     theta = np.arcsin(np.sqrt(shape.Shape(structure_a).measure(shape_label2, central_atom=len(structure_a))) / 10)
+#     # theta = measure_label2[0]
+#     # theta = _get_symmetry_angle(shape_label1, shape_label2)
+#     path_deviation = ((new_theta/theta)-1)*100
+#     return path_deviation
+#
+#
+# def get_generalized_coordinate(Sq, shape_label1, shape_label2, central_atom=0):
+#
+#     # theta = _get_symmetry_angle(shape_label1, shape_label2)
+#     structure_a = get_test_structure(shape_label1, central_atom=central_atom)
+#     theta = np.arcsin(np.sqrt(shape.Shape(structure_a).measure(shape_label2, central_atom=len(structure_a))) / 10)
+#     gen_coord = round(100*np.arcsin(np.sqrt(Sq)/10)/theta, 1)
+#     return gen_coord
 
 
 def order_coordinates(coordinates, indices):
