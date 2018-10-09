@@ -3,64 +3,76 @@
 
 python module shp ! in 
     interface  ! in :shp
-        function cshm(cd_py,na_py,mt_py,id_py) ! in :shp:shp.f90
+        function cshm(cd_py,cr_py,na_py,mt_py) ! in :shp:shp.f90
             use cominfo
             real(kind=8) dimension(na_py,3) :: cd_py
             integer, check(shape(cd_py,0)==na_py),depend(cd_py), intent(hide) :: na_py=shape(cd_py,0)
-            logical :: mt_py
-            real(kind=8) dimension(na_py,3) :: id_py
+            integer :: mt_py
+            real(kind=8) dimension(na_py,3) :: cr_py
             real(kind=8) :: cshm
         end function cshm
-        subroutine poly(cd_py,na_py,mt_py,id_py,pl_py,cm_py) ! in :shp:shp.f90
+        function cshm_ref(cd_py,na_py,id_py,mt_py) ! in :shp:shp.f90
             use cominfo
             real(kind=8) dimension(na_py,3) :: cd_py
             integer, check(shape(cd_py,0)==na_py),depend(cd_py), intent(hide) :: na_py=shape(cd_py,0)
-            logical :: mt_py
-            real(kind=8) dimension(na_py,3) :: id_py
+            integer :: mt_py, id_py
+            real(kind=8) :: cshm_ref
+        end function cshm_ref
+        subroutine poly(cd_py,cr_py,na_py,mt_py,pl_py,cm_py) ! in :shp:shp.f90
+            use cominfo
+            real(kind=8) dimension(na_py,3) :: cd_py
+            integer, check(shape(cd_py,0)==na_py),depend(cd_py), intent(hide) :: na_py=shape(cd_py,0)
+            integer :: mt_py
+            real(kind=8) dimension(na_py,3) :: cr_py
             real(kind=8) dimension(na_py,3),intent(out),depend(na_py) :: pl_py
             real(kind=8) intent(out) :: cm_py
         end subroutine poly
-        subroutine test(cd_py,na_py,mt_py,id_py,pl_py) ! in :shp:shp.f90
+        subroutine poly_ref(cd_py,na_py,id_py,mt_py,pl_py,cm_py) ! in :shp:shp.f90
             use cominfo
             real(kind=8) dimension(na_py,3) :: cd_py
-            integer, optional,check(shape(cd_py,0)==na_py),depend(cd_py), intent(hide) :: na_py=shape(cd_py,0)
-            logical, optional :: mt_py
-            integer :: id_py
+            integer, check(shape(cd_py,0)==na_py),depend(cd_py), intent(hide) :: na_py=shape(cd_py,0)
+            integer :: mt_py, id_py
             real(kind=8) dimension(na_py,3),intent(out),depend(na_py) :: pl_py
+            real(kind=8) intent(out) :: cm_py
+        end subroutine poly_ref
+        subroutine test(nl_py,id_py,pl_py) ! in :shp:shp.f90
+            use cominfo
+            integer :: nl_py, id_py
+            real(kind=8) dimension((nl_py+1),3),intent(out),depend(nl_py) :: pl_py
         end subroutine test
         subroutine nextline(iunit) ! in :shp:shp.f90
             integer intent(in) :: iunit
         end subroutine nextline
-        function csm(icsm) ! in :shp:shp.f90
-            use cominfo
-            integer :: icsm
-            real(kind=8) :: csm
-        end function csm
-        function suml(h) ! in :shp:shp.f90
-            real(kind=8) dimension(3,3),intent(in) :: h
-            real(kind=8) :: suml
-        end function suml
-        subroutine svd(ci,cd,a,r) ! in :shp:shp.f90
-            use cominfo
-            real(kind=8) dimension(61,3),intent(in) :: ci
-            real(kind=8) dimension(61,3),intent(in) :: cd
-            real(kind=8) intent(out) :: a
-            real(kind=8) dimension(3,3),intent(out) :: r
-        end subroutine svd
-        subroutine get_topology ! in :shp:shp.f90
-            use cominfo
-        end subroutine get_topology
-        subroutine anl_geometry(nstr) ! in :shp:shp.f90
-            use cominfo
-            integer intent(in) :: nstr
-        end subroutine anl_geometry
-        subroutine ideal_str(ichk) ! in :shp:shp.f90
-            use cominfo
-            integer intent(in) :: ichk
-        end subroutine ideal_str
-        subroutine equivper ! in :shp:shp.f90
-            use cominfo
-        end subroutine equivper
+!        function csm(icsm) ! in :shp:shp.f90
+!            use cominfo
+!            integer :: icsm
+!            real(kind=8) :: csm
+!        end function csm
+!        function suml(h) ! in :shp:shp.f90
+!            real(kind=8) dimension(3,3),intent(in) :: h
+!            real(kind=8) :: suml
+!        end function suml
+!        subroutine svd(ci,cd,a,r) ! in :shp:shp.f90
+!            use cominfo
+!            real(kind=8) dimension(61,3),intent(in) :: ci
+!            real(kind=8) dimension(61,3),intent(in) :: cd
+!            real(kind=8) intent(out) :: a
+!            real(kind=8) dimension(3,3),intent(out) :: r
+!        end subroutine svd
+!        subroutine get_topology ! in :shp:shp.f90
+!            use cominfo
+!        end subroutine get_topology
+!        subroutine anl_geometry(nstr) ! in :shp:shp.f90
+!            use cominfo
+!            integer intent(in) :: nstr
+!        end subroutine anl_geometry
+!        subroutine ideal_str(ichk) ! in :shp:shp.f90
+!            use cominfo
+!            integer intent(in) :: ichk
+!        end subroutine ideal_str
+!        subroutine equivper ! in :shp:shp.f90
+!            use cominfo
+!        end subroutine equivper
     end interface 
 end python module shp
 

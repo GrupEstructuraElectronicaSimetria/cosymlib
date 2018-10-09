@@ -1,6 +1,7 @@
 from symeess import shape, tools
 from symeess.symmetry import symgroup
 import numpy as np
+import hashlib
 
 
 class Geometry:
@@ -9,7 +10,6 @@ class Geometry:
                  positions=None,
                  name=None):
 
-        # self._shape_label = 0
         self._central_atom = None
         self._path_deviation = {}
         self._GenCoord = {}
@@ -63,45 +63,41 @@ class Geometry:
     def get_symbols(self):
         return self._symbols
 
-    def get_shape_measure(self, shape_label, central_atom=None):
+    def get_shape_measure(self, shape_label, central_atom=0):
         return self._shape.measure(shape_label,
                                    central_atom=central_atom)
 
-    def get_shape_structure(self, shape_label, central_atom=None):
+    def get_shape_structure(self, shape_label, central_atom=0):
         return self._shape.structure(shape_label,
                                      central_atom=central_atom)
 
-    def get_symmetry_measure(self, label, central_atom=None, multi=None):
+    def get_symmetry_measure(self, label, central_atom=0, multi=None):
         return self._symgroup.results(label, central_atom=central_atom, multi=multi)
 
     def get_path_deviation(self, shape_label1, shape_label2, central_atom):
-        if shape_label1+'_'+shape_label2 not in self._path_deviation:
-            if shape_label2+'_'+shape_label1 not in self._path_deviation:
-                labels = shape_label1+'_'+shape_label2
-                self._path_deviation[labels] = None
-            else:
-                labels = shape_label2 + '_' + shape_label1
-        else:
-            labels = shape_label1 + '_' + shape_label2
-        if self._path_deviation[labels] is None:
+        hash = hashlib.md5('{}{}{}'.format(shape_label1, shape_label2, central_atom).encode()).hexdigest()
+        if hash not in self._path_deviation:
             Sx = self.get_shape_measure(shape_label1, central_atom)
             Sy = self.get_shape_measure(shape_label2, central_atom)
-            self._path_deviation[labels] = shape.shape_tools.get_path_deviation(Sx, Sy, shape_label1, shape_label2)
-        return self._path_deviation[labels]
+            self._path_deviation[hash] = shape.shape_tools.get_path_deviation(Sx, Sy, shape_label1, shape_label2,
+                                                                              central_atom)
+        return self._path_deviation[hash]
 
     def get_generalized_coordinate(self, shape_label1, shape_label2, central_atom):
-        if shape_label1+'_'+shape_label2 not in self._GenCoord:
-            if shape_label2+'_'+shape_label1 not in self._GenCoord:
-                labels = shape_label1+'_'+shape_label2
-                self._GenCoord[labels] = None
-            else:
-                labels = shape_label2 + '_' + shape_label1
-        else:
-            labels = shape_label1 + '_' + shape_label2
-        if self._GenCoord[labels] is None:
-            Sq = self.get_shape_measure(shape_label1,  central_atom)
-            self._GenCoord[labels] = shape.shape_tools.get_generalized_coordinate(Sq, shape_label1, shape_label2)
-        return self._GenCoord[labels]
+        hash = hashlib.md5('{}{}{}'.format(shape_label1, shape_label2, central_atom).encode()).hexdigest()
+        # if shape_label1+'_'+shape_label2 not in self._GenCoord:
+        #     if shape_label2+'_'+shape_label1 not in self._GenCoord:
+        #         labels = shape_label1+'_'+shape_label2
+        #         self._GenCoord[labels] = None
+        #     else:
+        #         labels = shape_label2 + '_' + shape_label1
+        # else:
+        #     labels = shape_label1 + '_' + shape_label2
+        if hash not in self._GenCoord:
+            Sq = self.get_shape_measure(shape_label1, central_atom)
+            self._GenCoord[hash] = shape.shape_tools.get_generalized_coordinate(Sq, shape_label1, shape_label2,
+                                                                                central_atom)
+        return self._GenCoord[hash]
 
 
 def chunks(l, n):

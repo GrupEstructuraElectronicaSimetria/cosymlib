@@ -16,6 +16,7 @@ setup(name='symeess',
                 'symeess.molecule',
                 'symeess.molecule.geometry',
                 'symeess.file_io',
-                'symeess.unitest'],
+                'symeess.symmetry'],
+                # 'symeess.unitest'],
       scripts=['scripts/wfnsym_script.py'],
       ext_modules=[shape])

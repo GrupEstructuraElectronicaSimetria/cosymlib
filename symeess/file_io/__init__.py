@@ -39,15 +39,17 @@ def get_geometry_from_file_xyz(file_name):
                     input_molecule[0].append(line.split()[0])
                     input_molecule[1].append(line.split()[1:])
                 except (ValueError, IndexError):
-                    if input_molecule:
+                    if input_molecule[0]:
                         molecules.append(Geometry(symbols=input_molecule[0],
                                                   positions=input_molecule[1],
                                                   name=name))
                     input_molecule = [[], []]
-                    name = lines.readline().split()[0]
+                    name = line.split()[0]
+
         molecules.append(Geometry(symbols=input_molecule[0],
                                   positions=input_molecule[1],
                                   name=name))
+
     return molecules
 
 

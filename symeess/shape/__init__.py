@@ -22,43 +22,33 @@ class Shape:
         self._test_structures = {}
 
     # Function description
-    def measure(self, label, central_atom=None):
-        c_atom = False
-        hash = hashlib.md5('{}{}'.format(c_atom, label).encode()).hexdigest()
+    def measure(self, label, central_atom=0):
+        hash = hashlib.md5('{}{}'.format(central_atom, label).encode()).hexdigest()
         if hash not in self._measures:
-            if central_atom is not None:
-                coordinates = shape_tools.order_coordinates(self._coordinates, [central_atom, len(self._coordinates)])
-                c_atom = True
-            else:
-                coordinates = self._coordinates
-
             if isinstance(label, str):
                 reference_structure = shape_tools.get_test_structure(label, central_atom)
             else:
                 reference_structure = np.array(label)
-                reference_structure = shape_tools.order_coordinates(reference_structure, [central_atom,
-                                                                                          len(reference_structure)])
+                # reference_structure = shape_tools.order_coordinates(reference_structure, [central_atom,
+                #                                                                           len(reference_structure)])
 
-            self._measures[hash] = shp.cshm(coordinates, c_atom, reference_structure)
+            self._measures[hash] = shp.cshm(self._coordinates, reference_structure, central_atom)
 
         return self._measures[hash]
 
     # Function description
-    def structure(self, label, central_atom=None):
-        c_atom = False
-        hash = hashlib.md5('{}{}'.format(c_atom, label).encode()).hexdigest()
+    def structure(self, label, central_atom=0):
+        hash = hashlib.md5('{}{}'.format(central_atom, label).encode()).hexdigest()
         if hash not in self._structures:
-            if central_atom is not None:
-                coordinates = shape_tools.order_coordinates(self._coordinates, [central_atom, len(self._coordinates)])
-                c_atom = True
-            else:
-                coordinates = self._coordinates
             if isinstance(label, str):
                 reference_structure = shape_tools.get_test_structure(label, central_atom)
             else:
                 reference_structure = np.array(label)
+                # reference_structure = shape_tools.order_coordinates(reference_structure, [central_atom,
+                #                                                                           len(reference_structure)])
 
-            self._structures[hash], self._measures[hash] = shp.poly(coordinates, c_atom, reference_structure)
+            self._structures[hash], self._measures[hash] = shp.poly(self._coordinates, reference_structure,
+                                                                    central_atom)
 
         return self._structures[hash]
 

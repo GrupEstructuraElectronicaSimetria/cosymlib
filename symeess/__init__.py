@@ -34,7 +34,7 @@ class Symeess:
         geometries = file_io.read_input_file(input_file)
         self.set_molecules(geometries)
 
-    def write_shape_measure_2file(self, shape_label, central_atom=None, output_name='symeess'):
+    def write_shape_measure_2file(self, shape_label, central_atom=0, output_name='symeess'):
         """
         Method that prints to file shape's measure
         :param shape_label: reference polyhedra label which user will compare with his polyhedra.
@@ -48,7 +48,7 @@ class Symeess:
         molecules_name = [molecule.get_name() for molecule in self._molecules]
         shape2file.write_shape_measure_data(shape_results_measures, molecules_name, shape_label, output_name=output_name)
 
-    def write_shape_structure_2file(self, shape_label, central_atom=None, output_name='symeess'):
+    def write_shape_structure_2file(self, shape_label, central_atom=0, output_name='symeess'):
         """
         Method that prints to file shape's structure
         :param shape_label: reference polyhedra label which user will compare with his polyhedra.
@@ -67,7 +67,7 @@ class Symeess:
                                               symbols, molecules_name, shape_label,
                                               output_name=output_name)
 
-    def write_path_parameters_2file(self, shape_label1, shape_label2, central_atom=None,
+    def write_path_parameters_2file(self, shape_label1, shape_label2, central_atom=0,
                                     maxdev=15, mindev=0, maxgco=101, mingco=0, output_name='symeess'):
 
         output_name = output_name + '_shape'
@@ -78,7 +78,7 @@ class Symeess:
                                                           maxdev, mindev, mingco, maxgco, names_order,
                                                           output_name=output_name)
 
-    def write_symgroup_measure(self, group, multi=1, central_atom=None, output_name='symeess'):
+    def write_symgroup_measure(self, group, multi=1, central_atom=0, output_name='symeess'):
         output_name = output_name + '_symgroup'
         results = self.get_symgroup_measure(group=group, multi=multi, central_atom=central_atom)
         file_io.write_symgroup_measure(group, [molecule.geometry for molecule in self._molecules], results, output_name)
@@ -88,7 +88,7 @@ class Symeess:
         wfnsym_results = self.get_wfnsym_measure(label, vector_axis1, vector_axis2, center)
         file_io.write_wfnsym_measure(label, self._molecules[0], wfnsym_results, output_name)
 
-    def get_shape_measure(self, label, type, central_atom=None):
+    def get_shape_measure(self, label, type, central_atom=0):
         """
         :param label: reference polyhedra label which user will compare with his polyhedra.
                       Reference labels can be found in [#f1]_
@@ -101,17 +101,17 @@ class Symeess:
                  for molecule in self._molecules]
         return shape_data
 
-    def get_molecule_path_deviation(self, shape_label1, shape_label2, central_atom=None):
+    def get_molecule_path_deviation(self, shape_label1, shape_label2, central_atom=0):
         path_deviation = [molecule.geometry.get_path_deviation(shape_label1, shape_label2, central_atom) for molecule
                           in self._molecules]
         return path_deviation
 
-    def get_molecule_GenCoord(self, shape_label1, shape_label2, central_atom=None):
+    def get_molecule_GenCoord(self, shape_label1, shape_label2, central_atom=0):
         GenCoord = [molecule.geometry.get_generalized_coordinate(shape_label1, shape_label2, central_atom)
                     for molecule in self._molecules]
         return GenCoord
 
-    def get_path_parameters(self, shape_label1, shape_label2, central_atom=None, maxdev=15, mindev=0,
+    def get_path_parameters(self, shape_label1, shape_label2, central_atom=0, maxdev=15, mindev=0,
                             maxgco=101, mingco=0):
 
         csm = {shape_label1: self.get_shape_measure(shape_label1, 'measure', central_atom),
@@ -131,7 +131,7 @@ class Symeess:
         results = [i for indx, i in enumerate(results) if pathdev_filter[indx] == True]
         return results
 
-    def get_symgroup_measure(self, group, multi=1, central_atom=None):
+    def get_symgroup_measure(self, group, multi=1, central_atom=0):
         results = [molecule.geometry.get_symmetry_measure(label=group, multi=multi, central_atom=central_atom) for
                    molecule in self._molecules]
         return results
@@ -144,7 +144,7 @@ class Symeess:
         return results
 
 
-def write_minimum_distortion_path_shape_2file(shape_label1, shape_label2, central_atom=None, num_points=50, show=False,
+def write_minimum_distortion_path_shape_2file(shape_label1, shape_label2, central_atom=0, num_points=50, show=False,
                                               output_name='shape'):
     output_name = output_name + '_map'
     path = get_shape_map(shape_label1, shape_label2, central_atom, num_points)
