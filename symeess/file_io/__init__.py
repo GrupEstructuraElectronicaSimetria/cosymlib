@@ -8,6 +8,7 @@ from symeess import tools
 # INPUT part
 def read_input_file(input_name):
 
+    print('Reading file {}...'.format(os.path.basename(input_name)))
     file_name, file_extension = os.path.splitext(input_name)
     method_name = 'get_geometry_from_file_' + file_extension[1:]
     possibles = globals().copy()

@@ -2,9 +2,9 @@ from symeess.shape import shape_tools, Shape
 import numpy as np
 
 
-def get_shape_map(shape_label1, shape_label2, central_atom=0, num_points=20):
+def get_shape_map(shape_label1, shape_label2, num_points=20):
 
-    structure_a = shape_tools.get_test_structure(shape_label1, central_atom=central_atom)
+    structure_a = shape_tools.get_test_structure(shape_label1, central_atom=1)
     structure_b = Shape(structure_a).structure(shape_label2, central_atom=len(structure_a))
     structure_b = np.concatenate((structure_b[1:], [structure_b[0]]))
 

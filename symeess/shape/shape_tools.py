@@ -1,7 +1,6 @@
 import os
 import yaml
 import numpy as np
-# import shape
 
 
 ideal_structures = None
@@ -31,39 +30,11 @@ def get_structure_references(vertices):
     return references_list
 
 
-# def get_path_deviation(Sx, Sy, shape_label1, shape_label2, central_atom=0):
-#
-#     new_theta = np.arcsin(np.sqrt(Sx)/10) + np.arcsin(np.sqrt(Sy)/10)
-#     structure_a = get_test_structure(shape_label1, central_atom=central_atom)
-#     theta = np.arcsin(np.sqrt(shape.Shape(structure_a).measure(shape_label2, central_atom=len(structure_a))) / 10)
-#     # theta = measure_label2[0]
-#     # theta = _get_symmetry_angle(shape_label1, shape_label2)
-#     path_deviation = ((new_theta/theta)-1)*100
-#     return path_deviation
-#
-#
-# def get_generalized_coordinate(Sq, shape_label1, shape_label2, central_atom=0):
-#
-#     # theta = _get_symmetry_angle(shape_label1, shape_label2)
-#     structure_a = get_test_structure(shape_label1, central_atom=central_atom)
-#     theta = np.arcsin(np.sqrt(shape.Shape(structure_a).measure(shape_label2, central_atom=len(structure_a))) / 10)
-#     gen_coord = round(100*np.arcsin(np.sqrt(Sq)/10)/theta, 1)
-#     return gen_coord
-
-
 def order_coordinates(coordinates, indices):
     indices = [i - 1 for i in indices]
     coordinates = np.array(coordinates).copy()
     coordinates[indices, :] = coordinates[indices[::-1], :]
     return coordinates
-
-
-# def _get_symmetry_angle(shape_label1, shape_label2):
-#     try:
-#         theta = minimum_distortion_angles[shape_label1][shape_label2]
-#     except KeyError:
-#         theta = minimum_distortion_angles[shape_label2][shape_label1]
-#     return theta
 
 
 def get_shape_label(code, vertices):
@@ -72,19 +43,6 @@ def get_shape_label(code, vertices):
         if label[1] == code:
             return label[0]
 
-
-# minimum_distortion_angles = {'T-4': {'SS-4': 18.234, 'SP-4': 35.264}, 'SS-4': {'SP-4': 25.878},
-#                              'vOC-5': {'SPY-5': 7.582, 'TBPY-5': 15.722, 'PP-5': 34.588},
-#                              'SPY-5': {'TBPY-5': 13.417, 'PP-5': 35.243}, 'TBPY-5': {'PP-5': 37.506},
-#                              'OC-6': {'TPR-6': 24.149, 'PPY-6': 33.484, 'HP-6': 35.264},
-#                              'TPR-6': {'PPY-6': 24.362, 'HP-6': 35.472}, 'PPY-6': {'HP-6': 32.359},
-#                              'COC-7': {'CTPR-7': 7.099, 'JPBPY-7': 16.852, 'HPY-7': 24.393, 'HP-7': 37.924},
-#                              'CTPR-7': {'JPBPY-7': 14.934, 'HPY-7': 26.530, 'HP-7': 36.794},
-#                              'JPBPY-7': {'HPY-7': 31.105, 'HP-7': 36.399}, 'HPY-7': {'HP-7': 30.309},
-#                              'CU-8': {'TDD-8': 16.379, 'SAPR-8': 19.360, 'HBPY-8': 16.842, 'HPY-8': 33.592,
-#                                       'OP-8': 38.240}, 'TDD-8': {'SAPR-8': 9.716, 'HBPY-8': 23.326, 'HPY-8': 29.863,
-#                              'OP-8': 34.533}, 'SAPR-8': {'HBPY-8': 25.444, 'HPY-8': 29.691, 'OP-8': 30.736},
-#                              'HBPY-8': {'HPY-8': 29.109, 'OP-8': 34.708}, 'HPY-8': {'OP-8': 28.528}}
 
 shape_structure_references = {'2 Vertices': [['L-2', 1, 'Dinfh', 'Linear'],
                                              ['vT-2', 2, 'C2v', 'Divacant tetrahedron'],

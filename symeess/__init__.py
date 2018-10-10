@@ -71,10 +71,10 @@ class Symeess:
                                     maxdev=15, mindev=0, maxgco=101, mingco=0, output_name='symeess'):
 
         output_name = output_name + '_shape'
-        shape, devpath, GenCoord = self.get_path_parameters(shape_label1, shape_label2, central_atom=central_atom,
+        csm, devpath, GenCoord = self.get_path_parameters(shape_label1, shape_label2, central_atom=central_atom,
                                                             maxdev=maxdev, mindev=mindev, maxgco=maxgco, mingco=mingco)
         names_order = [molecule.get_name() for molecule in self._molecules]
-        shape2file.write_minimal_distortion_path_analysis(shape_label1, shape_label2, shape, devpath, GenCoord,
+        shape2file.write_minimal_distortion_path_analysis(shape_label1, shape_label2, csm, devpath, GenCoord,
                                                           maxdev, mindev, mingco, maxgco, names_order,
                                                           output_name=output_name)
 
@@ -144,10 +144,10 @@ class Symeess:
         return results
 
 
-def write_minimum_distortion_path_shape_2file(shape_label1, shape_label2, central_atom=0, num_points=50, show=False,
+def write_minimum_distortion_path_shape_2file(shape_label1, shape_label2, num_points=20, show=False,
                                               output_name='shape'):
     output_name = output_name + '_map'
-    path = get_shape_map(shape_label1, shape_label2, central_atom, num_points)
+    path = get_shape_map(shape_label1, shape_label2, num_points)
     shape2file.write_shape_map(shape_label1, shape_label2, path, output_name)
     if show:
         plt.plot(path[0], path[1], linewidth=2.0)
@@ -156,6 +156,6 @@ def write_minimum_distortion_path_shape_2file(shape_label1, shape_label2, centra
         plt.show()
 
 
-def get_shape_map(shape_label1, shape_label2, central_atom, num_points):
-    x, y = maps.get_shape_map(shape_label1, shape_label2, central_atom, num_points)
+def get_shape_map(shape_label1, shape_label2, num_points):
+    x, y = maps.get_shape_map(shape_label1, shape_label2, num_points)
     return x, y

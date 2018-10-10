@@ -1,7 +1,6 @@
 from symeess import shape, tools
 from symeess.symmetry import symgroup
 import numpy as np
-import hashlib
 
 
 class Geometry:
@@ -11,8 +10,6 @@ class Geometry:
                  name=None):
 
         self._central_atom = None
-        self._path_deviation = {}
-        self._GenCoord = {}
         self._symbols = []
         self._positions = []
 
@@ -74,22 +71,11 @@ class Geometry:
     def get_symmetry_measure(self, label, central_atom=0, multi=None):
         return self._symgroup.results(label, central_atom=central_atom, multi=multi)
 
-    def get_path_deviation(self, shape_label1, shape_label2, central_atom):
-        hash = hashlib.md5('{}{}{}'.format(shape_label1, shape_label2, central_atom).encode()).hexdigest()
-        if hash not in self._path_deviation:
-            Sx = self.get_shape_measure(shape_label1, central_atom)
-            Sy = self.get_shape_measure(shape_label2, central_atom)
-            self._path_deviation[hash] = self._shape.get_path_deviation(Sx, Sy, shape_label1, shape_label2,
-                                                                        central_atom)
-        return self._path_deviation[hash]
+    def get_path_deviation(self, shape_label1, shape_label2, central_atom=0):
+        return self._shape.get_path_deviation(shape_label1, shape_label2, central_atom)
 
-    def get_generalized_coordinate(self, shape_label1, shape_label2, central_atom):
-        hash = hashlib.md5('{}{}{}'.format(shape_label1, shape_label2, central_atom).encode()).hexdigest()
-        if hash not in self._GenCoord:
-            Sq = self.get_shape_measure(shape_label1, central_atom)
-            self._GenCoord[hash] = self._shape.get_generalized_coordinate(Sq, shape_label1, shape_label2,
-                                                                          central_atom)
-        return self._GenCoord[hash]
+    def get_generalized_coordinate(self, shape_label1, shape_label2, central_atom=0):
+        return self._shape.get_generalized_coordinate(shape_label1, shape_label2, central_atom)
 
 
 def chunks(l, n):

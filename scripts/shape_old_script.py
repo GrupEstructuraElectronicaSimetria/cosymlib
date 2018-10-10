@@ -21,10 +21,10 @@ group_shape.add_argument('-t', '--test', action='store_true', default=False,
 group_shape.add_argument('-n', action='store', type=str, default=None,
                          help='Print all the possible reference structures of n vertices')
 
-# args = parser.parse_args()
-args = parser.parse_args(['-m',
-                          '-s',
-                          '-input_file', '../examples/coord.dat'])
+args = parser.parse_args()
+# args = parser.parse_args(['-m',
+#                           '-s',
+#                           '-input_file', '../examples/coord.dat'])
 
 
 # Reading and initializing
