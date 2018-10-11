@@ -23,7 +23,7 @@ def get_test_structure(label, central_atom=0):
 
 def get_structure_references(vertices):
 
-    print('Available reference structure with {} Vertices'.format(vertices))
+    # print('Available reference structure with {} Vertices'.format(vertices))
     references_list = []
     for ref in shape_structure_references['{} Vertices'.format(vertices)]:
         references_list.append(ref[0])

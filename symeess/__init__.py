@@ -8,7 +8,7 @@ __version__ = 0.6
 
 class Symeess:
     """
-    Main class of symeess program that perform all the jobs
+    Main class of symeess program that can perform all the jobs
     """
 
     def __init__(self):
@@ -88,28 +88,18 @@ class Symeess:
         wfnsym_results = self.get_wfnsym_measure(label, vector_axis1, vector_axis2, center)
         file_io.write_wfnsym_measure(label, self._molecules[0], wfnsym_results, output_name)
 
-    def get_shape_measure(self, label, type, central_atom=0):
-        """
-        :param label: reference polyhedra label which user will compare with his polyhedra.
-                      Reference labels can be found in [#f1]_
-        :param type: type of measure that the user is going to use
-        :param central_atom: position of the central atom in molecule if exist
-        :return:
-        """
-        get_measure = 'get_shape_' + type
-        shape_data = [getattr(molecule.geometry, get_measure)(label, central_atom=central_atom)
-                 for molecule in self._molecules]
-        return shape_data
+    def get_shape_measure(self, label, kind, central_atom=0):
+        get_measure = 'get_shape_' + kind
+        return [getattr(molecule.geometry, get_measure)(label, central_atom=central_atom)
+                for molecule in self._molecules]
 
     def get_molecule_path_deviation(self, shape_label1, shape_label2, central_atom=0):
-        path_deviation = [molecule.geometry.get_path_deviation(shape_label1, shape_label2, central_atom) for molecule
+        return [molecule.geometry.get_path_deviation(shape_label1, shape_label2, central_atom) for molecule
                           in self._molecules]
-        return path_deviation
 
-    def get_molecule_GenCoord(self, shape_label1, shape_label2, central_atom=0):
-        GenCoord = [molecule.geometry.get_generalized_coordinate(shape_label1, shape_label2, central_atom)
+    def get_molecule_generalized_coord(self, shape_label1, shape_label2, central_atom=0):
+        return [molecule.geometry.get_generalized_coordinate(shape_label1, shape_label2, central_atom)
                     for molecule in self._molecules]
-        return GenCoord
 
     def get_path_parameters(self, shape_label1, shape_label2, central_atom=0, maxdev=15, mindev=0,
                             maxgco=101, mingco=0):
@@ -117,31 +107,30 @@ class Symeess:
         csm = {shape_label1: self.get_shape_measure(shape_label1, 'measure', central_atom),
                shape_label2: self.get_shape_measure(shape_label2, 'measure', central_atom)}
         devpath = self.get_molecule_path_deviation(shape_label1, shape_label2, central_atom)
-        generalized_coord = self.get_molecule_GenCoord(shape_label1, shape_label2, central_atom)
+        generalized_coord = self.get_molecule_generalized_coord(shape_label1, shape_label2, central_atom)
         criteria = devpath
-        devpath = self.get_filtered_results(devpath, criteria, maxdev, mindev)
-        generalized_coord = self.get_filtered_results(generalized_coord, criteria, maxdev, mindev)
+        devpath = filter_results(devpath, criteria, maxdev, mindev)
+        generalized_coord = filter_results(generalized_coord, criteria, maxdev, mindev)
         criteria = generalized_coord
-        devpath = self.get_filtered_results(devpath, criteria, maxgco, mingco)
-        generalized_coord = self.get_filtered_results(generalized_coord, criteria, maxgco, mingco)
+        devpath = filter_results(devpath, criteria, maxgco, mingco)
+        generalized_coord = filter_results(generalized_coord, criteria, maxgco, mingco)
         return csm, devpath, generalized_coord
 
-    def get_filtered_results(self, results, criteria, max, min):
-        pathdev_filter = [True if x <= max and x >= min else False for x in criteria]
-        results = [i for indx, i in enumerate(results) if pathdev_filter[indx] == True]
-        return results
-
     def get_symgroup_measure(self, group, multi=1, central_atom=0):
-        results = [molecule.geometry.get_symmetry_measure(label=group, multi=multi, central_atom=central_atom) for
+        return [molecule.geometry.get_symmetry_measure(label=group, multi=multi, central_atom=central_atom) for
                    molecule in self._molecules]
-        return results
 
     def get_wfnsym_measure(self, label, vector_axis1, vector_axis2, center):
-        results = self._molecules[0].get_mo_symmetry(label,
-                                                     vector_axis2=vector_axis2,
-                                                     vector_axis1=vector_axis1,
-                                                     center=center)
-        return results
+        return self._molecules[0].get_mo_symmetry(label,
+                                                  vector_axis2=vector_axis2,
+                                                  vector_axis1=vector_axis1,
+                                                  center=center)
+
+
+def filter_results(results, criteria, max, min):
+    filter = [True if x <= max and x >= min else False for x in criteria]
+    results = [i for indx, i in enumerate(results) if filter[indx] == True]
+    return results
 
 
 def write_minimum_distortion_path_shape_2file(shape_label1, shape_label2, num_points=20, show=False,

@@ -7,10 +7,11 @@ Package to calcuate continuous shape and symmetry measurements
 Installation instructions
 ---------------------------------------------------------
 1. Requirements
-Python 2.7 or higher
-Matplotlib
-numpy
-arparse
+    - Python 2.7 or higher
+    - Matplotlib
+    - Numpy
+    - Arparse
+    - PyYaml
 
 2. Download the source code and place it in the installation 
 directory

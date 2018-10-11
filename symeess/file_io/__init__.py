@@ -10,7 +10,7 @@ def read_input_file(input_name):
 
     print('Reading file {}...'.format(os.path.basename(input_name)))
     file_name, file_extension = os.path.splitext(input_name)
-    method_name = 'get_geometry_from_file_' + file_extension[1:]
+    method_name = 'get_molecule_from_file_' + file_extension[1:]
     possibles = globals().copy()
     possibles.update(locals())
     method = possibles.get(method_name)
@@ -20,7 +20,7 @@ def read_input_file(input_name):
     return method(input_name)
 
 
-def get_geometry_from_file_xyz(file_name):
+def get_molecule_from_file_xyz(file_name):
     """
     Reads a XYZ file and returns the geometry of all structures in it
     :param file_name: file name
@@ -54,7 +54,7 @@ def get_geometry_from_file_xyz(file_name):
     return molecules
 
 
-def get_geometry_from_file_cor(file_name):
+def get_moleculue_from_file_cor(file_name):
     """
     Reads a Conquest formatted file and the geometry of all structures in it
     :param file_name: file name
@@ -83,52 +83,6 @@ def get_geometry_from_file_cor(file_name):
                                   positions=input_molecule[1],
                                   name=name))
     return molecules
-
-
-def read_old_input(file_name):
-    """
-    Reads the old Shape's program input
-    :param file_name: file name
-    :return: list of Geometry objects and
-    """
-    input_molecule = [[], []]
-    molecules = []
-    options = []
-    with open(file_name, mode='r') as lines:
-        while len(options) < 2:
-            line = lines.readline().split()
-            if '$' in line or '!' in line:
-                pass
-            else:
-                options.append(line)
-
-        n_atoms = int(options[0][0])
-        if int(options[0][1]) != 0:
-            n_atoms += 1
-        while True:
-            line = lines.readline().split()
-            if not line:
-                break
-            name = line[0]
-            for i in range(n_atoms):
-                line = lines.readline().split()
-                if '!' in line:
-                    pass
-                else:
-                    if len(line) == 4:
-                        input_molecule[0].append(line[0])
-                        input_molecule[1].append(line[1:])
-                    elif len(line) == 5:
-                        input_molecule[0].append(line[0])
-                        input_molecule[1].append(line[1:-1])
-                    else:
-                        sys.exit('Wrong input format')
-            if input_molecule[0]:
-                molecules.append(Geometry(symbols=input_molecule[0],
-                                  positions=input_molecule[1],
-                                  name=name))
-                input_molecule = [[], []]
-    return [molecules, options]
 
 
 def get_molecule_from_file_fchk(file_name):
@@ -194,7 +148,7 @@ def get_molecule_from_file_fchk(file_name):
         return Molecule(geometry, ee)
 
 
-def read_ref_structure(file_name):
+def read_reference_structure(file_name):
     input_molecule = []
     with open(file_name, mode='r') as lines:
         for line in lines:
@@ -207,6 +161,52 @@ def read_ref_structure(file_name):
                 except (ValueError, IndexError):
                     pass
     return np.array(input_molecule)
+
+
+def read_old_input(file_name):
+    """
+    Reads the old Shape's program input
+    :param file_name: file name
+    :return: list of Geometry objects and
+    """
+    input_molecule = [[], []]
+    molecules = []
+    options = []
+    with open(file_name, mode='r') as lines:
+        while len(options) < 2:
+            line = lines.readline().split()
+            if '$' in line or '!' in line:
+                pass
+            else:
+                options.append(line)
+
+        n_atoms = int(options[0][0])
+        if int(options[0][1]) != 0:
+            n_atoms += 1
+        while True:
+            line = lines.readline().split()
+            if not line:
+                break
+            name = line[0]
+            for i in range(n_atoms):
+                line = lines.readline().split()
+                if '!' in line:
+                    pass
+                else:
+                    if len(line) == 4:
+                        input_molecule[0].append(line[0])
+                        input_molecule[1].append(line[1:])
+                    elif len(line) == 5:
+                        input_molecule[0].append(line[0])
+                        input_molecule[1].append(line[1:-1])
+                    else:
+                        sys.exit('Wrong input format')
+            if input_molecule[0]:
+                molecules.append(Geometry(symbols=input_molecule[0],
+                                  positions=input_molecule[1],
+                                  name=name))
+                input_molecule = [[], []]
+    return [molecules, options]
 
 
 def _basis_format(basis_set_name,

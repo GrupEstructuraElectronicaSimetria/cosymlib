@@ -4,7 +4,7 @@ import symeess
 import sys
 
 
-def main(argv):
+def main(arguments):
 
     parser = argparse.ArgumentParser(description='Symeess')
     parser.add_argument('-input_file', type=str, default=None, help='input file name(+extension)')
@@ -26,12 +26,12 @@ def main(argv):
                              help='print the reference structure of the given label')
     group_shape.add_argument('-c', action='store',
                              type=int,
-                             default=None,
+                             default=0,
                              help='position of the central atom if exist')
     group_shape.add_argument('-label',
                              dest='reference_polyhedra',
                              action='store',
-                             nargs='*',
+                             nargs='+',
                              default=None,
                              help='use labels from Shape manual for desire reference polyhedra')
     group_shape.add_argument('-n',
@@ -46,7 +46,7 @@ def main(argv):
                              action='store_true',
                              default=False)
 
-    args = parser.parse_args(argv)
+    args = parser.parse_args(arguments)
 
     # Reading and initializing
     if args.reference_polyhedra is not None:
@@ -72,8 +72,8 @@ def main(argv):
             for array in symeess.shape.shape_tools.get_test_structure(reference, central_atom=central_atom):
                 print('{:11.8f} {:11.8f} {:11.8f}'.format(array[0], array[1], array[2]))
     if args.n:
-        for label in symeess.shape.shape_tools.get_structure_references(args.n):
-            print(label)
+        print('Available reference structure with {} Vertices'.format(args.n))
+        print(symeess.shape.shape_tools.get_structure_references(args.n))
     if args.map:
         symeess.write_minimum_distortion_path_shape_2file(reference_polyhedron[0],
                                                           reference_polyhedron[1],

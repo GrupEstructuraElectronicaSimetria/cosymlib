@@ -23,8 +23,8 @@ def print_csm(data):
 
 
 # Get structures from files
-molecules_set = file_io.get_geometry_from_file_xyz('coord.xyz')
-fragments_set = file_io.get_geometry_from_file_cor('coord.cor')
+molecules_set = file_io.get_moleculue_from_file_xyz('coord.xyz')
+fragments_set = file_io.get_moleculue_from_file_cor('coord.cor')
 
 # Call shape as method of Geometry class
 print_shape_data(molecules_set)
