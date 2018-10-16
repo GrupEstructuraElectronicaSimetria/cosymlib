@@ -107,7 +107,7 @@ class TestShapeCorFile(unittest.TestCase):
 
     # def test_example08(self):
     #     molecules, options = file_io.read_old_input('data/shape_examples/example08.dat')
-    #     custom_ref_structure = file_io.read_ref_structure('data/shape_examples/example08.ref')
+    #     custom_ref_structure = file_io.read_reference_structure('data/shape_examples/example08.ref')
     #
     #     results = []
     #     results.append([shape.Shape(molecule).measure('TPR-6', central_atom=int(options[0][1]))

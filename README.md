@@ -12,6 +12,7 @@ Installation instructions
     - Numpy
     - Arparse
     - PyYaml
+    - Symgroupy
 
 2. Download the source code and place it in the installation 
 directory

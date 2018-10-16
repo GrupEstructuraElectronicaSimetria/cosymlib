@@ -8,6 +8,7 @@ from symeess import file_io, shape2file, shape
 
 home = expanduser("~")
 
+
 class Execute(QPushButton):
     def __init__(self, title, parent):
         super().__init__(title, parent)
