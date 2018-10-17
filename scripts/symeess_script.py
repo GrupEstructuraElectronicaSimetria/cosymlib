@@ -49,12 +49,10 @@ group_shape.add_argument('-path',
 
 # Symgroup input flags
 group_symgroup = parser.add_argument_group('Symgroup')
-group_symgroup.add_argument('-sym', '--symmetry', action='store_true', default=False,
-                            help='Shape measure of input structure with reference polyhedra')
-# group_symgroup.add_argument('-c', action='store', type=int, default=None,
-#                             help='Position of the central atom if exist')
-# group_symgroup.add_argument('-label', dest='symmetry_operation', action='store',  default=None,
-#                             help='compute the symmetry operation for the given structure')
+group_symgroup.add_argument('-symm', '--symmetry_measure', action='store_true', default=False,
+                            help='Symgroup measure of input structure with reference polyhedra')
+group_symgroup.add_argument('-group', dest='symmetry_group', action='store',  default=None,
+                            help='compute the symmetry operation for the given structure')
 
 
 class Main():
@@ -73,25 +71,25 @@ class Main():
             self.output_name = 'symeess'
 
         self.shape()
+        self.symgroup()
 
     def shape(self):
         # Shape's commands
 
-        central_atom = self.args.c
         reference_polyhedron = self.args.reference_polyhedra
 
         if self.args.structure:
             self.symobj.write_shape_structure_2file(reference_polyhedron,
-                                                    central_atom=central_atom,
+                                                    central_atom=self.args.c,
                                                     output_name=self.output_name)
         if self.args.measure:
             self.symobj.write_shape_measure_2file(reference_polyhedron,
-                                                  central_atom=central_atom,
+                                                  central_atom=self.args.c,
                                                   output_name=self.output_name)
         if self.args.test:
             for reference in reference_polyhedron:
                 print(reference)
-                for array in symeess.shape.shape_tools.get_test_structure(reference, central_atom=central_atom):
+                for array in symeess.shape.shape_tools.get_test_structure(reference, central_atom=self.args.c):
                     print('{:11.8f} {:11.8f} {:11.8f}'.format(array[0], array[1], array[2]))
 
         if self.args.n:
@@ -104,8 +102,16 @@ class Main():
                                                               num_points=20)
         if self.args.path:
             self.symobj.write_path_parameters_2file('SP-4', 'T-4',
-                                                    central_atom=central_atom,
+                                                    central_atom=self.args.c,
                                                     output_name=self.output_name)
+
+    def symgroup(self):
+        # Symgroup commands
+
+        if self.args.symmetry_measure:
+            self.symobj.write_symgroup_measure(self.args.symmetry_group,
+                                               central_atom=self.args.c,
+                                               output_name=self.output_name)
 
 
 if __name__ == '__main__':
