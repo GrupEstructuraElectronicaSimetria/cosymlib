@@ -19,9 +19,9 @@ Shape
 This flags requires the "-label reference_polyhedra" flag.
 The list of flags to run shape in symeess are the following ::
 
-  · -m *Shape measure of input structure with reference polyhedra*
-  · -s *Calculate the ideal structure for the input structure*
-  · -t *Print the reference structure of the given label*
+  · -m\ *Shape measure of input structure with reference polyhedra*
+  · -s\ *Calculate the ideal structure for the input structure*
+  · -t\ *Print the reference structure of the given label*
 
 Optional flags for shape are ::
 
