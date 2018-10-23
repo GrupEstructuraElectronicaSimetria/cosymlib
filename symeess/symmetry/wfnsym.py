@@ -74,9 +74,6 @@ class Wfnsym:
             self._do_measure(label, vector_axis1, vector_axis2, center)
         return self._results[hash]
 
-    def extract(self, d, keys):
-        return dict((k, d[k]) for k in keys if k in d)
-
     def _get_valence_electrons(self):
         n_valence = 0
         for symbol in self._molecule.geometry.get_symbols():

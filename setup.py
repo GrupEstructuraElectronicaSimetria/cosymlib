@@ -22,10 +22,10 @@ setup(name='symeess',
                 'symeess.gui'],
       package_data={'': ['ideal_structures_center.yaml']},
       include_package_data=True,
-      scripts=['scripts/symeess_script.py',
+      scripts=['scripts/symeess_script',
                # 'scripts/shape_script.py',
                # 'scripts/shape_old_script.py',
                # 'scripts/symgroup_script.py',
-               'scripts/wfnsym_script.py'
+               # 'scripts/wfnsym_script.py'
                ],
       ext_modules=[shape])
