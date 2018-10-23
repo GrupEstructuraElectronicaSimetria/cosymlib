@@ -19,18 +19,18 @@ Shape
 This flags requires the "-label reference_polyhedra" flag.
 The list of flags to run shape in symeess are the following ::
 
-  · -m\ *Shape measure of input structure with reference polyhedra*
-  · -s\ *Calculate the ideal structure for the input structure*
-  · -t\ *Print the reference structure of the given label*
+  · -m *Shape measure of input structure with reference polyhedra*
+  · -s *Calculate the ideal structure for the input structure*
+  · -t *Print the reference structure of the given label*
 
 Optional flags for shape are ::
 
-  · -c int *where int is the postion of the central atom in your structure*
+  · -c int\ *where int is the postion of the central atom in your structure*
   · -o output_name *output name without extension*
 
 Extra flags ::
 
-  · -n int *generate the possible ideal structures with int vertices stored in the program*
+  · -n int\ *generate the possible ideal structures with int vertices stored in the program*
   · -map *calculates the minimal distortion interconversion path between two given polyhedra*
   · -path *calculates the path deviation function as well as the generalized coordinate of the studied
   structures in a given path*
