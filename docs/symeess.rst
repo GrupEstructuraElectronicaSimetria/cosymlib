@@ -35,6 +35,13 @@ Extra flags ::
   · -path *calculates the path deviation function as well as the generalized coordinate of the studied
   structures in a given path*
 
+Symgroup
+########
+
+This flags requires the "-group reference_polyhedra" flag.
+The list of flags to run shape in symeess are the following ::
+
+  · -symm *Symgroup measure of input structure with reference polyhedra*
 
 Examples
 ********
