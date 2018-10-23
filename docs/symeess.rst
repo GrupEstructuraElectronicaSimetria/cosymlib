@@ -35,14 +35,6 @@ Extra flags ::
   · -path *calculates the path deviation function as well as the generalized coordinate of the studied
   structures in a given path*
 
-Symgroup
-########
-
-This flags requires the "-group reference_polyhedra" flag.
-The list of flags to run shape in symeess are the following ::
-
-  · -symm *Symgroup measure of input structure with reference polyhedra*
-
 Examples
 ********
 
@@ -63,3 +55,12 @@ To calculate the map between the tetrahedron and the square ::
   $ symeess_script -map -label T-4 SP-4
 
 the output will be in the :file:`results` folder.
+
+Symgroup
+########
+
+This flags requires the "-group reference_polyhedra" flag.
+The list of flags to run shape in symeess are the following ::
+
+  · -symm *Symgroup measure of input structure with reference polyhedra*
+
