@@ -29,8 +29,8 @@ def write_shape_measure_data(measures, molecules_name, shape_label, output_name=
     for label in shape_label:
         n += len(label)
         output.write('{}'.format(label.rjust(n)))
-        n = 6
-    output.write('\n')
+        n = 12 - len(label)
+    output.write('\n\n')
 
     for idx, name in enumerate(molecules_name):
         max_name = len(max(molecules_name, key=len))
@@ -41,7 +41,7 @@ def write_shape_measure_data(measures, molecules_name, shape_label, output_name=
             n = 9 + max_name - len(name)
         for idn, label in enumerate(shape_label):
             output.write(' {:{width}.{prec}f}'.format(measures[idn][idx], width=n, prec=3))
-            n = 8
+            n = 11
         output.write('\n')
     output.close()
 
