@@ -21,21 +21,30 @@ def write_shape_measure_data(measures, molecules_name, shape_label, output_name=
     shape_header(output)
 
     output.write('{}'.format('Structure'))
+    max_name = len(max(molecules_name, key=len))
+    if max_name < 9:
+        n = 5
+    else:
+        n = max_name - 4
     for label in shape_label:
-        n = len(label) + 3
+        n += len(label)
         output.write('{}'.format(label.rjust(n)))
+        n = 6
     output.write('\n')
+
     for idx, name in enumerate(molecules_name):
+        max_name = len(max(molecules_name, key=len))
         output.write('{}'.format(name))
-        if name.strip() == '':
-            n = 4 + len(name)
+        if max_name < 9:
+            n = 18 - len(name)
         else:
-            n = 14 - len(name)
+            n = 9 + max_name - len(name)
         for idn, label in enumerate(shape_label):
             output.write(' {:{width}.{prec}f}'.format(measures[idn][idx], width=n, prec=3))
-            n = 7
+            n = 8
         output.write('\n')
     output.close()
+
 
 def write_shape_structure_data(initial_geometry, structures, measures, symbols,
                                molecules_name, shape_label, output_name=sys.stdout):
