@@ -58,7 +58,7 @@ class Wfnsym:
                                        beta_mo_coeff=self._molecule.electronic_structure.coefficients_b,
                                        charge=self._molecule.electronic_structure.charge,
                                        multiplicity=self._molecule.electronic_structure.multiplicity,
-                                       group=label.capitalize())
+                                       group=label.upper())
 
     def results(self, label, vector_axis2, vector_axis1=[0., 0., 1.], center=[0., 0., 0.]):
 

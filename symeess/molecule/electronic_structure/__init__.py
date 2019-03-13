@@ -1,5 +1,6 @@
 # from symeess.symmetry import wfnsym
 # from symeess import tools
+import numpy as np
 
 
 class ElectronicStructure:
@@ -12,11 +13,11 @@ class ElectronicStructure:
         self._charge = charge
         self._multiplicity = multiplicity
         self._basis = basis
-        self._Ca = [float(i) for i in orbital_coefficients[0]]
+        self._Ca = [float(y) for x in orbital_coefficients[0] for y in x]
         if not orbital_coefficients[1]:
-            self._Cb = [float(i) for i in orbital_coefficients[0]]
+            self._Cb = [float(y) for x in orbital_coefficients[0] for y in x]
         else:
-            self._Cb = [float(i) for i in orbital_coefficients[1]]
+            self._Cb = [float(y) for x in orbital_coefficients[1] for y in x]
 
     @property
     def charge(self):
