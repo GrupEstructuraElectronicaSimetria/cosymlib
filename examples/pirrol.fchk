@@ -1,14 +1,14 @@
-pirrol                                                                  
-Freq      RHF                                                         STO-3G              
+pirrol
+Freq      RHF                                                         STO-3G
 Number of atoms                            I               10
 Info1-9                                    I   N=           9
           20          19           0           0           0         100
            6           1           2
 Full Title                                 C   N=           1
-pirrol      
+pirrol
 Route                                      C   N=           8
 #p HF/STO-3G NOSYMM freq scf=(xqc,direct,MaxConventionalCycl
-es=200,MaxCycle=300) gfinput 6D 10F 
+es=200,MaxCycle=300) gfinput 6D 10F
 Charge                                     I                0
 Multiplicity                               I                1
 Number of electrons                        I               36
@@ -34,8 +34,8 @@ Current cartesian coordinates              R   N=          30
 Number of symbols in /Mol/                 I                0
 Force Field                                I                0
 Atom Types                                 C   N=          10
-                                                            
-                                                            
+
+
 Int Atom Types                             I   N=          10
            0           0           0           0           0           0
            0           0           0           0
@@ -603,8 +603,8 @@ Atom Modifiers                             I   N=          10
            0           0           0           0
 Force Field                                I                0
 Atom Modified Types                        C   N=          10
-                                                            
-                                                            
+
+
 Int Atom Modified Types                    I   N=          10
            0           0           0           0           0           0
            0           0           0           0

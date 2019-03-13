@@ -127,21 +127,30 @@ def get_molecule_from_file_fchk(file_name):
                     read = True
                     break
 
-        basis = _basis_format(basis_set_name=basis_set,
-                              symbols=input_molecule[2],
-                              shell_type=input_molecule[4],
-                              n_primitives=input_molecule[5],
-                              atom_map=input_molecule[6],
-                              p_exponents=input_molecule[7],
-                              c_coefficients=input_molecule[8],
-                              p_c_coefficients=input_molecule[9])
+        bohr_to_angstrom = 0.529177249
+        coordinates = np.array(input_molecule[3], dtype=float).reshape(-1, 3) * bohr_to_angstrom
+
+        atomic_number = [int(num) for num in input_molecule[2]]
+        symbols = []
+        for number in atomic_number:
+            symbols.append(tools.atomic_number_to_element(number))
+
+        basis = basis_format(basis_set_name=basis_set,
+                             atomic_numbers=atomic_number,
+                             atomic_symbols=symbols,
+                             shell_type=input_molecule[4],
+                             n_primitives=input_molecule[5],
+                             atom_map=input_molecule[6],
+                             p_exponents=input_molecule[7],
+                             c_coefficients=input_molecule[8],
+                             p_c_coefficients=input_molecule[9])
 
         geometry = Geometry(symbols=input_molecule[2],
-                            positions=input_molecule[3],
+                            positions=coordinates,
                             name=name)
 
-        ee = ElectronicStructure(charge=input_molecule[0],
-                                 multiplicity=input_molecule[1],
+        ee = ElectronicStructure(charge=input_molecule[0][0],
+                                 multiplicity=input_molecule[1][0],
                                  basis=basis,
                                  orbital_coefficients=[input_molecule[10], input_molecule[11]])
 
@@ -208,15 +217,15 @@ def read_old_input(file_name):
                 input_molecule = [[], []]
     return [molecules, options]
 
-
-def _basis_format(basis_set_name,
-                  symbols,
-                  shell_type,
-                  n_primitives,
-                  atom_map,
-                  p_exponents,
-                  c_coefficients,
-                  p_c_coefficients):
+def basis_format(basis_set_name,
+                 atomic_numbers,
+                 atomic_symbols,
+                 shell_type,
+                 n_primitives,
+                 atom_map,
+                 p_exponents,
+                 c_coefficients,
+                 p_c_coefficients):
 
     typeList = {'0': ['s', 1],
                 '1': ['p', 3],
@@ -226,29 +235,41 @@ def _basis_format(basis_set_name,
                 '-2': ['d', 5],
                 '-3': ['f', 7]}
 
-    basis_set = {basis_set_name : {}}
-    n_coef = 0
-    for n_atom, atom in enumerate(symbols):
-        atom = tools.atomic_number_to_element(atom)
-        if atom not in basis_set[basis_set_name]:
-            basis_set[basis_set_name][atom] = []
-            for n, atom_type in enumerate(atom_map):
-                if int(atom_type) == n_atom + 1:
-                    basis_set[basis_set_name][atom].append({})
-                    basis_set[basis_set_name][atom][-1]['shell_type'] = typeList[shell_type[n]][0].upper()
-                    basis_set[basis_set_name][atom][-1]['p_exponents'] = [float(x) for x in
-                                                          p_exponents[n_coef:int(n_primitives[n]) + n_coef]]
-                    basis_set[basis_set_name][atom][-1]['con_coefficients'] = ([float(x) for x in
-                                                                c_coefficients[n_coef:int(n_primitives[n]) + n_coef]])
-                    if typeList[shell_type[n]][0] == 'sp':
-                        basis_set[basis_set_name][atom][-1]['p_con_coefficients'] = ([float(x) for x in
-                                                                      p_c_coefficients[n_coef:int(n_primitives[n])
-                                                                                              + n_coef]])
+    atomic_numbers = np.array(atomic_numbers, dtype=int)
+    atom_map = np.array(atom_map, dtype=int)
 
-                    n_coef += int(n_primitives[n])
-        else:
-            for values in basis_set[basis_set_name][atom]:
-                n_coef += len(values['p_exponents'])
+    basis_set = {'name': basis_set_name,
+                 'primitive_type': 'gaussian'}
+
+    shell_type_index = [0] + np.cumsum([typeList['{}'.format(s)][1]
+                                        for s in shell_type]).tolist()
+    prim_from_shell_index = [0] + np.cumsum(np.array(n_primitives, dtype=int)).tolist()
+
+    atoms_data = []
+    for iatom, atomic_number in enumerate(atomic_numbers):
+        symbol = atomic_symbols[iatom]
+
+        shell_from_atom_counts = np.unique(atom_map, return_counts=True)[1]
+        shell_from_atom_index = np.unique(atom_map, return_index=True)[1]
+
+        shells_data = []
+        for ishell in range(shell_from_atom_counts[iatom]):
+            st = typeList['{}'.format(shell_type[shell_from_atom_index[iatom] + ishell])]
+            ini_prim = prim_from_shell_index[shell_from_atom_index[iatom] + ishell]
+            fin_prim = prim_from_shell_index[shell_from_atom_index[iatom] + ishell+1]
+
+            shells_data.append({
+                'shell_type': st[0],
+                'p_exponents': p_exponents[ini_prim: fin_prim],
+                'con_coefficients': c_coefficients[ini_prim: fin_prim],
+                'p_con_coefficients': p_c_coefficients[ini_prim: fin_prim],
+            })
+
+        atoms_data.append({'shells': shells_data,
+                           'symbol': symbol,
+                           'atomic_number': atomic_number})
+
+    basis_set['atoms'] = atoms_data
 
     return basis_set
 
