@@ -9,8 +9,9 @@ parser.add_argument('-input_file', type=str, help='input file name(+extension)')
 parser.add_argument('-o', '-output', dest='output_name', default=None, help='output_name')
 
 # args = parser.parse_args()
-args = parser.parse_args(['-o', 'pirrol',
-                          '-input_file', '../examples/pirrol.fchk'])
+args = parser.parse_args(['-o', 'TiH4',
+                          '-input_file', '/Users/efrem/PycharmProjects/ExtendedHuckel/test_Tih4.fchk'])
+                          #'-input_file', '../examples/pirrol.in.fchk'])
 
 
 molecule = file_io.get_molecule_from_file_fchk(args.input_file)
@@ -21,10 +22,10 @@ else:
 
 example = Symeess()
 example.set_molecules(molecule)
-axis1 = [0.000000000, 0.000000000, 1.000000000]
-axis2 = [1., 0., 0.]
-center_operation = [0., 0.0, 0.0]
-example.write_wnfsym_measure_2file('C6v', vector_axis1=axis1,
+axis1 = [1.000000000, 1.000000000, 1.000000000]
+axis2 = [1.000000000, -1.000000000, -1.000000000]
+center_operation = [0., 0., 0.]
+example.write_wnfsym_measure_2file('Td', vector_axis1=axis1,
                                    vector_axis2=axis2,
                                    center=center_operation,
                                    output_name=output_name)

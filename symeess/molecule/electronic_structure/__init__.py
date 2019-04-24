@@ -13,11 +13,11 @@ class ElectronicStructure:
         self._charge = charge
         self._multiplicity = multiplicity
         self._basis = basis
-        self._Ca = [float(y) for x in orbital_coefficients[0] for y in x]
+        self._Ca = [float(x) for x in orbital_coefficients[0]]
         if not orbital_coefficients[1]:
-            self._Cb = [float(y) for x in orbital_coefficients[0] for y in x]
+            self._Cb = [float(x) for x in orbital_coefficients[0]]
         else:
-            self._Cb = [float(y) for x in orbital_coefficients[1] for y in x]
+            self._Cb = [float(x) for x in orbital_coefficients[1]]
 
     @property
     def charge(self):

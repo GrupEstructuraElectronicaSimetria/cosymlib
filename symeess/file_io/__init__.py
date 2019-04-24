@@ -54,7 +54,7 @@ def get_molecule_from_file_xyz(file_name):
     return molecules
 
 
-def get_moleculue_from_file_cor(file_name):
+def get_molecule_from_file_cor(file_name):
     """
     Reads a Conquest formatted file and the geometry of all structures in it
     :param file_name: file name
@@ -107,7 +107,7 @@ def get_molecule_from_file_fchk(file_name):
                     float(line.split()[0])
                     input_molecule[n].append(line.split())
                 except ValueError:
-                    input_molecule[n] = reformat_input(input_molecule[n])
+                    # input_molecule[n] = reformat_input(input_molecule[n])
                     read = False
 
             for idn, key in enumerate(key_list):
@@ -127,6 +127,8 @@ def get_molecule_from_file_fchk(file_name):
                     read = True
                     break
 
+        for n in range(2, len(input_molecule)-1):
+            input_molecule[n] = reformat_input(input_molecule[n])
         bohr_to_angstrom = 0.529177249
         coordinates = np.array(input_molecule[3], dtype=float).reshape(-1, 3) * bohr_to_angstrom
 
