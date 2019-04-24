@@ -25,7 +25,7 @@ install:
     - pip install -e .
 
 script:
-    - cd unittest
+    - cd tests
     - coverage run --source=../symeess -m unittest discover . "test_*.py"
 
 after_success:
