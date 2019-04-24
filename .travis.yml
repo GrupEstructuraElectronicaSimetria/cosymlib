@@ -9,6 +9,7 @@ python:
 
 branches:
   only:
+    - master
     - development_abel
 
 notifications:
