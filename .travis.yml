@@ -19,7 +19,6 @@ notifications:
 install:
     - sudo apt-get install libblas-dev liblapack-dev
     - sudo apt-get install gfortran
-    - cd python
     - pip install coverage
     - pip install python-coveralls
     - pip install -r requirements.txt
