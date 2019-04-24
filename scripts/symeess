@@ -3,7 +3,6 @@ import argparse
 import symeess
 import sys
 
-
 parser = argparse.ArgumentParser(description='Symeess')
 parser.add_argument('-input_file', type=str, default=None, help='input file name(+extension)')
 parser.add_argument('-o', '-output', dest='output_name', default=None, help='customize output file name')

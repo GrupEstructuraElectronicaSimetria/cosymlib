@@ -1,18 +1,23 @@
+[![Build Status](https://travis-ci.com/GrupEstructuraElectronicaSimetria/symeess.svg?branch=master)](https://travis-ci.com/GrupEstructuraElectronicaSimetria/symeess)
+[![Coverage Status](https://coveralls.io/repos/github/GrupEstructuraElectronicaSimetria/symeess/badge.svg?branch=master)](https://coveralls.io/github/GrupEstructuraElectronicaSimetria/symeess?branch=master)
+[![PyPI version](https://badge.fury.io/py/symeess.svg)](https://badge.fury.io/py/symeess)
 ---------------------------------------------------------
-SYMESS 0.1
+SYMEESS 0.6
 ---------------------------------------------------------
-Package to calcuate continuous shape and symmetry measurements
+Package to calculate continuous shape and symmetry measures
 
 ---------------------------------------------------------
 Installation instructions
 ---------------------------------------------------------
 1. Requirements
-    - Python 2.7 or higher
+    - Python 2.7/3.4 or higher
     - Matplotlib
     - Numpy
-    - Arparse
     - PyYaml
     - Symgroupy
+    - Wfnsympy
+    - tinker-tk
+    - Blas/Lapack
 
 2. Download the source code and place it in the installation 
 directory
