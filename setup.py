@@ -1,5 +1,11 @@
 from numpy.distutils.core import setup, Extension
 
+def get_version_number():
+    for l in open('symeess/__init__.py', 'r').readlines():
+        if not(l.find('__version__')):
+            exec(l, globals())
+            return __version__
+
 
 shape = Extension('symeess.shape.shp',
                   # extra_compile_args=['-std=c99'],
@@ -7,8 +13,8 @@ shape = Extension('symeess.shape.shp',
                   sources=['fortran/shp.pyf', 'fortran/shp.f90'])
 
 setup(name='symeess',
-      version='0.6',
-      description='Programa de simetria',
+      version=get_version_number(),
+      description='Continuous measures of shape and symmetry',
       author='Efrem Bernuz',
       author_email='komuisan@gmail.com',
       packages=['symeess',
@@ -22,6 +28,7 @@ setup(name='symeess',
                 'symeess.gui'],
       package_data={'': ['ideal_structures_center.yaml']},
       include_package_data=True,
+      install_requires=['numpy', 'symgroupy', 'wfnsympy', 'PyYAML'],
       scripts=['scripts/symeess_script',
                # 'scripts/shape_script.py',
                # 'scripts/shape_old_script.py',

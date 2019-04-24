@@ -1,0 +1,45 @@
+language: python
+
+os:
+  - linux
+
+python:
+  - "2.7"
+  - "3.4"
+
+branches:
+  only:
+    - development_abel
+
+notifications:
+  email:
+  - abelcarreras83@gmail.com
+#  - komuisan@gmail.com
+
+install:
+    - sudo apt-get install libblas-dev liblapack-dev
+    - sudo apt-get install gfortran
+    - cd python
+    - pip install coverage
+    - pip install python-coveralls
+    - pip install -r requirements.txt
+    - pip install -e .
+
+script:
+    - cd unittest
+    - coverage run --source=../symeess -m unittest discover . "test_*.py"
+
+after_success:
+    - coveralls
+    - cd ..
+
+deploy:
+  - provider: pypi
+    distributions: sdist
+    user: abelcarreras83
+    password:
+      secure: "IFACbxOc23h9lvO/oe9pn0e0PSAdIn1HVGmt6JAgm9olmYaH5JYbCFkPsGIoOpiwsu0iwWjHvI8kiHnrgU5DQgUyotsjPhUK+KodW6diYoUrEvqj50ETQ9OZQnAhpIWvu+YMeYowlEkyBey8SuVOIeQZOYG3GwjQUxrnSIXVhA+d8tlRTnJPUcq3KBsssio+8fKDa7ymcjmfOlZIfMEImyUixK69HvVPdt+OKNcqZpIKaV4geq+g9A96GujBFY/WMvlgBVygnOeOmxJASDwGk1eYsz4+pcB+wpKYGyOYDhx2t27IakC+X+iXem1H6Kh/MK/I6IHvMYPVFWqemDBXholVsNLx+iZ6RsKivniZHMqN0hTVonLKfJZcc5+kWfJgQOt1hYPdc6crAipT2IXvsEmNlXyxKmNDBw3JRvHMbUWsvTfh2AjgrAsVJlMpdDsx32ckrZ28LLlg5xt4x4RbIYWHSRgCax5aOdJ1ABadbqXiOyRhMMLB2QPO0/QRgiL7xhp8qNNmbu/N4oa2yZuu/R5xSDkEifWlMWAxahCKl8MBZKkHRNdwuykbVWF/uuB3ZKLSR2gSBj1qFBceALbAmsn9Ni/D50vJpe/98K+b3TVRhnorQyLK5MPKwDaEt686M6Ci5oM5PkfOGEFkle3f82HA29tpTqx278wJ3qp7KlM="
+    skip_existing: true
+    on:
+      branch: master
+      tags: false
