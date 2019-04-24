@@ -28,8 +28,8 @@ class Molecule:
     def electronic_structure(self):
         return self._electronic_structure
 
-    def get_mo_symmetry(self, label, vector_axis2, vector_axis1, center):
-        return self._wfnsym.results(label, vector_axis2, vector_axis1, center)
+    def get_mo_symmetry(self, label, VAxis1, VAxis2, RCread):
+        return self._wfnsym.results(label, VAxis1, VAxis2, RCread)
 
     # get_shape(*)  ????
     #   return self.geometry.get_shape_measure(*)

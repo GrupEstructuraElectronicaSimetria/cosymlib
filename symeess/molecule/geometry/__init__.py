@@ -68,7 +68,7 @@ class Geometry:
         return self._shape.structure(shape_label,
                                      central_atom=central_atom)
 
-    def get_symmetry_measure(self, label, central_atom=0, multi=None):
+    def get_symmetry_measure(self, label, central_atom=0, multi=1):
         return self._symgroup.results(label, central_atom=central_atom, multi=multi)
 
     def get_path_deviation(self, shape_label1, shape_label2, central_atom=0):

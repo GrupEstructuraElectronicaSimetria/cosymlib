@@ -24,7 +24,7 @@ class Symgroup:
         self._results = {}
 
     # Function description
-    def measure(self, label, central_atom=None, multi=None):
+    def measure(self, label, central_atom=None, multi=1):
 
         hash = hashlib.md5('{}{}'.format(label, central_atom).encode()).hexdigest()
         if hash not in self._results:
@@ -33,7 +33,7 @@ class Symgroup:
         return self._results[hash].csm
 
     # Function description
-    def nearest_structure(self, label, central_atom=None, multi=None):
+    def nearest_structure(self, label, central_atom=None, multi=1):
 
         hash = hashlib.md5('{}{}'.format(label, central_atom).encode()).hexdigest()
         if hash not in self._results:
@@ -41,7 +41,7 @@ class Symgroup:
 
         return self._results[hash].nearest_structure
 
-    def optimum_axis(self, label, central_atom=None, multi=None):
+    def optimum_axis(self, label, central_atom=None, multi=1):
 
         hash = hashlib.md5('{}{}'.format(label, central_atom).encode()).hexdigest()
         if hash not in self._results:
@@ -49,7 +49,7 @@ class Symgroup:
 
         return self._results[hash].optimum_axis
 
-    def optimum_permutation(self, label, central_atom=None, multi=None):
+    def optimum_permutation(self, label, central_atom=None, multi=1):
 
         hash = hashlib.md5('{}{}'.format(label, central_atom).encode()).hexdigest()
         if hash not in self._results:
@@ -57,7 +57,7 @@ class Symgroup:
 
         return self._results[hash].optimum_permutation
 
-    def reference_axis(self, label, central_atom=None, multi=None):
+    def reference_axis(self, label, central_atom=None, multi=1):
 
         hash = hashlib.md5('{}{}'.format(label, central_atom).encode()).hexdigest()
         if hash not in self._results:
@@ -65,7 +65,7 @@ class Symgroup:
 
         return self._results[hash].reference_axis
 
-    def cms_multi(self, label, central_atom=None, multi=None):
+    def cms_multi(self, label, central_atom=None, multi=1):
 
         hash = hashlib.md5('{}{}'.format(label, central_atom).encode()).hexdigest()
         if hash not in self._results:
@@ -73,7 +73,7 @@ class Symgroup:
 
         return self._results[hash].cms_multi
 
-    def axis_multi(self, label, central_atom=None, multi=None):
+    def axis_multi(self, label, central_atom=None, multi=1):
 
         hash = hashlib.md5('{}{}'.format(label, central_atom).encode()).hexdigest()
         if hash not in self._results:
@@ -81,7 +81,7 @@ class Symgroup:
 
         return self._results[hash].axis_multi
 
-    def _do_measure(self, label, central_atom=None, multi=None):
+    def _do_measure(self, label, central_atom, multi):
 
         hash = hashlib.md5('{}{}'.format(label, central_atom).encode()).hexdigest()
         self._results[hash] = Symgroupy(self._coordinates,
@@ -90,7 +90,7 @@ class Symgroup:
                                         central_atom=central_atom,
                                         multi=multi)
 
-    def results(self, label, central_atom=None, multi=None):
+    def results(self, label, central_atom, multi=1):
 
         hash = hashlib.md5('{}{}'.format(label, central_atom).encode()).hexdigest()
         if hash not in self._results:

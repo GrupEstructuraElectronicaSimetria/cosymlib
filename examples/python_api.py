@@ -49,8 +49,8 @@ print('\nSYMMETRY\n--------')
 for i in range(100):
     measure = methane.get_symmetry_measure('C3', central_atom=1)
 
-print('measure: {:^10.3f} '.format(measure))
-print('measure: {:^10.3f} '.format(methane.get_symmetry_measure('C4', central_atom=1)))
+print('measure: {:^10.3f} '.format(measure.csm))
+print('measure: {:^10.3f} '.format(methane.get_symmetry_measure('C4', central_atom=1).csm))
 
 # Call symgroup as method of Symgroup class (semi function call)
 print('measure: {:^10.3f} '.format(symgroup.Symgroup(methane).measure('C4', central_atom=1)))
@@ -62,9 +62,8 @@ print('\nWFNSYM\n--------')
 
 
 molecule = file_io.read_input_file('pirrol.fchk')
-data = molecule.get_mo_symmetry_overlaps('Td',
-                                          VAxis1=[ 0.000000,  0.000000,  1.000000],  # valor defecte
-                                          VAxis2=[-2.027247,  0.000133, -0.898469],
-                                          RCread=[ 0.002440, -0.000122,  0.017307])  # valor per defecte (CM)
+data = molecule.get_mo_symmetry('Td', VAxis1=[ 0.000000,  0.000000,  1.000000],  # valor defecte
+                                VAxis2=[-2.027247,  0.000133, -0.898469],
+                                RCread=[ 0.002440, -0.000122,  0.017307])  # valor per defecte (CM)
 
 print_csm(data)
