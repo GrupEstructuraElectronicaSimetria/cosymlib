@@ -11,11 +11,12 @@ branches:
   only:
     - master
     - development_abel
+    - development_efrem
 
 notifications:
   email:
   - abelcarreras83@gmail.com
-#  - komuisan@gmail.com
+  - komuisan@gmail.com
 
 install:
     - sudo apt-get install libblas-dev liblapack-dev
@@ -41,5 +42,5 @@ deploy:
       secure: "dixFYnD2opk+ZijCMDDe7v+KfbOVxl7Am5JcYTSeMVljlqR/UnOfKgWqMNpNltnxKdrij3O5eqOeomdGtzd4kOU1G8GCrgaHeIrx7C7IkwcllurmqfsBuGxmN5IbTz+8ho5KloPlsz4duDPneA6WCnDmw+I185rLOv+utmkrA+6/5nxxSlJFjsOHw5Aqubo5gGyclMJtgv2xvCZrCDCVM8upcxlI9LQHhCy8JRhniXRadnlmySKr3NwoBFNdON8jYn6e4C6sTNAX82PJINBnAe4WwZpCCuhxdKaWC8hABBu/mglSCFzsraUcaJAt4qind1N8YUbHBeXe1mnEp7Ni+49a6VfAyI/0HZvehQI3IR4a7g3Sfh6kK74gOZjV9lMpj22xGYXQvMt9m5/fjz58yaA363xj0EoHmPWrlcbL2b7+HjXkuG0GdGXqkX66nxXNSCVbmh+zReMKFTfUgvjVGUTMkNlwOpgEGWo65f2std5b8Bken44jRd3joScvLds2V2x6ekAFncPhC4U8T0Xw5uZvTlxKDtwJ/GHHIzVQfuEeUUIPMFuq3N2o1H44JDufwM2/l0CuE1hEISidsZM6YMInpesfz2KlSk1Bo78/xS9odOXrwO4vPUG1OWqiat8pwSw1KSIhJMJLsLq7HEaq3C22XrKD3FnMcNkiJQoecQw="
     skip_existing: true
     on:
-      branch: development_abel
+      branch: master
       tags: false
