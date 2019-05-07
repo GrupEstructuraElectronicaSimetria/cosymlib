@@ -4,10 +4,8 @@ import sys
 
 def shape_header(output):
     output.write('-' * 70 + '\n')
-    output.write('S H A P E v2.1 '
-                 'Continuous Shape Measures calculation\n'
-                 '(c) 2013 Electronic Structure Group,  Universitat de Barcelona\n'
-                 'Contact: llunell@ub.edu\n')
+    output.write('SYMEESS v0.6 \n'
+                 'Electronic Structure Group,  Universitat de Barcelona\n')
     output.write('-' * 70 + '\n' + '\n')
 
 

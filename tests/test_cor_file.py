@@ -32,9 +32,9 @@ class TestShapeCorFile(unittest.TestCase):
     def test_example03(self):
         molecules, options = file_io.read_old_input('data/shape_examples/example03.dat')
         results = []
-        results.append([shape.Shape(molecule).measure('T-4', central_atom=int(options[0][1]))
-                        for molecule in molecules])
-        results.append([shape.Shape(molecule).measure('SP-4', central_atom=int(options[0][1]))
+        for option in options[1]:
+            label = shape.shape_tools.get_shape_label(int(option), int(options[0][0]))
+            results.append([shape.Shape(molecule).measure(label, central_atom=int(options[0][1]))
                         for molecule in molecules])
         calculated_results = np.column_stack((results[0], results[1]))
         good_results = np.loadtxt('data/shape_examples/example03_results')

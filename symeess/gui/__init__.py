@@ -123,7 +123,7 @@ class Example(QWidget):
         vbox.addLayout(hbox)
 
         self.setLayout(vbox)
-        self.setWindowTitle('SAPHE')
+        self.setWindowTitle('SHAPE')
         execute.clicked.connect(self.execute)
 
     def vertices_on(self, text):

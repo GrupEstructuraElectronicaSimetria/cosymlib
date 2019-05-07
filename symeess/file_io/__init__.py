@@ -7,7 +7,6 @@ from symeess import tools
 
 # INPUT part
 def read_input_file(input_name):
-
     print('Reading file {}...'.format(os.path.basename(input_name)))
     file_name, file_extension = os.path.splitext(input_name)
     method_name = 'get_molecule_from_file_' + file_extension[1:]
@@ -127,7 +126,7 @@ def get_molecule_from_file_fchk(file_name):
                     read = True
                     break
 
-        for n in range(2, len(input_molecule)-1):
+        for n in range(2, len(input_molecule) - 1):
             input_molecule[n] = reformat_input(input_molecule[n])
         bohr_to_angstrom = 0.529177249
         coordinates = np.array(input_molecule[3], dtype=float).reshape(-1, 3) * bohr_to_angstrom
@@ -214,10 +213,11 @@ def read_old_input(file_name):
                         sys.exit('Wrong input format')
             if input_molecule[0]:
                 molecules.append(Geometry(symbols=input_molecule[0],
-                                  positions=input_molecule[1],
-                                  name=name))
+                                          positions=input_molecule[1],
+                                          name=name))
                 input_molecule = [[], []]
     return [molecules, options]
+
 
 def basis_format(basis_set_name,
                  atomic_numbers,
@@ -228,7 +228,6 @@ def basis_format(basis_set_name,
                  p_exponents,
                  c_coefficients,
                  p_c_coefficients):
-
     typeList = {'0': ['s', 1],
                 '1': ['p', 3],
                 '2': ['d', 6],
@@ -258,7 +257,7 @@ def basis_format(basis_set_name,
         for ishell in range(shell_from_atom_counts[iatom]):
             st = typeList['{}'.format(shell_type[shell_from_atom_index[iatom] + ishell])]
             ini_prim = prim_from_shell_index[shell_from_atom_index[iatom] + ishell]
-            fin_prim = prim_from_shell_index[shell_from_atom_index[iatom] + ishell+1]
+            fin_prim = prim_from_shell_index[shell_from_atom_index[iatom] + ishell + 1]
 
             shells_data.append({
                 'shell_type': st[0],
@@ -278,7 +277,6 @@ def basis_format(basis_set_name,
 
 # OUTPUT part
 def write_symgroup_measure(label, geometries, symgroup_results, output_name):
-
     if not os.path.exists('./results'):
         os.makedirs('./results')
     output = open('results/' + output_name + '.zout', 'w')
@@ -300,7 +298,7 @@ def write_symgroup_measure(label, geometries, symgroup_results, output_name):
 
         output.write('Optimal permutation\n')
         for idn, permutation in enumerate(symgroup_results[idx].optimum_permutation):
-            output.write('{:2} {:2}\n'.format(idn+1, permutation))
+            output.write('{:2} {:2}\n'.format(idn + 1, permutation))
         output.write('\n')
 
         output.write('Inverted structure\n')
@@ -323,7 +321,6 @@ def write_symgroup_measure(label, geometries, symgroup_results, output_name):
 
 
 def write_wfnsym_measure(label, molecule, wfnsym_results, output_name):
-
     if not os.path.exists('./results'):
         os.makedirs('./results')
     output = open('results/' + output_name + '.wout', 'w')
@@ -465,5 +462,5 @@ def reformat_input(array):
 def bhor2a(array):
     new_array = []
     for xyz in array:
-        new_array.append(float(xyz)/1.889726124993590)
+        new_array.append(float(xyz) / 1.889726124993590)
     return np.array(new_array)
