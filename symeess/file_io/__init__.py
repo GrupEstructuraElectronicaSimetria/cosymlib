@@ -69,8 +69,16 @@ def get_molecule_from_file_cor(file_name):
             else:
                 try:
                     float(line.split()[1])
-                    input_molecule[0].append(line.split()[0])
-                    input_molecule[1].append(line.split()[1:-1])
+                    if len(line.split()) == 4:
+                        input_molecule[0].append(line.split()[0])
+                        input_molecule[1].append(line.split()[1:])
+                    elif len(line.split()) == 5:
+                        input_molecule[0].append(line.split()[0])
+                        input_molecule[1].append(line.split()[1:-1])
+                    else:
+                        sys.exit('Wrong input format')
+                    # input_molecule[0].append(line.split()[0])
+                    # input_molecule[1].append(line.split()[1:-1])
                 except (ValueError, IndexError):
                     if input_molecule:
                         molecules.append(Geometry(symbols=input_molecule[0],
