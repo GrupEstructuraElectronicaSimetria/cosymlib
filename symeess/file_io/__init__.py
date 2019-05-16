@@ -8,7 +8,7 @@ from symeess import tools
 # INPUT part
 def read_input_file(input_name):
     print('Reading file {}...'.format(os.path.basename(input_name)))
-    if os.stat(os.path.basename(input_name)).st_size == 0:
+    if os.stat(input_name).st_size == 0:
         raise FileExistsError('File {} is empty'.format(os.path.basename(input_name)))
     file_name, file_extension = os.path.splitext(input_name)
     method_name = 'get_molecule_from_file_' + file_extension[1:]
