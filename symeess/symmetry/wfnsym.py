@@ -14,8 +14,8 @@ class Wfnsym:
 
     def symmetry_overlap_analysis(self,
                                   label,
-                                  vector_axis2,
-                                  vector_axis1=[0., 0., 1.],
+                                  vector_axis1,
+                                  vector_axis2=[0., 0., 1.],
                                   center=[0., 0., 0.]):
 
         hash = hashlib.md5('{}{}'.format(label, vector_axis1, vector_axis2, center).encode()).hexdigest()
@@ -27,8 +27,8 @@ class Wfnsym:
                 self._results[hash].csm_coef]
 
     def symmetry_ireducible_representation_analysis(self, label,
-                                                    vector_axis2,
-                                                    vector_axis1=[0., 0., 1.],
+                                                    vector_axis1,
+                                                    vector_axis2=[0., 0., 1.],
                                                     center=[0., 0., 0.]):
 
         hash = hashlib.md5('{}{}'.format(label, vector_axis1, vector_axis2, center).encode()).hexdigest()
@@ -38,8 +38,8 @@ class Wfnsym:
                 self._results[hash].wf_IRd_a, self._results[hash].wf_IRd_b, self._results[hash].wf_IRd]
 
     def symmetry_matrix(self, label,
-                        vector_axis2,
-                        vector_axis1=[0., 0., 1.],
+                        vector_axis1,
+                        vector_axis2=[0., 0., 1.],
                         center=[0., 0., 0.]):
 
         hash = hashlib.md5('{}{}'.format(label, vector_axis1, vector_axis2, center).encode()).hexdigest()
@@ -60,7 +60,7 @@ class Wfnsym:
                                        multiplicity=self._molecule.electronic_structure.multiplicity,
                                        group=label.upper())
 
-    def results(self, label, vector_axis2, vector_axis1=[0., 0., 1.], center=[0., 0., 0.]):
+    def results(self, label, vector_axis1, vector_axis2=[0., 0., 1.], center=[0., 0., 0.]):
 
         hash = hashlib.md5('{}{}'.format(label, vector_axis1, vector_axis2, center).encode()).hexdigest()
         if hash not in self._results:

@@ -286,14 +286,44 @@ def basis_format(basis_set_name,
 
 
 # OUTPUT part
+def header(output):
+    output.write('-' * 70 + '\n')
+    output.write('SYMEESS v0.6.3 \n'
+                 'Electronic Structure Group,  Universitat de Barcelona\n')
+    output.write('-' * 70 + '\n' + '\n')
+
+
+def write_input_info(initial_geometries, output_name=None):
+    if output_name is not None:
+        if not os.path.exists('./results'):
+            os.makedirs('./results')
+        output = open('results/' + output_name + '.tab', 'w')
+    else:
+        output = sys.stdout
+    header(output)
+
+    for ids, geometry in enumerate(initial_geometries):
+        output.write('Structure {} : {}\n'.format(ids+1, geometry.get_name()))
+
+        for idn, array in enumerate(geometry.get_positions()):
+            output.write('{:2s}'.format(geometry.get_symbols()[idn]))
+            output.write(' {:11.7f} {:11.7f} {:11.7f}\n'.format(array[0], array[1], array[2]))
+        output.write('\n')
+
+
 def write_symgroup_measure(label, geometries, symgroup_results, output_name):
-    if not os.path.exists('./results'):
-        os.makedirs('./results')
-    output = open('results/' + output_name + '.zout', 'w')
-    output2 = open('results/' + output_name + '.ztab', 'w')
+    if output_name is not None:
+        if not os.path.exists('./results'):
+            os.makedirs('./results')
+        output = open('results/' + output_name + '.zout', 'w')
+        output2 = open('results/' + output_name + '.ztab', 'w')
+    else:
+        output = sys.stdout
+        output2 = sys.stdout
+    header(output)
 
     output.write('Evaluating symmetry operation : {}\n'.format(label))
-    output2.write('Evaluating symmetry operation : {}\n \n'.format(label))
+
     for idx, geometry in enumerate(geometries):
         output.write('{}\n'.format(geometry.get_name()))
         output.write('\n')
@@ -324,6 +354,8 @@ def write_symgroup_measure(label, geometries, symgroup_results, output_name):
 
         output.write('Symmetry measure {:.5f}\n'.format(symgroup_results[idx].csm))
         output.write('..................................................\n')
+    output2.write('Evaluating symmetry operation : {}\n \n'.format(label))
+    for idx, geometry in enumerate(geometries):
         output2.write('{:>5} {:10.5f}\n'.format(geometry.get_name(), symgroup_results[idx].csm))
 
     output.close()
@@ -331,9 +363,13 @@ def write_symgroup_measure(label, geometries, symgroup_results, output_name):
 
 
 def write_wfnsym_measure(label, molecule, wfnsym_results, output_name):
-    if not os.path.exists('./results'):
-        os.makedirs('./results')
-    output = open('results/' + output_name + '.wout', 'w')
+    if output_name is not None:
+        if not os.path.exists('./results'):
+            os.makedirs('./results')
+        output = open('results/' + output_name + '.wout', 'w')
+    else:
+        output = sys.stdout
+    header(output)
 
     geometry = molecule.geometry
     RC = [0.002440, -0.000122, 0.017307]

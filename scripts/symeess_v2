@@ -1,0 +1,166 @@
+#!/usr/bin/env python
+import argparse
+import symeess
+import numpy as np
+import sys
+
+parser = argparse.ArgumentParser(description='Symeess')
+parser.add_argument(type=str, dest='input_file', help='input file name(+extension)')
+parser.add_argument('-o', dest='output_name', default=None, help='customize output file name')
+
+# Shape input flags
+group_shape = parser.add_argument_group('Shape')
+group_shape.add_argument('-shape',
+                         dest='shape_label',
+                         action='store',
+                         # nargs='+',
+                         default=False,
+                         help='Shape measure of input structure with reference polyhedra')
+
+group_shape.add_argument('-shape_labels', action='store_true',
+                         default=False,
+                         help='show the reference labels for a given structure')
+group_shape.add_argument('-shape_structure',
+                         dest='shape_structure',
+                         action='store_true',
+                         default=False,
+                         help='return the closes input structure to the reference symmetry operation')
+group_shape.add_argument('-central_atom', action='store',
+                         type=int,
+                         default=0,
+                         help='position of the central atom if exist')
+group_shape.add_argument('-custom_reference_structure', action='store',
+                         default=None,
+                         help='take the given structure from the file and use it as reference')
+group_shape.add_argument('-shape_map',
+                         # dest='shape_map',
+                         action='store',
+                         nargs=2,
+                         default=False,
+                         help='Calculates the path deviation function for the minimal '
+                              'distortion interconversion path between two given polyhedra')
+group_shape.add_argument('-shape_path',
+                         action='store_true',
+                         default=False,
+                         help='Calculates generalized coordinate from the path deviation function for a given path')
+group_shape.add_argument('-info', action='store_true',
+                         default=False,
+                         help='return information about the input geometries')
+
+# Symgroup input flags
+group_symgroup = parser.add_argument_group('Symgroup')
+group_symgroup.add_argument('-sym',
+                            dest='group_label',
+                            action='store',
+                            # nargs='+',
+                            default=False,
+                            help='Symgroup measure of input structure with reference group')
+
+
+# Wfnsym input flags
+group_wfnsym = parser.add_argument_group('Wfnsym')
+group_wfnsym.add_argument('-sym_wf',
+                          dest='wf_label',
+                          action='store',
+                          default=False,
+                          help='Wfnsym measure of input structure with reference group')
+group_wfnsym.add_argument('-psym_wf',
+                          dest='group_label',
+                          action='store',
+                          # nargs='+',
+                          default=False,
+                          help='Pseudo-symmetry measure of input structure with reference group')
+group_wfnsym.add_argument('-axis1',
+                          # dest='axis1',
+                          action='store',
+                          default=False,
+                          nargs=3,
+                          help='First reference axis for the wfnsym calculation')
+group_wfnsym.add_argument('-axis2',
+                          # dest='axis2',
+                          action='store',
+                          default=False,
+                          nargs=3,
+                          help='Second reference axis for the wfnsym calculation')
+group_wfnsym.add_argument('-center',
+                          # dest='center',
+                          action='store',
+                          default=False,
+                          nargs=3,
+                          help='Center for the wfnsym calculation')
+
+
+
+args = parser.parse_args(sys.argv[1:])
+# args = parser.parse_args(['-shape', 'T-4', '-central_atom', '1', '../examples/coord.xyz'])
+# args = parser.parse_args(['-shape', 'T-4', '-shape_structure', '-central_atom', '1', '../examples/coord.xyz'])
+# args = parser.parse_args(['-info', '../examples/coord.xyz'])
+# args = parser.parse_args(['-custom_reference_structure', '../examples/ref.xyz', '../examples/coord.xyz'])
+# args = parser.parse_args(['-shape_map', 'T-4', 'SP-4', '-central_atom', '1', '../examples/coord.xyz'])
+# args = parser.parse_args(['-sym', 'r', '-central_atom', '1', '../examples/coord.xyz'])
+# args = parser.parse_args(['-sym_wf', 'Td', '-axis1', '0.', '0.', '1.',
+#                           '-axis2', '-0.942809040', '0.000061854', '-0.333333333',
+#                           '-center', '0.002440', '-0.000122', '0.017307',
+#                           '../examples/pirrol.fchk'])
+
+
+if args.input_file is not None:
+    molecules = symeess.file_io.read_input_file(args.input_file)
+    symobj = symeess.Symeess()
+    symobj.set_molecules(molecules)
+
+if args.info:
+    symeess.file_io.write_input_info(molecules, output_name=args.output_name)
+
+# Shape's commands
+if args.shape_labels:
+    print('Available reference structure with {} Vertices'.format(molecules[0].get_n_atoms()))
+    print(symeess.shape.shape_tools.get_structure_references(molecules[0].get_n_atoms()))
+    print('Available reference structure with {} Vertices'.format(molecules[0].get_n_atoms() - 1))
+    print(symeess.shape.shape_tools.get_structure_references(molecules[0].get_n_atoms() - 1))
+
+
+if args.custom_reference_structure is not None:
+    reference_polyhedron = [symeess.file_io.read_input_file(args.custom_reference_structure)[0].get_positions()]
+else:
+    reference_polyhedron = [args.shape_label]
+
+if args.shape_structure:
+    symobj.write_shape_structure_2file(reference_polyhedron,
+                                       central_atom=args.central_atom,
+                                       output_name=args.output_name)
+elif args.shape_label or args.custom_reference_structure:
+    symobj.write_shape_measure_2file(reference_polyhedron,
+                                     central_atom=args.central_atom,
+                                     output_name=args.output_name)
+
+
+if args.shape_map:
+    path_parameters = symobj.get_path_parameters(args.shape_map[0], args.shape_map[1], central_atom=args.central_atom)
+    symeess.write_minimum_distortion_path_shape_2file(path_parameters[0],
+                                                      args.shape_map[0],
+                                                      args.shape_map[1],
+                                                      show=True)
+if args.shape_path:
+    symobj.write_path_parameters_2file(args.shape_map[0],
+                                       args.shape_map[1],
+                                       central_atom=args.central_atom,
+                                       output_name=args.output_name)
+
+# Symgroup commands
+if args.group_label:
+    symobj.write_symgroup_measure(args.group_label,
+                                  central_atom=args.central_atom,
+                                  output_name=args.output_name)
+
+
+# Wfnsym commands
+if args.wf_label:
+    args.axis1 = np.array(args.axis1).astype(float)
+    args.axis2 = np.array(args.axis2).astype(float)
+    args.center = np.array(args.center).astype(float)
+    symobj.write_wnfsym_measure_2file(args.wf_label,
+                                      args.axis1,
+                                      args.axis2,
+                                      center=args.center,
+                                      output_name=args.output_name)

@@ -4,18 +4,19 @@ import sys
 
 def shape_header(output):
     output.write('-' * 70 + '\n')
-    output.write('SYMEESS v0.6 \n'
+    output.write('SYMEESS v0.6.3 \n'
                  'Electronic Structure Group,  Universitat de Barcelona\n')
     output.write('-' * 70 + '\n' + '\n')
 
 
-def write_shape_measure_data(measures, molecules_name, shape_label, output_name=sys.stdout):
+def write_shape_measure_data(measures, molecules_name, shape_label, output_name=None):
 
-    if not os.path.exists('./results'):
-        os.makedirs('./results')
-    output = open('results/' + output_name + '.tab', 'w')
-    if not os.path.exists('./results'):
-        os.makedirs('./results')
+    if output_name is not None:
+        if not os.path.exists('./results'):
+            os.makedirs('./results')
+        output = open('results/' + output_name + '.tab', 'w')
+    else:
+        output = sys.stdout
     shape_header(output)
 
     output.write('{}'.format('Structure'))
@@ -47,9 +48,12 @@ def write_shape_measure_data(measures, molecules_name, shape_label, output_name=
 def write_shape_structure_data(initial_geometry, structures, measures, symbols,
                                molecules_name, shape_label, output_name=sys.stdout):
 
-    if not os.path.exists('./results'):
-        os.makedirs('./results')
-    output = open('results/' + output_name + '.out', 'w')
+    if output_name is not None:
+        if not os.path.exists('./results'):
+            os.makedirs('./results')
+        output = open('results/' + output_name + '.tab', 'w')
+    else:
+        output = sys.stdout
     shape_header(output)
 
     for idx, name in enumerate(molecules_name):
@@ -73,11 +77,14 @@ def write_shape_structure_data(initial_geometry, structures, measures, symbols,
     output.close()
 
 
-def write_shape_map(shape_label1, shape_label2, path, output_name='symeess_shape_map'):
+def write_shape_map(shape_label1, shape_label2, path, output_name=None):
 
-    if not os.path.exists('./results'):
-        os.makedirs('./results')
-    output = open('results/' + output_name + '.pth', 'w')
+    if output_name is not None:
+        if not os.path.exists('./results'):
+            os.makedirs('./results')
+        output = open('results/' + output_name + '.pth', 'w')
+    else:
+        output = sys.stdout
     shape_header(output)
 
     output.write(" {:6} {:6}\n".format(shape_label1, shape_label2))
@@ -89,11 +96,14 @@ def write_shape_map(shape_label1, shape_label2, path, output_name='symeess_shape
 
 def write_minimal_distortion_path_analysis(shape_label1, shape_label2, measures, pathdev, GenCoord,
                                            maxdev, mindev, mingco, maxgco, molecule_names,
-                                           output_name='symeess_shape'):
+                                           output_name=None):
 
-    if not os.path.exists('./results'):
-        os.makedirs('./results')
-    output = open('results/' + output_name + '.flt', 'w')
+    if output_name is not None:
+        if not os.path.exists('./results'):
+            os.makedirs('./results')
+        output = open('results/' + output_name + '.csv', 'w')
+    else:
+        output = sys.stdout
     shape_header(output)
 
     output.write("Deviation threshold to calculate Path deviation function: "

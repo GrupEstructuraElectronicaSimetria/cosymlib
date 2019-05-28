@@ -1,10 +1,9 @@
-__version__ = '0.6.2'
+__version__ = '0.6.3'
 
 from symeess.molecule import Molecule
 from symeess import file_io
 from symeess.file_io import shape2file
 from symeess.shape import maps
-import matplotlib.pyplot as plt
 
 
 class Symeess:
@@ -35,7 +34,7 @@ class Symeess:
         geometries = file_io.read_input_file(input_file)
         self.set_molecules(geometries)
 
-    def write_shape_measure_2file(self, shape_label, central_atom=0, output_name='symeess'):
+    def write_shape_measure_2file(self, shape_label, central_atom=0, output_name=None):
         """
         Method that prints to file shape's measure
         :param shape_label: reference polyhedra label which user will compare with his polyhedra.
@@ -44,12 +43,16 @@ class Symeess:
         :param output_name: custom name without extension
         :return: shape's measure in the output_name.tab file
         """
-        output_name = output_name+'_shape'
         shape_results_measures = [self.get_shape_measure(label, 'measure', central_atom) for label in shape_label]
         molecules_name = [molecule.get_name() for molecule in self._molecules]
-        shape2file.write_shape_measure_data(shape_results_measures, molecules_name, shape_label, output_name=output_name)
+        if type(shape_label[0]) is not str:
+            shape2file.write_shape_measure_data(shape_results_measures, molecules_name,
+                                                ['user_reference'], output_name=output_name)
+        else:
+            shape2file.write_shape_measure_data(shape_results_measures, molecules_name,
+                                                shape_label, output_name=output_name)
 
-    def write_shape_structure_2file(self, shape_label, central_atom=0, output_name='symeess'):
+    def write_shape_structure_2file(self, shape_label, central_atom=0, output_name=None):
         """
         Method that prints to file shape's structure
         :param shape_label: reference polyhedra label which user will compare with his polyhedra.
@@ -58,20 +61,23 @@ class Symeess:
         :param output_name: custom name without extension
         :return: shape's structure in the output_name.out file
         """
-        output_name = output_name + '_shape'
         initial_geometry = [molecule.geometry.get_positions() for molecule in self._molecules]
         shape_results_structures = [self.get_shape_measure(label, 'structure', central_atom) for label in shape_label]
         molecules_name = [molecule.get_name() for molecule in self._molecules]
         symbols = [molecule.geometry.get_symbols() for molecule in self._molecules]
         shape_results_measures = [self.get_shape_measure(label, 'measure', central_atom) for label in shape_label]
-        shape2file.write_shape_structure_data(initial_geometry, shape_results_structures, shape_results_measures,
-                                              symbols, molecules_name, shape_label,
-                                              output_name=output_name)
+        if type(shape_label[0]) is not str:
+            shape2file.write_shape_structure_data(initial_geometry, shape_results_structures, shape_results_measures,
+                                                  symbols, molecules_name, ['user_reference'],
+                                                  output_name=output_name)
+        else:
+            shape2file.write_shape_structure_data(initial_geometry, shape_results_structures, shape_results_measures,
+                                                  symbols, molecules_name, shape_label,
+                                                  output_name=output_name)
 
     def write_path_parameters_2file(self, shape_label1, shape_label2, central_atom=0,
-                                    maxdev=15, mindev=0, maxgco=101, mingco=0, output_name='symeess'):
+                                    maxdev=15, mindev=0, maxgco=101, mingco=0, output_name=None):
 
-        output_name = output_name + '_shape'
         csm, devpath, GenCoord = self.get_path_parameters(shape_label1, shape_label2, central_atom=central_atom,
                                                             maxdev=maxdev, mindev=mindev, maxgco=maxgco, mingco=mingco)
         names_order = [molecule.get_name() for molecule in self._molecules]
@@ -79,13 +85,13 @@ class Symeess:
                                                           maxdev, mindev, mingco, maxgco, names_order,
                                                           output_name=output_name)
 
-    def write_symgroup_measure(self, group, multi=1, central_atom=0, output_name='symeess'):
-        output_name = output_name + '_symgroup'
+    def write_symgroup_measure(self, group, multi=1, central_atom=0, output_name=None):
+        # output_name = output_name + '_symgroup'
         results = self.get_symgroup_measure(group=group, multi=multi, central_atom=central_atom)
         file_io.write_symgroup_measure(group, [molecule.geometry for molecule in self._molecules], results, output_name)
 
-    def write_wnfsym_measure_2file(self, label, vector_axis1, vector_axis2, center, output_name='symeess'):
-        output_name = output_name + '_wfnsym'
+    def write_wnfsym_measure_2file(self, label, vector_axis1, vector_axis2, center, output_name=None):
+        # output_name = output_name + '_wfnsym'
         wfnsym_results = self.get_wfnsym_measure(label, vector_axis1, vector_axis2, center)
         file_io.write_wfnsym_measure(label, self._molecules[0], wfnsym_results, output_name)
 
@@ -123,9 +129,9 @@ class Symeess:
 
     def get_wfnsym_measure(self, label, vector_axis1, vector_axis2, center):
         return self._molecules[0].get_mo_symmetry(label,
-                                                  vector_axis2=vector_axis2,
-                                                  vector_axis1=vector_axis1,
-                                                  center=center)
+                                                  VAxis2=vector_axis2,
+                                                  VAxis1=vector_axis1,
+                                                  RCread=center)
 
 
 def filter_results(results, criteria, max, min):
@@ -134,16 +140,19 @@ def filter_results(results, criteria, max, min):
     return results
 
 
-def write_minimum_distortion_path_shape_2file(shape_label1, shape_label2, num_points=20, show=False,
-                                              output_name='shape'):
-    output_name = output_name + '_map'
+def write_minimum_distortion_path_shape_2file(path_parameters, shape_label1, shape_label2, num_points=20, show=False,
+                                              output_name=None):
+    # output_name = output_name + '_map'
     path = get_shape_map(shape_label1, shape_label2, num_points)
-    shape2file.write_shape_map(shape_label1, shape_label2, path, output_name)
     if show:
-        plt.plot(path[0], path[1], linewidth=2.0)
+        import matplotlib.pyplot as plt
+        plt.plot(path[0], path[1], 'k', linewidth=2.0)
+        plt.scatter(path_parameters[shape_label1], path_parameters[shape_label2], linewidths=0.01)
         plt.xlabel(shape_label1)
         plt.ylabel(shape_label2)
         plt.show()
+    else:
+        shape2file.write_shape_map(shape_label1, shape_label2, path, output_name)
 
 
 def get_shape_map(shape_label1, shape_label2, num_points):
