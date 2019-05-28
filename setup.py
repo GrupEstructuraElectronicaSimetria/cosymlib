@@ -30,10 +30,5 @@ setup(name='symeess',
       package_data={'': ['ideal_structures_center.yaml']},
       include_package_data=True,
       install_requires=['numpy', 'matplotlib', 'symgroupy', 'wfnsympy', 'PyYAML'],
-      scripts=['scripts/symeess',
-               # 'scripts/shape_script.py',
-               # 'scripts/shape_old_script.py',
-               # 'scripts/symgroup_script.py',
-               # 'scripts/wfnsym_script.py'
-               ],
+      scripts=['scripts/symeess_v2'],
       ext_modules=[shape])
