@@ -5,7 +5,7 @@ import numpy as np
 
 class Geometry:
     def __init__(self,
-                 symbols=None,
+                 symbols=[],
                  positions=None,
                  name=None):
 

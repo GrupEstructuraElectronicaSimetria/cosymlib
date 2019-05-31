@@ -167,21 +167,34 @@ def get_molecule_from_file_fchk(file_name):
 
         return Molecule(geometry, ee)
 
-
-def read_reference_structure(file_name):
+def get_molecule_from_file_ref(file_name):
+    """
+    Reads a Conquest formatted file and the geometry of all structures in it
+    :param file_name: file name
+    :return: list of Geometry objects
+    """
     input_molecule = []
+    molecules = []
     with open(file_name, mode='r') as lines:
+        lines.readline()
+        lines.readline()
+        name = lines.readline().split()[0]
         for line in lines:
             if '$' in line or '#' in line:
                 pass
             else:
                 try:
                     float(line.split()[0])
-                    input_molecule.append([float(x) for x in line.split()])
+                    input_molecule.append(line.split())
                 except (ValueError, IndexError):
-                    pass
-    return np.array(input_molecule)
-
+                    if input_molecule:
+                        molecules.append(Geometry(positions=input_molecule,
+                                                  name=name))
+                    input_molecule = []
+                    name = line.split()[0]
+        molecules.append(Geometry(positions=input_molecule,
+                                  name=name))
+    return molecules
 
 def read_old_input(file_name):
     """

@@ -1,4 +1,4 @@
-__version__ = '0.6.4'
+__version__ = '0.6.5'
 
 from symeess.molecule import Molecule
 from symeess import file_io
@@ -34,45 +34,58 @@ class Symeess:
         geometries = file_io.read_input_file(input_file)
         self.set_molecules(geometries)
 
-    def write_shape_measure_2file(self, shape_label, central_atom=0, output_name=None):
+    def write_shape_measure_2file(self, shape_reference, central_atom=0, output_name=None):
         """
         Method that prints to file shape's measure
-        :param shape_label: reference polyhedra label which user will compare with his polyhedra.
+        :param shape_reference: reference polyhedra label which user will compare with his polyhedra.
                             Reference labels can be found in [#f1]_
         :param central_atom: position of the central atom in molecule if exist
         :param output_name: custom name without extension
         :return: shape's measure in the output_name.tab file
         """
-        shape_results_measures = [self.get_shape_measure(label, 'measure', central_atom) for label in shape_label]
-        molecules_name = [molecule.get_name() for molecule in self._molecules]
-        if type(shape_label[0]) is not str:
-            shape2file.write_shape_measure_data(shape_results_measures, molecules_name,
-                                                ['user_reference'], output_name=output_name)
-        else:
-            shape2file.write_shape_measure_data(shape_results_measures, molecules_name,
-                                                shape_label, output_name=output_name)
 
-    def write_shape_structure_2file(self, shape_label, central_atom=0, output_name=None):
+        molecules_name = [molecule.get_name() for molecule in self._molecules]
+        if type(shape_reference[0]) is not str:
+            shape_results_measures = [self.get_shape_measure(reference.get_positions(), 'measure', central_atom)
+                                      for reference in shape_reference]
+            shape2file.write_shape_measure_data(shape_results_measures, molecules_name,
+                                                [reference.get_name() for reference in shape_reference],
+                                                output_name=output_name)
+        else:
+            shape_results_measures = [self.get_shape_measure(reference, 'measure', central_atom)
+                                      for reference in shape_reference]
+            shape2file.write_shape_measure_data(shape_results_measures, molecules_name,
+                                                shape_reference, output_name=output_name)
+
+    def write_shape_structure_2file(self, shape_reference, central_atom=0, output_name=None):
         """
         Method that prints to file shape's structure
-        :param shape_label: reference polyhedra label which user will compare with his polyhedra.
+        :param shape_reference: reference polyhedra label which user will compare with his polyhedra.
                             Reference labels can be found in [#f1]_
         :param central_atom: position of the central atom in molecule if exist
         :param output_name: custom name without extension
         :return: shape's structure in the output_name.out file
         """
         initial_geometry = [molecule.geometry.get_positions() for molecule in self._molecules]
-        shape_results_structures = [self.get_shape_measure(label, 'structure', central_atom) for label in shape_label]
+
         molecules_name = [molecule.get_name() for molecule in self._molecules]
         symbols = [molecule.geometry.get_symbols() for molecule in self._molecules]
-        shape_results_measures = [self.get_shape_measure(label, 'measure', central_atom) for label in shape_label]
-        if type(shape_label[0]) is not str:
+
+        if type(shape_reference[0]) is not str:
+            shape_results_structures = [self.get_shape_measure(reference.get_positions(), 'structure', central_atom)
+                                        for reference in shape_reference]
+            shape_results_measures = [self.get_shape_measure(reference.get_positions(), 'measure', central_atom)
+                                      for reference in shape_reference]
             shape2file.write_shape_structure_data(initial_geometry, shape_results_structures, shape_results_measures,
                                                   symbols, molecules_name, ['user_reference'],
                                                   output_name=output_name)
         else:
+            shape_results_structures = [self.get_shape_measure(reference.get_positions(), 'structure', central_atom)
+                                        for reference in shape_reference]
+            shape_results_measures = [self.get_shape_measure(reference.get_positions(), 'measure', central_atom)
+                                      for reference in shape_reference]
             shape2file.write_shape_structure_data(initial_geometry, shape_results_structures, shape_results_measures,
-                                                  symbols, molecules_name, shape_label,
+                                                  symbols, molecules_name, shape_reference,
                                                   output_name=output_name)
 
     def write_path_parameters_2file(self, shape_label1, shape_label2, central_atom=0,

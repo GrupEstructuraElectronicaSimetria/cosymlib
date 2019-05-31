@@ -95,7 +95,8 @@ args = parser.parse_args(sys.argv[1:])
 # args = parser.parse_args(['-shape', 'T-4', '-central_atom', '1', '../examples/coord.xyz'])
 # args = parser.parse_args(['-shape', 'T-4', '-shape_structure', '-central_atom', '1', '../examples/coord.xyz'])
 # args = parser.parse_args(['-info', '../examples/coord.xyz'])
-# args = parser.parse_args(['-custom_reference_structure', '../examples/ref.xyz', '../examples/coord.xyz'])
+# args = parser.parse_args(['-custom_reference_structure', '../examples/reference_structure.ref',
+#                           '../examples/coord.xyz'])
 # args = parser.parse_args(['-shape_map', 'T-4', 'SP-4', '-central_atom', '1', '../examples/coord.xyz'])
 # args = parser.parse_args(['-sym', 'r', '-central_atom', '1', '../examples/coord.xyz'])
 # args = parser.parse_args(['-sym_wf', 'Td', '-axis1', '0.', '0.', '1.',
@@ -121,7 +122,7 @@ if args.shape_labels:
 
 
 if args.custom_reference_structure is not None:
-    reference_polyhedron = [symeess.file_io.read_input_file(args.custom_reference_structure)[0].get_positions()]
+    reference_polyhedron = symeess.file_io.read_input_file(args.custom_reference_structure)
 else:
     reference_polyhedron = [args.shape_label]
 
