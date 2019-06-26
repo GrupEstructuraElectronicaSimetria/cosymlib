@@ -70,19 +70,19 @@ class Symeess:
 
         molecules_name = [molecule.get_name() for molecule in self._molecules]
         symbols = [molecule.geometry.get_symbols() for molecule in self._molecules]
-
         if type(shape_reference[0]) is not str:
             shape_results_structures = [self.get_shape_measure(reference.get_positions(), 'structure', central_atom)
                                         for reference in shape_reference]
             shape_results_measures = [self.get_shape_measure(reference.get_positions(), 'measure', central_atom)
                                       for reference in shape_reference]
             shape2file.write_shape_structure_data(initial_geometry, shape_results_structures, shape_results_measures,
-                                                  symbols, molecules_name, ['user_reference'],
+                                                  symbols, molecules_name,
+                                                  [reference.get_name() for reference in shape_reference],
                                                   output_name=output_name)
         else:
-            shape_results_structures = [self.get_shape_measure(reference.get_positions(), 'structure', central_atom)
+            shape_results_structures = [self.get_shape_measure(reference, 'structure', central_atom)
                                         for reference in shape_reference]
-            shape_results_measures = [self.get_shape_measure(reference.get_positions(), 'measure', central_atom)
+            shape_results_measures = [self.get_shape_measure(reference, 'measure', central_atom)
                                       for reference in shape_reference]
             shape2file.write_shape_structure_data(initial_geometry, shape_results_structures, shape_results_measures,
                                                   symbols, molecules_name, shape_reference,

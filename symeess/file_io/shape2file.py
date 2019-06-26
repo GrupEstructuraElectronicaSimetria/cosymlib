@@ -12,9 +12,9 @@ def shape_header(output):
 def write_shape_measure_data(measures, molecules_name, shape_label, output_name=None):
 
     if output_name is not None:
-        if not os.path.exists('./results'):
-            os.makedirs('./results')
-        output = open('results/' + output_name + '.tab', 'w')
+        # if not os.path.exists('./results'):
+        #     os.makedirs('./results')
+        output = open(output_name + '.tab', 'w')
     else:
         output = sys.stdout
     shape_header(output)
@@ -49,9 +49,9 @@ def write_shape_structure_data(initial_geometry, structures, measures, symbols,
                                molecules_name, shape_label, output_name=sys.stdout):
 
     if output_name is not None:
-        if not os.path.exists('./results'):
-            os.makedirs('./results')
-        output = open('results/' + output_name + '.tab', 'w')
+        # if not os.path.exists('./results'):
+        #     os.makedirs('./results')
+        output = open(output_name + '.tab', 'w')
     else:
         output = sys.stdout
     shape_header(output)
@@ -80,9 +80,9 @@ def write_shape_structure_data(initial_geometry, structures, measures, symbols,
 def write_shape_map(shape_label1, shape_label2, path, output_name=None):
 
     if output_name is not None:
-        if not os.path.exists('./results'):
-            os.makedirs('./results')
-        output = open('results/' + output_name + '.pth', 'w')
+        # if not os.path.exists('./results'):
+        #     os.makedirs('./results')
+        output = open(output_name + '.pth', 'w')
     else:
         output = sys.stdout
     shape_header(output)
@@ -99,9 +99,9 @@ def write_minimal_distortion_path_analysis(shape_label1, shape_label2, measures,
                                            output_name=None):
 
     if output_name is not None:
-        if not os.path.exists('./results'):
-            os.makedirs('./results')
-        output = open('results/' + output_name + '.csv', 'w')
+        # if not os.path.exists('./results'):
+        #     os.makedirs('./results')
+        output = open(output_name + '.csv', 'w')
     else:
         output = sys.stdout
     shape_header(output)

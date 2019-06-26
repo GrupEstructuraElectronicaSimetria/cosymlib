@@ -165,7 +165,7 @@ def get_molecule_from_file_fchk(file_name):
                                  basis=basis,
                                  orbital_coefficients=[input_molecule[10], input_molecule[11]])
 
-        return Molecule(geometry, ee)
+        return [Molecule(geometry, ee)]
 
 def get_molecule_from_file_ref(file_name):
     """
@@ -196,11 +196,12 @@ def get_molecule_from_file_ref(file_name):
                                   name=name))
     return molecules
 
+
 def read_old_input(file_name):
     """
     Reads the old Shape's program input
     :param file_name: file name
-    :return: list of Geometry objects and
+    :return: list of Geometry objects and options
     """
     input_molecule = [[], []]
     molecules = []
@@ -308,9 +309,9 @@ def header(output):
 
 def write_input_info(initial_geometries, output_name=None):
     if output_name is not None:
-        if not os.path.exists('./results'):
-            os.makedirs('./results')
-        output = open('results/' + output_name + '.tab', 'w')
+        # if not os.path.exists('./results'):
+        #     os.makedirs('./results')
+        output = open(output_name + '.tab', 'w')
     else:
         output = sys.stdout
     header(output)
@@ -326,10 +327,10 @@ def write_input_info(initial_geometries, output_name=None):
 
 def write_symgroup_measure(label, geometries, symgroup_results, output_name):
     if output_name is not None:
-        if not os.path.exists('./results'):
-            os.makedirs('./results')
-        output = open('results/' + output_name + '.zout', 'w')
-        output2 = open('results/' + output_name + '.ztab', 'w')
+        # if not os.path.exists('./results'):
+        #     os.makedirs('./results')
+        output = open(output_name + '.zout', 'w')
+        output2 = open(output_name + '.ztab', 'w')
     else:
         output = sys.stdout
         output2 = sys.stdout
@@ -377,9 +378,9 @@ def write_symgroup_measure(label, geometries, symgroup_results, output_name):
 
 def write_wfnsym_measure(label, molecule, wfnsym_results, output_name):
     if output_name is not None:
-        if not os.path.exists('./results'):
-            os.makedirs('./results')
-        output = open('results/' + output_name + '.wout', 'w')
+        # if not os.path.exists('./results'):
+        #     os.makedirs('./results')
+        output = open(output_name + '.wout', 'w')
     else:
         output = sys.stdout
     header(output)

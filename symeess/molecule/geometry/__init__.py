@@ -12,7 +12,7 @@ class Geometry:
         self._central_atom = None
         self._symbols = []
         self._positions = []
-        self._atom_groups = np.array(symbols)
+        self._atom_groups = list(symbols)
 
         if name is not None:
             self._name = name

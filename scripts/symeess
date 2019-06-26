@@ -3,17 +3,18 @@ import argparse
 import symeess
 import numpy as np
 import sys
+from shape import shape_tools
 
 parser = argparse.ArgumentParser(description='Symeess')
 parser.add_argument(type=str, dest='input_file', help='input file name(+extension)')
 parser.add_argument('-o', dest='output_name', default=None, help='customize output file name')
+parser.add_argument('-old', action='store_true', default=False, help='old input file name')
 
 # Shape input flags
 group_shape = parser.add_argument_group('Shape')
 group_shape.add_argument('-shape',
                          dest='shape_label',
                          action='store',
-                         # nargs='+',
                          default=False,
                          help='Shape measure of input structure with reference polyhedra')
 
@@ -71,19 +72,16 @@ group_wfnsym.add_argument('-psym_wf',
                           default=False,
                           help='Pseudo-symmetry measure of input structure with reference group')
 group_wfnsym.add_argument('-axis1',
-                          # dest='axis1',
                           action='store',
                           default=False,
                           nargs=3,
                           help='First reference axis for the wfnsym calculation')
 group_wfnsym.add_argument('-axis2',
-                          # dest='axis2',
                           action='store',
                           default=False,
                           nargs=3,
                           help='Second reference axis for the wfnsym calculation')
 group_wfnsym.add_argument('-center',
-                          # dest='center',
                           action='store',
                           default=False,
                           nargs=3,
@@ -93,7 +91,12 @@ group_wfnsym.add_argument('-center',
 
 args = parser.parse_args(sys.argv[1:])
 # args = parser.parse_args(['-shape', 'T-4', '-central_atom', '1', '../examples/coord.xyz'])
-# args = parser.parse_args(['-shape', 'T-4', '-shape_structure', '-central_atom', '1', '../examples/coord.xyz'])
+# args = parser.parse_args(['-shape', 'T-4', '-central_atom', '1', '../examples/coord.cor'])
+# args = parser.parse_args(['-shape', 'T-4', '-old', '-central_atom', '5', '../examples/coord.dat'])
+# args = parser.parse_args(['-shape_labels', '-central_atom', '1', '../examples/pirrol.fchk'])
+# args = parser.parse_args(['-shape_labels', '-central_atom', '1', '../examples/coord.xyz'])
+# args = parser.parse_args(['-shape', 'T-4', '-shape_structure', '-central_atom', '1', '-o', 'coord',
+#                           '../examples/coord.xyz'])
 # args = parser.parse_args(['-info', '../examples/coord.xyz'])
 # args = parser.parse_args(['-custom_reference_structure', '../examples/reference_structure.ref',
 #                           '../examples/coord.xyz'])
@@ -105,8 +108,15 @@ args = parser.parse_args(sys.argv[1:])
 #                           '../examples/pirrol.fchk'])
 
 
+reference_polyhedron = []
 if args.input_file is not None:
-    molecules = symeess.file_io.read_input_file(args.input_file)
+    if args.old:
+        molecules, options = symeess.file_io.read_old_input(args.input_file)
+        args.central_atom = int(options[0][1])
+        for number in options[1]:
+            reference_polyhedron.append(shape_tools.get_shape_label(int(number), int(options[0][0])))
+    else:
+        molecules = symeess.file_io.read_input_file(args.input_file)
     symobj = symeess.Symeess()
     symobj.set_molecules(molecules)
 
@@ -115,15 +125,27 @@ if args.info:
 
 # Shape's commands
 if args.shape_labels:
-    print('Available reference structure with {} Vertices'.format(molecules[0].get_n_atoms()))
-    print(symeess.shape.shape_tools.get_structure_references(molecules[0].get_n_atoms()))
-    print('Available reference structure with {} Vertices'.format(molecules[0].get_n_atoms() - 1))
-    print(symeess.shape.shape_tools.get_structure_references(molecules[0].get_n_atoms() - 1))
+    try:
+        molecules[0].geometry.get_positions()
+        molecule = molecules[0].geometry
+    except AttributeError:
+        try:
+            molecules[0].get_positions()
+            molecule = molecules[0]
+        except AttributeError:
+            raise AttributeError('Molecule object not found')
+
+    if args.central_atom == 0:
+        print('Available reference structures with {} Vertices'.format(molecule.get_n_atoms()))
+        print(symeess.shape.shape_tools.get_structure_references(molecule.get_n_atoms()))
+    else:
+        print('Available reference structures with {} Vertices'.format(molecule.get_n_atoms() - 1))
+        print(symeess.shape.shape_tools.get_structure_references(molecule.get_n_atoms() - 1))
 
 
 if args.custom_reference_structure is not None:
     reference_polyhedron = symeess.file_io.read_input_file(args.custom_reference_structure)
-else:
+elif not reference_polyhedron:
     reference_polyhedron = [args.shape_label]
 
 if args.shape_structure:
