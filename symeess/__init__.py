@@ -1,4 +1,4 @@
-__version__ = '0.6.5'
+__version__ = '0.6.6'
 
 from symeess.molecule import Molecule
 from symeess import file_io
