@@ -386,14 +386,12 @@ def write_wfnsym_measure(label, molecule, wfnsym_results, output_name):
     header(output)
 
     geometry = molecule.geometry
-    RC = [0.002440, -0.000122, 0.017307]
     output.write('MEASURES OF THE SYMMETRY GROUP:   {}\n'.format(label))
     output.write('Basis: {}\n'.format(list(molecule.electronic_structure.basis.keys())[0]))
     output.write('--------------------------------------------\n')
     output.write(' Atomic Coordinates (Angstroms)\n')
     output.write('--------------------------------------------\n')
     for idn, array in enumerate(geometry.get_positions()):
-        array = bhor2a(array)
         output.write('{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idn],
                                                                 array[0], array[1], array[2]))
     output.write('--------------------------------------------\n')
@@ -407,8 +405,7 @@ def write_wfnsym_measure(label, molecule, wfnsym_results, output_name):
         output.write('Symmetry Transformed Atomic Coordinates (Angstroms)\n')
 
         for idn, array in enumerate(geometry.get_positions()):
-            centered_array = bhor2a(array) - RC
-            array2 = np.dot(centered_array, wfnsym_results._SymMat[i].T)
+            array2 = np.dot(array, wfnsym_results._SymMat[i].T)
             output.write('{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idn],
                                                                     array2[0], array2[1], array2[2]))
 
@@ -519,8 +516,8 @@ def reformat_input(array):
     return flat_list
 
 
-def bhor2a(array):
-    new_array = []
-    for xyz in array:
-        new_array.append(float(xyz) / 1.889726124993590)
-    return np.array(new_array)
+# def bhor2a(array):
+#     new_array = []
+#     for xyz in array:
+#         new_array.append(float(xyz) / 1.889726124993590)
+#     return np.array(new_array)

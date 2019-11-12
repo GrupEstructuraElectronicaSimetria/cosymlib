@@ -3,7 +3,7 @@ import argparse
 import symeess
 import numpy as np
 import sys
-from shape import shape_tools
+#from shape import shape_tools
 
 parser = argparse.ArgumentParser(description='Symeess')
 parser.add_argument(type=str, dest='input_file', help='input file name(+extension)')
@@ -73,20 +73,19 @@ group_wfnsym.add_argument('-psym_wf',
                           help='Pseudo-symmetry measure of input structure with reference group')
 group_wfnsym.add_argument('-axis1',
                           action='store',
-                          default=False,
+                          default=None,
                           nargs=3,
                           help='First reference axis for the wfnsym calculation')
 group_wfnsym.add_argument('-axis2',
                           action='store',
-                          default=False,
+                          default=None,
                           nargs=3,
                           help='Second reference axis for the wfnsym calculation')
 group_wfnsym.add_argument('-center',
                           action='store',
-                          default=False,
+                          default=None,
                           nargs=3,
                           help='Center for the wfnsym calculation')
-
 
 
 args = parser.parse_args(sys.argv[1:])
@@ -102,10 +101,11 @@ args = parser.parse_args(sys.argv[1:])
 #                           '../examples/coord.xyz'])
 # args = parser.parse_args(['-shape_map', 'T-4', 'SP-4', '-central_atom', '1', '../examples/coord.xyz'])
 # args = parser.parse_args(['-sym', 'r', '-central_atom', '1', '../examples/coord.xyz'])
-# args = parser.parse_args(['-sym_wf', 'Td', '-axis1', '0.', '0.', '1.',
-#                           '-axis2', '-0.942809040', '0.000061854', '-0.333333333',
-#                           '-center', '0.002440', '-0.000122', '0.017307',
-#                           '../examples/pirrol.fchk'])
+# args = parser.parse_args(['-sym_wf', 'Td',
+#                           '-axis1', '0.5288',      '0.1610',      '0.9359',
+#                           '-axis2', '0.2051',      '0.8240',     '-0.6786',
+#                           '-center', '0.', ' 0.', '0.',
+#                           '../examples/coord.xyz'])
 
 
 reference_polyhedron = []
@@ -114,7 +114,7 @@ if args.input_file is not None:
         molecules, options = symeess.file_io.read_old_input(args.input_file)
         args.central_atom = int(options[0][1])
         for number in options[1]:
-            reference_polyhedron.append(shape_tools.get_shape_label(int(number), int(options[0][0])))
+            reference_polyhedron.append(symeess.shape.shape_tools.get_shape_label(int(number), int(options[0][0])))
     else:
         molecules = symeess.file_io.read_input_file(args.input_file)
     symobj = symeess.Symeess()
@@ -179,11 +179,14 @@ if args.group_label:
 
 # Wfnsym commands
 if args.wf_label:
-    args.axis1 = np.array(args.axis1).astype(float)
-    args.axis2 = np.array(args.axis2).astype(float)
-    args.center = np.array(args.center).astype(float)
+    if args.axis1 is not None:
+        args.axis1 = np.array(args.axis1).astype(float)
+    if args.axis2 is not None:
+        args.axis2 = np.array(args.axis2).astype(float)
+    if args.center is not None:
+        args.center = np.array(args.center).astype(float)
     symobj.write_wnfsym_measure_2file(args.wf_label,
-                                      args.axis1,
-                                      args.axis2,
+                                      vector_axis1=args.axis1,
+                                      vector_axis2=args.axis2,
                                       center=args.center,
                                       output_name=args.output_name)

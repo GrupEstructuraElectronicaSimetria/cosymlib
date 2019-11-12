@@ -3,8 +3,13 @@ import sys
 from os.path import expanduser
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5 import QtOpenGL
+from PyQt5.Qt3DExtras import Qt3DWindow, QFirstPersonCameraController
+from PyQt5.Qt3DCore import QEntity
 from symeess.shape import shape_tools
 from symeess import file_io, shape2file, shape
+import numpy as np
 
 home = expanduser("~")
 
@@ -45,7 +50,7 @@ class Exit(QPushButton):
                     quit()
 
 
-class Example(QWidget):
+class MainWindow(QWidget):
 
     def __init__(self):
         super().__init__()
@@ -64,45 +69,35 @@ class Example(QWidget):
 
         # Input file
         file = QPushButton('Input file', self)
-        file.move(x-100, 0)
+        file.move(x-100, -4)
         file.clicked.connect(self.open)
         self.file_text = QLineEdit(self)
         self.file_text.move(2, 2)
         self.file_text.resize(x - 150, 20)
 
         # savefile = QPushButton('Save file', self)
-        # savefile.move(x-100, 30)
+        # savefile.move(x-100, 20)
         # savefile.clicked.connect(self.save)
         # self.savefile_text = QLineEdit(self)
-        # self.savefile_text.move(2, 30)
+        # self.savefile_text.move(2, 25)
         # self.savefile_text.resize(x - 150, 20)
 
         # Label selection
-        vertices_name = QLabel('Vertices :', self)
-        vertices_name.move(30, 60)
-        vertices_box = QComboBox(self)
-        vertices = ['2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '20', '24', '48', '60']
-        for n in vertices:
-            vertices_box.addItem(n)
-        vertices_box.move(100, 60)
-        vertices_box.activated[str].connect(self.vertices_on)
+        self.central_atom_name = QCheckBox('Central atom', self)
+        self.central_atom_name.move(30, 60)
+        self.central_atom_name.toggle()
+        self.central_atom_name.stateChanged.connect(self.changeVertices)
+        self.central_atom_box = QLineEdit(self)
+        self.central_atom_box.move(150, 60)
+        self.central_atom_box.resize(30, 30)
+        self.central_atom_box.textChanged.connect(self.set_central_atom)
 
         labels_name = QLabel('Label :', self)
         labels_name.move(200, 60)
         self.labels_box = QComboBox(self)
-        labels = shape_tools.get_structure_references(int(2))
-        for n in labels:
-            self.labels_box.addItem(n)
         self.labels_box.move(250, 60)
         self.label = str(self.labels_box.currentText())
         self.labels_box.activated[str].connect(self.labels_on)
-
-        central_atom_name = QLabel('Central atom :', self)
-        central_atom_name.move(350, 60)
-        central_atom = QLineEdit(self)
-        central_atom.move(450, 60)
-        central_atom.resize(30, 30)
-        central_atom.textChanged.connect(self.set_central_atom)
 
         self.results = QPlainTextEdit(self)
         self.results.setReadOnly(True)
@@ -126,15 +121,23 @@ class Example(QWidget):
         self.setWindowTitle('SHAPE')
         execute.clicked.connect(self.execute)
 
-    def vertices_on(self, text):
-        self.labels_box.clear()
-        labels = shape_tools.get_structure_references(int(text))
-        for n in labels:
-            self.labels_box.addItem(n)
-        self.labels_box.move(250, 60)
-        self.labels_on()
+    def changeVertices(self, state):
 
-    def labels_on(self):
+        self.labels_box.clear()
+        if state:
+            self.central_atom_box.setReadOnly(False)
+            if self.filename:
+                self.labels_on(shape_tools.get_structure_references(self.geometries[0].get_n_atoms() - 1))
+        elif not state:
+            # self.central_atom_box.clear()
+            self.set_central_atom(0)
+            self.central_atom_box.setReadOnly(True)
+            if self.filename:
+                self.labels_on(shape_tools.get_structure_references(self.geometries[0].get_n_atoms()))
+
+    def labels_on(self, vertices):
+        for n in vertices:
+            self.labels_box.addItem(n)
         self.label = str(self.labels_box.currentText())
 
     def open(self):
@@ -145,6 +148,8 @@ class Example(QWidget):
         self.file_text.setText(str(self.filename))
         if self.filename:
             self.geometries = file_io.read_input_file(self.filename)
+            self.changeVertices(self.central_atom_name.isChecked())
+            SecondWindow(self, local_geometry=[self.x(), self.y()]).show()
 
     def save(self):
         self.directory = QFileDialog.getExistingDirectory(self, "Select Directory")
@@ -181,8 +186,38 @@ class Example(QWidget):
         self.move(qr.topLeft())
 
 
+class SecondWindow(QMainWindow):
+    def __init__(self, parent=None, local_geometry=[0, 0]):
+        # super(SecondWindow, self).__init__(parent)
+        QWidget.__init__(self, parent)
+        self.setGeometry(local_geometry[0] + 500, local_geometry[1], 300, 400)
+        self.setWindowTitle('Molecule View')
+        self.pen = QPen(QColor(0,0,0))                      # set lineColor
+        self.pen.setWidth(3)                                            # set lineWidth
+        self.brush = QBrush(QColor(255,255,255,255))        # set fillColor
+        self.polygon = self.createPoly(8,150,0)                         # polygon with n points, radius, angle of the first point
+
+
+
+    def createPoly(self, n, r, s):
+            polygon = QPolygonF()
+            w = 360 / n  # angle per step
+            for i in range(n):  # add the points of polygon
+                t = w * i + s
+                x = r * np.cos(np.radians(t))
+                y = r * np.sin(np.radians(t))
+                polygon.append(QPointF(self.width() / 2 + x, self.height() / 2 + y))
+
+            return polygon
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setPen(self.pen)
+        painter.setBrush(self.brush)
+        painter.drawPolygon(self.polygon)
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = Example()
+    ex = MainWindow()
     ex.show()
     sys.exit(app.exec_())

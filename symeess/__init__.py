@@ -103,10 +103,10 @@ class Symeess:
         results = self.get_symgroup_measure(group=group, multi=multi, central_atom=central_atom)
         file_io.write_symgroup_measure(group, [molecule.geometry for molecule in self._molecules], results, output_name)
 
-    def write_wnfsym_measure_2file(self, label, vector_axis1, vector_axis2, center, output_name=None):
+    def write_wnfsym_measure_2file(self, group, vector_axis1=None, vector_axis2=None, center=None, output_name=None):
         # output_name = output_name + '_wfnsym'
-        wfnsym_results = self.get_wfnsym_measure(label, vector_axis1, vector_axis2, center)
-        file_io.write_wfnsym_measure(label, self._molecules[0], wfnsym_results, output_name)
+        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)
+        file_io.write_wfnsym_measure(group, self._molecules[0], wfnsym_results, output_name)
 
     def get_shape_measure(self, label, kind, central_atom=0):
         get_measure = 'get_shape_' + kind
@@ -140,11 +140,11 @@ class Symeess:
         return [molecule.geometry.get_symmetry_measure(label=group, multi=multi, central_atom=central_atom) for
                    molecule in self._molecules]
 
-    def get_wfnsym_measure(self, label, vector_axis1, vector_axis2, center):
-        return self._molecules[0].get_mo_symmetry(label,
-                                                  VAxis2=vector_axis2,
-                                                  VAxis1=vector_axis1,
-                                                  RCread=center)
+    def get_wfnsym_measure(self, group, vector_axis1, vector_axis2, center):
+        return self._molecules[0].get_mo_symmetry(group,
+                                                  vector_axis1=vector_axis1,
+                                                  vector_axis2=vector_axis2,
+                                                  center=center)
 
 
 def filter_results(results, criteria, max, min):
@@ -155,7 +155,6 @@ def filter_results(results, criteria, max, min):
 
 def write_minimum_distortion_path_shape_2file(path_parameters, shape_label1, shape_label2, num_points=20, show=False,
                                               output_name=None):
-    # output_name = output_name + '_map'
     path = get_shape_map(shape_label1, shape_label2, num_points)
     if show:
         import matplotlib.pyplot as plt
