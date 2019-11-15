@@ -16,7 +16,7 @@ def read_input_file(input_name):
     possibles.update(locals())
     method = possibles.get(method_name)
     if not method:
-        raise NotImplementedError("Method %s not implemented" % method_name)
+        raise NotImplementedError("Method %s is not implemented" % method_name)
 
     return method(input_name)
 
@@ -167,6 +167,7 @@ def get_molecule_from_file_fchk(file_name):
 
         return [Molecule(geometry, ee)]
 
+
 def get_molecule_from_file_ref(file_name):
     """
     Reads a Conquest formatted file and the geometry of all structures in it
@@ -252,13 +253,13 @@ def basis_format(basis_set_name,
                  p_exponents,
                  c_coefficients,
                  p_c_coefficients):
-    typeList = {'0': ['s', 1],
-                '1': ['p', 3],
-                '2': ['d', 6],
-                '3': ['f', 10],
-                '-1': ['sp', 4],
-                '-2': ['d', 5],
-                '-3': ['f', 7]}
+    type_list = {'0': ['s', 1],
+                 '1': ['p', 3],
+                 '2': ['d', 6],
+                 '3': ['f', 10],
+                 '-1': ['sp', 4],
+                 '-2': ['d', 5],
+                 '-3': ['f', 7]}
 
     atomic_numbers = np.array(atomic_numbers, dtype=int)
     atom_map = np.array(atom_map, dtype=int)
@@ -266,7 +267,7 @@ def basis_format(basis_set_name,
     basis_set = {'name': basis_set_name,
                  'primitive_type': 'gaussian'}
 
-    shell_type_index = [0] + np.cumsum([typeList['{}'.format(s)][1]
+    shell_type_index = [0] + np.cumsum([type_list['{}'.format(s)][1]
                                         for s in shell_type]).tolist()
     prim_from_shell_index = [0] + np.cumsum(np.array(n_primitives, dtype=int)).tolist()
 
@@ -279,7 +280,7 @@ def basis_format(basis_set_name,
 
         shells_data = []
         for ishell in range(shell_from_atom_counts[iatom]):
-            st = typeList['{}'.format(shell_type[shell_from_atom_index[iatom] + ishell])]
+            st = type_list['{}'.format(shell_type[shell_from_atom_index[iatom] + ishell])]
             ini_prim = prim_from_shell_index[shell_from_atom_index[iatom] + ishell]
             fin_prim = prim_from_shell_index[shell_from_atom_index[iatom] + ishell + 1]
 
@@ -514,10 +515,3 @@ def reformat_input(array):
             else:
                 flat_list.append(item)
     return flat_list
-
-
-# def bhor2a(array):
-#     new_array = []
-#     for xyz in array:
-#         new_array.append(float(xyz) / 1.889726124993590)
-#     return np.array(new_array)

@@ -89,8 +89,7 @@ class TestShapeCorFile(unittest.TestCase):
     def test_example06(self):
         molecules, options = file_io.read_old_input('data/shape_examples/example06.dat')
 
-        symeess = Symeess()
-        symeess.set_molecules(molecules)
+        symeess = Symeess(molecules)
         shape, devpath, GenCoord = symeess.get_path_parameters('SP-4', 'T-4',
                                                                central_atom=int(options[0][1]), maxdev=5.0)
         good_results = np.loadtxt('data/shape_examples/example06_results')
@@ -98,28 +97,28 @@ class TestShapeCorFile(unittest.TestCase):
 
     def test_example07(self):
         molecules, options = file_io.read_old_input('data/shape_examples/example06.dat')
-        symeess = Symeess()
+        symeess = Symeess(molecules)
         shape, devpath, GenCoord = symeess.get_path_parameters('SP-4', 'T-4',
                                                                central_atom=int(options[0][1]), maxdev=10.0,
                                                                maxgco=60, mingco=40)
         good_results = np.loadtxt('data/shape_examples/example07_results')
         self.assertTrue(np.allclose(good_results, devpath, atol=1e-1))
 
-    # def test_example08(self):
-    #     molecules, options = file_io.read_old_input('data/shape_examples/example08.dat')
-    #     custom_ref_structure = file_io.read_reference_structure('data/shape_examples/example08.ref')
-    #
-    #     results = []
-    #     results.append([shape.Shape(molecule).measure('TPR-6', central_atom=int(options[0][1]))
-    #                     for molecule in molecules])
-    #     results.append([shape.Shape(molecule).measure(custom_ref_structure, central_atom=int(options[0][1]))
-    #                     for molecule in molecules])
-    #
-    #     calculated_results = np.column_stack((results[0], results[1]))
-    #     good_results = np.loadtxt('data/shape_examples/example08_results_measure')
-    #     print(calculated_results)
-    #     print(good_results)
-    #     self.assertTrue(np.allclose(good_results, calculated_results, atol=1e-2))
+    def test_example08(self):
+        molecules, options = file_io.read_old_input('data/shape_examples/example08.dat')
+        custom_ref_structure = file_io.read_input_file('data/shape_examples/example08.ref')
+
+        results = []
+        results.append([shape.Shape(molecule).measure('TPR-6', central_atom=int(options[0][1]))
+                        for molecule in molecules])
+        results.append([shape.Shape(molecule).measure(custom_ref_structure, central_atom=int(options[0][1]))
+                        for molecule in molecules])
+
+        calculated_results = np.column_stack((results[0], results[1]))
+        good_results = np.loadtxt('data/shape_examples/example08_results_measure')
+        print(calculated_results)
+        print(good_results)
+        self.assertTrue(np.allclose(good_results, calculated_results, atol=1e-2))
 
     # De l'exemple 9-12 tots necessiten la comanda fixperm que no esta inclosa encara en el programa
     # def test_example09(self):
