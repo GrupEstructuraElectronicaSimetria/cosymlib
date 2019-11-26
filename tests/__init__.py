@@ -1,6 +1,6 @@
-import tests
+import unittest
 
 
 if __name__ == '__main__':
-    testsuite = tests.TestLoader().discover('.')
-    tests.TextTestRunner(verbosity=2).run(testsuite)
+    suite = unittest.TestLoader().discover('.')
+    unittest.TextTestRunner(verbosity=2).run(suite)

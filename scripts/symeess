@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import argparse
+import sys
 import numpy as np
 import yaml
 from symeess import file_io
@@ -7,11 +8,9 @@ from symeess.symeess_api import Symeess
 from symeess.shape import shape_tools
 
 
-def get_args_dict():
-    return dict(Shape_labels="shape_label", Neares_structure="shape_structure", Central_atom_position="central_atom",
-                Custom_reference_structure="custom_reference_structure", Shape_map="shape_map", Shape_path="shape_path",
-                Info="info", Old="old", Sym_group="group_label", Sym_wf_group="wf_label", Axis1="axis1", Axis2="axis2",
-                Center="center")
+# def get_args_dict():
+#     return dict(Shape_labels="shape_label", Central_atom_position="central_atom",
+#                 Sym_group="group_label", Sym_wf_group="wf_label")
 
 
 parser = argparse.ArgumentParser(description='Symeess')
@@ -27,31 +26,35 @@ group_shape = parser.add_argument_group('Shape')
 group_shape.add_argument('-shape',
                          dest='shape_label',
                          action='store',
-                         default=False,
+                         default=None,
                          help='Shape measure of input structure with reference polyhedra')
 group_shape.add_argument('-shape_labels', action='store_true',
+                         dest='shape_labels',
                          default=False,
                          help='show the reference labels for a given structure')
 group_shape.add_argument('-shape_structure',
-                         dest='shape_structure',
+                         dest='nearest_structure',
                          action='store_true',
                          default=False,
                          help='return the closes input structure to the reference symmetry operation')
 group_shape.add_argument('-central_atom', action='store',
+                         dest='central_atom_position',
                          type=int,
                          default=0,
                          help='position of the central atom if exist')
 group_shape.add_argument('-custom_reference_structure', action='store',
+                         dest='custom_reference_structure',
                          default=None,
                          help='take the given structure from the file and use it as reference')
 group_shape.add_argument('-shape_map',
-                         # dest='shape_map',
+                         dest='shape_map',
                          action='store',
                          nargs=2,
                          default=False,
                          help='Calculates the path deviation function for the minimal '
                               'distortion interconversion path between two given polyhedra')
 group_shape.add_argument('-shape_path',
+                         dest='shape_path',
                          action='store_true',
                          default=False,
                          help='Calculates generalized coordinate from the path deviation function for a given path')
@@ -59,7 +62,7 @@ group_shape.add_argument('-shape_path',
 # Symgroup input flags
 group_symgroup = parser.add_argument_group('Symgroup')
 group_symgroup.add_argument('-sym',
-                            dest='group_label',
+                            dest='sym_group',
                             action='store',
                             # nargs='+',
                             default=False,
@@ -68,7 +71,7 @@ group_symgroup.add_argument('-sym',
 # Wfnsym input flags
 group_wfnsym = parser.add_argument_group('Wfnsym')
 group_wfnsym.add_argument('-sym_wf',
-                          dest='wf_label',
+                          dest='wf_group',
                           action='store',
                           default=False,
                           help='Wfnsym measure of input structure with reference group')
@@ -79,24 +82,27 @@ group_wfnsym.add_argument('-psym_wf',
                           default=False,
                           help='Pseudo-symmetry measure of input structure with reference group')
 group_wfnsym.add_argument('-axis1',
+                          dest='axis1',
                           action='store',
                           default=None,
                           nargs=3,
                           help='First reference axis for the wfnsym calculation')
 group_wfnsym.add_argument('-axis2',
+                          dest='axis2',
                           action='store',
                           default=None,
                           nargs=3,
                           help='Second reference axis for the wfnsym calculation')
 group_wfnsym.add_argument('-center',
+                          dest='center',
                           action='store',
                           default=None,
                           nargs=3,
                           help='Center for the wfnsym calculation')
 
 
-# args = parser.parse_args(sys.argv[1:])
-args = parser.parse_args(['../examples/coord.xyz', 'example_shape_file.yaml'])
+args = parser.parse_args(sys.argv[1:])
+# args = parser.parse_args(['../examples/coord.xyz', 'example_shape_file'])
 # args = parser.parse_args(['-shape', 'T-4', '-central_atom', '1', '../examples/coord.xyz'])
 # args = parser.parse_args(['-shape', 'T-4', '-central_atom', '1', '../examples/coord.cor'])
 # args = parser.parse_args(['-shape', 'T-4', '-old', '-central_atom', '5', '../examples/coord.dat'])
@@ -109,27 +115,26 @@ args = parser.parse_args(['../examples/coord.xyz', 'example_shape_file.yaml'])
 # args = parser.parse_args(['-shape_map', 'T-4', 'SP-4', '-central_atom', '1', '../examples/coord.xyz'])
 # args = parser.parse_args(['-sym', 'r', '-central_atom', '1', '../examples/coord.xyz'])
 # args = parser.parse_args(['-sym_wf', 'Td',
-#                           '-axis1', '0.5288',      '0.1610',      '0.9359',
-#                           '-axis2', '0.2051',      '0.8240',     '-0.6786',
-#                           '-center', '0.', ' 0.', '0.',
-#                           '../examples/coord.xyz'])
+#                           '-axis1', '0.',      '0.',      '1.',
+                          # '-axis2', '0.2051',      '0.8240',     '-0.6786',
+                          # '-center', '0.', ' 0.', '0.',
+                          # '../examples/tih4_5d.fchk'])
 
 if args.yaml_input:
-    args_custom_keys = get_args_dict()
     with open(args.yaml_input, 'r') as stream:
         input_parameters = yaml.load(stream)
 
     for key, value in input_parameters.items():
-        try:
-            setattr(args, args_custom_keys[key.capitalize()], value)
-        except KeyError:
+        if key.lower() in args:
+            setattr(args, key.lower(), value)
+        else:
             raise KeyError("Key %s is not valid" % key)
 
 reference_polyhedron = []
 if args.input_file is not None:
     if args.old:
         structures, options = file_io.read_old_input(args.input_file)
-        args.central_atom = int(options[0][1])
+        args.central_atom_position = int(options[0][1])
         for number in options[1]:
             reference_polyhedron.append(shape_tools.get_shape_label(int(number), int(options[0][0])))
     else:
@@ -149,57 +154,54 @@ if args.shape_labels:
         except AttributeError:
             raise AttributeError('Molecule object not found')
 
-    if args.central_atom == 0:
+    if args.central_atom_position == 0:
         print('Available reference structures with {} Vertices'.format(n_atoms))
         print(shape_tools.get_structure_references(n_atoms))
     else:
         print('Available reference structures with {} Vertices'.format(n_atoms - 1))
         print(shape_tools.get_structure_references(n_atoms - 1))
 
-
 if args.custom_reference_structure is not None:
     reference_polyhedron = file_io.read_input_file(args.custom_reference_structure)
 elif not reference_polyhedron:
     reference_polyhedron = [args.shape_label]
 
-if args.shape_structure:
+if args.nearest_structure:
     symobj.write_shape_structure_2file(reference_polyhedron,
-                                       central_atom=args.central_atom,
+                                       central_atom=args.central_atom_position,
                                        output_name=args.output_name)
 elif args.shape_label or args.custom_reference_structure:
     symobj.write_shape_measure_2file(reference_polyhedron,
-                                     central_atom=args.central_atom,
+                                     central_atom=args.central_atom_position,
                                      output_name=args.output_name)
-
 
 if args.shape_map:
     # path_parameters = symobj.get_path_parameters(args.shape_map[0], args.shape_map[1], central_atom=args.central_atom)
     symobj.write_minimum_distortion_path_shape_2file(args.shape_map[0],
                                                      args.shape_map[1],
-                                                     central_atom=args.central_atom,
+                                                     central_atom=args.central_atom_position,
                                                      show=True)
 if args.shape_path:
     symobj.write_path_parameters_2file(args.shape_map[0],
                                        args.shape_map[1],
-                                       central_atom=args.central_atom,
+                                       central_atom=args.central_atom_position,
                                        output_name=args.output_name)
 
 # Symgroup commands
-if args.group_label:
-    symobj.write_symgroup_measure(args.group_label,
-                                  central_atom=args.central_atom,
+if args.sym_group:
+    symobj.write_symgroup_measure(args.sym_group,
+                                  central_atom=args.central_atom_position,
                                   output_name=args.output_name)
 
-
 # Wfnsym commands
-if args.wf_label:
+if args.wf_group:
     if args.axis1 is not None:
         args.axis1 = np.array(args.axis1).astype(float)
     if args.axis2 is not None:
         args.axis2 = np.array(args.axis2).astype(float)
     if args.center is not None:
         args.center = np.array(args.center).astype(float)
-    symobj.write_wnfsym_measure_2file(args.wf_label,
+    symobj.write_wnfsym_measure_2file(args.wf_group,
                                       vector_axis1=args.axis1,
                                       vector_axis2=args.axis2,
                                       center=args.center,

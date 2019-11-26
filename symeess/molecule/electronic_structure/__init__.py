@@ -6,17 +6,19 @@ class ElectronicStructure:
                  charge=0,
                  multiplicity=1,
                  basis=None,
-                 orbital_coefficients=None):
+                 orbital_coefficients=None,
+                 valence_only=False):
 
         self._charge = charge
         self._multiplicity = multiplicity
         self._basis = basis
-        # self._Ca = [float(x) for x in orbital_coefficients[0]]
-        self._Ca = np.array(orbital_coefficients[0], dtype=np.float64)
+        self._valence_only = valence_only
+        self._Ca = orbital_coefficients[0]
+        # self._Ca = np.array(orbital_coefficients[0], dtype=np.float64)
         if not orbital_coefficients[1]:
             self._Cb = None
         else:
-            self._Cb = np.array(orbital_coefficients[1], dtype=np.float64)
+            self._Cb = orbital_coefficients[1]
 
     @property
     def charge(self):
@@ -37,3 +39,7 @@ class ElectronicStructure:
     @property
     def coefficients_b(self):
         return self._Cb
+
+    @property
+    def valence_only(self):
+        return self._valence_only

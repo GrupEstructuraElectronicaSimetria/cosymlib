@@ -160,10 +160,15 @@ def get_molecule_from_file_fchk(file_name):
                             positions=coordinates,
                             name=name)
 
+        Ca = np.array(input_molecule[10], dtype=float).reshape(-1, int(np.sqrt(len(input_molecule[10]))))
+        if input_molecule[11]:
+            Cb = np.array(input_molecule[10], dtype=float).reshape(-1, int(np.sqrt(len(input_molecule[10]))))
+        else:
+            Cb = []
         ee = ElectronicStructure(charge=input_molecule[0][0],
                                  multiplicity=input_molecule[1][0],
                                  basis=basis,
-                                 orbital_coefficients=[input_molecule[10], input_molecule[11]])
+                                 orbital_coefficients=[Ca, Cb])
 
         return [Molecule(geometry, ee)]
 
@@ -258,8 +263,8 @@ def basis_format(basis_set_name,
                  '2': ['d', 6],
                  '3': ['f', 10],
                  '-1': ['sp', 4],
-                 '-2': ['d', 5],
-                 '-3': ['f', 7]}
+                 '-2': ['d_', 5],
+                 '-3': ['f_', 7]}
 
     atomic_numbers = np.array(atomic_numbers, dtype=int)
     atom_map = np.array(atom_map, dtype=int)

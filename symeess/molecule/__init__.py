@@ -38,8 +38,9 @@ class Molecule:
                   'the molecular orbital coefficients...')
             EH = ExtendedHuckel(self.geometry)
             self.set_electronic_structure(ElectronicStructure(basis=EH.get_basis(),
-                                                              orbital_coefficients=[EH.get_mo_coefficients().flatten(),
-                                                                                    []]))
+                                                              orbital_coefficients=[EH.get_mo_coefficients(),
+                                                                                    []],
+                                                              valence_only=True))
         return self._wfnsym.results(group, vector_axis1, vector_axis2, center)
 
     # get_shape(*)  ????
