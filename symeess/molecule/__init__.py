@@ -10,7 +10,7 @@ class Molecule:
     def __init__(self, geometry, ee=None):
 
         if not geometry:
-            print('No geometry found in the input file, check out for possible errors')
+            print('No geometry found in the input file, check out input file for possible errors')
             exit()
         self._geometry = geometry
         self._name = geometry.get_name()
@@ -33,13 +33,13 @@ class Molecule:
     def electronic_structure(self):
         return self._electronic_structure
 
-    def get_mo_symmetry(self, group, vector_axis1, vector_axis2, center):
+    def get_mo_symmetry(self, group, vector_axis1=None, vector_axis2=None, center=None):
         if self._electronic_structure is None:
             print('No electronic structure found in the input file. Starting a extended-huckel calculation to determine'
                   'the molecular orbital coefficients...')
-            EH = ExtendedHuckel(self.geometry)
-            self.set_electronic_structure(ElectronicStructure(basis=EH.get_basis(),
-                                                              orbital_coefficients=[EH.get_mo_coefficients(),
+            eh = ExtendedHuckel(self.geometry)
+            self.set_electronic_structure(ElectronicStructure(basis=eh.get_basis(),
+                                                              orbital_coefficients=[eh.get_mo_coefficients(),
                                                                                     []],
                                                               valence_only=True))
         return self._wfnsym.results(group, vector_axis1, vector_axis2, center)

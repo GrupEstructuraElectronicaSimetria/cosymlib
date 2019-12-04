@@ -2,6 +2,7 @@ from symeess.molecule import Molecule, Geometry
 from symeess import file_io
 from symeess.file_io import shape2file
 from symeess.utils import get_shape_map
+import sys
 
 class Symeess:
     """
@@ -91,15 +92,76 @@ class Symeess:
                                                           maxdev, mindev, mingco, maxgco, names_order,
                                                           output_name=output_name)
 
-    def write_symgroup_measure(self, group, multi=1, central_atom=0, output_name=None):
-        # output_name = output_name + '_symgroup'
+    def write_symgroup_measure_all_info(self, group, multi=1, central_atom=0, output_name=None):
+        if output_name is not None:
+            output = open(output_name + '.zout', 'w')
+        else:
+            output = sys.stdout
+
         results = self.get_symgroup_measure(group=group, multi=multi, central_atom=central_atom)
-        file_io.write_symgroup_measure(group, [molecule.geometry for molecule in self._molecules], results, output_name)
+        txt = file_io.header()
+        txt += file_io.symgroup_file.build_symgroup_data(group, [molecule.geometry for molecule in self._molecules],
+                                                         results)
+        output.write(txt)
+
+    def write_symgroup_measure(self, group, multi=1, central_atom=0, output_name=None):
+        if output_name is not None:
+            output = open(output_name + '.ztab', 'w')
+        else:
+            output = sys.stdout
+
+        results = self.get_symgroup_measure(group=group, multi=multi, central_atom=central_atom)
+        txt = file_io.header()
+        txt += file_io.symgroup_file.build_symgroup_measure(group, [molecule.geometry for molecule in self._molecules],
+                                                            results)
+        output.write(txt)
 
     def write_wnfsym_measure_2file(self, group, vector_axis1=None, vector_axis2=None, center=None, output_name=None):
-        # output_name = output_name + '_wfnsym'
+        if output_name is not None:
+            output = open(output_name + '.wout', 'w')
+        else:
+            output = sys.stdout
+
         wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)
-        file_io.write_wfnsym_measure(group, self._molecules[0], wfnsym_results, output_name)
+        txt = file_io.header()
+        txt += file_io.wfnsym_file.build_symmetry_operated_matrices(group, self._molecules[0], wfnsym_results)
+        txt += file_io.wfnsym_file.build_symmetry_overlap_analysis(wfnsym_results)
+        txt += file_io.wfnsym_file.build_symmetry_ireducible_representation_analysis(wfnsym_results)
+        output.write(txt)
+
+    def write_wnfsym_sym_matrices_2file(self, group, vector_axis1=None, vector_axis2=None, center=None, output_name=None):
+        if output_name is not None:
+            output = open(output_name + '.wout', 'w')
+        else:
+            output = sys.stdout
+
+        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)
+        txt = file_io.header()
+        txt += file_io.wfnsym_file.build_symmetry_operated_matrices(group, self._molecules[0], wfnsym_results)
+        output.write(txt)
+
+    def write_wnfsym_sym_ovelap_2file(self, group, vector_axis1=None, vector_axis2=None, center=None, output_name=None):
+        if output_name is not None:
+            output = open(output_name + '.wout', 'w')
+        else:
+            output = sys.stdout
+
+        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)
+        txt = file_io.header()
+        txt += file_io.wfnsym_file.build_symmetry_overlap_analysis(wfnsym_results)
+        output.write(txt)
+
+    def write_wnfsym_ireducible_repr_2file(self, group, vector_axis1=None, vector_axis2=None, center=None,
+                                           output_name=None):
+        if output_name is not None:
+            output = open(output_name + '.wout', 'w')
+        else:
+            output = sys.stdout
+
+        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)
+        txt = file_io.header()
+        txt += file_io.wfnsym_file.build_symmetry_ireducible_representation_analysis(wfnsym_results)
+        output.write(txt)
 
     def get_shape_measure(self, label, kind, central_atom=0):
         get_measure = 'get_shape_' + kind

@@ -8,11 +8,6 @@ from symeess.symeess_api import Symeess
 from symeess.shape import shape_tools
 
 
-# def get_args_dict():
-#     return dict(Shape_labels="shape_label", Central_atom_position="central_atom",
-#                 Sym_group="group_label", Sym_wf_group="wf_label")
-
-
 parser = argparse.ArgumentParser(description='Symeess')
 parser.add_argument(type=str, dest='input_file', help='input file name(+extension)')
 parser.add_argument('-o', dest='output_name', default=None, help='customize output file name')
@@ -72,7 +67,6 @@ group_symgroup = parser.add_argument_group('Symgroup')
 group_symgroup.add_argument('-sym',
                             dest='sym_group',
                             action='store',
-                            # nargs='+',
                             default=False,
                             help='Symgroup measure of input structure with reference group')
 
@@ -86,7 +80,6 @@ group_wfnsym.add_argument('-sym_wf',
 group_wfnsym.add_argument('-psym_wf',
                           dest='group_label',
                           action='store',
-                          # nargs='+',
                           default=False,
                           help='Pseudo-symmetry measure of input structure with reference group')
 group_wfnsym.add_argument('-axis1',
@@ -111,7 +104,7 @@ group_wfnsym.add_argument('-center',
 
 args = parser.parse_args(sys.argv[1:])
 # args = parser.parse_args(['../examples/coord.xyz', 'example_shape_file'])
-# args = parser.parse_args(['-shape', 'T-4', '-central_atom', '1', '../examples/coord.xyz'])
+# args = parser.parse_args(['-shape', 'all', '-central_atom', '1', '../examples/coord.xyz'])
 # args = parser.parse_args(['-shape', 'T-4', '-central_atom', '1', '../examples/coord.cor'])
 # args = parser.parse_args(['-shape', 'T-4', '-old', '-central_atom', '5', '../examples/coord.dat'])
 # args = parser.parse_args(['-shape_labels', '-central_atom', '1', '../examples/coord.xyz'])
@@ -124,14 +117,14 @@ args = parser.parse_args(sys.argv[1:])
 # args = parser.parse_args(['-sym', 'r', '-central_atom', '1', '../examples/coord.xyz'])
 # args = parser.parse_args(['-sym_wf', 'Td',
 #                           '-axis1', '0.',      '0.',      '1.',
-#                           # '-axis2', '0.2051',      '0.8240',     '-0.6786',
-#                           '-center', '0.', ' 0.', '0.',
-#                           '../examples/tih4_5d.fchk'])
+#                           '-axis2', '0.2051',      '0.8240',     '-0.6786',
+                          # '-center', '0.', ' 0.', '0.',
+                          # '../examples/tih4_5d.fchk'])
 # args = parser.parse_args(['-sym_wf', 'Td',
 #                           '-axis1', '0.',      '0.',      '1.',
-#                           # '-axis2', '0.2051',      '0.8240',     '-0.6786',
+#                          # '-axis2', '0.2051',      '0.8240',     '-0.6786',
 #                           '-center', '0.', ' 0.', '0.',
-#                           '../examples/coord.xyz'])
+#                           '../examples/qchem_molden.out'])
 # args = parser.parse_args(['-pointgroup', '../examples/test.xyz'])
 
 if args.yaml_input:
@@ -182,7 +175,15 @@ if args.shape_labels:
 if args.custom_reference_structure is not None:
     reference_polyhedron = file_io.read_input_file(args.custom_reference_structure)
 elif not reference_polyhedron:
-    reference_polyhedron = [args.shape_label]
+    if args.shape_label == 'all':
+        try:
+            n_atoms = structures[0].geometry.get_n_atoms()
+        except AttributeError:
+            n_atoms = structures[0].get_n_atoms()
+        c = int(bool(args.central_atom_position))
+        reference_polyhedron = shape_tools.get_structure_references(n_atoms - c)
+    else:
+        reference_polyhedron = [args.shape_label]
 
 if args.nearest_structure:
     symobj.write_shape_structure_2file(reference_polyhedron,
@@ -194,7 +195,6 @@ elif args.shape_label or args.custom_reference_structure:
                                      output_name=args.output_name)
 
 if args.shape_map:
-    # path_parameters = symobj.get_path_parameters(args.shape_map[0], args.shape_map[1], central_atom=args.central_atom)
     symobj.write_minimum_distortion_path_shape_2file(args.shape_map[0],
                                                      args.shape_map[1],
                                                      central_atom=args.central_atom_position,
@@ -207,9 +207,9 @@ if args.shape_path:
 
 # Symgroup commands
 if args.sym_group:
-    symobj.write_symgroup_measure(args.sym_group,
-                                  central_atom=args.central_atom_position,
-                                  output_name=args.output_name)
+    symobj.write_symgroup_measure_all_info(args.sym_group,
+                                           central_atom=args.central_atom_position,
+                                           output_name=args.output_name)
 
 # Wfnsym commands
 if args.wf_group:

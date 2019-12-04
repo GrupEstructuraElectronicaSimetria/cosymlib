@@ -22,9 +22,8 @@ class Wfnsym:
         if hash not in self._results:
             self._do_measure(group, vector_axis1, vector_axis2, center)
         return [self._results[hash].ideal_gt, self._results[hash].SymLab, self._results[hash].mo_SOEVs_a,
-                self._results[hash].mo_SOEVs_b, self._results[hash].mo_SOEVs, self._results[hash].wf_SOEVs_a,
-                self._results[hash].wf_SOEVs_b, self._results[hash].wf_SOEVs, self._results[hash].grim_coef,
-                self._results[hash].csm_coef]
+                self._results[hash].mo_SOEVs_b, self._results[hash].wf_SOEVs_a, self._results[hash].wf_SOEVs_b,
+                self._results[hash].wf_SOEVs, self._results[hash].grim_coef, self._results[hash].csm_coef]
 
     def symmetry_ireducible_representation_analysis(self, group,
                                                     vector_axis1,

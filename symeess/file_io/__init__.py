@@ -4,7 +4,7 @@ import re
 from symeess.molecule import Molecule, Geometry, ElectronicStructure
 import numpy as np
 from symeess import tools
-import symeess.file_io.shape2file
+from symeess.file_io import shape2file, wfnsym_file, symgroup_file
 
 
 def nonblank_lines(f):
@@ -446,11 +446,11 @@ def basis_format(basis_set_name,
 
 
 # OUTPUT part
-def header(output):
-    output.write('-' * 70 + '\n')
-    output.write('SYMEESS v0.6.3 \n'
-                 'Electronic Structure Group,  Universitat de Barcelona\n')
-    output.write('-' * 70 + '\n' + '\n')
+def header():
+    txt_header = '-' * 70 + '\n'
+    txt_header += 'SYMEESS v0.6.7 \n Electronic Structure Group,  Universitat de Barcelona\n'
+    txt_header += '-' * 70 + '\n' + '\n'
+    return txt_header
 
 
 def write_input_info(initial_geometries, output_name=None):
@@ -458,7 +458,7 @@ def write_input_info(initial_geometries, output_name=None):
         output = open(output_name + '.tab', 'w')
     else:
         output = sys.stdout
-    header(output)
+    output.write(header())
 
     for ids, geometry in enumerate(initial_geometries):
         output.write('Structure {} : {}\n'.format(ids+1, geometry.get_name()))
@@ -467,182 +467,6 @@ def write_input_info(initial_geometries, output_name=None):
             output.write('{:2s}'.format(geometry.get_symbols()[idn]))
             output.write(' {:11.7f} {:11.7f} {:11.7f}\n'.format(array[0], array[1], array[2]))
         output.write('\n')
-
-
-def write_symgroup_measure(label, geometries, symgroup_results, output_name):
-    if output_name is not None:
-        output = open(output_name + '.zout', 'w')
-        output2 = open(output_name + '.ztab', 'w')
-    else:
-        output = sys.stdout
-        output2 = sys.stdout
-    header(output)
-
-    output.write('Evaluating symmetry operation : {}\n'.format(label))
-
-    for idx, geometry in enumerate(geometries):
-        output.write('{}\n'.format(geometry.get_name()))
-        output.write('\n')
-        output.write('Centered Structure\n')
-        output.write('--------------------------------------------\n')
-        center_mass = tools.center_mass(geometry.get_symbols(), geometry.get_positions())
-        for idn, array in enumerate(geometry.get_positions()):
-            array = array - center_mass
-            output.write('{:2} {:12.8f} {:12.8f} {:12.8f}\n'.format(geometry.get_symbols()[idn],
-                                                                    array[0], array[1], array[2]))
-        output.write('--------------------------------------------\n')
-
-        output.write('Optimal permutation\n')
-        for idn, permutation in enumerate(symgroup_results[idx].optimum_permutation):
-            output.write('{:2} {:2}\n'.format(idn + 1, permutation))
-        output.write('\n')
-
-        output.write('Inverted structure\n')
-        for idn, axis in enumerate(symgroup_results[idx].nearest_structure):
-            output.write('{:2} {:12.8f} {:12.8f} {:12.8f}\n'.format(geometry.get_symbols()[idn],
-                                                                    axis[0], axis[1], axis[2]))
-        output.write('\n')
-
-        output.write('Reference axis\n')
-        for array in symgroup_results[idx].reference_axis:
-            output.write('{:12.8f} {:12.8f} {:12.8f}\n'.format(array[0], array[1], array[2]))
-        output.write('\n')
-
-        output.write('Symmetry measure {:.5f}\n'.format(symgroup_results[idx].csm))
-        output.write('..................................................\n')
-    output2.write('Evaluating symmetry operation : {}\n \n'.format(label))
-    for idx, geometry in enumerate(geometries):
-        output2.write('{:>5} {:10.5f}\n'.format(geometry.get_name(), symgroup_results[idx].csm))
-
-    output.close()
-    output2.close()
-
-
-def write_wfnsym_measure(label, molecule, wfnsym_results, output_name):
-    if output_name is not None:
-        output = open(output_name + '.wout', 'w')
-    else:
-        output = sys.stdout
-    header(output)
-
-    geometry = molecule.geometry
-    output.write('MEASURES OF THE SYMMETRY GROUP:   {}\n'.format(label))
-    output.write('Basis: {}\n'.format(list(molecule.electronic_structure.basis.keys())[0]))
-    output.write('--------------------------------------------\n')
-    output.write(' Atomic Coordinates (Angstroms)\n')
-    output.write('--------------------------------------------\n')
-    for idn, array in enumerate(geometry.get_positions()):
-        output.write('{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idn],
-                                                                array[0], array[1], array[2]))
-    output.write('--------------------------------------------\n')
-    for i, label in enumerate(wfnsym_results.SymLab):
-        output.write('\n')
-        output.write('@@@ Operation {0}: {1}'.format(i + 1, wfnsym_results.SymLab[i]))
-        output.write('\nSymmetry Transformation matrix\n')
-        for array in wfnsym_results.SymMat[i]:
-            output.write(' {:11.6f} {:11.6f} {:11.6f}\n'.format(array[0], array[1], array[2]))
-        output.write('\n')
-        output.write('Symmetry Transformed Atomic Coordinates (Angstroms)\n')
-
-        for idn, array in enumerate(geometry.get_positions()):
-            array2 = np.dot(array, wfnsym_results._SymMat[i].T)
-            output.write('{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idn],
-                                                                    array2[0], array2[1], array2[2]))
-
-    output.write('\nIdeal Group Table\n')
-    output.write('   -------------------------------------------------------------------------------'
-                 '------------------------------------------------------------------------\n')
-    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.SymLab]))
-    output.write('\n')
-    output.write('   -------------------------------------------------------------------------------'
-                 '------------------------------------------------------------------------\n')
-    for i, line in enumerate(wfnsym_results.ideal_gt):
-        output.write('{:4}'.format(wfnsym_results.IRLab[i]) + '  '.join(['{:7.3f}'.format(s) for s in line]))
-        output.write('\n')
-    output.write('   -------------------------------------------------------------------------------'
-                 '------------------------------------------------------------------------\n')
-
-    output.write('\nAlpha MOs: Symmetry Overlap Expectation Values\n')
-    output.write('   -------------------------------------------------------------------------------'
-                 '------------------------------------------------------------------------\n')
-    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.SymLab]))
-    output.write('\n')
-    output.write('   -------------------------------------------------------------------------------'
-                 '------------------------------------------------------------------------\n')
-
-    for i, line in enumerate(wfnsym_results.mo_SOEVs_a):
-        output.write('{:4d}'.format(i + 1) + '  '.join(['{:7.3f}'.format(s) for s in line]))
-        output.write('\n')
-
-    output.write('\nBeta MOs: Symmetry Overlap Expectation Values\n')
-    output.write('   -------------------------------------------------------------------------------'
-                 '------------------------------------------------------------------------\n')
-    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.SymLab]))
-    output.write('\n')
-    output.write('   -------------------------------------------------------------------------------'
-                 '------------------------------------------------------------------------\n')
-    for i, line in enumerate(wfnsym_results.mo_SOEVs_b):
-        output.write('{:4d}'.format(i + 1) + '  '.join(['{:7.3f}'.format(s) for s in line]))
-        output.write('\n')
-
-    output.write('\nWaveFunction: Symmetry Overlap Expectation Values\n')
-    output.write('   -------------------------------------------------------------------------------'
-                 '------------------------------------------------------------------------\n')
-    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.SymLab]))
-    output.write('\n')
-    output.write('   -------------------------------------------------------------------------------'
-                 '------------------------------------------------------------------------\n')
-    output.write('a-wf' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.wf_SOEVs_a]))
-    output.write('\n')
-    output.write('b-wf' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.wf_SOEVs_b]))
-    output.write('\n')
-    output.write('WFN ' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.wf_SOEVs]))
-    output.write('\n')
-
-    output.write('\nWaveFunction: CSM-like values\n')
-    output.write('   -------------------------------------------------------------------------------'
-                 '------------------------------------------------------------------------\n')
-    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.SymLab]))
-    output.write('\n')
-    output.write('   -------------------------------------------------------------------------------'
-                 '------------------------------------------------------------------------\n')
-
-    output.write('Grim' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.grim_coef]))
-    output.write('\n')
-    output.write('CSM ' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.csm_coef]))
-    output.write('\n')
-
-    output.write('\nAlpha MOs: Irred. Rep. Decomposition\n')
-    output.write('   ---------------------------------------------\n')
-    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.IRLab]))
-    output.write('\n')
-    output.write('   ---------------------------------------------\n')
-    for i, line in enumerate(wfnsym_results.mo_IRd_a):
-        output.write('{:4d}'.format(i + 1) + '  '.join(['{:7.3f}'.format(s) for s in line]))
-        output.write('\n')
-
-    output.write('\nBeta MOs: Irred. Rep. Decomposition\n')
-    output.write('   ---------------------------------------------\n')
-    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.IRLab]))
-    output.write('\n')
-    output.write('   ---------------------------------------------\n')
-    for i, line in enumerate(wfnsym_results.mo_IRd_b):
-        output.write('{:4d}'.format(i + 1) + '  '.join(['{:7.3f}'.format(s) for s in line]))
-        output.write('\n')
-
-    output.write('\nWaveFunction: Irred. Rep. Decomposition\n')
-    output.write('   ---------------------------------------------\n')
-    output.write('     ' + '  '.join(['{:^7}'.format(s) for s in wfnsym_results.IRLab]))
-    output.write('\n')
-    output.write('   ---------------------------------------------\n')
-    output.write('a-wf' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.wf_IRd_a]))
-    output.write('\n')
-    output.write('b-wf' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.wf_IRd_b]))
-    output.write('\n')
-    output.write('WFN ' + '  '.join(['{:7.3f}'.format(s) for s in wfnsym_results.wf_IRd]))
-    output.write('\n')
-    print('WFNSYM : Calculation has finished normally ')
-    output.close()
 
 
 def reformat_input(array):
