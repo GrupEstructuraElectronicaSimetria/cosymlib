@@ -60,6 +60,14 @@ group_shape.add_argument('-shape_path',
                          help='Calculates generalized coordinate from the path deviation function for a given path')
 
 # Symgroup input flags
+group_symgroup = parser.add_argument_group('PointGroup')
+group_symgroup.add_argument('-pointgroup',
+                            dest='pointgroup',
+                            action='store_true',
+                            default=False,
+                            help='Gives the point group of an input structure')
+
+# Symgroup input flags
 group_symgroup = parser.add_argument_group('Symgroup')
 group_symgroup.add_argument('-sym',
                             dest='sym_group',
@@ -116,9 +124,15 @@ args = parser.parse_args(sys.argv[1:])
 # args = parser.parse_args(['-sym', 'r', '-central_atom', '1', '../examples/coord.xyz'])
 # args = parser.parse_args(['-sym_wf', 'Td',
 #                           '-axis1', '0.',      '0.',      '1.',
-                          # '-axis2', '0.2051',      '0.8240',     '-0.6786',
-                          # '-center', '0.', ' 0.', '0.',
-                          # '../examples/tih4_5d.fchk'])
+#                           # '-axis2', '0.2051',      '0.8240',     '-0.6786',
+#                           '-center', '0.', ' 0.', '0.',
+#                           '../examples/tih4_5d.fchk'])
+# args = parser.parse_args(['-sym_wf', 'Td',
+#                           '-axis1', '0.',      '0.',      '1.',
+#                           # '-axis2', '0.2051',      '0.8240',     '-0.6786',
+#                           '-center', '0.', ' 0.', '0.',
+#                           '../examples/coord.xyz'])
+# args = parser.parse_args(['-pointgroup', '../examples/test.xyz'])
 
 if args.yaml_input:
     with open(args.yaml_input, 'r') as stream:
@@ -143,6 +157,10 @@ if args.input_file is not None:
 
 if args.info:
     file_io.write_input_info(structures, output_name=args.output_name)
+
+if args.pointgroup:
+    for idm, pg in enumerate(symobj.write_point_group()):
+        print('The point group of molecule{} is: {}'.format(idm, pg))
 
 # Shape's commands
 if args.shape_labels:

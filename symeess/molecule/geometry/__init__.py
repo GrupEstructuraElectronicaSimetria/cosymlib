@@ -19,13 +19,13 @@ class Geometry:
         else:
             self._name = ' ' * 5
 
-        for element in symbols:
+        for symbol in symbols:
             try:
-                int(element)
-                self._symbols.append(tools.atomic_number_to_element(int(element)))
+                int(symbol)
+                self._symbols.append(tools.atomic_number_to_element(int(symbol)))
             except (ValueError, TypeError):
-                self._symbols.append(element.capitalize())
-                for ida, a in enumerate(element):
+                self._symbols.append(symbol.capitalize())
+                for ida, a in enumerate(symbol):
                     try:
                         int(a)
                         self._symbols[-1] = self._symbols[-1][:ida]
@@ -35,12 +35,12 @@ class Geometry:
 
         try:
             float(positions[0])
-            for element in positions:
-                self._positions.append(float(element))
+            for symbol in positions:
+                self._positions.append(float(symbol))
             self._positions = list(chunks(self._positions, 3))
         except (ValueError, TypeError, IndexError):
-            for element in positions:
-                self._positions.append([float(j) for j in element])
+            for symbol in positions:
+                self._positions.append([float(j) for j in symbol])
 
         self._positions = np.array(self._positions)
         self._shape = shape.Shape(self)

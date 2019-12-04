@@ -1,6 +1,7 @@
 from symeess.molecule.geometry import Geometry
 from symeess.molecule.electronic_structure import ElectronicStructure
 from symeess.symmetry.wfnsym import Wfnsym
+from symeess.symmetry.pointgroup import CalculatePointGroup
 from symeess.simulation import ExtendedHuckel
 
 
@@ -43,11 +44,5 @@ class Molecule:
                                                               valence_only=True))
         return self._wfnsym.results(group, vector_axis1, vector_axis2, center)
 
-    # get_shape(*)  ????
-    #   return self.geometry.get_shape_measure(*)
-
-    # get_structural_symmetry()  ???
-
-
-    # def calculate_pointgroup(self):
-    #     symmetry.get_pointgroup(self._geometry.get_symbols(), self._geometry.get_positions())
+    def get_pointgroup(self, tol=0.01):
+        return CalculatePointGroup(self._geometry, tolerance=tol).get_point_group()

@@ -1,6 +1,3 @@
-import numpy as np
-
-
 class ElectronicStructure:
     def __init__(self,
                  charge=0,
@@ -14,7 +11,6 @@ class ElectronicStructure:
         self._basis = basis
         self._valence_only = valence_only
         self._Ca = orbital_coefficients[0]
-        # self._Ca = np.array(orbital_coefficients[0], dtype=np.float64)
         if not orbital_coefficients[1]:
             self._Cb = None
         else:

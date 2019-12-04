@@ -16,6 +16,7 @@ Installation instructions
     - PyYaml
     - Symgroupy
     - Wfnsympy
+    - Huckelpy
     - tinker-tk
     - Blas/Lapack
 

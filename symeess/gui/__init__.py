@@ -8,7 +8,7 @@ from PyQt5 import QtOpenGL
 from PyQt5.Qt3DExtras import Qt3DWindow, QFirstPersonCameraController
 from PyQt5.Qt3DCore import QEntity
 from symeess.shape import shape_tools
-from symeess import file_io, shape2file, shape
+from symeess import file_io, shape
 import numpy as np
 
 home = expanduser("~")
@@ -75,12 +75,14 @@ class MainWindow(QWidget):
         self.file_text.move(2, 2)
         self.file_text.resize(x - 150, 20)
 
-        # savefile = QPushButton('Save file', self)
-        # savefile.move(x-100, 20)
-        # savefile.clicked.connect(self.save)
-        # self.savefile_text = QLineEdit(self)
-        # self.savefile_text.move(2, 25)
-        # self.savefile_text.resize(x - 150, 20)
+        self.save_button = QPushButton('Save file', self)
+        self.save_button.move(x-100, 20)
+        self.save_button.setEnabled(False)
+        self.save_button.clicked.connect(self.save)
+
+        self.savefile_text = QLineEdit(self)
+        self.savefile_text.move(2, 25)
+        self.savefile_text.resize(x - 150, 20)
 
         # Label selection
         self.central_atom_name = QCheckBox('Central atom', self)
@@ -149,35 +151,45 @@ class MainWindow(QWidget):
         if self.filename:
             self.geometries = file_io.read_input_file(self.filename)
             self.changeVertices(self.central_atom_name.isChecked())
-            SecondWindow(self, local_geometry=[self.x(), self.y()]).show()
+            # SecondWindow(self, local_geometry=[self.x(), self.y()]).show()
 
     def save(self):
         self.directory = QFileDialog.getExistingDirectory(self, "Select Directory")
         self.savefile_text.setText(str(self.directory))
+        print(self.directory)
+        # measures = [[shape.Shape(geometry).measure(self.label, self.central_atom)
+        #              for geometry in self.geometries]]
+        # names = [geometry.get_name() for geometry in self.geometries]
+        # file_io.shape2file.write_shape_measure_data(measures, names, [self.label])
 
     def set_central_atom(self, text):
         try:
             self.central_atom = int(text)
         except ValueError:
-            print('WARNING. Central atom must be an integer')
+            self.results.setPlainText('WARNING. Central atom must be an integer')
+            self.results.repaint()
+            # print('WARNING. Central atom must be an integer')
 
     def execute(self):
         if self.filename is None:
-            print('WARNING. No input file selected, choose one before running')
+            self.results.setPlainText('WARNING. No input file selected')
+            self.results.repaint()
+            # print('WARNING. No input file selected, choose one before running')
         else:
-            if self.directory is None:
-                text = "SHAPE's measure " + self.label + "\n"
-                for geometry in self.geometries:
-                    text += '{:10} {:10.3f}'.format(geometry.get_name(),
-                                                    shape.Shape(geometry).measure(self.label, self.central_atom)) + '\n'
+            # if self.directory is None:
+            text = "SHAPE's measure " + self.label + "\n"
+            for geometry in self.geometries:
+                text += '{:10} {:10.3f}'.format(geometry.get_name(),
+                                                shape.Shape(geometry).measure(self.label, self.central_atom)) + '\n'
 
-                self.results.setPlainText(text)
-                self.results.repaint()
+            self.results.setPlainText(text)
+            self.results.repaint()
+            self.save_button.setEnabled(True)
             # else:
-            #     measures = [shape.Shape(geometry).measure(self.label, self.central_atom)
-            #                 for geometry in self.geometries]
+            #     measures = [[shape.Shape(geometry).measure(self.label, self.central_atom)
+            #                 for geometry in self.geometries]]
             #     names = [geometry.get_name() for geometry in self.geometries]
-            #     shape2file.write_shape_measure_data(measures, names, self.label)
+            #     file_io.shape2file.write_shape_measure_data(measures, names, [self.label])
 
     def center(self):
         qr = self.frameGeometry()
@@ -195,11 +207,10 @@ class SecondWindow(QMainWindow):
         self.pen = QPen(QColor(0,0,0))                      # set lineColor
         self.pen.setWidth(3)                                            # set lineWidth
         self.brush = QBrush(QColor(255,255,255,255))        # set fillColor
-        self.polygon = self.createPoly(8,150,0)                         # polygon with n points, radius, angle of the first point
+        self.polygon = self.createpoly(8, 150, 0)                         # polygon with n points, radius, angle of the first point
 
 
-
-    def createPoly(self, n, r, s):
+    def createpoly(self, n, r, s):
             polygon = QPolygonF()
             w = 360 / n  # angle per step
             for i in range(n):  # add the points of polygon

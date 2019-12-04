@@ -3,7 +3,6 @@ from symeess import file_io
 from symeess.file_io import shape2file
 from symeess.utils import get_shape_map
 
-
 class Symeess:
     """
     Main class of symeess program that can perform all the jobs
@@ -158,3 +157,6 @@ class Symeess:
             plt.show()
         else:
             shape2file.write_shape_map(shape_label1, shape_label2, path, output_name)
+
+    def write_point_group(self, tol=0.01):
+        return [molecule.get_pointgroup(tol) for molecule in self._molecules]

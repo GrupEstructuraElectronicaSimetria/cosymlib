@@ -39,21 +39,15 @@ def atomic_number_to_element(z):
 
 
 def element_to_atomic_number(symbol):
-    for element, info in periodic_table_info.items():
-        if symbol.capitalize() == element:
-            return info[0]
+    return periodic_table_info[symbol.capitalize()][0]
 
 
 def element_mass(symbol):
-    for element, info in periodic_table_info.items():
-        if symbol.capitalize() == element:
-            return info[1]
+    return periodic_table_info[symbol.capitalize()][1]
 
 
 def element_valence_electron(symbol):
-    for element, info in periodic_table_info.items():
-        if symbol.capitalize() == element:
-            return info[2]
+    return periodic_table_info[symbol.capitalize()][2]
 
 
 def center_mass(elements, coordinates):
