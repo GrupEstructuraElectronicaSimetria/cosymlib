@@ -1,8 +1,9 @@
 from symeess.molecule import Molecule, Geometry
 from symeess import file_io
 from symeess.file_io import shape2file
-from symeess.utils import get_shape_map
+from symeess.utils import get_shape_map, molecular_orbital_diagram
 import sys
+
 
 class Symeess:
     """
@@ -162,6 +163,10 @@ class Symeess:
         txt = file_io.header()
         txt += file_io.wfnsym_file.build_symmetry_ireducible_representation_analysis(wfnsym_results)
         output.write(txt)
+
+    def write_mo_diagram(self, group, vector_axis1=None, vector_axis2=None, center=None):
+        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)
+        molecular_orbital_diagram(self._molecules[0], wfnsym_results)
 
     def get_shape_measure(self, label, kind, central_atom=0):
         get_measure = 'get_shape_' + kind

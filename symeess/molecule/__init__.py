@@ -21,8 +21,8 @@ class Molecule:
     def get_name(self):
         return self._name
 
-    def set_electronic_structure(self, ee):
-        self._electronic_structure = ee
+    def set_wfnsym(self, ee):
+        # self._electronic_structure = ee
         self._wfnsym = Wfnsym(self)
 
     @property
@@ -31,17 +31,18 @@ class Molecule:
 
     @property
     def electronic_structure(self):
-        return self._electronic_structure
-
-    def get_mo_symmetry(self, group, vector_axis1=None, vector_axis2=None, center=None):
         if self._electronic_structure is None:
             print('No electronic structure found in the input file. Starting a extended-huckel calculation to determine'
                   'the molecular orbital coefficients...')
             eh = ExtendedHuckel(self.geometry)
-            self.set_electronic_structure(ElectronicStructure(basis=eh.get_basis(),
-                                                              orbital_coefficients=[eh.get_mo_coefficients(),
-                                                                                    []],
-                                                              valence_only=True))
+            self._electronic_structure = ElectronicStructure(basis=eh.get_basis(),
+                                                             orbital_coefficients=[eh.get_mo_coefficients(), []],
+                                                             mo_energies=eh.get_mo_energies(),
+                                                             valence_only=True)
+        return self._electronic_structure
+
+    def get_mo_symmetry(self, group, vector_axis1=None, vector_axis2=None, center=None):
+        self.set_wfnsym(self.electronic_structure)
         return self._wfnsym.results(group, vector_axis1, vector_axis2, center)
 
     def get_pointgroup(self, tol=0.01):

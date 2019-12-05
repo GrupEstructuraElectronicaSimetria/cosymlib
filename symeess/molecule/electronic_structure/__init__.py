@@ -4,6 +4,7 @@ class ElectronicStructure:
                  multiplicity=1,
                  basis=None,
                  orbital_coefficients=None,
+                 mo_energies=None,
                  valence_only=False):
 
         self._charge = charge
@@ -15,6 +16,7 @@ class ElectronicStructure:
             self._Cb = None
         else:
             self._Cb = orbital_coefficients[1]
+        self._mo_energies = mo_energies
 
     @property
     def charge(self):
@@ -35,6 +37,10 @@ class ElectronicStructure:
     @property
     def coefficients_b(self):
         return self._Cb
+
+    @property
+    def energies(self):
+        return self._mo_energies
 
     @property
     def valence_only(self):

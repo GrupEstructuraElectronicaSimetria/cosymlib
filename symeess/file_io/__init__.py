@@ -187,7 +187,7 @@ def get_molecule_from_file_molden(file_name):
     key_list = ['Charge', 'Multiplicity', 'Atomic numbers', 'Current cartesian coordinates',
                 'Shell type', 'Number of primitives per shell', 'Shell to atom map', 'Primitive exponents',
                 'Contraction coefficients', 'P(S=P) Contraction coefficients',
-                'Alpha MO coefficients', 'Beta MO coefficients']
+                'Alpha MO coefficients', 'Beta MO coefficients', 'MO Energies']
 
     type_list = {'s': '0',
                  'p': '1',
@@ -232,17 +232,18 @@ def get_molecule_from_file_molden(file_name):
                         input_molecule['Shell type'].append(type_list[line.split()[0].lower()])
                         input_molecule['Number of primitives per shell'].append(line.split()[1])
                 if read_coefficients:
-                    if 'Sym' in line or 'Ene' in line:
+                    if 'Sym' in line:
                         pass
                     else:
-                        if 'Spin' in line:
+                        if 'Ene' in line:
+                            input_molecule['MO Energies'].append(float(re.split('[= ]', line)[-1]))
+                        elif 'Spin' in line:
                             spin = re.split('[= ]', line)[-1]
                             input_molecule[spin + ' MO coefficients'].append([])
                         elif 'Occup' in line:
                             occupation[spin].append(float(line.split('=')[-1]))
                         else:
                             input_molecule[spin+' MO coefficients'][-1].append(line.split()[1])
-                            # input_molecule[spin + ' MO coefficients'].append([line.split()[1]])
 
             if '[Atoms]' in line:
                 read_molden = True
@@ -308,7 +309,8 @@ def get_molecule_from_file_molden(file_name):
         ee = ElectronicStructure(charge=input_molecule['Charge'][0],
                                  multiplicity=input_molecule['Multiplicity'][0],
                                  basis=basis,
-                                 orbital_coefficients=[Ca, Cb])
+                                 orbital_coefficients=[Ca, Cb],
+                                 mo_energies=input_molecule['MO Energies'])
 
         return [Molecule(geometry, ee)]
 

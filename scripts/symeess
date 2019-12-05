@@ -101,6 +101,10 @@ group_wfnsym.add_argument('-center',
                           nargs=3,
                           help='Center for the wfnsym calculation')
 
+# Utils
+parser.add_argument('-mo_diagram', dest="mo_diagram", action='store_true', default=False,
+                    help='Perform the calculations with the command file')
+
 
 args = parser.parse_args(sys.argv[1:])
 # args = parser.parse_args(['../examples/coord.xyz', 'example_shape_file'])
@@ -123,7 +127,7 @@ args = parser.parse_args(sys.argv[1:])
 # args = parser.parse_args(['-sym_wf', 'Td',
 #                           '-axis1', '0.',      '0.',      '1.',
 #                          # '-axis2', '0.2051',      '0.8240',     '-0.6786',
-#                           '-center', '0.', ' 0.', '0.',
+#                           '-center', '0.', ' 0.', '0.', '-mo_diagram',
 #                           '../examples/qchem_molden.out'])
 # args = parser.parse_args(['-pointgroup', '../examples/test.xyz'])
 
@@ -224,3 +228,10 @@ if args.wf_group:
                                       vector_axis2=args.axis2,
                                       center=args.center,
                                       output_name=args.output_name)
+
+    #Utils
+    if args.mo_diagram:
+        symobj.write_mo_diagram(args.wf_group,
+                                vector_axis1=args.axis1,
+                                vector_axis2=args.axis2,
+                                center=args.center)
