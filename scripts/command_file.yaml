@@ -1,0 +1,17 @@
+# Shape command line
+shape_labels: T-4
+nearest_structure: False
+shape_map: T-4 SP-4
+shape_path: False
+old: False
+# Symgroup command line
+sym_group: "C3v"
+# Wfnsym command line
+wf_group: "Td"
+axis1: [0., 0., 0.]
+axis2: [0., 0., 0.]
+center: [0., 0., 0.]
+# Optional command line
+custom_reference_structure: "external_file.ref"
+central_atom_position: 1
+info: True

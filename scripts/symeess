@@ -170,7 +170,7 @@ if args.nearest_structure:
     symobj.write_shape_structure_2file(reference_polyhedron,
                                        central_atom=args.central_atom_position,
                                        output_name=args.output_name)
-elif args.shape_label or args.custom_reference_structure:
+elif args.shape_label or args.custom_reference_structure or args.old:
     symobj.write_shape_measure_2file(reference_polyhedron,
                                      central_atom=args.central_atom_position,
                                      output_name=args.output_name)

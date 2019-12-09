@@ -21,9 +21,9 @@ class Molecule:
     def get_name(self):
         return self._name
 
-    def set_wfnsym(self, ee):
+    # def set_wfnsym(self):
         # self._electronic_structure = ee
-        self._wfnsym = Wfnsym(self)
+
 
     @property
     def geometry(self):
@@ -42,8 +42,9 @@ class Molecule:
         return self._electronic_structure
 
     def get_mo_symmetry(self, group, vector_axis1=None, vector_axis2=None, center=None):
-        self.set_wfnsym(self.electronic_structure)
-        return self._wfnsym.results(group, vector_axis1, vector_axis2, center)
+        from copy import deepcopy
+        wfnsym = deepcopy(Wfnsym(self))
+        return wfnsym.results(group, vector_axis1, vector_axis2, center)
 
     def get_pointgroup(self, tol=0.01):
         return CalculatePointGroup(self._geometry, tolerance=tol).get_point_group()

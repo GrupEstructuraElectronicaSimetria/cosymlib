@@ -117,7 +117,8 @@ class Symeess:
                                                             results)
         output.write(txt)
 
-    def write_wnfsym_measure_2file(self, group, vector_axis1=None, vector_axis2=None, center=None, output_name=None):
+    def write_wnfsym_measure_2file(self, group, vector_axis1=None, vector_axis2=None, center=None, output_name=None,
+                                   n_molecule=0):
         if output_name is not None:
             output = open(output_name + '.wout', 'w')
         else:
@@ -125,48 +126,51 @@ class Symeess:
 
         wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)
         txt = file_io.header()
-        txt += file_io.wfnsym_file.build_symmetry_operated_matrices(group, self._molecules[0], wfnsym_results)
-        txt += file_io.wfnsym_file.build_symmetry_overlap_analysis(wfnsym_results)
-        txt += file_io.wfnsym_file.build_symmetry_ireducible_representation_analysis(wfnsym_results)
+        txt += file_io.wfnsym_file.build_symmetry_operated_matrices(group, self._molecules[n_molecule],
+                                                                    wfnsym_results[n_molecule])
+        txt += file_io.wfnsym_file.build_symmetry_overlap_analysis(wfnsym_results[n_molecule])
+        txt += file_io.wfnsym_file.build_symmetry_ireducible_representation_analysis(wfnsym_results[n_molecule])
         output.write(txt)
 
-    def write_wnfsym_sym_matrices_2file(self, group, vector_axis1=None, vector_axis2=None, center=None, output_name=None):
+    def write_wnfsym_sym_matrices_2file(self, group, vector_axis1=None, vector_axis2=None, center=None, output_name=None,
+                                        n_molecule=0):
         if output_name is not None:
             output = open(output_name + '.wout', 'w')
         else:
             output = sys.stdout
 
-        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)[0]
+        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)
         txt = file_io.header()
-        txt += file_io.wfnsym_file.build_symmetry_operated_matrices(group, self._molecules[0], wfnsym_results)
+        txt += file_io.wfnsym_file.build_symmetry_operated_matrices(group, self._molecules[0], wfnsym_results[n_molecule])
         output.write(txt)
 
-    def write_wnfsym_sym_ovelap_2file(self, group, vector_axis1=None, vector_axis2=None, center=None, output_name=None):
+    def write_wnfsym_sym_ovelap_2file(self, group, vector_axis1=None, vector_axis2=None, center=None, output_name=None,
+                                      n_molecule=0):
         if output_name is not None:
             output = open(output_name + '.wout', 'w')
         else:
             output = sys.stdout
 
-        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)[0]
+        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)
         txt = file_io.header()
-        txt += file_io.wfnsym_file.build_symmetry_overlap_analysis(wfnsym_results)
+        txt += file_io.wfnsym_file.build_symmetry_overlap_analysis(wfnsym_results[n_molecule])
         output.write(txt)
 
     def write_wnfsym_ireducible_repr_2file(self, group, vector_axis1=None, vector_axis2=None, center=None,
-                                           output_name=None):
+                                           output_name=None, n_molecule=0):
         if output_name is not None:
             output = open(output_name + '.wout', 'w')
         else:
             output = sys.stdout
 
-        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)[0]
+        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)
         txt = file_io.header()
-        txt += file_io.wfnsym_file.build_symmetry_ireducible_representation_analysis(wfnsym_results)
+        txt += file_io.wfnsym_file.build_symmetry_ireducible_representation_analysis(wfnsym_results[n_molecule])
         output.write(txt)
 
-    def write_mo_diagram(self, group, vector_axis1=None, vector_axis2=None, center=None):
-        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)[0]
-        molecular_orbital_diagram(self._molecules[0], wfnsym_results)
+    def write_mo_diagram(self, group, vector_axis1=None, vector_axis2=None, center=None,n_molecule=0):
+        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)
+        molecular_orbital_diagram(self._molecules[0], wfnsym_results[n_molecule])
 
     def write_sym_energy_evolution(self, group, vector_axis1=None, vector_axis2=None, center=None):
         wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)
