@@ -74,14 +74,14 @@ def symmetry_energy_evolution(molecules, wfnsym, mo_range=None):
 
     energies = []
     ird_a_max = []
-    for molecule in molecules:
-        labels = wfnsym.IRLab
+    for idm, molecule in enumerate(molecules):
+        labels = wfnsym[idm].IRLab
         if mo_range is not None:
-            ird_a_max.append(np.array([np.argmax(ird_a_orb) for ird_a_orb in wfnsym.mo_IRd_a]
+            ird_a_max.append(np.array([np.argmax(ird_a_orb) for ird_a_orb in wfnsym[idm].mo_IRd_a]
                                       [mo_range[0]:mo_range[1]]))
             energies.append(molecule.electronic_structure.energies[mo_range[0]:mo_range[1]])
         else:
-            ird_a_max.append(np.array([np.argmax(ird_a_orb) for ird_a_orb in wfnsym.mo_IRd_a]))
+            ird_a_max.append(np.array([np.argmax(ird_a_orb) for ird_a_orb in wfnsym[idm].mo_IRd_a]))
             energies.append(molecule.electronic_structure.energies)
 
     energies_x_orbital = np.array(energies).T

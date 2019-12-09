@@ -107,29 +107,6 @@ parser.add_argument('-mo_diagram', dest="mo_diagram", action='store_true', defau
 
 
 args = parser.parse_args(sys.argv[1:])
-# args = parser.parse_args(['../examples/coord.xyz', 'example_shape_file'])
-# args = parser.parse_args(['-shape', 'all', '-central_atom', '1', '../examples/coord.xyz'])
-# args = parser.parse_args(['-shape', 'T-4', '-central_atom', '1', '../examples/coord.cor'])
-# args = parser.parse_args(['-shape', 'T-4', '-old', '-central_atom', '5', '../examples/coord.dat'])
-# args = parser.parse_args(['-shape_labels', '-central_atom', '1', '../examples/coord.xyz'])
-# args = parser.parse_args(['-shape', 'T-4', '-shape_structure', '-central_atom', '1', '-o', 'coord',
-#                           '../examples/coord.xyz'])
-# args = parser.parse_args(['-info', '../examples/coord.xyz'])
-# args = parser.parse_args(['-custom_reference_structure', '../examples/reference_structure.ref',
-#                           '../examples/coord.xyz'])
-# args = parser.parse_args(['-shape_map', 'T-4', 'SP-4', '-central_atom', '1', '../examples/coord.xyz'])
-# args = parser.parse_args(['-sym', 'r', '-central_atom', '1', '../examples/coord.xyz'])
-# args = parser.parse_args(['-sym_wf', 'Td',
-#                           '-axis1', '0.',      '0.',      '1.',
-#                           '-axis2', '0.2051',      '0.8240',     '-0.6786',
-                          # '-center', '0.', ' 0.', '0.',
-                          # '../examples/tih4_5d.fchk'])
-# args = parser.parse_args(['-sym_wf', 'Td',
-#                           '-axis1', '0.',      '0.',      '1.',
-#                          # '-axis2', '0.2051',      '0.8240',     '-0.6786',
-#                           '-center', '0.', ' 0.', '0.', '-mo_diagram',
-#                           '../examples/qchem_molden.out'])
-# args = parser.parse_args(['-pointgroup', '../examples/test.xyz'])
 
 if args.yaml_input:
     with open(args.yaml_input, 'r') as stream:

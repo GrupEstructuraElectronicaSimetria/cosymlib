@@ -1,7 +1,7 @@
 from symeess.molecule import Molecule, Geometry
 from symeess import file_io
 from symeess.file_io import shape2file
-from symeess.utils import get_shape_map, molecular_orbital_diagram
+from symeess.utils import get_shape_map, molecular_orbital_diagram, symmetry_energy_evolution
 import sys
 
 
@@ -136,7 +136,7 @@ class Symeess:
         else:
             output = sys.stdout
 
-        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)
+        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)[0]
         txt = file_io.header()
         txt += file_io.wfnsym_file.build_symmetry_operated_matrices(group, self._molecules[0], wfnsym_results)
         output.write(txt)
@@ -147,7 +147,7 @@ class Symeess:
         else:
             output = sys.stdout
 
-        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)
+        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)[0]
         txt = file_io.header()
         txt += file_io.wfnsym_file.build_symmetry_overlap_analysis(wfnsym_results)
         output.write(txt)
@@ -159,14 +159,18 @@ class Symeess:
         else:
             output = sys.stdout
 
-        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)
+        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)[0]
         txt = file_io.header()
         txt += file_io.wfnsym_file.build_symmetry_ireducible_representation_analysis(wfnsym_results)
         output.write(txt)
 
     def write_mo_diagram(self, group, vector_axis1=None, vector_axis2=None, center=None):
-        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)
+        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)[0]
         molecular_orbital_diagram(self._molecules[0], wfnsym_results)
+
+    def write_sym_energy_evolution(self, group, vector_axis1=None, vector_axis2=None, center=None):
+        wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)
+        symmetry_energy_evolution(self._molecules, wfnsym_results)
 
     def get_shape_measure(self, label, kind, central_atom=0):
         get_measure = 'get_shape_' + kind
@@ -206,10 +210,8 @@ class Symeess:
                    molecule in self._molecules]
 
     def get_wfnsym_measure(self, group, vector_axis1, vector_axis2, center):
-        return self._molecules[0].get_mo_symmetry(group,
-                                                  vector_axis1=vector_axis1,
-                                                  vector_axis2=vector_axis2,
-                                                  center=center)
+        return [molecule.get_mo_symmetry(group,  vector_axis1=vector_axis1,  vector_axis2=vector_axis2,  center=center)
+                for molecule in self._molecules]
 
     def write_minimum_distortion_path_shape_2file(self, shape_label1, shape_label2, central_atom=0,
                                                   num_points=20, show=False, output_name=None):
