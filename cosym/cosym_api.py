@@ -1,13 +1,13 @@
-from symeess.molecule import Molecule, Geometry
-from symeess import file_io
-from symeess.file_io import shape2file
-from symeess.utils import get_shape_map, molecular_orbital_diagram, symmetry_energy_evolution
+from cosym.molecule import Molecule, Geometry
+from cosym import file_io
+from cosym.file_io import shape2file
+from cosym.utils import get_shape_map, molecular_orbital_diagram, symmetry_energy_evolution
 import sys
 
 
-class Symeess:
+class Cosym:
     """
-    Main class of symeess program that can perform all the jobs
+    Main class of cosym program that can perform all the jobs
     """
 
     def __init__(self, structures):
@@ -40,7 +40,7 @@ class Symeess:
         """
 
         molecules_name = [molecule.get_name() for molecule in self._molecules]
-        if type(shape_reference[0]) is not str:
+        if type(shape_reference[0]) is Geometry:
             shape_results_measures = [self.get_shape_measure(reference.get_positions(), 'measure', central_atom)
                                       for reference in shape_reference]
             shape2file.write_shape_measure_data(shape_results_measures, molecules_name,
@@ -61,27 +61,40 @@ class Symeess:
         :param output_name: custom name without extension
         :return: shape's structure in the output_name.out file
         """
-        initial_geometry = [molecule.geometry.get_positions() for molecule in self._molecules]
-
+        initial_geometries = [molecule.geometry for molecule in self._molecules]
         molecules_name = [molecule.get_name() for molecule in self._molecules]
-        symbols = [molecule.geometry.get_symbols() for molecule in self._molecules]
+
         if type(shape_reference[0]) is not str:
             shape_results_structures = [self.get_shape_measure(reference.get_positions(), 'structure', central_atom)
                                         for reference in shape_reference]
             shape_results_measures = [self.get_shape_measure(reference.get_positions(), 'measure', central_atom)
                                       for reference in shape_reference]
-            shape2file.write_shape_structure_data(initial_geometry, shape_results_structures, shape_results_measures,
-                                                  symbols, molecules_name,
-                                                  [reference.get_name() for reference in shape_reference],
-                                                  output_name=output_name)
+
+            shape2file.write_shape_measure_data(shape_results_measures, molecules_name,
+                                                [reference.get_name() for reference in shape_reference],
+                                                output_name=output_name)
+            geometries = []
+            for idl, reference in enumerate(shape_reference):
+                for idm, molecule in enumerate(self._molecules):
+                    geometries.append(Geometry(symbols=molecule.geometry.get_symbols(),
+                                               positions=shape_results_structures[idl][idm],
+                                               name=reference.get_name()))
+            file_io.write_file_xyz(geometries, output_name=output_name)
         else:
             shape_results_structures = [self.get_shape_measure(reference, 'structure', central_atom)
                                         for reference in shape_reference]
             shape_results_measures = [self.get_shape_measure(reference, 'measure', central_atom)
                                       for reference in shape_reference]
-            shape2file.write_shape_structure_data(initial_geometry, shape_results_structures, shape_results_measures,
-                                                  symbols, molecules_name, shape_reference,
-                                                  output_name=output_name)
+
+            shape2file.write_shape_measure_data(shape_results_measures, molecules_name,
+                                                shape_reference, output_name=output_name)
+            geometries = []
+            for idl, reference in enumerate(shape_reference):
+                for idm, molecule in enumerate(self._molecules):
+                    geometries.append(Geometry(symbols=molecule.geometry.get_symbols(),
+                                               positions=shape_results_structures[idl][idm],
+                                               name=reference))
+            file_io.write_file_xyz(geometries, output_name=output_name)
 
     def write_path_parameters_2file(self, shape_label1, shape_label2, central_atom=0,
                                     maxdev=15, mindev=0, maxgco=101, mingco=0, output_name=None):

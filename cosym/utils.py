@@ -1,4 +1,4 @@
-from symeess.shape import maps
+from cosym.shape import maps
 import numpy as np
 
 
@@ -11,7 +11,7 @@ def write_minimum_distortion_path_shape_2file(shape_label1, shape_label2, num_po
         plt.ylabel(shape_label2)
         plt.show()
     else:
-        from symeess.file_io import shape2file
+        from cosym.file_io import shape2file
         shape2file.write_shape_map(shape_label1, shape_label2, path, output_name)
 
 

@@ -1,4 +1,4 @@
-from symeess.shape import shp, shape_tools
+from cosym.shape import shp, shape_tools
 import numpy as np
 import hashlib
 
@@ -31,6 +31,8 @@ class Shape:
                 reference_structure = shape_tools.get_test_structure(label, central_atom)
             else:
                 reference_structure = np.array(label)
+                reference_structure = np.concatenate((reference_structure, [reference_structure[central_atom-1]]))
+                reference_structure = np.delete(reference_structure, central_atom-1, axis=0)
 
             self._measures[hash] = shp.cshm(self._coordinates, reference_structure, central_atom)
 
@@ -44,6 +46,8 @@ class Shape:
                 reference_structure = shape_tools.get_test_structure(label, central_atom)
             else:
                 reference_structure = np.array(label)
+                reference_structure = np.concatenate((reference_structure, [reference_structure[central_atom - 1]]))
+                reference_structure = np.delete(reference_structure, central_atom - 1, axis=0)
 
             self._structures[hash], self._measures[hash] = shp.poly(self._coordinates, reference_structure,
                                                                     central_atom)

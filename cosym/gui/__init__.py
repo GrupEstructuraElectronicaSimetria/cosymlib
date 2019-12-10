@@ -7,8 +7,8 @@ from PyQt5.QtGui import *
 from PyQt5 import QtOpenGL
 from PyQt5.Qt3DExtras import Qt3DWindow, QFirstPersonCameraController
 from PyQt5.Qt3DCore import QEntity
-from symeess.shape import shape_tools
-from symeess import file_io, shape
+from cosym.shape import shape_tools
+from cosym import file_io, shape
 import numpy as np
 
 home = expanduser("~")

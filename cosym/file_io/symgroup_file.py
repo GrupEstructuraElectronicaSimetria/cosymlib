@@ -1,5 +1,5 @@
 import sys
-from symeess import tools
+from cosym import tools
 
 
 def build_symgroup_data(label, geometries, symgroup_results):

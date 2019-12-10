@@ -42,26 +42,24 @@ def write_shape_measure_data(measures, molecules_name, shape_label, output_name=
             output.write(' {:{width}.{prec}f}'.format(measures[idn][idx], width=n, prec=3))
             n = 11
         output.write('\n')
-    output.close()
+    output.write('\n')
+    # output.close()
 
 
-def write_shape_structure_data(initial_geometry, structures, measures, symbols,
-                               molecules_name, shape_label, output_name=sys.stdout):
+def write_shape_structure_data(geometries, structures, measures, shape_label, output_name=None):
 
     if output_name is not None:
-        # if not os.path.exists('./results'):
-        #     os.makedirs('./results')
-        output = open(output_name + '.tab', 'w')
+        output = open(output_name + '.out', 'w')
     else:
         output = sys.stdout
     shape_header(output)
 
-    for idx, name in enumerate(molecules_name):
+    for idx, geometry in enumerate(geometries):
         output.write('\n')
-        output.write('Structure {} : {}\n'.format(idx+1, name))
+        output.write('Structure {} : {}\n'.format(idx+1, geometry.get_name()))
 
-        for idn, array in enumerate(initial_geometry[idx]):
-            output.write('{:2s}'.format(symbols[idx][idn]))
+        for idn, array in enumerate(geometry.get_positions()):
+            output.write('{:2s}'.format(geometry.get_symbols()[idn]))
             output.write(' {:11.7f} {:11.7f} {:11.7f}\n'.format(array[0], array[1], array[2]))
         output.write('\n')
 
@@ -69,12 +67,12 @@ def write_shape_structure_data(initial_geometry, structures, measures, symbols,
             output.write('{} Ideal Structure CShM = {:.3f}\n'
                          .format(label, measures[idn][idx]))
             for jd, array in enumerate(structures[idn][idx]):
-                output.write('{:2s}'.format(symbols[idx][jd]))
+                output.write('{:2s}'.format(geometry.get_symbols()[jd]))
                 output.write(' {:11.7f} {:11.7f} {:11.7f}\n'.format(array[0], array[1], array[2]))
             output.write('\n')
 
         output.write('-' * 70 + '\n')
-    output.close()
+    # output.close()
 
 
 def write_shape_map(shape_label1, shape_label2, path, output_name=None):

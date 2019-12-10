@@ -1,6 +1,6 @@
-import symeess.file_io as file_io
-import symeess.shape as shape
-import symeess.symmetry.symgroup as symgroup
+import cosym.file_io as file_io
+import cosym.shape as shape
+import cosym.symmetry.symgroup as symgroup
 
 
 def print_shape_data(geometries):
@@ -62,9 +62,8 @@ print('\nWFNSYM\n--------')
 
 
 molecule = file_io.read_input_file('pirrol.fchk')
-data = molecule.get_mo_symmetry('Td', VAxis1=[ 0.000000,  0.000000,  1.000000],  # valor defecte
-                                      VAxis2=[-2.027247,  0.000133, -0.898469],
-                                      RCread=[ 0.002440, -0.000122,  0.017307])  # valor per defecte (CM)
-
+data = molecule[0].get_mo_symmetry('C2v', vector_axis1=[ 0.000000,  0.000000,  1.000000],  # valor defecte
+                                   # vector_axis2=[-2.027247,  0.000133, -0.898469],
+                                   center=[0.002440, -0.000122,  0.017307])  # valor per defecte (CM)
 
 print_csm(data)

@@ -1,5 +1,5 @@
 import numpy as np
-from symeess.tools import element_mass
+from cosym.tools import element_mass
 
 
 def get_mass(symbols):

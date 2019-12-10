@@ -1,5 +1,5 @@
 import unittest
-from symeess import file_io
+from cosym import file_io
 from numpy import testing
 
 

@@ -1,5 +1,5 @@
 import unittest
-from symeess import file_io, Symeess
+from cosym import file_io, Cosym
 
 
 class TestPointGroupCorFile(unittest.TestCase):
@@ -9,7 +9,7 @@ class TestPointGroupCorFile(unittest.TestCase):
                         'D3', 'D2h', 'D3h', 'D4h', 'D5h', 'D6h', 'D7h', 'D8h', 'D2d', 'D3d', 'D4d', 'D5d', 'D6d', 'D8d',
                         'S4', 'T', 'Th', 'Td', 'O', 'Oh']
         molecules = file_io.read_input_file('data/point_group/sym_molecules.xyz')
-        symobj = Symeess(molecules)
+        symobj = Cosym(molecules)
         calculated_point_groups = [pg for pg in (symobj.write_point_group())]
         for pg1, pg2 in zip(point_groups, calculated_point_groups):
             self.assertEqual(pg1, pg2)

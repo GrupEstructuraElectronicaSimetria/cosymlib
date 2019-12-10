@@ -12,7 +12,7 @@ def get_test_structure(label, central_atom=0):
     if ideal_structures is None:
         file_path = os.path.dirname(os.path.abspath(__file__)) + '/ideal_structures_center.yaml'
         with open(file_path, 'r') as stream:
-            ideal_structures = yaml.load(stream)
+            ideal_structures = yaml.load(stream, Loader=yaml.FullLoader)
     if central_atom == 0:
         reference_structure = ideal_structures[label][:-1]
     else:
@@ -42,6 +42,18 @@ def get_shape_label(code, vertices):
     for label in shape_structure_references[str(vertices)+' Vertices']:
         if label[1] == code:
             return label[0]
+
+
+def get_shape_label_info(vertices, old=False):
+    txt = 'Available reference structures with {} Vertices:\n\n'.format(vertices)
+    if old:
+        txt += '{:<4} '.format('')
+    txt += '{:10}  {:8}  {}\n\n'.format('Label', 'Sym', 'Info')
+    for idl, labels in enumerate(shape_structure_references['{} Vertices'.format(vertices)]):
+        if old:
+            txt += '{:<4} '.format(idl)
+        txt += '{:10}  {:8}  {}\n'.format(labels[0], labels[2], labels[3])
+    return txt
 
 
 shape_structure_references = {'2 Vertices': [['L-2', 1, 'Dinfh', 'Linear'],

@@ -14,6 +14,5 @@ Institut de Química Teòrica i Computacional (IQTCUB). University of Barcelona.
 
    introduction
    install
-   run
-   symeess
+   cosym
    shape

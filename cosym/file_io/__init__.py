@@ -1,10 +1,10 @@
 import os
 import sys
 import re
-from symeess.molecule import Molecule, Geometry, ElectronicStructure
+from cosym.molecule import Molecule, Geometry, ElectronicStructure
 import numpy as np
-from symeess import tools
-from symeess.file_io import shape2file, wfnsym_file, symgroup_file
+from cosym import tools
+from cosym.file_io import shape2file, wfnsym_file, symgroup_file
 
 
 def nonblank_lines(f):
@@ -73,7 +73,7 @@ def get_molecule_from_file_cor(file_name):
     :return: list of Geometry objects
     """
     input_molecule = [[], []]
-    molecules = []
+    structures = []
     with open(file_name, mode='r') as lines:
         name = lines.readline().split()[0]
         for line in lines:
@@ -94,15 +94,15 @@ def get_molecule_from_file_cor(file_name):
                     # input_molecule[1].append(line.split()[1:-1])
                 except (ValueError, IndexError):
                     if input_molecule:
-                        molecules.append(Geometry(symbols=input_molecule[0],
-                                                  positions=input_molecule[1],
-                                                  name=name))
+                        structures.append(Geometry(symbols=input_molecule[0],
+                                                   positions=input_molecule[1],
+                                                   name=name))
                     input_molecule = [[], []]
                     name = line.split()[0]
-        molecules.append(Geometry(symbols=input_molecule[0],
-                                  positions=input_molecule[1],
-                                  name=name))
-    return molecules
+        structures.append(Geometry(symbols=input_molecule[0],
+                                   positions=input_molecule[1],
+                                   name=name))
+    return structures
 
 
 def get_molecule_from_file_fchk(file_name):
@@ -345,52 +345,6 @@ def get_molecule_from_file_ref(file_name):
     return molecules
 
 
-def read_old_input(file_name):
-    """
-    Reads the old Shape's program input
-    :param file_name: file name
-    :return: list of Geometry objects and options
-    """
-    input_molecule = [[], []]
-    molecules = []
-    options = []
-    with open(file_name, mode='r') as lines:
-        while len(options) < 2:
-            line = lines.readline().split()
-            if '$' in line or '!' in line:
-                pass
-            else:
-                options.append(line)
-
-        n_atoms = int(options[0][0])
-        if int(options[0][1]) != 0:
-            n_atoms += 1
-        while True:
-            line = lines.readline().split()
-            if not line:
-                break
-            name = line[0]
-            for i in range(n_atoms):
-                line = lines.readline().split()
-                if '!' in line:
-                    pass
-                else:
-                    if len(line) == 4:
-                        input_molecule[0].append(line[0])
-                        input_molecule[1].append(line[1:])
-                    elif len(line) == 5:
-                        input_molecule[0].append(line[0])
-                        input_molecule[1].append(line[1:-1])
-                    else:
-                        sys.exit('Wrong input format')
-            if input_molecule[0]:
-                molecules.append(Geometry(symbols=input_molecule[0],
-                                          positions=input_molecule[1],
-                                          name=name))
-                input_molecule = [[], []]
-    return [molecules, options]
-
-
 def basis_format(basis_set_name,
                  atomic_numbers,
                  atomic_symbols,
@@ -450,7 +404,7 @@ def basis_format(basis_set_name,
 # OUTPUT part
 def header():
     txt_header = '-' * 70 + '\n'
-    txt_header += 'SYMEESS v0.6.7 \n Electronic Structure Group,  Universitat de Barcelona\n'
+    txt_header += ' SYMEESS v0.6.7 \n Electronic Structure Group,  Universitat de Barcelona\n'
     txt_header += '-' * 70 + '\n' + '\n'
     return txt_header
 
@@ -469,6 +423,21 @@ def write_input_info(initial_geometries, output_name=None):
             output.write('{:2s}'.format(geometry.get_symbols()[idn]))
             output.write(' {:11.7f} {:11.7f} {:11.7f}\n'.format(array[0], array[1], array[2]))
         output.write('\n')
+
+
+def write_file_xyz(geometries, output_name=None):
+    if output_name is not None:
+        output = open(output_name + '.xyz', 'w')
+    else:
+        output = sys.stdout
+
+    for geometry in geometries:
+        output.write('{}\n'.format(geometry.get_n_atoms()))
+        output.write('{}\n'.format(geometry.get_name()))
+        for idp, position in enumerate(geometry.get_positions()):
+            output.write('{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idp],
+                                                                    position[0], position[1], position[2]))
+    # output.close()
 
 
 def reformat_input(array):

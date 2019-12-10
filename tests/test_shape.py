@@ -1,58 +1,59 @@
 import unittest
 import numpy as np
-from symeess import file_io, Symeess
-import symeess.shape as shape
-import symeess.shape.maps as maps
+from cosym import Cosym
+from cosym.file_io import old_inputs
+import cosym.shape as shape
+import cosym.shape.maps as maps
 
 
 class TestShapeCorFile(unittest.TestCase):
 
     def test_example01(self):
-        molecules, options = file_io.read_old_input('data/shape/example01.dat')
+        molecules, options = old_inputs.read_old_input('data/shape/example01.dat')
         results = []
-        results.append([shape.Shape(molecule).measure('T-4', central_atom=int(options[0][1]))
+        results.append([shape.Shape(molecule).measure('T-4', central_atom=options['%central_atom'])
                         for molecule in molecules])
-        results.append([shape.Shape(molecule).measure('SP-4', central_atom=int(options[0][1]))
+        results.append([shape.Shape(molecule).measure('SP-4', central_atom=options['%central_atom'])
                         for molecule in molecules])
         calculated_results = np.column_stack((results[0], results[1]))
         good_results = np.loadtxt('data/shape/example01_results')
         self.assertTrue(np.allclose(good_results, calculated_results, atol=1e-3))
 
     def test_example02(self):
-        molecules, options = file_io.read_old_input('data/shape/example02.cor')
+        molecules, options = old_inputs.read_old_input('data/shape/example02.dat')
         results = []
-        results.append([shape.Shape(molecule).measure('SP-4', int(options[0][1]))
+        results.append([shape.Shape(molecule).measure('SP-4', options['%central_atom'])
                         for molecule in molecules])
-        results.append([shape.Shape(molecule).measure('T-4', int(options[0][1]))
+        results.append([shape.Shape(molecule).measure('T-4', options['%central_atom'])
                         for molecule in molecules])
         calculated_results = np.column_stack((results[0], results[1]))
         good_results = np.loadtxt('data/shape/example02_results')
         self.assertTrue(np.allclose(good_results, calculated_results, atol=1e-3))
 
     def test_example03(self):
-        molecules, options = file_io.read_old_input('data/shape/example03.dat')
+        molecules, options = old_inputs.read_old_input('data/shape/example03.dat')
         results = []
-        for option in options[1]:
-            label = shape.shape_tools.get_shape_label(int(option), int(options[0][0]))
-            results.append([shape.Shape(molecule).measure(label, central_atom=int(options[0][1]))
-                        for molecule in molecules])
+        for number in options['%labels']:
+            label = shape.shape_tools.get_shape_label(int(number), options['%n_atoms'])
+            results.append([shape.Shape(molecule).measure(label, central_atom=options['%central_atom'])
+                            for molecule in molecules])
         calculated_results = np.column_stack((results[0], results[1]))
         good_results = np.loadtxt('data/shape/example03_results')
         self.assertTrue(np.allclose(good_results, calculated_results, atol=1e-3))
 
     def test_example04(self):
-        molecules, options = file_io.read_old_input('data/shape/example04.dat')
+        molecules, options = old_inputs.read_old_input('data/shape/example04.dat')
         results = []
-        results.append([shape.Shape(molecule).structure('T-4', central_atom=int(options[0][1]))
+        results.append([shape.Shape(molecule).structure('T-4',central_atom=options['%central_atom'])
                         for molecule in molecules])
         calculated_results = np.concatenate((results[0][0], results[0][1]))
-        results.append([shape.Shape(molecule).structure('SP-4', central_atom=int(options[0][1]))
+        results.append([shape.Shape(molecule).structure('SP-4', central_atom=options['%central_atom'])
                         for molecule in molecules])
-        calculated_results =np.concatenate((calculated_results , np.concatenate((results[1][0], results[1][1]))))
+        calculated_results = np.concatenate((calculated_results , np.concatenate((results[1][0], results[1][1]))))
         results = []
-        results.append([shape.Shape(molecule).measure('T-4', central_atom=int(options[0][1]))
+        results.append([shape.Shape(molecule).measure('T-4', central_atom=options['%central_atom'])
                         for molecule in molecules])
-        results.append([shape.Shape(molecule).measure('SP-4', central_atom=int(options[0][1]))
+        results.append([shape.Shape(molecule).measure('SP-4', central_atom=options['%central_atom'])
                         for molecule in molecules])
         calculated_results = [calculated_results, np.column_stack((results[0], results[1]))]
         good_results = np.loadtxt('data/shape/example04_results')
@@ -61,17 +62,17 @@ class TestShapeCorFile(unittest.TestCase):
         self.assertTrue(np.allclose(good_results[1], calculated_results[1], atol=1e-3))
 
     def test_example05(self):
-        molecules, options = file_io.read_old_input('data/shape/example05.dat')
+        molecules, options = old_inputs.read_old_input('data/shape/example05.dat')
 
 
         results = []
-        results.append([shape.Shape(molecule).measure('OC-6', central_atom=int(options[0][1]))
+        results.append([shape.Shape(molecule).measure('OC-6', central_atom=options['%central_atom'])
                         for molecule in molecules])
-        results.append([shape.Shape(molecule).measure('TPR-6', central_atom=int(options[0][1]))
+        results.append([shape.Shape(molecule).measure('TPR-6', central_atom=options['%central_atom'])
                         for molecule in molecules])
-        path = [molecule.get_path_deviation('OC-6', 'TPR-6', central_atom=int(options[0][1]))
+        path = [molecule.get_path_deviation('OC-6', 'TPR-6', central_atom=options['%central_atom'])
                 for molecule in molecules]
-        GenCoord = [molecule.get_generalized_coordinate('OC-6', 'TPR-6', central_atom=int(options[0][1]))
+        GenCoord = [molecule.get_generalized_coordinate('OC-6', 'TPR-6', central_atom=options['%central_atom'])
                     for molecule in molecules]
         map = maps.get_shape_map('OC-6', 'TPR-6', num_points=20)
 
@@ -87,19 +88,19 @@ class TestShapeCorFile(unittest.TestCase):
 
 # Cal esperar a tenir els inputs sencers dels exemples ja que ara no els tinc a ma
     def test_example06(self):
-        molecules, options = file_io.read_old_input('data/shape/example06.dat')
+        molecules, options = old_inputs.read_old_input('data/shape/example06.dat')
 
-        symeess = Symeess(molecules)
+        symeess = Cosym(molecules)
         shape, devpath, GenCoord = symeess.get_path_parameters('SP-4', 'T-4',
-                                                               central_atom=int(options[0][1]), maxdev=5.0)
+                                                               central_atom=options['%central_atom'], maxdev=5.0)
         good_results = np.loadtxt('data/shape/example06_results')
         self.assertTrue(np.allclose(good_results, devpath, atol=1e-1))
 
     def test_example07(self):
-        molecules, options = file_io.read_old_input('data/shape/example06.dat')
-        symeess = Symeess(molecules)
+        molecules, options = old_inputs.read_old_input('data/shape/example06.dat')
+        symeess = Cosym(molecules)
         shape, devpath, GenCoord = symeess.get_path_parameters('SP-4', 'T-4',
-                                                               central_atom=int(options[0][1]), maxdev=10.0,
+                                                               central_atom=options['%central_atom'], maxdev=10.0,
                                                                maxgco=60, mingco=40)
         good_results = np.loadtxt('data/shape/example07_results')
         self.assertTrue(np.allclose(good_results, devpath, atol=1e-1))

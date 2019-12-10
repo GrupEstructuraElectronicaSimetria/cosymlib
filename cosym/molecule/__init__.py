@@ -1,8 +1,8 @@
-from symeess.molecule.geometry import Geometry
-from symeess.molecule.electronic_structure import ElectronicStructure
-from symeess.symmetry.wfnsym import Wfnsym
-from symeess.symmetry.pointgroup import CalculatePointGroup
-from symeess.simulation import ExtendedHuckel
+from cosym.molecule.geometry import Geometry
+from cosym.molecule.electronic_structure import ElectronicStructure
+from cosym.symmetry.wfnsym import Wfnsym
+from cosym.symmetry.pointgroup import CalculatePointGroup
+from cosym.simulation import ExtendedHuckel
 
 
 class Molecule:
