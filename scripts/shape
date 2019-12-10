@@ -2,6 +2,8 @@
 import argparse
 import os
 import sys
+from cosym.molecule.geometry import Geometry
+from cosym import file_io
 from cosym.file_io import old_inputs
 from cosym.cosym_api import Cosym
 from cosym.shape import shape_tools
@@ -13,7 +15,8 @@ parser.add_argument('-n', dest='n', action='store', default=None,
                     type=int, help='show the reference labels for a given structure')
 
 
-args = parser.parse_args(sys.argv[1:])
+# args = parser.parse_args(sys.argv[1:])
+args = parser.parse_args(['../examples/old_shape.dat'])
 
 print('Starting...')
 
@@ -28,19 +31,31 @@ if args.input_file is not None:
     output_name, file_extension = os.path.splitext(args.input_file)
 
     structures, options = old_inputs.read_old_input(args.input_file)
-    central_atom_position = options['%central_atom']
+    central_atom = options['%central_atom']
     for number in options['%labels']:
         reference_polyhedron.append(shape_tools.get_shape_label(int(number), options['%n_atoms']))
     symobj = Cosym(structures)
 
     if options['%fullout']:
         symobj.write_shape_structure_2file(reference_polyhedron,
-                                           central_atom=central_atom_position,
+                                           central_atom=central_atom,
                                            output_name=output_name)
     else:
         symobj.write_shape_measure_2file(reference_polyhedron,
-                                         central_atom=central_atom_position,
+                                         central_atom=central_atom,
                                          output_name=output_name)
+
+    if options['%test']:
+        test_structure = []
+        symbols = ['H' for _ in range(options['%n_atoms'])]
+        symbols.append('N')
+        for label in shape_tools.get_structure_references(options['%n_atoms']):
+            test_structure.append(Geometry(symbols=symbols,
+                                           positions=shape_tools.get_test_structure(label,
+                                                                                    central_atom=central_atom),
+                                           name=label))
+        file_io.write_file_xyz(test_structure, output_name='{}/{}_vertices'.format(os.path.dirname(output_name),
+                                                                                   options['%n_atoms']))
 
 
     # if args.custom_reference_structure is not None:

@@ -17,22 +17,23 @@ def read_old_input(file_name):
 
     with open(file_name, mode='r') as lines:
         while True:
-            line = lines.readline()
+            line = lines.readline().split()
             if '$' in line or '!' in line:
                 pass
-            elif '%' in line:
-                if len(line) > 0:
-                    options[line.split()[0]] = line.split()[1]
+            elif any('%' in word for word in line):
+                if len(line) > 1:
+                    options[line[0]] = line[1]
                 else:
-                    options[line.split()[0]] = True
+
+                    options[line[0]] = True
             else:
                 try:
-                    int(line.split()[0])
+                    int(line[0])
                     if options['%n_atoms'] == 0:
-                        options['%n_atoms'] = int(line.split()[0])
-                        options['%central_atom'] = int(line.split()[1])
+                        options['%n_atoms'] = int(line[0])
+                        options['%central_atom'] = int(line[1])
                     else:
-                        options['%labels'] = line.split()
+                        options['%labels'] = line
                 except (ValueError, IndexError):
                     break
 

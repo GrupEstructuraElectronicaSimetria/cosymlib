@@ -3,6 +3,7 @@ $ PtL4 structures
 4 5
 ! Tetrahedron Square
 2 1
+%fullout
 ABOXIY
 N 3.9023 7.5659 14.2563
 C 3.9912 8.8145 16.4883
