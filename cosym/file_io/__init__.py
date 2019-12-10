@@ -5,6 +5,7 @@ from cosym.molecule import Molecule, Geometry, ElectronicStructure
 import numpy as np
 from cosym import tools
 from cosym.file_io import shape2file, wfnsym_file, symgroup_file
+from cosym import __version__
 
 
 def nonblank_lines(f):
@@ -404,7 +405,7 @@ def basis_format(basis_set_name,
 # OUTPUT part
 def header():
     txt_header = '-' * 70 + '\n'
-    txt_header += ' SYMEESS v0.6.7 \n Electronic Structure Group,  Universitat de Barcelona\n'
+    txt_header += ' COSYM v{}\n Electronic Structure Group,  Universitat de Barcelona\n'.format(__version__)
     txt_header += '-' * 70 + '\n' + '\n'
     return txt_header
 

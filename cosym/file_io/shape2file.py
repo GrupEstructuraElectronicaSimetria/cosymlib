@@ -1,19 +1,16 @@
-import os
 import sys
+from cosym import __version__
 
 
 def shape_header(output):
     output.write('-' * 70 + '\n')
-    output.write('SYMEESS v0.6.3 \n'
-                 'Electronic Structure Group,  Universitat de Barcelona\n')
+    output.write(' COSYM v{}\n Electronic Structure Group,  Universitat de Barcelona\n'.format(__version__))
     output.write('-' * 70 + '\n' + '\n')
 
 
 def write_shape_measure_data(measures, molecules_name, shape_label, output_name=None):
 
     if output_name is not None:
-        # if not os.path.exists('./results'):
-        #     os.makedirs('./results')
         output = open(output_name + '.tab', 'w')
     else:
         output = sys.stdout
@@ -78,8 +75,6 @@ def write_shape_structure_data(geometries, structures, measures, shape_label, ou
 def write_shape_map(shape_label1, shape_label2, path, output_name=None):
 
     if output_name is not None:
-        # if not os.path.exists('./results'):
-        #     os.makedirs('./results')
         output = open(output_name + '.pth', 'w')
     else:
         output = sys.stdout
@@ -97,8 +92,6 @@ def write_minimal_distortion_path_analysis(shape_label1, shape_label2, measures,
                                            output_name=None):
 
     if output_name is not None:
-        # if not os.path.exists('./results'):
-        #     os.makedirs('./results')
         output = open(output_name + '.csv', 'w')
     else:
         output = sys.stdout

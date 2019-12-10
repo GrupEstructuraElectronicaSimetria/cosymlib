@@ -90,16 +90,16 @@ class TestShapeCorFile(unittest.TestCase):
     def test_example06(self):
         molecules, options = old_inputs.read_old_input('data/shape/example06.dat')
 
-        symeess = Cosym(molecules)
-        shape, devpath, GenCoord = symeess.get_path_parameters('SP-4', 'T-4',
+        symobj = Cosym(molecules)
+        shape, devpath, GenCoord = symobj.get_path_parameters('SP-4', 'T-4',
                                                                central_atom=options['%central_atom'], maxdev=5.0)
         good_results = np.loadtxt('data/shape/example06_results')
         self.assertTrue(np.allclose(good_results, devpath, atol=1e-1))
 
     def test_example07(self):
         molecules, options = old_inputs.read_old_input('data/shape/example06.dat')
-        symeess = Cosym(molecules)
-        shape, devpath, GenCoord = symeess.get_path_parameters('SP-4', 'T-4',
+        symobj = Cosym(molecules)
+        shape, devpath, GenCoord = symobj.get_path_parameters('SP-4', 'T-4',
                                                                central_atom=options['%central_atom'], maxdev=10.0,
                                                                maxgco=60, mingco=40)
         good_results = np.loadtxt('data/shape/example07_results')
