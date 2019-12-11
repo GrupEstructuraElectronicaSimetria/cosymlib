@@ -172,6 +172,76 @@
 
  ! xxx - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+      function cshm_fix (cd_py,cr_py,na_py,mt_py)
+      use cominfo
+      implicit real(rnp) (a-h,o-z)
+      real(rnp) :: cd_py(na_py,3), cr_py(na_py,3)
+      integer :: mt_py
+
+      ilbl=.false.
+ ! Fixperm seguint l'ordre enviat des del python cd_py == cr_py \\
+      ifixp=.true.
+      do kfix=1,mef
+        fixp(kfix)=kfix
+      enddo
+  ! Fixperm seguint l'ordre enviat des del python cd_py == cr_py //
+      ixyz=.false.
+      iout=.false.
+      iwap=-1
+      iwaq=-1
+      itst=.false.
+
+      ipm=mt_py
+      if (mt_py.eq.0) then
+        nl=na_py
+      else
+        nl=na_py-1
+      endif
+      mt=0
+      if (ipm.ne.0) mt=1
+      m=nl+mt
+      mnf=nl
+      mef=max(1,mnf)
+      if ((nl.lt.2).or.(nl.gt.nlmx)) stop 'ERROR * Wrong number of ligands'
+      if ((ipm.lt.0).or.(ipm.gt.m)) stop 'ERROR * Invalid metal position'
+      call get_topology
+
+      nid=1
+      idw=1
+
+! * Sempre s'envia l'estructura de referència amb el metall al final
+      p0(idw,:m,:)=cr_py(:m,:)
+      dcr(idw)=" "
+      call anl_geometry(0)
+      if (nl.le.60) then
+        if (ichk.eq.0.and..not.ifixp) call equivper
+      else
+        if (itst) then
+          write(out_fl,"(/2x,'This reference structure cannot be used without FIXPERM option')")
+        elseif (ichk.eq.0.and..not.ifixp) then
+          stop '* ERROR * FIXPERM option is needed for this number of vertices'
+        endif
+      endif
+
+      refc="python_call"
+      nes=1
+      q0(:na_py,:)=cd_py(:,:)
+
+      if ((ipm.ne.0).and.(ipm.ne.m)) then
+        q0(ipm:m,:)=cshift(q0(ipm:m,:),1,dim=1)
+      endif
+
+      call anl_geometry (1)
+
+      cshm=csm(0)
+
+  999 return
+
+      end function
+
+
+ ! xxx - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
       function cshm_ref (cd_py,na_py,id_py,mt_py)
       use cominfo
       implicit real(rnp) (a-h,o-z)
@@ -267,6 +337,85 @@
 !      else
 !        p0(idw,1:na_py,:)=cr_py
 !      endif
+      dcr(idw)=" "
+      call anl_geometry(0)
+      if (nl.le.60) then
+        if (ichk.eq.0.and..not.ifixp) call equivper
+      else
+        if (itst) then
+          write(out_fl,"(/2x,'This reference structure cannot be used without FIXPERM option')")
+        elseif (ichk.eq.0.and..not.ifixp) then
+          stop '* ERROR * FIXPERM option is needed for this number of vertices'
+        endif
+      endif
+
+      refc="python_call"
+      nes=1
+      q0(:na_py,:)=cd_py(:,:)
+
+      if ((ipm.ne.0).and.(ipm.ne.m)) then
+        q0(ipm:m,:)=cshift(q0(ipm:m,:),1,dim=1)
+      endif
+
+      call anl_geometry (1)
+
+      cm_py=csm(0)
+
+      if (mt.eq.0) then
+        pl_py(:,:)=pf(:nl,:)
+      else
+        pl_py(1,:)=pf(m,:)
+        pl_py(2:,:)=pf(:nl,:)
+      endif
+
+  999 return
+
+      end subroutine
+
+
+ ! xxx - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+      subroutine poly_fix (cd_py,cr_py,na_py,mt_py,pl_py,cm_py)
+      use cominfo
+      implicit real(rnp) (a-h,o-z)
+      real(rnp) :: cd_py(na_py,3), cr_py(na_py,3)
+      real(rnp), intent(out) :: pl_py(na_py,3)
+      real(rnp), intent(out) :: cm_py
+      integer :: mt_py
+
+      ilbl=.false.
+ ! Fixperm seguint l'ordre enviat des del python cd_py == cr_py \\
+      ifixp=.true.
+      do kfix=1,mef
+        fixp(kfix)=kfix
+      enddo
+  ! Fixperm seguint l'ordre enviat des del python cd_py == cr_py //
+      ixyz=.false.
+      iout=.true.
+      iwap=-1
+      iwaq=-1
+      itst=.false.
+
+      ipm=mt_py
+      if (mt_py.eq.0) then
+        nl=na_py
+      else
+        nl=na_py-1
+      endif
+      mt=0
+      if (ipm.ne.0) mt=1
+      m=nl+mt
+      mnf=nl
+      mef=max(1,mnf)
+      if ((nl.lt.2).or.(nl.gt.nlmx)) stop 'ERROR * Wrong number of ligands'
+      if ((ipm.lt.0).or.(ipm.gt.m)) stop 'ERROR * Invalid metal position'
+      call get_topology
+
+      nid=1
+      idw=1
+
+! * Sempre s'envia l'estructura de referència amb el metall al final
+      p0(idw,:m,:)=cr_py(:m,:)
       dcr(idw)=" "
       call anl_geometry(0)
       if (nl.le.60) then

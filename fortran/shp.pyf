@@ -11,6 +11,14 @@ python module shp ! in
             real(kind=8) dimension(na_py,3) :: cr_py
             real(kind=8) :: cshm
         end function cshm
+        function cshm_fix(cd_py,cr_py,na_py,mt_py) ! in :shp:shp.f90
+            use cominfo
+            real(kind=8) dimension(na_py,3) :: cd_py
+            integer, check(shape(cd_py,0)==na_py),depend(cd_py), intent(hide) :: na_py=shape(cd_py,0)
+            integer :: mt_py
+            real(kind=8) dimension(na_py,3) :: cr_py
+            real(kind=8) :: cshm_fix
+        end function cshm_fix
         function cshm_ref(cd_py,na_py,id_py,mt_py) ! in :shp:shp.f90
             use cominfo
             real(kind=8) dimension(na_py,3) :: cd_py
@@ -27,6 +35,15 @@ python module shp ! in
             real(kind=8) dimension(na_py,3),intent(out),depend(na_py) :: pl_py
             real(kind=8) intent(out) :: cm_py
         end subroutine poly
+        subroutine poly_fix(cd_py,cr_py,na_py,mt_py,pl_py,cm_py) ! in :shp:shp.f90
+            use cominfo
+            real(kind=8) dimension(na_py,3) :: cd_py
+            integer, check(shape(cd_py,0)==na_py),depend(cd_py), intent(hide) :: na_py=shape(cd_py,0)
+            integer :: mt_py
+            real(kind=8) dimension(na_py,3) :: cr_py
+            real(kind=8) dimension(na_py,3),intent(out),depend(na_py) :: pl_py
+            real(kind=8) intent(out) :: cm_py
+        end subroutine poly_fix
         subroutine poly_ref(cd_py,na_py,id_py,mt_py,pl_py,cm_py) ! in :shp:shp.f90
             use cominfo
             real(kind=8) dimension(na_py,3) :: cd_py
