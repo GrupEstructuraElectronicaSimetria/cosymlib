@@ -29,7 +29,7 @@ install:
 script:
     - cd tests
     - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then coverage run --source=../cosymlib -m unittest discover . "test_*.py"; fi
-    - if [[ $TRAVIS_PYTHON_VERSION == '3.4' ]]; then python -m unittest discover -t ../; fi
+    - if [[ $TRAVIS_PYTHON_VERSION == '3.4' ]]; then python -m unittest test_point_group.py; fi
 
 after_success:
     - coveralls
