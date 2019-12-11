@@ -2,7 +2,7 @@ import unittest
 from cosymlib import file_io, Cosymlib
 
 
-class TestPointGroupCorFile(unittest.TestCase):
+class TestPointGroup(unittest.TestCase):
 
     def test(self):
         point_groups = ['C1', 'Cs', 'Ci', 'Cinfh', 'Dinfh', 'C2', 'C3', 'C2h', 'C3h', 'C2v', 'C3v', 'C4v', 'C5v', 'D2',
