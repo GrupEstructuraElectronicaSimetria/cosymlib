@@ -66,8 +66,8 @@ group_pointgroup.add_argument('-pointgroup',
 
 # Symgroup input flags
 group_symgroup = parser.add_argument_group('Symgroup')
-group_symgroup.add_argument('-sym',
-                            dest='sym_group',
+group_symgroup.add_argument('-sym_measure',
+                            dest='sym_measure',
                             action='store',
                             default=False,
                             help='Symgroup measure of input structure with reference group')
@@ -75,12 +75,12 @@ group_symgroup.add_argument('-sym',
 # Wfnsym input flags
 group_wfnsym = parser.add_argument_group('Wfnsym')
 group_wfnsym.add_argument('-sym_wf',
-                          dest='wf_group',
+                          dest='sym_wf',
                           action='store',
                           default=False,
                           help='Wfnsym measure of input structure with reference group')
 group_wfnsym.add_argument('-psym_wf',
-                          dest='group_label',
+                          dest='psym_wf',
                           action='store',
                           default=False,
                           help='Pseudo-symmetry measure of input structure with reference group')
@@ -169,20 +169,20 @@ if args.pointgroup:
         print('The point group of molecule{} is: {}'.format(idm, pg))
 
 # Symgroup commands
-if args.sym_group:
-    symobj.write_symgroup_measure_all_info(args.sym_group,
+if args.sym_measure:
+    symobj.write_symgroup_measure_all_info(args.sym_measure,
                                            central_atom=args.central_atom,
                                            output_name=args.output_name)
 
 # Wfnsym commands
-if args.wf_group:
+if args.sym_wf:
     if args.axis1 is not None:
         args.axis1 = np.array(args.axis1).astype(float)
     if args.axis2 is not None:
         args.axis2 = np.array(args.axis2).astype(float)
     if args.center is not None:
         args.center = np.array(args.center).astype(float)
-    symobj.write_wnfsym_measure_2file(args.wf_group,
+    symobj.write_wnfsym_measure_2file(args.sym_wf,
                                       vector_axis1=args.axis1,
                                       vector_axis2=args.axis2,
                                       center=args.center,
