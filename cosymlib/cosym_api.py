@@ -29,7 +29,7 @@ class Cosymlib:
             else:
                 raise AttributeError('Molecule object not found')
 
-    def write_shape_measure_2file(self, shape_reference, central_atom=0, output_name=None):
+    def write_shape_measure_2file(self, shape_reference, central_atom=0, fix_permutation=False, output_name=None):
         """
         Method that prints to file shape's measure
         :param shape_reference: reference polyhedra label which user will compare with his polyhedra.
@@ -46,7 +46,8 @@ class Cosymlib:
 
         molecules_name = [molecule.get_name() for molecule in self._molecules]
         if type(shape_reference[0]) is Geometry:
-            shape_results_measures = [self.get_shape_measure(reference.get_positions(), 'measure', central_atom)
+            shape_results_measures = [self.get_shape_measure(reference.get_positions(), 'measure', central_atom,
+                                                             fix_permutation)
                                       for reference in shape_reference]
             references = [reference.get_name() for reference in shape_reference]
         else:
@@ -57,7 +58,7 @@ class Cosymlib:
         output.write(file_io.header())
         output.write(shape2file.write_shape_measure_data(shape_results_measures, molecules_name, references))
 
-    def write_shape_structure_2file(self, shape_reference, central_atom=0, output_name=None):
+    def write_shape_structure_2file(self, shape_reference, central_atom=0, fix_permutation=False, output_name=None):
         """
         Method that prints to file shape's structure
         :param shape_reference: reference polyhedra label which user will compare with his polyhedra.
@@ -66,10 +67,10 @@ class Cosymlib:
         :param output_name: custom name without extension
         :return: shape's structure in the output_name.out file
         """
-        molecules_name = [molecule.get_name() for molecule in self._molecules]
 
         if type(shape_reference[0]) is not str:
-            shape_results_structures = [self.get_shape_measure(reference.get_positions(), 'structure', central_atom)
+            shape_results_structures = [self.get_shape_measure(reference.get_positions(), 'structure', central_atom,
+                                                               fix_permutation)
                                         for reference in shape_reference]
             references = [reference.get_name() for reference in shape_reference]
         else:
@@ -77,7 +78,7 @@ class Cosymlib:
                                         for reference in shape_reference]
             references = shape_reference
 
-        self.write_shape_measure_2file(shape_reference, central_atom, output_name)
+        self.write_shape_measure_2file(shape_reference, central_atom, output_name, fix_permutation)
         geometries = []
         for idl, reference in enumerate(references):
             for idm, molecule in enumerate(self._molecules):
@@ -187,9 +188,10 @@ class Cosymlib:
         wfnsym_results = self.get_wfnsym_measure(group, vector_axis1, vector_axis2, center)
         symmetry_energy_evolution(self._molecules, wfnsym_results)
 
-    def get_shape_measure(self, label, kind, central_atom=0):
+    def get_shape_measure(self, label, kind, central_atom=0,  fix_permutation=False):
         get_measure = 'get_shape_' + kind
-        return [getattr(molecule.geometry, get_measure)(label, central_atom=central_atom)
+        return [getattr(molecule.geometry, get_measure)(label, central_atom=central_atom,
+                                                        fix_permutation=fix_permutation)
                 for molecule in self._molecules]
 
     def get_molecule_path_deviation(self, shape_label1, shape_label2, central_atom=0):

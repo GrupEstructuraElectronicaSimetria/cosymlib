@@ -22,16 +22,9 @@ parser.add_argument('-custom_ref', action='store', dest='custom_ref', default=No
                     help='take a given structure from the file and use it as reference')
 parser.add_argument('-fix_permutation', dest='fix_permutation', action='store_true', default=False,
                     help='use the given permutation to perform a calculation')
-parser.add_argument('-ignore_atom_labels', dest='ignore_atom_labels', action='store_true', default=False,
-                    help='ignore atom labels from given structures')
 # parser.add_argument('-connectivity', dest='connectivity', action='store', default=None,
 #                     help='Connect a set of atoms by...')
-parser.add_argument('-axis1', dest='axis1', action='store', default=None, nargs=3,
-                    help='First reference axis for the symmetry calculation')
-parser.add_argument('-axis2', dest='axis2', action='store', default=None, nargs=3,
-                    help='Second reference axis for the symmetry calculation')
-parser.add_argument('-center', dest='center', action='store', default=None, nargs=3,
-                    help='Center for the symmetry calculation')
+
 
 # Shape input flags
 group_shape = parser.add_argument_group('Shape')
@@ -55,39 +48,6 @@ group_shape.add_argument('-shape_references',
                          default=False,
                          help='return a file with the coordinates of reference polyhedra')
 
-
-# PointGroup input flags
-group_pointgroup = parser.add_argument_group('PointGroup')
-group_pointgroup.add_argument('-pointgroup',
-                              dest='pointgroup',
-                              action='store_true',
-                              default=False,
-                              help='Gives the point group of an input structure')
-
-# Symgroup input flags
-group_symgroup = parser.add_argument_group('Symgroup')
-group_symgroup.add_argument('-sym',
-                            dest='sym_group',
-                            action='store',
-                            default=False,
-                            help='Symgroup measure of input structure with reference group')
-
-# Wfnsym input flags
-group_wfnsym = parser.add_argument_group('Wfnsym')
-group_wfnsym.add_argument('-sym_wf',
-                          dest='wf_group',
-                          action='store',
-                          default=False,
-                          help='Wfnsym measure of input structure with reference group')
-group_wfnsym.add_argument('-psym_wf',
-                          dest='group_label',
-                          action='store',
-                          default=False,
-                          help='Pseudo-symmetry measure of input structure with reference group')
-
-# Utils
-parser.add_argument('-mo_diagram', dest="mo_diagram", action='store_true', default=False,
-                    help='Perform the calculations with the command file')
 
 
 args = parser.parse_args(sys.argv[1:])
@@ -162,37 +122,5 @@ elif args.shape_measure or args.custom_ref:
                                      central_atom=args.central_atom,
                                      output_name=args.output_name,
                                      fix_permutation=args.fix_permutation)
-
-# Pointgroup command
-if args.pointgroup:
-    for idm, pg in enumerate(symobj.write_point_group()):
-        print('The point group of molecule{} is: {}'.format(idm, pg))
-
-# Symgroup commands
-if args.sym_group:
-    symobj.write_symgroup_measure_all_info(args.sym_group,
-                                           central_atom=args.central_atom,
-                                           output_name=args.output_name)
-
-# Wfnsym commands
-if args.wf_group:
-    if args.axis1 is not None:
-        args.axis1 = np.array(args.axis1).astype(float)
-    if args.axis2 is not None:
-        args.axis2 = np.array(args.axis2).astype(float)
-    if args.center is not None:
-        args.center = np.array(args.center).astype(float)
-    symobj.write_wnfsym_measure_2file(args.wf_group,
-                                      vector_axis1=args.axis1,
-                                      vector_axis2=args.axis2,
-                                      center=args.center,
-                                      output_name=args.output_name)
-
-    #Utils
-    if args.mo_diagram:
-        symobj.write_mo_diagram(args.wf_group,
-                                vector_axis1=args.axis1,
-                                vector_axis2=args.axis2,
-                                center=args.center)
 
 print('\nEnd of cosym calculation')

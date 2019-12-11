@@ -24,7 +24,7 @@ class Shape:
         self._gen_coord = {}
 
     # Function description
-    def measure(self, label, central_atom=0):
+    def measure(self, label, central_atom=0, fix_permutation=False):
         hash = hashlib.md5('{}{}'.format(central_atom, label).encode()).hexdigest()
         if hash not in self._measures:
             if isinstance(label, str):
@@ -34,12 +34,15 @@ class Shape:
                 reference_structure = np.concatenate((reference_structure, [reference_structure[central_atom-1]]))
                 reference_structure = np.delete(reference_structure, central_atom-1, axis=0)
 
-            self._measures[hash] = shp.cshm(self._coordinates, reference_structure, central_atom)
+            if fix_permutation:
+                self._measures[hash] = shp.cshm_fix(self._coordinates, reference_structure, central_atom)
+            else:
+                self._measures[hash] = shp.cshm(self._coordinates, reference_structure, central_atom)
 
         return self._measures[hash]
 
     # Function description
-    def structure(self, label, central_atom=0):
+    def structure(self, label, central_atom=0, fix_permutation=False):
         hash = hashlib.md5('{}{}'.format(central_atom, label).encode()).hexdigest()
         if hash not in self._structures:
             if isinstance(label, str):
@@ -49,8 +52,12 @@ class Shape:
                 reference_structure = np.concatenate((reference_structure, [reference_structure[central_atom - 1]]))
                 reference_structure = np.delete(reference_structure, central_atom - 1, axis=0)
 
-            self._structures[hash], self._measures[hash] = shp.poly(self._coordinates, reference_structure,
-                                                                    central_atom)
+            if fix_permutation:
+                self._structures[hash], self._measures[hash] = shp.poly_fix(self._coordinates, reference_structure,
+                                                                            central_atom)
+            else:
+                self._structures[hash], self._measures[hash] = shp.poly(self._coordinates, reference_structure,
+                                                                        central_atom)
 
         return self._structures[hash]
 

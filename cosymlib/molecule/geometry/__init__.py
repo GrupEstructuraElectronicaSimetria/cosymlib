@@ -61,13 +61,11 @@ class Geometry:
     def get_symbols(self):
         return self._symbols
 
-    def get_shape_measure(self, shape_label, central_atom=0):
-        return self._shape.measure(shape_label,
-                                   central_atom=central_atom)
+    def get_shape_measure(self, shape_label, central_atom=0, fix_permutation=False):
+        return self._shape.measure(shape_label, central_atom=central_atom, fix_permutation=fix_permutation)
 
-    def get_shape_structure(self, shape_label, central_atom=0):
-        return self._shape.structure(shape_label,
-                                     central_atom=central_atom)
+    def get_shape_structure(self, shape_label, central_atom=0, fix_permutation=False):
+        return self._shape.structure(shape_label, central_atom=central_atom, fix_permutation=fix_permutation)
 
     def get_symmetry_measure(self, label, central_atom=0, multi=1):
         return self._symgroup.results(label, central_atom=central_atom, multi=multi)
