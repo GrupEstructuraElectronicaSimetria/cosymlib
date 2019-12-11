@@ -5,7 +5,7 @@ import sys
 from cosym.molecule.geometry import Geometry
 from cosym import file_io
 from cosym.file_io import old_inputs
-from cosym.cosym_api import Cosym
+from cosym.cosym_api import Cosymlib
 from cosym.shape import shape_tools
 
 
@@ -34,7 +34,7 @@ if args.input_file is not None:
     central_atom = options['%central_atom']
     for number in options['%labels']:
         reference_polyhedron.append(shape_tools.get_shape_label(int(number), options['%n_atoms']))
-    symobj = Cosym(structures)
+    symobj = Cosymlib(structures)
 
     if options['%fullout']:
         symobj.write_shape_structure_2file(reference_polyhedron,

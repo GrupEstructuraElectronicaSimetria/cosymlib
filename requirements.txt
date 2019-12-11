@@ -1,5 +1,5 @@
 ###################################
-# Required packages for Cosym     #
+# Required packages for Cosymlib     #
 ###################################
 
 numpy>=1.8.2

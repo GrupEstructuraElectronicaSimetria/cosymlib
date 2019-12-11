@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from cosym import Cosym
+from cosym import Cosymlib
 from cosym.file_io import old_inputs
 import cosym.shape as shape
 import cosym.shape.maps as maps
@@ -90,7 +90,7 @@ class TestShapeCorFile(unittest.TestCase):
     def test_example06(self):
         molecules, options = old_inputs.read_old_input('data/shape/example06.dat')
 
-        symobj = Cosym(molecules)
+        symobj = Cosymlib(molecules)
         shape, devpath, GenCoord = symobj.get_path_parameters('SP-4', 'T-4',
                                                                central_atom=options['%central_atom'], maxdev=5.0)
         good_results = np.loadtxt('data/shape/example06_results')
@@ -98,7 +98,7 @@ class TestShapeCorFile(unittest.TestCase):
 
     def test_example07(self):
         molecules, options = old_inputs.read_old_input('data/shape/example06.dat')
-        symobj = Cosym(molecules)
+        symobj = Cosymlib(molecules)
         shape, devpath, GenCoord = symobj.get_path_parameters('SP-4', 'T-4',
                                                                central_atom=options['%central_atom'], maxdev=10.0,
                                                                maxgco=60, mingco=40)

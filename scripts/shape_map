@@ -4,44 +4,40 @@ import sys
 import numpy as np
 import yaml
 from cosym import file_io
-from cosym.cosym_api import Cosym
+from cosym.cosym_api import Cosymlib
 from cosym.shape import shape_tools
 
 
-parser = argparse.ArgumentParser(description='Cosym ')
+parser = argparse.ArgumentParser(description='Shape_map ')
 parser.add_argument(type=str, dest='input_file', help='input file name(+extension)')
-parser.add_argument('-o', dest='output_name', default=None, help='customize output file name')
+parser.add_argument('-o', '--output_name', dest='output_name', default=None, help='save in file name')
 parser.add_argument(type=str, dest="yaml_input", nargs='?', default=None,
                     help='Perform the calculations with the command file')
-parser.add_argument('-central_atom', action='store', dest='central_atom_position',
+parser.add_argument('-central_atom', action='store', dest='central_atom',
                     type=int, default=0, help='position of the central atom if exist')
+parser.add_argument('-custom_ref', action='store', dest='custom_ref', default=None,
+                    help='take a given structure from the file and use it as reference')
+parser.add_argument('-fix_permutation', dest='fix_permutation', action='store_true', default=False,
+                    help='use the given permutation to perform a calculation')
 
 # Shape input flags
 group_shape = parser.add_argument_group('Shape')
-group_shape.add_argument('-shape',
-                         dest='shape_label',
-                         action='store',
-                         default=None,
-                         help='Shape measure of input structure with reference polyhedra')
-group_shape.add_argument('-custom_ref', action='store',
-                         dest='custom_ref',
-                         default=None,
-                         help='take the given structure from the file and use it as reference')
-group_shape.add_argument('-shape_map',
-                         dest='shape_map',
-                         action='store',
-                         nargs=2,
-                         default=False,
+group_shape.add_argument('-x', dest='x', action='store', default=False,
+                         help='Calculates the path deviation function')
+group_shape.add_argument('-y', dest='y', action='store', default=False,
+                         help='Calculates the path deviation function')
+group_shape.add_argument('-shape_map', dest='shape_map', action='store', nargs=2, default=False,
                          help='Calculates the path deviation function for the minimal '
                               'distortion interconversion path between two given polyhedra')
-group_shape.add_argument('-shape_path',
-                         dest='shape_path',
-                         action='store_true',
-                         default=False,
+group_shape.add_argument('-shape_path', dest='shape_path', action='store_true', default=False,
                          help='Calculates generalized coordinate from the path deviation function for a given path')
 
 
-args = parser.parse_args(sys.argv[1:])
+# args = parser.parse_args(sys.argv[1:])
+args = parser.parse_args(['../examples/coord.xyz',
+                          '-central_atom', '1',
+                          '-x', 'T-4', '-y', 'SP-4'
+                          ])
 
 if args.yaml_input:
     with open(args.yaml_input, 'r') as stream:
@@ -56,21 +52,18 @@ if args.yaml_input:
 reference_polyhedron = []
 if args.input_file is not None:
     structures = file_io.read_input_file(args.input_file)
-    symobj = Cosym(structures)
+    symobj = Cosymlib(structures)
 
 if args.custom_ref is not None:
     reference_polyhedron = file_io.read_input_file(args.custom_ref)
-elif not reference_polyhedron:
-    reference_polyhedron = [args.shape_label]
 
 
-if args.shape_map:
-    symobj.write_minimum_distortion_path_shape_2file(args.shape_map[0],
-                                                     args.shape_map[1],
-                                                     central_atom=args.central_atom_position,
-                                                     show=True)
+if args.x:
+    symobj.write_minimum_distortion_path_shape_2file(args.x,
+                                                     args.y,
+                                                     central_atom=args.central_atom)
 if args.shape_path:
     symobj.write_path_parameters_2file(args.shape_map[0],
                                        args.shape_map[1],
-                                       central_atom=args.central_atom_position,
+                                       central_atom=args.central_atom,
                                        output_name=args.output_name)

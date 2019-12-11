@@ -5,24 +5,38 @@ import yaml
 import sys
 from cosym import file_io
 from cosym.molecule.geometry import Geometry
-from cosym.cosym_api import Cosym
+from cosym.cosym_api import Cosymlib
 from cosym.shape import shape_tools
 
 
 parser = argparse.ArgumentParser(description='Cosym')
 parser.add_argument(type=str, dest='input_file', help='input file name(+extension)')
-parser.add_argument('-o', '--output_name', dest='output_name', default=None, help='save in file name')
-parser.add_argument('-old', action='store_true', default=False, help='old input file name')
-parser.add_argument('-info', action='store_true', default=False, help='return information about the input geometries')
 parser.add_argument(type=str, dest="yaml_input", nargs='?', default=None,
                     help='Perform the calculations with the command file')
+parser.add_argument('-o', '--output_name', dest='output_name', default=None, help='save in file name')
+parser.add_argument('-info', action='store_true', default=False, help='return information about the input geometries')
+
 parser.add_argument('-central_atom', action='store', dest='central_atom',
                     type=int, default=0, help='position of the central atom if exist')
+parser.add_argument('-custom_ref', action='store', dest='custom_ref', default=None,
+                    help='take a given structure from the file and use it as reference')
+parser.add_argument('-fix_permutation', dest='fix_permutation', action='store_true', default=False,
+                    help='use the given permutation to perform a calculation')
+parser.add_argument('-ignore_atom_labels', dest='ignore_atom_labels', action='store_true', default=False,
+                    help='ignore atom labels from given structures')
+# parser.add_argument('-connectivity', dest='connectivity', action='store', default=None,
+#                     help='Connect a set of atoms by...')
+parser.add_argument('-axis1', dest='axis1', action='store', default=None, nargs=3,
+                    help='First reference axis for the symmetry calculation')
+parser.add_argument('-axis2', dest='axis2', action='store', default=None, nargs=3,
+                    help='Second reference axis for the symmetry calculation')
+parser.add_argument('-center', dest='center', action='store', default=None, nargs=3,
+                    help='Center for the symmetry calculation')
 
 # Shape input flags
 group_shape = parser.add_argument_group('Shape')
-group_shape.add_argument('-shape',
-                         dest='shape',
+group_shape.add_argument('-shape_measure',
+                         dest='shape_measure',
                          action='store',
                          default=None,
                          help='Shape measure of input structure with reference polyhedra')
@@ -35,20 +49,12 @@ group_shape.add_argument('-shape_structure',
                          action='store_true',
                          default=False,
                          help='return the closes input structure to the reference shape')
-group_shape.add_argument('-custom_ref', action='store',
-                         dest='custom_ref',
-                         default=None,
-                         help='take the given structure from the file and use it as reference')
 group_shape.add_argument('-shape_references',
                          dest='shape_references',
-                         action='store',
+                         action='store_true',
                          default=False,
                          help='return a file with the coordinates of reference polyhedra')
-group_shape.add_argument('-shape_permutation',
-                         dest='shape_permutation',
-                         action='store',
-                         default=None,
-                         help='use the given permutation to perform a shape calculation')
+
 
 # PointGroup input flags
 group_pointgroup = parser.add_argument_group('PointGroup')
@@ -78,31 +84,16 @@ group_wfnsym.add_argument('-psym_wf',
                           action='store',
                           default=False,
                           help='Pseudo-symmetry measure of input structure with reference group')
-group_wfnsym.add_argument('-axis1',
-                          dest='axis1',
-                          action='store',
-                          default=None,
-                          nargs=3,
-                          help='First reference axis for the wfnsym calculation')
-group_wfnsym.add_argument('-axis2',
-                          dest='axis2',
-                          action='store',
-                          default=None,
-                          nargs=3,
-                          help='Second reference axis for the wfnsym calculation')
-group_wfnsym.add_argument('-center',
-                          dest='center',
-                          action='store',
-                          default=None,
-                          nargs=3,
-                          help='Center for the wfnsym calculation')
 
 # Utils
 parser.add_argument('-mo_diagram', dest="mo_diagram", action='store_true', default=False,
                     help='Perform the calculations with the command file')
 
 
-args = parser.parse_args(sys.argv[1:])
+# args = parser.parse_args(sys.argv[1:])
+args = parser.parse_args(['-shape_measure', 'T-4', '-central_atom', '1',
+                          '-shape_structure',
+                          '../examples/coord.xyz'])
 print('Starting...')
 
 if args.yaml_input:
@@ -117,7 +108,7 @@ if args.yaml_input:
 
 if args.input_file is not None:
     structures = file_io.read_input_file(args.input_file)
-    symobj = Cosym(structures)
+    symobj = Cosymlib(structures)
 
     try:
         n_atoms = structures[0].geometry.get_n_atoms()
@@ -137,7 +128,7 @@ if args.shape_references:
         test_structure.append(Geometry(symbols=symbols,
                                        positions=shape_tools.get_test_structure(label, central_atom=args.central_atom),
                                        name=label))
-    file_io.write_file_xyz(test_structure, output_name=args.shape_references)
+    file_io.write_file_xyz(test_structure, output_name='ML{}_ref'.format(n_atoms))
 
 if args.info:
     file_io.write_input_info(structures, output_name=args.output_name)
@@ -154,10 +145,10 @@ if args.shape_labels:
         print(shape_tools.get_shape_label_info(n_atoms))
 
 reference_polyhedron = []
-if args.shape == 'custom':
+if args.shape_measure == 'custom':
     reference_polyhedron = file_io.get_molecule_from_file_ref(args.custom_ref)
 elif not reference_polyhedron:
-    if args.shape == 'all':
+    if args.shape_measure == 'all':
         try:
             n_atoms = structures[0].geometry.get_n_atoms()
         except AttributeError:
@@ -165,14 +156,14 @@ elif not reference_polyhedron:
         c = int(bool(args.central_atom))
         reference_polyhedron = shape_tools.get_structure_references(n_atoms - c)
     else:
-        reference_polyhedron = [args.shape]
+        reference_polyhedron = [args.shape_measure]
 
 if args.shape_structure:
     symobj.write_shape_structure_2file(reference_polyhedron,
                                        central_atom=args.central_atom,
                                        output_name=args.output_name)
 
-elif args.shape or args.custom_ref:
+elif args.shape_measure or args.custom_ref:
     symobj.write_shape_measure_2file(reference_polyhedron,
                                      central_atom=args.central_atom,
                                      output_name=args.output_name)
