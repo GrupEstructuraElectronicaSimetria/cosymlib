@@ -1,12 +1,3 @@
-import sys
-from cosym import __version__
-
-
-def shape_header(output):
-    output.write('-' * 70 + '\n')
-    output.write(' COSYM v{}\n Electronic Structure Group,  Universitat de Barcelona\n'.format(__version__))
-    output.write('-' * 70 + '\n' + '\n')
-
 
 def write_shape_measure_data(measures, molecules_name, shape_label):
 
