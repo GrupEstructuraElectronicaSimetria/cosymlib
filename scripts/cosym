@@ -90,10 +90,7 @@ parser.add_argument('-mo_diagram', dest="mo_diagram", action='store_true', defau
                     help='Perform the calculations with the command file')
 
 
-# args = parser.parse_args(sys.argv[1:])
-args = parser.parse_args(['-shape_measure', 'T-4', '-central_atom', '1',
-                          '-shape_structure',
-                          '../examples/coord.xyz'])
+args = parser.parse_args(sys.argv[1:])
 print('Starting...')
 
 if args.yaml_input:

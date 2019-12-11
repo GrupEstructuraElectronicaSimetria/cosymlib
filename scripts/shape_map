@@ -33,11 +33,7 @@ group_shape.add_argument('-shape_path', dest='shape_path', action='store_true', 
                          help='Calculates generalized coordinate from the path deviation function for a given path')
 
 
-# args = parser.parse_args(sys.argv[1:])
-args = parser.parse_args(['../examples/coord.xyz',
-                          '-central_atom', '1',
-                          '-x', 'T-4', '-y', 'SP-4'
-                          ])
+args = parser.parse_args(sys.argv[1:])
 
 if args.yaml_input:
     with open(args.yaml_input, 'r') as stream:
