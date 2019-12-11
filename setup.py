@@ -31,5 +31,5 @@ setup(name='cosymlib',
       package_data={'': ['ideal_structures_center.yaml']},
       include_package_data=True,
       install_requires=['numpy', 'matplotlib', 'symgroupy', 'wfnsympy', 'PyYAML'],
-      scripts=['scripts/cosymlib'],
+      scripts=['scripts/cosym'],
       ext_modules=[shape])
