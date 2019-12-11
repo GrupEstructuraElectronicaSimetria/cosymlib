@@ -1,5 +1,5 @@
 import unittest
-from cosym import file_io, Cosymlib
+from cosymlib import file_io, Cosymlib
 
 
 class TestPointGroupCorFile(unittest.TestCase):

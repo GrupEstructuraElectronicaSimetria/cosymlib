@@ -1,5 +1,5 @@
-from cosym import shape, tools
-from cosym.symmetry import symgroup
+from cosymlib import shape, tools
+from cosymlib.symmetry import symgroup
 import numpy as np
 
 

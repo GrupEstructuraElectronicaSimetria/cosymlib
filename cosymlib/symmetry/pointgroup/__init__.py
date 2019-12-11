@@ -1,7 +1,7 @@
 import itertools
 import numpy as np
-from cosym.symmetry.pointgroup.operations import inversion, rotation_matrix, reflection
-from cosym.symmetry.pointgroup import sym_tools
+from cosymlib.symmetry.pointgroup.operations import inversion, rotation_matrix, reflection
+from cosymlib.symmetry.pointgroup import sym_tools
 
 
 class CalculatePointGroup:

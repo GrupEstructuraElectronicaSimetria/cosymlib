@@ -28,7 +28,7 @@ install:
 
 script:
     - cd tests
-    - coverage run --source=../cosym -m unittest discover . "test_*.py"
+    - coverage run --source=../cosymlib -m unittest discover . "test_*.py"
 
 after_success:
     - coveralls

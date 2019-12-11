@@ -1,4 +1,4 @@
-from cosym.shape import shape_tools, Shape
+from cosymlib.shape import shape_tools, Shape
 import numpy as np
 
 

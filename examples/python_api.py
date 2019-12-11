@@ -1,6 +1,6 @@
-import cosym.file_io as file_io
-import cosym.shape as shape
-import cosym.symmetry.symgroup as symgroup
+import cosymlib.file_io as file_io
+import cosymlib.shape as shape
+import cosymlib.symmetry.symgroup as symgroup
 
 
 def print_shape_data(geometries):

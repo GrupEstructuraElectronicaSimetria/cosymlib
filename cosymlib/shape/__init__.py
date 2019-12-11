@@ -1,4 +1,4 @@
-from cosym.shape import shp, shape_tools
+from cosymlib.shape import shp, shape_tools
 import numpy as np
 import hashlib
 

@@ -1,13 +1,13 @@
-from cosym.molecule import Molecule, Geometry
-from cosym import file_io
-from cosym.file_io import shape2file
-from cosym.utils import get_shape_map, molecular_orbital_diagram, symmetry_energy_evolution
+from cosymlib.molecule import Molecule, Geometry
+from cosymlib import file_io
+from cosymlib.file_io import shape2file
+from cosymlib.utils import get_shape_map, molecular_orbital_diagram, symmetry_energy_evolution
 import sys
 
 
 class Cosymlib:
     """
-    Main class of cosym program that can perform all the jobs
+    Main class of cosymlib program that can perform all the jobs
     """
 
     def __init__(self, structures):
@@ -90,7 +90,7 @@ class Cosymlib:
                                     maxdev=15, mindev=0, maxgco=101, mingco=0, output_name=None):
 
         if output_name is not None:
-            output = open(output_name + '.csv', 'w')
+            output = open(output_name + '_tab.csv', 'w')
         else:
             output = sys.stdout
 
@@ -231,7 +231,7 @@ class Cosymlib:
     def write_minimum_distortion_path_shape_2file(self, shape_label1, shape_label2, central_atom=0,
                                                   num_points=20, output_name=None):
 
-        self.write_path_parameters_2file(shape_label1, shape_label2, central_atom=central_atom)
+        self.write_path_parameters_2file(shape_label1, shape_label2, central_atom=central_atom, output_name=output_name)
         if output_name is not None:
             output = open(output_name + '_pth.csv', 'w')
         else:

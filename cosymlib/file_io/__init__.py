@@ -1,11 +1,11 @@
 import os
 import sys
 import re
-from cosym.molecule import Molecule, Geometry, ElectronicStructure
+from cosymlib.molecule import Molecule, Geometry, ElectronicStructure
 import numpy as np
-from cosym import tools
-from cosym.file_io import shape2file, wfnsym_file, symgroup_file
-from cosym import __version__
+from cosymlib import tools
+from cosymlib.file_io import shape2file, wfnsym_file, symgroup_file
+from cosymlib import __version__
 
 
 def nonblank_lines(f):

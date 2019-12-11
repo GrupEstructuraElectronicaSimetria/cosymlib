@@ -1,8 +1,8 @@
-from cosym.molecule.geometry import Geometry
-from cosym.molecule.electronic_structure import ElectronicStructure
-from cosym.symmetry.wfnsym import Wfnsym
-from cosym.symmetry.pointgroup import CalculatePointGroup
-from cosym.simulation import ExtendedHuckel
+from cosymlib.molecule.geometry import Geometry
+from cosymlib.molecule.electronic_structure import ElectronicStructure
+from cosymlib.symmetry.wfnsym import Wfnsym
+from cosymlib.symmetry.pointgroup import CalculatePointGroup
+from cosymlib.simulation import ExtendedHuckel
 
 
 class Molecule:

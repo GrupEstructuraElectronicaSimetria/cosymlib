@@ -1,5 +1,5 @@
 from wfnsympy import WfnSympy
-from cosym import tools
+from cosymlib import tools
 import hashlib
 
 

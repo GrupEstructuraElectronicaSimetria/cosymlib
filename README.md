@@ -20,7 +20,7 @@ Installation instructions
     - tinker-tk
     - Blas/Lapack
 
-2. Download the source code and place it in the installation 
+2. Download the source code and place it in the installation
 directory
 
 3. Run setup.py script to install

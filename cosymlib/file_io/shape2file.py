@@ -60,7 +60,7 @@ def write_shape_measure_data(measures, molecules_name, shape_label):
 
 def write_shape_map(shape_label1, shape_label2, path):
 
-    txt_shape = "\n {:6} {:6}\n".format(shape_label1, shape_label2)
+    txt_shape = " {:6} {:6}\n".format(shape_label1, shape_label2)
     for idx, value in enumerate(path[0]):
         txt_shape += '{:6.3f}, {:6.3f}'.format(path[0][idx], path[1][idx])
         txt_shape += '\n'

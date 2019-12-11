@@ -1,5 +1,5 @@
-from cosym.shape import maps
-from cosym.file_io import shape2file
+from cosymlib.shape import maps
+from cosymlib.file_io import shape2file
 import numpy as np
 
 

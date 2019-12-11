@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# cosym documentation build configuration file, created by
+# cosymlib documentation build configuration file, created by
 # sphinx-quickstart on Tue Oct 24 16:17:35 2017.
 #
 # This file is execfile()d with the current directory set to its
@@ -50,7 +50,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'cosym'
+project = u'cosymlib'
 copyright = u'2017, Efrem & Abel'
 author = u'Efrem & Abel'
 
@@ -82,7 +82,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 todo_include_todos = False
 
 
-autodoc_mock_imports = ['cosym.molecule']
+autodoc_mock_imports = ['cosymlib.molecule']
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -151,7 +151,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'cosym.tex', u'cosym Documentation',
+    (master_doc, 'cosymlib.tex', u'cosymlib Documentation',
      u'Efrem \\& Abel', 'manual'),
 ]
 
@@ -161,7 +161,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'cosym', u'cosym Documentation',
+    (master_doc, 'cosymlib', u'cosymlib Documentation',
      [author], 1)
 ]
 
@@ -172,8 +172,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'cosym', u'cosym Documentation',
-     author, 'cosym', 'One line description of project.',
+    (master_doc, 'cosymlib', u'cosymlib Documentation',
+     author, 'cosymlib', 'One line description of project.',
      'Miscellaneous'),
 ]
 

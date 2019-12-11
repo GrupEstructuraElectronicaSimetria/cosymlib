@@ -1,6 +1,6 @@
 import sys
-from cosym.molecule import Geometry
-from cosym.file_io import read_input_file
+from cosymlib.molecule import Geometry
+from cosymlib.file_io import read_input_file
 import os.path
 
 
@@ -13,7 +13,7 @@ def read_old_input(file_name):
     input_molecule = [[], []]
     structures = []
     options = {'%out': None, '%conquest': None, '%external': False, '%fullout': False, '%reference': False,
-               '%test': False, '%n_atoms': 0, '%central_atom': 0, '%labels': 0}
+               '%test': False, '%n_atoms': 0, '%central_atom': 0, '%labels': 0, '%path': False}
 
     with open(file_name, mode='r') as lines:
         while True:

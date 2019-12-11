@@ -1,9 +1,9 @@
 import unittest
 import numpy as np
-from cosym import Cosymlib
-from cosym.file_io import old_inputs
-import cosym.shape as shape
-import cosym.shape.maps as maps
+from cosymlib import Cosymlib
+from cosymlib.file_io import old_inputs
+import cosymlib.shape as shape
+import cosymlib.shape.maps as maps
 
 
 class TestShapeCorFile(unittest.TestCase):
