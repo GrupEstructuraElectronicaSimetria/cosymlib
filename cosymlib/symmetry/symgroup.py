@@ -81,9 +81,11 @@ class Symgroup:
 
         return self._results[hash].axis_multi
 
-    def _do_measure(self, label, central_atom, multi):
+    def _do_measure(self, label, central_atom, multi, symbols=True):
 
         hash = hashlib.md5('{}{}'.format(label, central_atom).encode()).hexdigest()
+        if not symbols:
+            self._symbols = None
         self._results[hash] = Symgroupy(self._coordinates,
                                         group=label,
                                         labels=self._symbols,

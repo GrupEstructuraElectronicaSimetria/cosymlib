@@ -28,26 +28,25 @@ parser.add_argument('-fix_permutation', dest='fix_permutation', action='store_tr
 
 # Shape input flags
 group_shape = parser.add_argument_group('Shape')
-group_shape.add_argument('-shape_measure',
-                         dest='shape_measure',
+group_shape.add_argument('-measure',
+                         dest='measure',
                          action='store',
                          default=None,
                          help='Shape measure of input structure with reference polyhedra')
-group_shape.add_argument('-shape_labels', action='store_true',
-                         dest='shape_labels',
+group_shape.add_argument('-labels', action='store_true',
+                         dest='labels',
                          default=False,
                          help='show the reference labels for a given structure')
-group_shape.add_argument('-shape_structure',
-                         dest='shape_structure',
+group_shape.add_argument('-structure',
+                         dest='structure',
                          action='store_true',
                          default=False,
                          help='return the closes input structure to the reference shape')
-group_shape.add_argument('-shape_references',
-                         dest='shape_references',
+group_shape.add_argument('-references',
+                         dest='references',
                          action='store_true',
                          default=False,
                          help='return a file with the coordinates of reference polyhedra')
-
 
 
 args = parser.parse_args(sys.argv[1:])
@@ -77,7 +76,7 @@ if args.input_file is not None:
     if args.central_atom != 0:
         n_atoms -= 1
 
-if args.shape_references:
+if args.references:
     test_structure = []
     symbols = ['H' for _ in range(n_atoms)]
     symbols.append('N')
@@ -91,17 +90,17 @@ if args.info:
     file_io.write_input_info(structures, output_name=args.output_name)
 
 # Shape's commands
-if args.shape_labels:
+if args.labels:
     if args.central_atom == 0:
         print(shape_tools.get_shape_label_info(n_atoms))
     else:
         print(shape_tools.get_shape_label_info(n_atoms))
 
 reference_polyhedron = []
-if args.shape_measure == 'custom':
+if args.measure == 'custom':
     reference_polyhedron = file_io.get_molecule_from_file_ref(args.custom_ref)
 elif not reference_polyhedron:
-    if args.shape_measure == 'all':
+    if args.measure == 'all':
         try:
             n_atoms = structures[0].geometry.get_n_atoms()
         except AttributeError:
@@ -111,13 +110,13 @@ elif not reference_polyhedron:
     else:
         reference_polyhedron = [args.shape_measure]
 
-if args.shape_structure:
+if args.structure:
     symobj.write_shape_structure_2file(reference_polyhedron,
                                        central_atom=args.central_atom,
                                        output_name=args.output_name,
                                        fix_permutation=args.fix_permutation)
 
-elif args.shape_measure or args.custom_ref:
+elif args.measure or args.custom_ref:
     symobj.write_shape_measure_2file(reference_polyhedron,
                                      central_atom=args.central_atom,
                                      output_name=args.output_name,

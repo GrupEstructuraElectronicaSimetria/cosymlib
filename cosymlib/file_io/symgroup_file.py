@@ -48,11 +48,17 @@ def build_symgroup_data(label, geometries, symgroup_results):
     return sym_txt
 
 
-def build_symgroup_measure(label, geometries, parsed_data):
+def build_symgroup_measure(label, geometries, symgroup_results):
 
-    csm = parsed_data.csm
     sym_txt = 'Evaluating symmetry operation : {}\n \n'.format(label)
     for idx, geometry in enumerate(geometries):
-        sym_txt += '{:>5} {:10.5f}\n'.format(geometry.get_name(), csm)
+        csm = symgroup_results[idx].csm
+        max_name = len(max(geometry.get_name(), key=len))
+        sym_txt += '{}'.format(geometry.get_name())
+        if max_name < 9:
+            n = 18 - len(geometry.get_name())
+        else:
+            n = 9 + max_name - len(geometry.get_name())
+        sym_txt += '{:{width}.{prec}f}\n'.format(csm, width=n, prec=3)
 
     return sym_txt

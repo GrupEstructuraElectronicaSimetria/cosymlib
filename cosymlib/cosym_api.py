@@ -78,7 +78,7 @@ class Cosymlib:
                                         for reference in shape_reference]
             references = shape_reference
 
-        self.write_shape_measure_2file(shape_reference, central_atom, output_name, fix_permutation)
+        self.write_shape_measure_2file(shape_reference, central_atom, fix_permutation, output_name)
         geometries = []
         for idl, reference in enumerate(references):
             for idm, molecule in enumerate(self._molecules):
@@ -116,7 +116,7 @@ class Cosymlib:
                                                          results)
         output.write(txt)
 
-    def write_symgroup_measure(self, group, multi=1, central_atom=0, output_name=None):
+    def write_symgroup_measure(self, group, multi=1, central_atom=0, labels=True, output_name=None):
 
         if output_name is not None:
             output = open(output_name + '.ztab', 'w')
