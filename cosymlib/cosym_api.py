@@ -80,11 +80,12 @@ class Cosymlib:
 
         self.write_shape_measure_2file(shape_reference, central_atom, fix_permutation, output_name)
         geometries = []
-        for idl, reference in enumerate(references):
-            for idm, molecule in enumerate(self._molecules):
+        for idm, molecule in enumerate(self._molecules):
+            geometries.append(molecule.geometry)
+            for idl, reference in enumerate(references):
                 geometries.append(Geometry(symbols=molecule.geometry.get_symbols(),
                                            positions=shape_results_structures[idl][idm],
-                                           name=reference))
+                                           name=molecule.get_name()+'_'+reference))
         file_io.write_file_xyz(geometries, output_name=output_name)
 
     def write_path_parameters_2file(self, shape_label1, shape_label2, central_atom=0,

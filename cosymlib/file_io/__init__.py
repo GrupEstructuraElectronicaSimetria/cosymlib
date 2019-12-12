@@ -76,7 +76,9 @@ def get_molecule_from_file_cor(file_name):
     input_molecule = [[], []]
     structures = []
     with open(file_name, mode='r') as lines:
-        name = lines.readline().split()[0]
+        line = lines.readline()
+        name = line.replace('**FRAG**', '')[:-1]
+        name = name.replace(' ', '')
         for line in lines:
             if '$' in line or '#' in line:
                 pass
@@ -90,14 +92,15 @@ def get_molecule_from_file_cor(file_name):
                         input_molecule[0].append(line.split()[0])
                         input_molecule[1].append(line.split()[1:-1])
                     else:
-                        sys.exit('Wrong input format')
+                        float(line.split()[2])
                 except (ValueError, IndexError):
                     if input_molecule:
                         structures.append(Geometry(symbols=input_molecule[0],
                                                    positions=input_molecule[1],
                                                    name=name))
                     input_molecule = [[], []]
-                    name = line.split()[0]
+                    name = line.replace('**FRAG**', '')[:-1]
+                    name = name.replace(' ', '')
         structures.append(Geometry(symbols=input_molecule[0],
                                    positions=input_molecule[1],
                                    name=name))
