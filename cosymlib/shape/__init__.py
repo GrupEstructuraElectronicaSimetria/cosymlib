@@ -31,8 +31,6 @@ class Shape:
                 reference_structure = shape_tools.get_test_structure(label, central_atom)
             else:
                 reference_structure = np.array(label)
-                reference_structure = np.concatenate((reference_structure, [reference_structure[central_atom-1]]))
-                reference_structure = np.delete(reference_structure, central_atom-1, axis=0)
 
             if fix_permutation:
                 self._measures[hash] = shp.cshm_fix(self._coordinates, reference_structure, central_atom)
@@ -49,8 +47,6 @@ class Shape:
                 reference_structure = shape_tools.get_test_structure(label, central_atom)
             else:
                 reference_structure = np.array(label)
-                reference_structure = np.concatenate((reference_structure, [reference_structure[central_atom - 1]]))
-                reference_structure = np.delete(reference_structure, central_atom - 1, axis=0)
 
             if fix_permutation:
                 self._structures[hash], self._measures[hash] = shp.poly_fix(self._coordinates, reference_structure,
@@ -68,7 +64,10 @@ class Shape:
             Sx = self.measure(shape_label1, central_atom)
             Sy = self.measure(shape_label2, central_atom)
             new_theta = np.arcsin(np.sqrt(Sx) / 10) + np.arcsin(np.sqrt(Sy) / 10)
-            structure_a = shape_tools.get_test_structure(shape_label1, central_atom=central_atom)
+            if isinstance(shape_label1, np.ndarray):
+                structure_a = shape_label1
+            else:
+                structure_a = shape_tools.get_test_structure(shape_label1, central_atom=central_atom)
             theta = np.arcsin(np.sqrt(Shape(structure_a).measure(shape_label2, central_atom=len(structure_a))) / 10)
             self._path_deviation[hash] = ((new_theta / theta) - 1) * 100
 
@@ -79,7 +78,10 @@ class Shape:
         hash = hashlib.md5('{}{}{}'.format(shape_label1, shape_label2, central_atom).encode()).hexdigest()
         if hash not in self._gen_coord:
             Sq = self.measure(shape_label1, central_atom)
-            structure_a = shape_tools.get_test_structure(shape_label1, central_atom=central_atom)
+            if isinstance(shape_label1, np.ndarray):
+                structure_a = shape_label1
+            else:
+                structure_a = shape_tools.get_test_structure(shape_label1, central_atom=central_atom)
             theta = np.arcsin(np.sqrt(Shape(structure_a).measure(shape_label2, central_atom=len(structure_a))) / 10)
             self._gen_coord[hash] = round(100 * np.arcsin(np.sqrt(Sq) / 10) / theta, 1)
 

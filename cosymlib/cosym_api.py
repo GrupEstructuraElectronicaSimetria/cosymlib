@@ -45,15 +45,17 @@ class Cosymlib:
             output = sys.stdout
 
         molecules_name = [molecule.get_name() for molecule in self._molecules]
-        if type(shape_reference[0]) is Geometry:
-            shape_results_measures = [self.get_shape_measure(reference.get_positions(), 'measure', central_atom,
-                                                             fix_permutation)
-                                      for reference in shape_reference]
-            references = [reference.get_name() for reference in shape_reference]
-        else:
-            shape_results_measures = [self.get_shape_measure(reference, 'measure', central_atom)
-                                      for reference in shape_reference]
-            references = shape_reference
+        shape_results_measures = []
+        references = []
+        for reference in shape_reference:
+            if type(reference) is Geometry:
+                shape_results_measures.append(self.get_shape_measure(reference.get_positions(), 'measure', central_atom,
+                                                                     fix_permutation))
+                references.append(reference.get_name())
+            else:
+                shape_results_measures.append(self.get_shape_measure(reference, 'measure', central_atom,
+                                                                     fix_permutation))
+                references.append(reference)
 
         output.write(file_io.header())
         output.write(shape2file.write_shape_measure_data(shape_results_measures, molecules_name, references))
@@ -68,15 +70,17 @@ class Cosymlib:
         :return: shape's structure in the output_name.out file
         """
 
-        if type(shape_reference[0]) is not str:
-            shape_results_structures = [self.get_shape_measure(reference.get_positions(), 'structure', central_atom,
-                                                               fix_permutation)
-                                        for reference in shape_reference]
-            references = [reference.get_name() for reference in shape_reference]
-        else:
-            shape_results_structures = [self.get_shape_measure(reference, 'structure', central_atom)
-                                        for reference in shape_reference]
-            references = shape_reference
+        shape_results_structures = []
+        references = []
+        for reference in shape_reference:
+            if type(reference) is Geometry:
+                shape_results_structures.append(self.get_shape_measure(reference.get_positions(),
+                                                                       'structure', central_atom, fix_permutation))
+                references.append(reference.get_name())
+            else:
+                shape_results_structures.append(self.get_shape_measure(reference, 'structure', central_atom,
+                                                                       fix_permutation))
+                references.append(reference)
 
         self.write_shape_measure_2file(shape_reference, central_atom, fix_permutation, output_name)
         geometries = []
@@ -100,8 +104,8 @@ class Cosymlib:
         csm, devpath, GenCoord = self.get_path_parameters(shape_label1, shape_label2, central_atom=central_atom,
                                                             maxdev=maxdev, mindev=mindev, maxgco=maxgco, mingco=mingco)
         names_order = [molecule.get_name() for molecule in self._molecules]
-        txt = shape2file.write_minimal_distortion_path_analysis(shape_label1, shape_label2, csm, devpath, GenCoord,
-                                                                maxdev, mindev, mingco, maxgco, names_order)
+        txt = shape2file.write_minimal_distortion_path_analysis(csm, devpath, GenCoord, maxdev, mindev,
+                                                                mingco, maxgco, names_order)
         output.write(txt)
 
     def write_symgroup_measure_all_info(self, group, multi=1, central_atom=0, output_name=None):
@@ -211,10 +215,23 @@ class Cosymlib:
             results = [i for indx, i in enumerate(results) if filter[indx] == True]
             return results
 
-        csm = {shape_label1: self.get_shape_measure(shape_label1, 'measure', central_atom),
-               shape_label2: self.get_shape_measure(shape_label2, 'measure', central_atom)}
-        devpath = self.get_molecule_path_deviation(shape_label1, shape_label2, central_atom)
-        generalized_coord = self.get_molecule_generalized_coord(shape_label1, shape_label2, central_atom)
+        if type(shape_label1) is Geometry:
+            label1 = shape_label1.get_positions()
+            label1_name = shape_label1.get_name()
+        else:
+            label1 = shape_label1
+            label1_name = shape_label1
+        if type(shape_label2) is Geometry:
+            label2 = shape_label2.get_positions()
+            label2_name = shape_label2.get_name()
+        else:
+            label2 = shape_label2
+            label2_name = shape_label2
+
+        csm = {label1_name: self.get_shape_measure(label1, 'measure', central_atom),
+               label2_name: self.get_shape_measure(label2, 'measure', central_atom)}
+        devpath = self.get_molecule_path_deviation(label1, label2, central_atom)
+        generalized_coord = self.get_molecule_generalized_coord(label1, label2, central_atom)
         criteria = devpath
         devpath = filter_results(devpath, criteria, maxdev, mindev)
         generalized_coord = filter_results(generalized_coord, criteria, maxdev, mindev)
@@ -237,18 +254,38 @@ class Cosymlib:
         self.write_path_parameters_2file(shape_label1, shape_label2, central_atom=central_atom, output_name=output_name)
         if output_name is not None:
             output = open(output_name + '_pth.csv', 'w')
+            output2 = open(output_name + '_pth.xyz', 'w')
         else:
             output = sys.stdout
+            output2 = sys.stdout
+
+        if type(shape_label1) is Geometry:
+            label1 = shape_label1.get_positions()
+            label1_name = shape_label1.get_name()
+        else:
+            label1 = shape_label1
+            label1_name = shape_label1
+        if type(shape_label2) is Geometry:
+            label2 = shape_label2.get_positions()
+            label2_name = shape_label2.get_name()
+        else:
+            label2 = shape_label2
+            label2_name = shape_label2
 
         path_parameters = self.get_path_parameters(shape_label1, shape_label2, central_atom=central_atom)[0]
-        path = get_shape_map(shape_label1, shape_label2, num_points)
-        output.write(shape2file.write_shape_map(shape_label1, shape_label2, path))
+        path = get_shape_map(label1, label2, num_points)
+        output.write(shape2file.write_shape_map(label1_name, label2_name, path))
+        test_structures = []
+        for ids, structure in enumerate(path[2]):
+            test_structures.append(Geometry(symbols=['' for _ in range(len(structure))],
+                                           positions=structure, name='map_structure{}'.format(ids)))
+        output2.write(file_io.write_file_xyz(test_structures))
         if output_name is None:
             import matplotlib.pyplot as plt
             plt.plot(path[0], path[1], 'k', linewidth=2.0)
-            plt.scatter(path_parameters[shape_label1], path_parameters[shape_label2], linewidths=0.01)
-            plt.xlabel(shape_label1)
-            plt.ylabel(shape_label2)
+            plt.scatter(path_parameters[label1_name], path_parameters[label2_name], linewidths=0.01)
+            plt.xlabel(label1_name)
+            plt.ylabel(label2_name)
             plt.show()
 
     def write_point_group(self, tol=0.01):

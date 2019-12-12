@@ -23,7 +23,6 @@ print('Starting...')
 if args.n:
     print(shape_tools.get_shape_label_info(args.n, old=True))
 
-reference_polyhedron = []
 if args.input_file is not None:
     if os.stat(args.input_file).st_size == 0:
         raise FileExistsError('File {} is empty'.format(os.path.basename(args.input_file)))
@@ -42,21 +41,27 @@ if args.input_file is not None:
                                            positions=shape_tools.get_test_structure(label,
                                                                                     central_atom=central_atom),
                                            name=label))
+
         if central_atom == 0:
-            file_io.write_file_xyz(test_structure, output_name='{}/L{}'.format(os.path.dirname(output_name),
-                                                                               options['%n_atoms']))
+            output = open('{}/L{}.xyz'.format(os.path.dirname(output_name), options['%n_atoms']), 'w')
         else:
-            file_io.write_file_xyz(test_structure, output_name='{}/ML{}'.format(os.path.dirname(output_name),
-                                                                                options['%n_atoms']))
+            output = open('{}/ML{}.xyz'.format(os.path.dirname(output_name), options['%n_atoms']), 'w')
+        output.write(file_io.write_file_xyz(test_structure))
         exit()
 
-    for number in options['%labels']:
-        reference_polyhedron.append(shape_tools.get_shape_label(int(number), options['%n_atoms']))
+    reference_polyhedron = []
+    if options['%labels'] != 0:
+        for number in options['%labels']:
+            if int(number) == 0:
+                for ref in file_io.get_molecule_from_file_ref(output_name + '.ref'):
+                    reference_polyhedron.append(ref)
+            else:
+                reference_polyhedron.append(shape_tools.get_shape_label(int(number), options['%n_atoms']))
+
     if options['%fullout']:
         symobj.write_shape_structure_2file(reference_polyhedron,
                                            central_atom=central_atom,
                                            output_name=output_name)
-
     elif options['%path']:
         if len(reference_polyhedron) > 2:
             print('Error. No more than two labels can be specified for a path calculation')

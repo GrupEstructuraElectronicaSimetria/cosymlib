@@ -7,6 +7,7 @@ from cosymlib import file_io
 from cosymlib.molecule.geometry import Geometry
 from cosymlib.cosym_api import Cosymlib
 from cosymlib.shape import shape_tools
+import os
 
 
 parser = argparse.ArgumentParser(description='Cosym')
@@ -130,7 +131,13 @@ if args.shp_references:
         test_structure.append(Geometry(symbols=symbols,
                                        positions=shape_tools.get_test_structure(label, central_atom=args.central_atom),
                                        name=label))
-    file_io.write_file_xyz(test_structure, output_name='ML{}_ref'.format(n_atoms))
+    input_file, file_extension = os.path.splitext(args.input_file)
+    if args.central_atom == 0:
+        output = open('{}/L{}.xyz'.format(os.path.dirname(input_file), n_atoms), 'w')
+    else:
+        output = open('{}/ML{}.xyz'.format(os.path.dirname(input_file), n_atoms), 'w')
+    output.write(file_io.write_file_xyz(test_structure))
+    # file_io.write_file_xyz(test_structure, output_name='ML{}_ref'.format(n_atoms))
 
 if args.info:
     file_io.write_input_info(structures, output_name=args.output_name)

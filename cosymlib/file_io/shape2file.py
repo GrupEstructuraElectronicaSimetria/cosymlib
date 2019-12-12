@@ -38,14 +38,13 @@ def write_shape_map(shape_label1, shape_label2, path):
     return txt_shape
 
 
-def write_minimal_distortion_path_analysis(shape_label1, shape_label2, measures, pathdev, GenCoord,
-                                           maxdev, mindev, mingco, maxgco, molecules_name):
+def write_minimal_distortion_path_analysis(measures, pathdev, GenCoord, maxdev, mindev, mingco, maxgco, molecules_name):
 
     txt_shape = "Deviation threshold to calculate Path deviation function: {:2.1f}% - {:2.1f}%\n".format(mindev, maxdev)
     txt_shape += "Deviation threshold to calculate Generalized Coordinate: {:2.1f}% - {:2.1f}%\n".format(mingco, maxgco)
     txt_shape += "\n"
     txt_shape += '{:}'.format('structure'.upper())
-    txt_shape += " {:>7} {:>9}".format(shape_label1, shape_label2)
+    txt_shape += " {:>7} {:>9}".format(list(measures.keys())[0], list(measures.keys())[1])
     txt_shape += "{:>12} {:>9}".format('DevPath', 'GenCoord')
     txt_shape += "\n"
 
@@ -55,7 +54,7 @@ def write_minimal_distortion_path_analysis(shape_label1, shape_label2, measures,
             width = 6 + len(molecule_name)
         else:
             width = 14 - len(molecule_name)
-        for label in [shape_label1, shape_label2]:
+        for label in list(measures.keys()):
             txt_shape += ' {:{width}.{prec}f},'.format(measures[label][idx], width=width, prec=3)
             width = 7
         txt_shape += '{:8.1f}, {:8}'.format(pathdev[idx], GenCoord[idx])

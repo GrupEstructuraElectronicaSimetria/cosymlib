@@ -324,7 +324,7 @@ def get_molecule_from_file_ref(file_name):
     :return: list of Geometry objects
     """
     input_molecule = []
-    molecules = []
+    structures = []
     with open(file_name, mode='r') as lines:
         lines.readline()
         lines.readline()
@@ -338,13 +338,13 @@ def get_molecule_from_file_ref(file_name):
                     input_molecule.append(line.split())
                 except (ValueError, IndexError):
                     if input_molecule:
-                        molecules.append(Geometry(positions=input_molecule,
+                        structures.append(Geometry(positions=input_molecule,
                                                   name=name))
                     input_molecule = []
                     name = line.split()[0]
-        molecules.append(Geometry(positions=input_molecule,
+        structures.append(Geometry(positions=input_molecule,
                                   name=name))
-    return molecules
+    return structures
 
 
 def basis_format(basis_set_name,
@@ -427,19 +427,16 @@ def write_input_info(initial_geometries, output_name=None):
         output.write('\n')
 
 
-def write_file_xyz(geometries, output_name=None):
-    if output_name is not None:
-        output = open(output_name + '.xyz', 'w')
-    else:
-        output = sys.stdout
+def write_file_xyz(geometries):
 
+    txt = ''
     for geometry in geometries:
-        output.write('{}\n'.format(geometry.get_n_atoms()))
-        output.write('{}\n'.format(geometry.get_name()))
+        txt += '{}\n'.format(geometry.get_n_atoms())
+        txt += '{}\n'.format(geometry.get_name())
         for idp, position in enumerate(geometry.get_positions()):
-            output.write('{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idp],
-                                                                    position[0], position[1], position[2]))
-    # output.close()
+            txt += '{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idp],
+                                                              position[0], position[1], position[2])
+    return txt
 
 
 def reformat_input(array):
