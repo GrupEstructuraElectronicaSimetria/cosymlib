@@ -51,7 +51,7 @@ def get_shape_label_info(vertices, old=False):
     txt += '{:10}  {:8}  {}\n\n'.format('Label', 'Sym', 'Info')
     for idl, labels in enumerate(shape_structure_references['{} Vertices'.format(vertices)]):
         if old:
-            txt += '{:<4} '.format(idl)
+            txt += '{:<4} '.format(idl+1)
         txt += '{:10}  {:8}  {}\n'.format(labels[0], labels[2], labels[3])
     return txt
 

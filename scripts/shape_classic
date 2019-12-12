@@ -31,10 +31,27 @@ if args.input_file is not None:
 
     structures, options = old_inputs.read_old_input(args.input_file)
     central_atom = options['%central_atom']
-    for number in options['%labels']:
-        reference_polyhedron.append(shape_tools.get_shape_label(int(number), options['%n_atoms']))
     symobj = Cosymlib(structures)
 
+    if options['%test']:
+        test_structure = []
+        symbols = ['H' for _ in range(options['%n_atoms'])]
+        symbols.append('N')
+        for label in shape_tools.get_structure_references(options['%n_atoms']):
+            test_structure.append(Geometry(symbols=symbols,
+                                           positions=shape_tools.get_test_structure(label,
+                                                                                    central_atom=central_atom),
+                                           name=label))
+        if central_atom == 0:
+            file_io.write_file_xyz(test_structure, output_name='{}/L{}'.format(os.path.dirname(output_name),
+                                                                               options['%n_atoms']))
+        else:
+            file_io.write_file_xyz(test_structure, output_name='{}/ML{}'.format(os.path.dirname(output_name),
+                                                                                options['%n_atoms']))
+        exit()
+
+    for number in options['%labels']:
+        reference_polyhedron.append(shape_tools.get_shape_label(int(number), options['%n_atoms']))
     if options['%fullout']:
         symobj.write_shape_structure_2file(reference_polyhedron,
                                            central_atom=central_atom,
@@ -52,18 +69,6 @@ if args.input_file is not None:
         symobj.write_shape_measure_2file(reference_polyhedron,
                                          central_atom=central_atom,
                                          output_name=output_name)
-
-    if options['%test']:
-        test_structure = []
-        symbols = ['H' for _ in range(options['%n_atoms'])]
-        symbols.append('N')
-        for label in shape_tools.get_structure_references(options['%n_atoms']):
-            test_structure.append(Geometry(symbols=symbols,
-                                           positions=shape_tools.get_test_structure(label,
-                                                                                    central_atom=central_atom),
-                                           name=label))
-        file_io.write_file_xyz(test_structure, output_name='{}/{}_vertices'.format(os.path.dirname(output_name),
-                                                                                   options['%n_atoms']))
 
 
     # if args.custom_reference_structure is not None:

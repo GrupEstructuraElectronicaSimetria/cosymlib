@@ -25,10 +25,7 @@ class Wfnsym:
                 self._results[hash].mo_SOEVs_b, self._results[hash].wf_SOEVs_a, self._results[hash].wf_SOEVs_b,
                 self._results[hash].wf_SOEVs, self._results[hash].grim_coef, self._results[hash].csm_coef]
 
-    def symmetry_ireducible_representation_analysis(self, group,
-                                                    vector_axis1,
-                                                    vector_axis2,
-                                                    center):
+    def symmetry_ireducible_representation_analysis(self, group, vector_axis1, vector_axis2, center):
 
         hash = hashlib.md5('{}{}'.format(group, vector_axis1, vector_axis2, center).encode()).hexdigest()
         if hash not in self._results:
@@ -36,10 +33,7 @@ class Wfnsym:
         return [self._results[hash].IRLab, self._results[hash].mo_IRd_a, self._results[hash].mo_IRd_b,
                 self._results[hash].wf_IRd_a, self._results[hash].wf_IRd_b, self._results[hash].wf_IRd]
 
-    def symmetry_matrix(self, group,
-                        vector_axis1,
-                        vector_axis2,
-                        center):
+    def symmetry_matrix(self, group, vector_axis1, vector_axis2, center):
 
         hash = hashlib.md5('{}{}'.format(group, vector_axis1, vector_axis2, center).encode()).hexdigest()
         if hash not in self._results:

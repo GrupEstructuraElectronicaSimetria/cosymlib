@@ -6,7 +6,7 @@ import cosymlib.shape as shape
 import cosymlib.shape.maps as maps
 
 
-class TestShapeCorFile(unittest.TestCase):
+class TestShape(unittest.TestCase):
 
     def test_example01(self):
         molecules, options = old_inputs.read_old_input('data/shape/example01.dat')
