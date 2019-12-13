@@ -15,11 +15,10 @@ class TestShape(unittest.TestCase):
         for number in options['%labels']:
             reference_polyhedron.append(shape.shape_tools.get_shape_label(int(number), options['%n_atoms']))
 
-        results = []
-        results.append([shape.Shape(molecule).measure(reference_polyhedron[0], central_atom=options['%central_atom'])
-                        for molecule in molecules])
-        results.append([shape.Shape(molecule).measure(reference_polyhedron[1], central_atom=options['%central_atom'])
-                        for molecule in molecules])
+        results = [[shape.Shape(molecule).measure(reference_polyhedron[0], central_atom=options['%central_atom'])
+                    for molecule in molecules],
+                   [shape.Shape(molecule).measure(reference_polyhedron[1], central_atom=options['%central_atom'])
+                    for molecule in molecules]]
         calculated_results = np.column_stack((results[0], results[1]))
         nice_measures = [[31.375, 0.97], [33.44, 0.16]]
         self.assertTrue(np.allclose(nice_measures, calculated_results, atol=1e-3))
@@ -84,9 +83,8 @@ class TestShape(unittest.TestCase):
         reference_polyhedron = []
         for number in options['%labels']:
             reference_polyhedron.append(shape.shape_tools.get_shape_label(int(number), options['%n_atoms']))
-        results = []
-        results.append([shape.Shape(molecule).structure(reference_polyhedron[0], central_atom=options['%central_atom'])
-                        for molecule in molecules])
+        results = [[shape.Shape(molecule).structure(reference_polyhedron[0], central_atom=options['%central_atom'])
+                    for molecule in molecules]]
         calculated_results = np.concatenate((results[0][0], results[0][1]))
         results.append([shape.Shape(molecule).structure(reference_polyhedron[1], central_atom=options['%central_atom'])
                         for molecule in molecules])
@@ -132,11 +130,10 @@ class TestShape(unittest.TestCase):
         for number in options['%labels']:
             reference_polyhedron.append(shape.shape_tools.get_shape_label(int(number), options['%n_atoms']))
 
-        results = []
-        results.append([shape.Shape(molecule).measure(reference_polyhedron[0], central_atom=options['%central_atom'])
-                        for molecule in molecules])
-        results.append([shape.Shape(molecule).measure(reference_polyhedron[1], central_atom=options['%central_atom'])
-                        for molecule in molecules])
+        results = [[shape.Shape(molecule).measure(reference_polyhedron[0], central_atom=options['%central_atom'])
+                    for molecule in molecules],
+                   [shape.Shape(molecule).measure(reference_polyhedron[1], central_atom=options['%central_atom'])
+                    for molecule in molecules]]
         dev_path = [molecule.get_path_deviation(reference_polyhedron[0], reference_polyhedron[1],
                                                 central_atom=options['%central_atom'])
                     for molecule in molecules]
@@ -202,11 +199,10 @@ class TestShape(unittest.TestCase):
                 else:
                     reference_polyhedron.append(shape.shape_tools.get_shape_label(int(number), options['%n_atoms']))
 
-        results = []
-        results.append([shape.Shape(molecule).measure(reference_polyhedron[0], central_atom=central_atom)
-                        for molecule in molecules])
-        results.append([shape.Shape(molecule).measure(reference_polyhedron[1].get_positions(),
-                                                      central_atom=central_atom) for molecule in molecules])
+        results = [[shape.Shape(molecule).measure(reference_polyhedron[0], central_atom=central_atom)
+                    for molecule in molecules], [shape.Shape(molecule).measure(reference_polyhedron[1].get_positions(),
+                                                                               central_atom=central_atom) for molecule
+                                                 in molecules]]
 
         calculated_results = np.column_stack((results[0], results[1]))
         self.assertTrue(np.allclose(nice_measures, calculated_results, atol=1e-2))

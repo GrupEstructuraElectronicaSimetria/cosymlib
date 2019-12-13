@@ -77,6 +77,16 @@ group_symgroup.add_argument('-sym_structure',
                             action='store_true',
                             default=False,
                             help='return the closes input structure to the reference symmetry')
+group_symgroup.add_argument('-sym_labels',
+                            dest='sym_labels',
+                            action='store_true',
+                            default=False,
+                            help='return the possible symmetry labels that can be used in symgroup')
+group_symgroup.add_argument('-sym_quirality',
+                            dest='sym_quirality',
+                            action='store_true',
+                            default=False,
+                            help='search for a possible quirality in molecule')
 
 # Wfnsym input flags
 group_wfnsym = parser.add_argument_group('Wfnsym')
@@ -175,19 +185,17 @@ elif args.shp_measure or args.custom_ref:
                                      output_name=args.output_name,
                                      fix_permutation=args.fix_permutation)
 
-# Pointgroup command
-if args.pointgroup:
-    for idm, pg in enumerate(symobj.write_point_group()):
-        print('The point group of molecule{} is: {}'.format(idm, pg))
 
 # Symgroup commands
 if args.sym_structure:
-    symobj.write_symgroup_measure_all_info(args.sym_measure,
-                                           central_atom=args.central_atom,
-                                           output_name=args.output_name)
+    symobj.write_symgroup_structure(args.sym_measure,
+                                    central_atom=args.central_atom,
+                                    symbols=not args.ignore_atom_labels,
+                                    output_name=args.output_name)
 elif args.sym_measure:
     symobj.write_symgroup_measure(args.sym_measure,
                                   central_atom=args.central_atom,
+                                  symbols=not args.ignore_atom_labels,
                                   output_name=args.output_name)
 
 # Wfnsym commands
@@ -210,5 +218,10 @@ if args.sym_wf:
                                 vector_axis1=args.axis1,
                                 vector_axis2=args.axis2,
                                 center=args.center)
+
+# Pointgroup command
+if args.pointgroup:
+    for idm, pg in enumerate(symobj.write_point_group()):
+        print('The point group of molecule{} is: {}'.format(idm, pg))
 
 print('\nEnd of cosym calculation')
