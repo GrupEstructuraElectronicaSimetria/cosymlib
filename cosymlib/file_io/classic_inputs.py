@@ -41,8 +41,8 @@ def read_old_input(file_name):
         if options['%central_atom'] != 0:
             n_atoms += 1
         if options['%conquest'] is not None:
-            dir = os.path.dirname(file_name)+'/'
-            structures = read_input_file(dir+options['%conquest']+'.cor')
+            dir = os.path.dirname(os.path.abspath(file_name))
+            structures = read_input_file(os.path.join(dir, options['%conquest'] + '.cor'))
         else:
             while True:
                 if not line:
