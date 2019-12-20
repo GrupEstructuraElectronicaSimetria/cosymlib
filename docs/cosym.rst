@@ -6,7 +6,7 @@ Executing program
 
 This script run symeess from terminal
 
-.. module:: scripts/symeess_script
+.. module:: scripts/cosym
 
 To run the program from terminal just use ::
 
