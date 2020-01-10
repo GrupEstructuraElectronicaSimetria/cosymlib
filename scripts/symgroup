@@ -31,23 +31,23 @@ parser.add_argument('-center', dest='center', action='store', default=None, narg
 
 # Symgroup input flags
 group_symgroup = parser.add_argument_group('Symgroup')
-group_symgroup.add_argument('-sym_measure',
-                            dest='sym_measure',
+group_symgroup.add_argument('-measure',
+                            dest='measure',
                             action='store',
                             default=False,
                             help='Symgroup measure of input structure with reference group')
-group_symgroup.add_argument('-sym_structure',
-                            dest='sym_structure',
+group_symgroup.add_argument('-structure',
+                            dest='structure',
                             action='store_true',
                             default=False,
                             help='return the closes input structure to the reference symmetry')
-group_symgroup.add_argument('-sym_labels',
-                            dest='sym_labels',
+group_symgroup.add_argument('-labels',
+                            dest='labels',
                             action='store_true',
                             default=False,
                             help='return the possible symmetry labels that can be used in symgroup')
-group_symgroup.add_argument('-sym_quirality',
-                            dest='sym_quirality',
+group_symgroup.add_argument('-quirality',
+                            dest='quirality',
                             action='store_true',
                             default=False,
                             help='search for a possible quirality in molecule')

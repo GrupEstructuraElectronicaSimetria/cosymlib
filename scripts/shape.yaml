@@ -1,0 +1,11 @@
+# Shape command line
+measure: T-4
+labels: False
+structure: False
+references: False
+# Optional command line
+central_atom: 1
+custom_ref: "external_file.ref"
+fix_permutation: True
+ignore_atom_labels: False
+o: None

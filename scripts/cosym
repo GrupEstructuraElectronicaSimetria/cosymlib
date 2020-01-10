@@ -70,7 +70,7 @@ group_symgroup = parser.add_argument_group('Symgroup')
 group_symgroup.add_argument('-sym_measure',
                             dest='sym_measure',
                             action='store',
-                            default=False,
+                            default=None,
                             help='Symgroup measure of input structure with reference group')
 group_symgroup.add_argument('-sym_structure',
                             dest='sym_structure',
@@ -95,11 +95,11 @@ group_wfnsym.add_argument('-sym_wf',
                           action='store',
                           default=False,
                           help='Wfnsym measure of input structure with reference group')
-group_wfnsym.add_argument('-psym_wf',
-                          dest='psym_wf',
-                          action='store',
-                          default=False,
-                          help='Pseudo-symmetry measure of input structure with reference group')
+# group_wfnsym.add_argument('-psym_wf',
+#                           dest='psym_wf',
+#                           action='store',
+#                           default=False,
+#                           help='Pseudo-symmetry measure of input structure with reference group')
 
 # Utils
 parser.add_argument('-mo_diagram', dest="mo_diagram", action='store_true', default=False,

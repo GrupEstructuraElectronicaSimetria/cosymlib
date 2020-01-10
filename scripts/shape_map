@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 import argparse
 import sys
-import numpy as np
 import yaml
 from cosymlib import file_io
 from cosymlib.cosym_api import Cosymlib
-from cosymlib.shape import shape_tools
 
 
 parser = argparse.ArgumentParser(description='Shape_map ')
@@ -23,14 +21,11 @@ parser.add_argument('-fix_permutation', dest='fix_permutation', action='store_tr
 # Shape input flags
 group_shape = parser.add_argument_group('Shape')
 group_shape.add_argument('-x', dest='x', action='store', default=False,
-                         help='Calculates the path deviation function')
+                         help='x axis label')
 group_shape.add_argument('-y', dest='y', action='store', default=False,
-                         help='Calculates the path deviation function')
-group_shape.add_argument('-shape_map', dest='shape_map', action='store', nargs=2, default=False,
-                         help='Calculates the path deviation function for the minimal '
-                              'distortion interconversion path between two given polyhedra')
-group_shape.add_argument('-shape_path', dest='shape_path', action='store_true', default=False,
-                         help='Calculates generalized coordinate from the path deviation function for a given path')
+                         help='y axis label')
+group_shape.add_argument('-p', dest='p', action='store_true', default=False,
+                         help='Print all the information')
 
 
 args = parser.parse_args(sys.argv[1:])
@@ -63,8 +58,3 @@ if args.x:
     symobj.write_minimum_distortion_path_shape_2file(args.x,
                                                      args.y,
                                                      central_atom=args.central_atom)
-if args.shape_path:
-    symobj.write_path_parameters_2file(args.shape_map[0],
-                                       args.shape_map[1],
-                                       central_atom=args.central_atom,
-                                       output_name=args.output_name)

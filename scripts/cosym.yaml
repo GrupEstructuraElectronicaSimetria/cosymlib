@@ -1,0 +1,23 @@
+# Shape command line
+shp_measure: T-4
+shp_labels: False
+shp_structure: False
+shp_references: False
+# Pointgroup command line
+pointgroup: True
+# Symgroup command line
+sym_measure: "C3v"
+sym_structure: False
+sym_labels: False
+sym_quirality: False
+# Wfnsym command line
+sym_wf: "Td"
+# Optional command line
+central_atom: 1
+custom_ref: "external_file.ref"
+fix_permutation: True
+ignore_atom_labels: False
+axis1: [0., 0., 0.]
+axis2: [0., 0., 0.]
+center: [0., 0., 0.]
+o: None

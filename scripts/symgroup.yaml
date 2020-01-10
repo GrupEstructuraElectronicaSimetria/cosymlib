@@ -1,0 +1,14 @@
+# Symgroup command line
+measure: "C3v"
+structure: False
+labels: False
+quirality: False
+# Optional command line
+central_atom: 1
+custom_ref: "external_file.ref"
+fix_permutation: True
+ignore_atom_labels: False
+axis1: [0., 0., 0.]
+axis2: [0., 0., 0.]
+center: [0., 0., 0.]
+o: None
