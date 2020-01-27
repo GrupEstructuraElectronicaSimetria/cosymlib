@@ -11,11 +11,11 @@ parser.add_argument(type=str, dest='input_file', help='input file name(+extensio
 parser.add_argument('-o', '--output_name', dest='output_name', default=None, help='save in file name')
 parser.add_argument(type=str, dest="yaml_input", nargs='?', default=None,
                     help='Perform the calculations with the command file')
-parser.add_argument('-central_atom', action='store', dest='central_atom',
+parser.add_argument('-c', '--central_atom', action='store', dest='central_atom',
                     type=int, default=0, help='position of the central atom if exist')
 parser.add_argument('-custom_ref', action='store', dest='custom_ref', default=None,
                     help='take a given structure from the file and use it as reference')
-parser.add_argument('-fix_permutation', dest='fix_permutation', action='store_true', default=False,
+parser.add_argument('-fix_perm', '--fix_permutation', dest='fix_permutation', action='store_true', default=False,
                     help='use the given permutation to perform a calculation')
 
 # Shape input flags

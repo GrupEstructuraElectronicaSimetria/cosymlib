@@ -17,13 +17,13 @@ parser.add_argument(type=str, dest="yaml_input", nargs='?', default=None,
 parser.add_argument('-o', '--output_name', dest='output_name', default=None, help='save in file name')
 parser.add_argument('-info', action='store_true', default=False, help='return information about the input geometries')
 
-parser.add_argument('-central_atom', action='store', dest='central_atom',
+parser.add_argument('-c', '--central_atom', action='store', dest='central_atom',
                     type=int, default=0, help='position of the central atom if exist')
 parser.add_argument('-custom_ref', action='store', dest='custom_ref', default=None,
                     help='take a given structure from the file and use it as reference')
-parser.add_argument('-fix_permutation', dest='fix_permutation', action='store_true', default=False,
+parser.add_argument('-fix_perm', '--fix_permutation', dest='fix_permutation', action='store_true', default=False,
                     help='use the given permutation to perform a calculation')
-parser.add_argument('-ignore_atom_labels', dest='ignore_atom_labels', action='store_true', default=False,
+parser.add_argument('-no_labels', '--ignore_atom_labels', dest='ignore_atom_labels', action='store_true', default=False,
                     help='ignore atom labels from given structures')
 # parser.add_argument('-connectivity', dest='connectivity', action='store', default=None,
 #                     help='Connect a set of atoms by...')
@@ -36,21 +36,21 @@ parser.add_argument('-center', dest='center', action='store', default=None, narg
 
 # Shape input flags
 group_shape = parser.add_argument_group('Shape')
-group_shape.add_argument('-shp_measure',
+group_shape.add_argument('-shp_m', '--shp_measure',
                          dest='shp_measure',
                          action='store',
                          default=None,
                          help='Shape measure of input structure with reference polyhedra')
-group_shape.add_argument('-shp_labels', action='store_true',
+group_shape.add_argument('-shp_l', '--shp_labels', action='store_true',
                          dest='shp_labels',
                          default=False,
                          help='show the reference labels for a given structure')
-group_shape.add_argument('-shp_structure',
+group_shape.add_argument('-shp_s', '--shp_structure',
                          dest='shp_structure',
                          action='store_true',
                          default=False,
                          help='return the closes input structure to the reference shape')
-group_shape.add_argument('-shp_references',
+group_shape.add_argument('-shp_r', '--shp_references',
                          dest='shp_references',
                          action='store_true',
                          default=False,
@@ -67,39 +67,44 @@ group_pointgroup.add_argument('-pointgroup',
 
 # Symgroup input flags
 group_symgroup = parser.add_argument_group('Symgroup')
-group_symgroup.add_argument('-sym_measure',
+group_symgroup.add_argument('-sym_m','--sym_measure',
                             dest='sym_measure',
                             action='store',
                             default=None,
                             help='Symgroup measure of input structure with reference group')
-group_symgroup.add_argument('-sym_structure',
+group_symgroup.add_argument('-sym_s','--sym_structure',
                             dest='sym_structure',
                             action='store_true',
                             default=False,
                             help='return the closes input structure to the reference symmetry')
-group_symgroup.add_argument('-sym_labels',
+group_symgroup.add_argument('-sym_l', '--sym_labels',
                             dest='sym_labels',
                             action='store_true',
                             default=False,
                             help='return the possible symmetry labels that can be used in symgroup')
-group_symgroup.add_argument('-sym_quirality',
-                            dest='sym_quirality',
+group_symgroup.add_argument('-sym_chirality',
+                            dest='sym_chirality',
                             action='store_true',
                             default=False,
-                            help='search for a possible quirality in molecule')
+                            help='search for a possible chirality in molecule')
 
-# Wfnsym input flags
-group_wfnsym = parser.add_argument_group('Wfnsym')
-group_wfnsym.add_argument('-sym_wf',
-                          dest='sym_wf',
-                          action='store',
-                          default=False,
-                          help='Wfnsym measure of input structure with reference group')
-# group_wfnsym.add_argument('-psym_wf',
-#                           dest='psym_wf',
-#                           action='store',
-#                           default=False,
-#                           help='Pseudo-symmetry measure of input structure with reference group')
+# Qsym input flags
+group_qsym = parser.add_argument_group('Qsym')
+group_qsym.add_argument('-qsym_wfn',
+                        dest='qsym_wfn',
+                        action='store',
+                        default=False,
+                        help='Wfnsym measure of input structure with reference group')
+group_qsym.add_argument('-qsym_dens',
+                        dest='qsym_dens',
+                        action='store',
+                        default=False,
+                        help='Density measure of input structure with reference group')
+group_qsym.add_argument('-qsym_mos',
+                        dest='qsym_wfn',
+                        action='store',
+                        default=False,
+                        help='Range of orbitals to analyze density or wavefunction symmetry')
 
 # Utils
 parser.add_argument('-mo_diagram', dest="mo_diagram", action='store_true', default=False,
@@ -199,14 +204,14 @@ elif args.sym_measure:
                                   output_name=args.output_name)
 
 # Wfnsym commands
-if args.sym_wf:
+if args.qsym_wfn:
     if args.axis1 is not None:
         args.axis1 = np.array(args.axis1).astype(float)
     if args.axis2 is not None:
         args.axis2 = np.array(args.axis2).astype(float)
     if args.center is not None:
         args.center = np.array(args.center).astype(float)
-    symobj.write_wnfsym_measure_2file(args.sym_wf,
+    symobj.write_wnfsym_measure_2file(args.qsym_wfn,
                                       vector_axis1=args.axis1,
                                       vector_axis2=args.axis2,
                                       center=args.center,
@@ -214,7 +219,7 @@ if args.sym_wf:
 
     #Utils
     if args.mo_diagram:
-        symobj.write_mo_diagram(args.wf_group,
+        symobj.write_mo_diagram(args.qsym_wfn,
                                 vector_axis1=args.axis1,
                                 vector_axis2=args.axis2,
                                 center=args.center)
