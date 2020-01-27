@@ -22,7 +22,7 @@ install:
     - sudo apt-get install libblas-dev liblapack-dev
     - sudo apt-get install gfortran
     - pip install coverage
-    - pip install python-coveralls
+    - pip install coveralls
     - pip install -r requirements.txt
     - pip install -e .
 
