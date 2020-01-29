@@ -336,8 +336,12 @@ def get_molecule_from_file_ref(file_name):
                 pass
             else:
                 try:
-                    float(line.split()[0])
-                    input_molecule.append(line.split())
+                    if len(line.split()) > 3:
+                        float(line.split()[1])
+                        input_molecule.append(line.split()[1:])
+                    else:
+                        float(line.split()[0])
+                        input_molecule.append(line.split())
                 except (ValueError, IndexError):
                     if input_molecule:
                         structures.append(Geometry(positions=input_molecule,
