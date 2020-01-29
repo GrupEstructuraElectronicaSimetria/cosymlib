@@ -9,9 +9,9 @@ pointgroup: True
 sym_measure: "C3v"
 sym_structure: False
 sym_labels: False
-sym_quirality: False
+sym_chirality: False
 # Wfnsym command line
-sym_wf: "Td"
+qsym_wfn: "Td"
 # Optional command line
 central_atom: 1
 custom_ref: "external_file.ref"

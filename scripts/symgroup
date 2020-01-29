@@ -13,11 +13,11 @@ parser.add_argument(type=str, dest="yaml_input", nargs='?', default=None,
 parser.add_argument('-o', '--output_name', dest='output_name', default=None, help='save in file name')
 parser.add_argument('-info', action='store_true', default=False, help='return information about the input geometries')
 
-parser.add_argument('-central_atom', action='store', dest='central_atom',
+parser.add_argument('-c', '--central_atom', action='store', dest='central_atom',
                     type=int, default=0, help='position of the central atom if exist')
-parser.add_argument('-fix_permutation', dest='fix_permutation', action='store_true', default=False,
+parser.add_argument('-fix_perm', '--fix_permutation', dest='fix_permutation', action='store_true', default=False,
                     help='use the given permutation to perform a calculation')
-parser.add_argument('-ignore_atom_labels', dest='ignore_atom_labels', action='store_true', default=False,
+parser.add_argument('-no_labels', '--ignore_atom_labels', dest='ignore_atom_labels', action='store_true', default=False,
                     help='ignore atom labels from given structures')
 # parser.add_argument('-connectivity', dest='connectivity', action='store', default=None,
 #                     help='Connect a set of atoms by...')
@@ -31,26 +31,26 @@ parser.add_argument('-center', dest='center', action='store', default=None, narg
 
 # Symgroup input flags
 group_symgroup = parser.add_argument_group('Symgroup')
-group_symgroup.add_argument('-measure',
+group_symgroup.add_argument('-m', '--measure',
                             dest='measure',
                             action='store',
                             default=False,
                             help='Symgroup measure of input structure with reference group')
-group_symgroup.add_argument('-structure',
+group_symgroup.add_argument('-s', '--structure',
                             dest='structure',
                             action='store_true',
                             default=False,
                             help='return the closes input structure to the reference symmetry')
-group_symgroup.add_argument('-labels',
+group_symgroup.add_argument('-l', '--labels',
                             dest='labels',
                             action='store_true',
                             default=False,
                             help='return the possible symmetry labels that can be used in symgroup')
-group_symgroup.add_argument('-quirality',
-                            dest='quirality',
+group_symgroup.add_argument('-chirality',
+                            dest='chirality',
                             action='store_true',
                             default=False,
-                            help='search for a possible quirality in molecule')
+                            help='search for a possible chirality in molecule')
 
 
 args = parser.parse_args(sys.argv[1:])

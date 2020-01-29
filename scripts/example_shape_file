@@ -1,3 +1,4 @@
-shape_measure: T-4
-shape_structure: False
+shp_measure: T-4
+shp_structure: False
 central_atom: 1
+output_name: test

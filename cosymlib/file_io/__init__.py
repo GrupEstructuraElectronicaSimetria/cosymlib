@@ -43,7 +43,9 @@ def get_molecule_from_file_xyz(file_name):
     molecules = []
     with open(file_name, mode='r') as lines:
         lines.readline()
-        name = lines.readline().split()[0]
+        name = lines.readline()
+        if name.strip():
+            name = name.split()[0]
         for line in lines:
             if '$' in line or '#' in line:
                 pass

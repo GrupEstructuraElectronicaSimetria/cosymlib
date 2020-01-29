@@ -14,7 +14,7 @@ class Geometry:
         self._positions = []
         self._atom_groups = list(symbols)
 
-        if name is not None:
+        if name.strip():
             self._name = name
         else:
             self._name = ' ' * 5

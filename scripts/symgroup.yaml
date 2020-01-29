@@ -2,7 +2,7 @@
 measure: "C3v"
 structure: False
 labels: False
-quirality: False
+chirality: False
 # Optional command line
 central_atom: 1
 custom_ref: "external_file.ref"
