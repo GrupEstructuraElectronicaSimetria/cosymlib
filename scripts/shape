@@ -104,7 +104,7 @@ if args.labels:
 
 reference_polyhedron = []
 if args.measure == 'custom':
-    reference_polyhedron = file_io.get_molecule_from_file_ref(args.custom_ref)
+    reference_polyhedron = file_io.get_molecule_from_file_xyz(args.custom_ref)
 elif not reference_polyhedron:
     if args.measure == 'all':
         try:
