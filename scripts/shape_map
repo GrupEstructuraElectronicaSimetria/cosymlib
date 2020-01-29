@@ -46,7 +46,7 @@ if args.input_file is not None:
     symobj = Cosymlib(structures)
 
 if args.custom_ref is not None:
-    reference_polyhedron = file_io.get_molecule_from_file_ref(args.custom_ref)
+    reference_polyhedron = file_io.get_molecule_from_file_xyz(args.custom_ref)
 
 
 if not args.x:
