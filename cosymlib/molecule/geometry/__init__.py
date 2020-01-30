@@ -9,7 +9,7 @@ class Geometry:
                  positions=None,
                  name=None):
 
-        self._central_atom = None
+        # self._central_atom = None
         self._symbols = []
         self._positions = []
         self._atom_groups = list(symbols)
@@ -51,6 +51,10 @@ class Geometry:
 
     def set_name(self, name):
         self._name = name
+
+    def set_positions(self, central_atom=0):
+        atom, self._positions = self._positions[central_atom], np.delete(self._positions, central_atom, 0)
+        self._positions = np.insert(self._positions, len(self._positions), atom, axis=0)
 
     def get_positions(self):
         return self._positions
