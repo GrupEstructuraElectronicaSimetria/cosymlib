@@ -2,7 +2,7 @@ import sys
 from cosymlib import tools
 
 
-def build_symgroup_data(label, geometries, symgroup_results):
+def get_symgroup_data_txt(label, geometries, symgroup_results):
     # if output_name is not None:
     #     output = open(output_name + '.zout', 'w')
     #     output2 = open(output_name + '.ztab', 'w')
@@ -48,7 +48,7 @@ def build_symgroup_data(label, geometries, symgroup_results):
     return sym_txt
 
 
-def build_symgroup_measure(label, geometries, symgroup_results):
+def get_symgroup_measure_txt(label, geometries, symgroup_results):
 
     sym_txt = 'Evaluating symmetry operation : {}\n \n'.format(label)
     for idx, geometry in enumerate(geometries):

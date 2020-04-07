@@ -5,8 +5,8 @@ import numpy as np
 
 class Geometry:
     def __init__(self,
-                 symbols=[],
-                 positions=None,
+                 positions,
+                 symbols=(),
                  name=None):
 
         # self._central_atom = None
@@ -71,8 +71,9 @@ class Geometry:
     def get_shape_structure(self, shape_label, central_atom=0, fix_permutation=False):
         return self._shape.structure(shape_label, central_atom=central_atom, fix_permutation=fix_permutation)
 
-    def get_symmetry_measure(self, label, central_atom=0, multi=1, symbols=True):
-        return self._symgroup.results(label, central_atom=central_atom, multi=multi)
+    def get_symmetry_measure(self, label, central_atom=0, multi=1, center=None, ignore_connectivity=False):
+        return self._symgroup.get_results(label, central_atom=central_atom, multi=multi,
+                                          center=center, ignore_connectivity=ignore_connectivity).csm
 
     def get_path_deviation(self, shape_label1, shape_label2, central_atom=0):
         return self._shape.get_path_deviation(shape_label1, shape_label2, central_atom)

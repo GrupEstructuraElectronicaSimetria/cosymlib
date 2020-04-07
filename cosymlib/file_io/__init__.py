@@ -4,7 +4,7 @@ import re
 from cosymlib.molecule import Molecule, Geometry, ElectronicStructure
 import numpy as np
 from cosymlib import tools
-from cosymlib.file_io import shape2file, wfnsym_file, symgroup_file
+from cosymlib.file_io import shape, wfnsym, symgroup
 from cosymlib import __version__
 
 
@@ -16,31 +16,33 @@ def nonblank_lines(f):
 
 
 # INPUT part
-def read_input_file(input_name):
+def read_input_file(input_name, read_multiple=False):
     # print('Reading file {}...'.format(os.path.basename(input_name)))
     if os.stat(input_name).st_size == 0:
         raise FileExistsError('File {} is empty'.format(os.path.basename(input_name)))
     file_name, file_extension = os.path.splitext(input_name)
     if 'molden' in file_name:
         file_extension = ' molden'
-    method_name = 'get_molecule_from_file_' + file_extension[1:]
+
     possibles = globals().copy()
     possibles.update(locals())
-    method = possibles.get(method_name)
+    method = possibles.get('get_molecule_from_file_' + file_extension[1:])
+    if method is None:
+        method = possibles.get('get_geometry_from_file_' + file_extension[1:])
     if not method:
-        raise NotImplementedError("Method {} is not implemented".format(method_name))
+        raise NotImplementedError("File not recognized")
 
-    return method(input_name)
+    return method(input_name, read_multiple=read_multiple)
 
 
-def get_molecule_from_file_xyz(file_name):
+def get_geometry_from_file_xyz(file_name, read_multiple=False):
     """
     Reads a XYZ file and returns the geometry of all structures in it
     :param file_name: file name
     :return: list of Geometry objects
     """
     input_molecule = [[], []]
-    molecules = []
+    geometries = []
     with open(file_name, mode='r') as lines:
         lines.readline()
         name = lines.readline()
@@ -56,27 +58,31 @@ def get_molecule_from_file_xyz(file_name):
                     input_molecule[1].append(line.split()[1:])
                 except (ValueError, IndexError):
                     if input_molecule[0]:
-                        molecules.append(Geometry(symbols=input_molecule[0],
+                        geometries.append(Geometry(symbols=input_molecule[0],
                                                   positions=input_molecule[1],
                                                   name=name))
                     input_molecule = [[], []]
                     name = line.split()[0]
 
-        molecules.append(Geometry(symbols=input_molecule[0],
+        molecule = Geometry(symbols=input_molecule[0],
                                   positions=input_molecule[1],
-                                  name=name))
+                                  name=name)
+        if read_multiple:
+            geometries.append(molecule)
+        else:
+            return molecule
 
-    return molecules
+    return geometries
 
 
-def get_molecule_from_file_cor(file_name):
+def get_geometry_from_file_cor(file_name, read_multiple=False):
     """
     Reads a Conquest formatted file and the geometry of all structures in it
     :param file_name: file name
     :return: list of Geometry objects
     """
     input_molecule = [[], []]
-    structures = []
+    geometries = []
     with open(file_name, mode='r') as lines:
         line = lines.readline()
         name = line.replace('**FRAG**', '')[:-1]
@@ -97,19 +103,21 @@ def get_molecule_from_file_cor(file_name):
                         float(line.split()[2])
                 except (ValueError, IndexError):
                     if input_molecule:
-                        structures.append(Geometry(symbols=input_molecule[0],
+                        geometries.append(Geometry(symbols=input_molecule[0],
                                                    positions=input_molecule[1],
                                                    name=name))
                     input_molecule = [[], []]
                     name = line.replace('**FRAG**', '')[:-1]
                     name = name.replace(' ', '')
-        structures.append(Geometry(symbols=input_molecule[0],
+        geometries.append(Geometry(symbols=input_molecule[0],
                                    positions=input_molecule[1],
                                    name=name))
-    return structures
+        if not read_multiple:
+            return geometries[0]
+    return geometries
 
 
-def get_molecule_from_file_fchk(file_name):
+def get_molecule_from_file_fchk(file_name, read_multiple=False):
     key_list = ['Charge', 'Multiplicity', 'Atomic numbers', 'Current cartesian coordinates',
                 'Shell type', 'Number of primitives per shell', 'Shell to atom map', 'Primitive exponents',
                 'Contraction coefficients', 'P(S=P) Contraction coefficients',
@@ -179,15 +187,18 @@ def get_molecule_from_file_fchk(file_name):
             Cb = np.array(input_molecule[11], dtype=float).reshape(-1, int(np.sqrt(len(input_molecule[11]))))
         else:
             Cb = []
-        ee = ElectronicStructure(charge=input_molecule[0][0],
-                                 multiplicity=input_molecule[1][0],
-                                 basis=basis,
-                                 orbital_coefficients=[Ca, Cb])
+        electronic_structure = ElectronicStructure(charge=input_molecule[0][0],
+                                                   multiplicity=input_molecule[1][0],
+                                                   basis=basis,
+                                                   orbital_coefficients=[Ca, Cb])
 
-        return [Molecule(geometry, ee)]
+        if read_multiple:
+            return [Molecule(geometry, electronic_structure)]
+        else:
+            return Molecule(geometry, electronic_structure)
 
 
-def get_molecule_from_file_molden(file_name):
+def get_molecule_from_file_molden(file_name, read_multiple=False):
     key_list = ['Charge', 'Multiplicity', 'Atomic numbers', 'Current cartesian coordinates',
                 'Shell type', 'Number of primitives per shell', 'Shell to atom map', 'Primitive exponents',
                 'Contraction coefficients', 'P(S=P) Contraction coefficients',
@@ -316,13 +327,17 @@ def get_molecule_from_file_molden(file_name):
                                  orbital_coefficients=[Ca, Cb],
                                  mo_energies=input_molecule['MO Energies'])
 
-        return [Molecule(geometry, ee)]
+        if read_multiple:
+            return [Molecule(geometry, ee)]
+        else:
+            Molecule(geometry, ee)
 
 
-def get_molecule_from_file_ref(file_name):
+def get_geometry_from_file_ref(file_name, read_multiple=False):
     """
     Reads a Conquest formatted file and the geometry of all structures in it
     :param file_name: file name
+    :param read_multiple: read all geometries inside the file
     :return: list of Geometry objects
     """
     input_molecule = []
@@ -349,7 +364,7 @@ def get_molecule_from_file_ref(file_name):
                     input_molecule = []
                     name = line.split()[0]
         structures.append(Geometry(positions=input_molecule,
-                                  name=name))
+                                   name=name))
     return structures
 
 
@@ -433,7 +448,11 @@ def write_input_info(initial_geometries, output_name=None):
         output.write('\n')
 
 
-def write_file_xyz(geometries):
+def write_geometry_into_file_xyz(geometries):
+
+    # check if list
+    if not isinstance(geometries, list):
+        geometries = [geometries]
 
     txt = ''
     for geometry in geometries:

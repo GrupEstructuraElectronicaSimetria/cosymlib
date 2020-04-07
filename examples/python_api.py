@@ -23,8 +23,8 @@ def print_csm(data):
 
 
 # Get structures from files
-molecules_set = file_io.get_molecule_from_file_xyz('coord.xyz')
-fragments_set = file_io.get_molecule_from_file_cor('coord.cor')
+molecules_set = file_io.get_geometry_from_file_xyz('coord.xyz', read_multiple=True)
+fragments_set = file_io.get_geometry_from_file_cor('coord.cor', read_multiple=True)
 
 # Call shape as method of Geometry class
 print_shape_data(molecules_set)
@@ -49,21 +49,26 @@ print('\nSYMMETRY\n--------')
 for i in range(100):
     measure = methane.get_symmetry_measure('C3', central_atom=1)
 
-print('measure: {:^10.3f} '.format(measure.csm))
-print('measure: {:^10.3f} '.format(methane.get_symmetry_measure('C4', central_atom=1).csm))
+print('measure: {:^10.3f} '.format(measure))
+print('measure: {:^10.3f} '.format(methane.get_symmetry_measure('C4', central_atom=1)))
 
 # Call symgroup as method of Symgroup class (semi function call)
-print('measure: {:^10.3f} '.format(symgroup.Symgroup(methane).measure('C4', central_atom=1)))
-print(symgroup.Symgroup(methane).nearest_structure('C4', central_atom=1))
+print('measure: {:^10.3f} '.format(symgroup.Symgroup(methane, central_atom=1).measure('C4')))
+print(symgroup.Symgroup(methane, central_atom=1).nearest_structure('C4'))
 
 
 # test WFNSYM
 print('\nWFNSYM\n--------')
 
 
-molecule = file_io.read_input_file('pirrol.fchk')
-data = molecule[0].get_mo_symmetry('C2v', vector_axis1=[ 0.000000,  0.000000,  1.000000],  # valor defecte
-                                   # vector_axis2=[-2.027247,  0.000133, -0.898469],
-                                   center=[0.002440, -0.000122,  0.017307])  # valor per defecte (CM)
+molecule = file_io.get_molecule_from_file_fchk('pirrol.fchk')
+molecules_set = file_io.read_input_file('pirrol.fchk', read_multiple=True, ignore_atom_labels=True)
+print(molecules_set[0].geometry.get_symbols())
+exit()
+print(molecule)
+data = molecule.get_mo_symmetry('C2v',
+                                 vector_axis1=[ 0.000000,  0.000000,  1.000000],  # valor defecte
+                                 # vector_axis2=[-2.027247,  0.000133, -0.898469],
+                                 center=[0.002440, -0.000122,  0.017307])  # valor per defecte (CM)
 
 print_csm(data)

@@ -1,68 +1,60 @@
 from wfnsympy import WfnSympy
 from cosymlib import tools
-import hashlib
 
 
-class Wfnsym:
+def _get_key(group, vector_axis1, vector_axis2, center):
+    group_key = group.lower()
+    vec1_key = ' '.join(['{:10.8f}'.format(n) for n in vector_axis1]) if vector_axis1 is not None else None
+    vec2_key = ' '.join(['{:10.8f}'.format(n) for n in vector_axis2]) if vector_axis2 is not None else None
+    center_key = ' '.join(['{:10.8f}'.format(n) for n in center]) if center is not None else None
+    return group_key, vec1_key, vec2_key, center_key
+
+
+class WfnSym:
 
     def __init__(self, molecule):
-
         self._molecule = molecule
-        self._Ne_val = self._get_valence_electrons()
         self._wfnsym_dict = self._molecule.electronic_structure.basis
         self._results = {}
 
-    def symmetry_overlap_analysis(self,
-                                  group,
-                                  vector_axis1,
-                                  vector_axis2,
-                                  center):
-
-        hash = hashlib.md5('{}{}'.format(group, vector_axis1, vector_axis2, center).encode()).hexdigest()
-        if hash not in self._results:
+    def symmetry_overlap_analysis(self, group, vector_axis1, vector_axis2, center):
+        key = _get_key(group, vector_axis1, vector_axis2, center)
+        if key not in self._results:
             self._do_measure(group, vector_axis1, vector_axis2, center)
-        return [self._results[hash].ideal_gt, self._results[hash].SymLab, self._results[hash].mo_SOEVs_a,
-                self._results[hash].mo_SOEVs_b, self._results[hash].wf_SOEVs_a, self._results[hash].wf_SOEVs_b,
-                self._results[hash].wf_SOEVs, self._results[hash].grim_coef, self._results[hash].csm_coef]
+        return [self._results[key].ideal_gt, self._results[key].SymLab, self._results[key].mo_SOEVs_a,
+                self._results[key].mo_SOEVs_b, self._results[key].wf_SOEVs_a, self._results[key].wf_SOEVs_b,
+                self._results[key].wf_SOEVs, self._results[key].grim_coef, self._results[key].csm_coef]
 
-    def symmetry_ireducible_representation_analysis(self, group, vector_axis1, vector_axis2, center):
-
-        hash = hashlib.md5('{}{}'.format(group, vector_axis1, vector_axis2, center).encode()).hexdigest()
-        if hash not in self._results:
+    def symmetry_irreducible_representation_analysis(self, group, vector_axis1, vector_axis2, center):
+        key = _get_key(group, vector_axis1, vector_axis2, center)
+        if key not in self._results:
             self._do_measure(group, vector_axis1, vector_axis2, center)
-        return [self._results[hash].IRLab, self._results[hash].mo_IRd_a, self._results[hash].mo_IRd_b,
-                self._results[hash].wf_IRd_a, self._results[hash].wf_IRd_b, self._results[hash].wf_IRd]
+        return [self._results[key].IRLab, self._results[key].mo_IRd_a, self._results[key].mo_IRd_b,
+                self._results[key].wf_IRd_a, self._results[key].wf_IRd_b, self._results[key].wf_IRd]
 
     def symmetry_matrix(self, group, vector_axis1, vector_axis2, center):
-
-        hash = hashlib.md5('{}{}'.format(group, vector_axis1, vector_axis2, center).encode()).hexdigest()
-        if hash not in self._results:
+        key = _get_key(group, vector_axis1, vector_axis2, center)
+        if key not in self._results:
             self._do_measure(group, vector_axis1, vector_axis2, center)
-        return self._results[hash].SymMat
+        return self._results[key].SymMat
 
     def _do_measure(self, group, vector_axis1, vector_axis2, center):
-
-        hash = hashlib.md5('{}{}'.format(group, vector_axis1, vector_axis2, center).encode()).hexdigest()
-        self._results[hash] = WfnSympy(coordinates=self._molecule.geometry.get_positions(),
-                                       symbols=self._molecule.geometry.get_symbols(),
-                                       basis=self._wfnsym_dict,
-                                       center=center, VAxis=vector_axis1, VAxis2=vector_axis2,
-                                       alpha_mo_coeff=self._molecule.electronic_structure.coefficients_a,
-                                       beta_mo_coeff=self._molecule.electronic_structure.coefficients_b,
-                                       charge=self._molecule.electronic_structure.charge,
-                                       multiplicity=self._molecule.electronic_structure.multiplicity,
-                                       group=group.upper(),
-                                       valence_only=self._molecule.electronic_structure.valence_only)
+        key = _get_key(group, vector_axis1, vector_axis2, center)
+        self._results[key] = WfnSympy(coordinates=self._molecule.geometry.get_positions(),
+                                      symbols=self._molecule.geometry.get_symbols(),
+                                      basis=self._wfnsym_dict,
+                                      center=center, VAxis=vector_axis1, VAxis2=vector_axis2,
+                                      alpha_mo_coeff=self._molecule.electronic_structure.coefficients_a,
+                                      beta_mo_coeff=self._molecule.electronic_structure.coefficients_b,
+                                      charge=self._molecule.electronic_structure.charge,
+                                      multiplicity=self._molecule.electronic_structure.multiplicity,
+                                      group=group.upper(),
+                                      valence_only=self._molecule.electronic_structure.valence_only)
 
     def results(self, group, vector_axis1, vector_axis2, center):
-
-        hash = hashlib.md5('{}{}'.format(group, vector_axis1, vector_axis2, center).encode()).hexdigest()
-        if hash not in self._results:
+        key = _get_key(group, vector_axis1, vector_axis2, center)
+        if key not in self._results:
             self._do_measure(group, vector_axis1, vector_axis2, center)
-        return self._results[hash]
 
-    def _get_valence_electrons(self):
-        n_valence = 0
-        for symbol in self._molecule.geometry.get_symbols():
-            n_valence += tools.element_valence_electron(symbol)
-        return n_valence
+        self._results[key].print_overlap_mo_alpha()
+        return self._results[key]

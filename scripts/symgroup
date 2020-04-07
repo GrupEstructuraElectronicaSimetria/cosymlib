@@ -7,54 +7,78 @@ from cosymlib.cosym_api import Cosymlib
 
 
 parser = argparse.ArgumentParser(description='Symgroup')
-parser.add_argument(type=str, dest='input_file', help='input file name(+extension)')
-parser.add_argument(type=str, dest="yaml_input", nargs='?', default=None,
+
+# positional arguments
+parser.add_argument(type=str,
+                    dest='input_file',
+                    help='input file name(+extension)')
+parser.add_argument(type=str,
+                    dest="yaml_input",
+                    nargs='?', default=None,
                     help='Perform the calculations with the command file')
-parser.add_argument('-o', '--output_name', dest='output_name', default=None, help='save in file name')
-parser.add_argument('-info', action='store_true', default=False, help='return information about the input geometries')
 
-parser.add_argument('-c', '--central_atom', action='store', dest='central_atom',
-                    type=int, default=0, help='position of the central atom if exist')
-parser.add_argument('-fix_perm', '--fix_permutation', dest='fix_permutation', action='store_true', default=False,
+# Main options
+parser.add_argument('-m', '--measure',
+                    dest='measure',
+                    action='store',
+                    default=False,
+                    help='Symgroup measure of input structure with reference group')
+parser.add_argument('-s', '--structure',
+                    dest='structure',
+                    action='store_true',
+                    default=False,
+                    help='return the closes input structure to the reference symmetry')
+parser.add_argument('-l', '--labels',
+                    dest='labels',
+                    action='store_true',
+                    default=False,
+                    help='return the possible symmetry labels that can be used in symgroup')
+parser.add_argument('-chirality',
+                    dest='chirality',
+                    action='store_true',
+                    default=False,
+                    help='search for a possible chirality in molecule')
+parser.add_argument('-o', '--output',
+                    dest='output_name',
+                    default=None,
+                    help='save in file name')
+parser.add_argument('-c', '--central_atom',
+                    action='store',
+                    dest='central_atom',
+                    type=int,
+                    default=0,
+                    help='position of the central atom')
+parser.add_argument('-info',
+                    action='store_true',
+                    default=False,
+                    help='return information about the input geometries')
+
+# Modifiers
+parser.add_argument('-fix_perm',
+                    '--fix_permutation',
+                    dest='fix_permutation',
+                    action='store_true',
+                    default=False,
                     help='use the given permutation to perform a calculation')
-parser.add_argument('-no_labels', '--ignore_atom_labels', dest='ignore_atom_labels', action='store_true', default=False,
+parser.add_argument('--ignore_atom_labels',
+                    dest='ignore_atom_labels',
+                    action='store_true',
+                    default=False,
                     help='ignore atom labels from given structures')
-# parser.add_argument('-connectivity', dest='connectivity', action='store', default=None,
-#                     help='Connect a set of atoms by...')
-parser.add_argument('-axis1', dest='axis1', action='store', default=None, nargs=3,
-                    help='First reference axis for the symmetry calculation')
-parser.add_argument('-axis2', dest='axis2', action='store', default=None, nargs=3,
-                    help='Second reference axis for the symmetry calculation')
-parser.add_argument('-center', dest='center', action='store', default=None, nargs=3,
-                    help='Center for the symmetry calculation')
-
-
-# Symgroup input flags
-group_symgroup = parser.add_argument_group('Symgroup')
-group_symgroup.add_argument('-m', '--measure',
-                            dest='measure',
-                            action='store',
-                            default=False,
-                            help='Symgroup measure of input structure with reference group')
-group_symgroup.add_argument('-s', '--structure',
-                            dest='structure',
-                            action='store_true',
-                            default=False,
-                            help='return the closes input structure to the reference symmetry')
-group_symgroup.add_argument('-l', '--labels',
-                            dest='labels',
-                            action='store_true',
-                            default=False,
-                            help='return the possible symmetry labels that can be used in symgroup')
-group_symgroup.add_argument('-chirality',
-                            dest='chirality',
-                            action='store_true',
-                            default=False,
-                            help='search for a possible chirality in molecule')
+parser.add_argument('--ignore_connectivity',
+                    dest='ignore_connectivity',
+                    action='store',
+                    default=None,
+                    help='ignore the atoms connectivity in the calculation')
+parser.add_argument('--center',
+                    dest='center',
+                    action='store',
+                    default=None,
+                    nargs=3,
+                    help='Center for the symmetry operations')
 
 
 args = parser.parse_args(sys.argv[1:])
-print('Starting...')
 
 if args.yaml_input:
     with open(args.yaml_input, 'r') as stream:
@@ -64,35 +88,46 @@ if args.yaml_input:
         if key.lower() in args:
             setattr(args, key.lower(), value)
         else:
-            raise KeyError("Key %s is not valid" % key)
+            raise KeyError("Key {} is not valid".format(key))
 
-if args.input_file is not None:
-    structures = file_io.read_input_file(args.input_file)
-    symobj = Cosymlib(structures)
 
-    try:
-        n_atoms = structures[0].geometry.get_n_atoms()
-    except AttributeError:
-        try:
-            n_atoms = structures[0].get_n_atoms()
-        except AttributeError:
-            raise AttributeError('Molecule object not found')
-    if args.central_atom != 0:
-        n_atoms -= 1
+def extract_geometries(structure_list):
+    from cosymlib.molecule.geometry import Geometry
+    geometry_list = []
+    for structure in structure_list:
+        if isinstance(structure, Geometry):
+            geometry_list.append(structure.geometry)
+        else:
+            geometry_list.append(structure)
+
+    return geometry_list
+
+geometries = extract_geometries(file_io.read_input_file(args.input_file, read_multiple=True))
+
+if args.ignore_atom_labels:
+    for geometry in geometries:
+        geometry._symbols = []
+
+symobj = Cosymlib(geometries)
 
 if args.info:
-    file_io.write_input_info(structures, output_name=args.output_name)
+    file_io.write_input_info(geometries, output_name=args.output_name)
+
+if args.labels:
+    from cosymlib.symmetry.symmetry_tools import print_symmetry_labels
+    print_symmetry_labels()
 
 # Symgroup commands
-if args.sym_structure:
-    symobj.write_symgroup_structure(args.sym_measure,
+if args.structure:
+    symobj.write_symgroup_structure(args.measure,
                                     central_atom=args.central_atom,
                                     symbols=not args.ignore_atom_labels,
                                     output_name=args.output_name)
-elif args.sym_measure:
-    symobj.write_symgroup_measure(args.sym_measure,
-                                  central_atom=args.central_atom,
-                                  symbols=not args.ignore_atom_labels,
-                                  output_name=args.output_name)
-
-print('\nEnd of symgroup calculation')
+if args.measure:
+    if args.output_name is None:
+        symobj.print_symgroup_measure(args.measure,
+                                      central_atom=args.central_atom)
+    else:
+        symobj.write_symgroup_measure(args.measure,
+                                      central_atom=args.central_atom,
+                                      output_name=args.output_name)

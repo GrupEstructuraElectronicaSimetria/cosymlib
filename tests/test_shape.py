@@ -194,7 +194,7 @@ class TestShape(unittest.TestCase):
         if options['%labels'] != 0:
             for number in options['%labels']:
                 if int(number) == 0:
-                    for ref in file_io.get_molecule_from_file_ref('data/shape/example08.ref'):
+                    for ref in file_io.get_geometry_from_file_ref('data/shape/example08.ref', read_multiple=True):
                         reference_polyhedron.append(ref)
                 else:
                     reference_polyhedron.append(shape.shape_tools.get_shape_label(int(number), options['%n_atoms']))

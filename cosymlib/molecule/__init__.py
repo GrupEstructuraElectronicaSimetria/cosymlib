@@ -1,6 +1,6 @@
 from cosymlib.molecule.geometry import Geometry
 from cosymlib.molecule.electronic_structure import ElectronicStructure
-from cosymlib.symmetry.wfnsym import Wfnsym
+from cosymlib.symmetry.wfnsym import WfnSym
 from cosymlib.symmetry.pointgroup import CalculatePointGroup
 from cosymlib.simulation import ExtendedHuckel
 
@@ -16,7 +16,7 @@ class Molecule:
         self._name = geometry.get_name()
         self._electronic_structure = ee
         if ee is not None:
-            self._wfnsym = Wfnsym(self)
+            self._wfnsym = WfnSym(self)
 
     def get_name(self):
         return self._name
@@ -43,7 +43,7 @@ class Molecule:
 
     def get_mo_symmetry(self, group, vector_axis1=None, vector_axis2=None, center=None):
         from copy import deepcopy
-        wfnsym = deepcopy(Wfnsym(self))
+        wfnsym = deepcopy(WfnSym(self))
         return wfnsym.results(group, vector_axis1, vector_axis2, center)
 
     def get_pointgroup(self, tol=0.01):

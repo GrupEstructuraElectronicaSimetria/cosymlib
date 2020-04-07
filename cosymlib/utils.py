@@ -1,11 +1,12 @@
 from cosymlib.shape import maps
-from cosymlib.file_io import shape2file
+from cosymlib.file_io.shape import write_shape_map
 import numpy as np
 
 
 def write_minimum_distortion_path_shape_2file(shape_label1, shape_label2, num_points=20, output_name=None):
     path = get_shape_map(shape_label1, shape_label2, num_points)
-    shape2file.write_shape_map(shape_label1, shape_label2, path, output_name)
+    shape_map_txt = write_shape_map(shape_label1, shape_label2, path)
+    print(shape_map_txt)
     if output_name is None:
         import matplotlib.pyplot as plt
         plt.plot(path[0], path[1], 'k', linewidth=2.0)

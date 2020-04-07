@@ -2,14 +2,13 @@ import unittest
 from cosymlib import file_io
 from numpy import testing
 
-
 class TestWfnsym(unittest.TestCase):
 
     def setUp(self):
-        self.structures = file_io.read_input_file('data/wfnsym/tih4_5d.fchk')
-        self.wfnsym = self.structures[0].get_mo_symmetry('Td', vector_axis1=[0., 0., 1.],
-                                                         vector_axis2=[-0.471418708, -0.816488390, -0.333333333],
-                                                         center=[0., 0., 0.])
+        self.structure = file_io.read_input_file('data/wfnsym/tih4_5d.fchk')
+        self.wfnsym = self.structure.get_mo_symmetry('Td', vector_axis1=[0., 0., 1.],
+                                                           vector_axis2=[-0.471418708, -0.816488390, -0.333333333],
+                                                           center=[0., 0., 0.])
 
     def test_symmetry_overlap_analysis(self):
         td_labels = ['E', '2C3', '2C3', '2C3', '2C3', 'C2', 'C2', 'C2', '2S4', '2S4', '2S4',
@@ -92,13 +91,16 @@ class TestWfnsym(unittest.TestCase):
                     0.99999998, 0.99999998, 0.99999998, 0.99999998, 0.99999998, 0.99999998, 0.99999998, 0.99999998,
                     0.99999998]
 
+        import numpy as np
+        print(np.array(soevs_a).shape)
+        print(self.wfnsym.mo_SOEVs_a.shape)
         self.assertEqual(td_labels, self.wfnsym.SymLab)
         testing.assert_array_equal(td_ideal_gt, self.wfnsym.ideal_gt)
-        testing.assert_array_almost_equal(soevs_a, self.wfnsym.mo_SOEVs_a)
-        testing.assert_array_almost_equal(soevs_a, self.wfnsym.mo_SOEVs_b)
-        testing.assert_array_almost_equal(wf_soevs_a, self.wfnsym.wf_SOEVs_a)
-        testing.assert_array_almost_equal(wf_soevs_a, self.wfnsym.wf_SOEVs_b)
-        testing.assert_array_almost_equal(wf_soevs, self.wfnsym.wf_SOEVs)
+        testing.assert_allclose(soevs_a, self.wfnsym.mo_SOEVs_a, atol=1e-5)
+        testing.assert_allclose(soevs_a, self.wfnsym.mo_SOEVs_b, atol=1e-5)
+        testing.assert_allclose(wf_soevs_a, self.wfnsym.wf_SOEVs_a, atol=1e-5)
+        testing.assert_allclose(wf_soevs_a, self.wfnsym.wf_SOEVs_b, atol=1e-5)
+        testing.assert_allclose(wf_soevs, self.wfnsym.wf_SOEVs, atol=1e-5)
 
     def test_grim_csm(self):
         grim = [5.29207960e-08, 3.42216243e+01, 4.61543073e+01, 4.61533851e+01,

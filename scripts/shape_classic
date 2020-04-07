@@ -46,14 +46,14 @@ if args.input_file is not None:
             output = open('{}/L{}.xyz'.format(os.path.dirname(output_name), options['%n_atoms']), 'w')
         else:
             output = open('{}/ML{}.xyz'.format(os.path.dirname(output_name), options['%n_atoms']), 'w')
-        output.write(file_io.write_file_xyz(test_structure))
+        output.write(file_io.write_geometry_into_file_xyz(test_structure))
         exit()
 
     reference_polyhedron = []
     if options['%labels'] != 0:
         for number in options['%labels']:
             if int(number) == 0:
-                for ref in file_io.get_molecule_from_file_ref(output_name + '.ref'):
+                for ref in file_io.get_geometry_from_file_ref(output_name + '.ref', read_multiple=True):
                     reference_polyhedron.append(ref)
             else:
                 reference_polyhedron.append(shape_tools.get_shape_label(int(number), options['%n_atoms']))

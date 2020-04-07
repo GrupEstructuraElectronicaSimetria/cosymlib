@@ -42,11 +42,11 @@ if args.yaml_input:
 
 reference_polyhedron = []
 if args.input_file is not None:
-    structures = file_io.read_input_file(args.input_file)
+    structures = file_io.read_input_file(args.input_file, read_multiple=True)
     symobj = Cosymlib(structures)
 
 if args.custom_ref is not None:
-    reference_polyhedron = file_io.get_molecule_from_file_xyz(args.custom_ref)
+    reference_polyhedron = file_io.get_geometry_from_file_xyz(args.custom_ref, read_multiple=True)
     [x.set_positions(args.central_atom - 1) for x in reference_polyhedron]
 
 

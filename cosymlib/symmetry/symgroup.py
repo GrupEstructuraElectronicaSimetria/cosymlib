@@ -1,11 +1,18 @@
-import numpy as np
-import hashlib
 from symgroupy import Symgroupy
+
+
+def _get_key(label, center, central_atom, ignore_connectivity, multi):
+    group_key = label.lower()
+    center_key = ' '.join(['{:10.8f}'.format(n) for n in center]) if center is not None else None
+    ignore_connectivity_key = bool(ignore_connectivity)
+    multi_key = int(multi)
+    central_atom_key = int(central_atom)
+    return group_key, center_key, central_atom_key, ignore_connectivity_key, multi_key
 
 
 class Symgroup:
 
-    def __init__(self, geometry):
+    def __init__(self, geometry, central_atom=None):
 
         # Allow geometry or molecule to be imported instead of crude Cartesian coordinates
         try:
@@ -19,83 +26,44 @@ class Symgroup:
                 self._coordinates = geometry
                 self._symbols = None
 
-        self._coordinates = np.ascontiguousarray(self._coordinates)
-
+        self._central_atom = central_atom
         self._results = {}
 
+    def get_results(self, label, multi, ignore_connectivity=True, center=None, central_atom=None):
+
+        if central_atom is None:
+            central_atom = self._central_atom
+
+        key = _get_key(label, center, central_atom, ignore_connectivity, multi)
+        if key not in self._results:
+            self._results[key] = Symgroupy(self._coordinates,
+                                           group=label,
+                                           labels=self._symbols,
+                                           central_atom=central_atom,
+                                           multi=multi,
+                                           ignore_connectivity=ignore_connectivity,
+                                           center=center)
+        return self._results[key]
+
     # Function description
-    def measure(self, label, central_atom=None, multi=1, symbols=True):
-
-        hash = hashlib.md5('{}{}'.format(label, central_atom).encode()).hexdigest()
-        if hash not in self._results:
-            self._do_measure(label, central_atom=central_atom, multi=multi, symbols=symbols)
-
-        return self._results[hash].csm
+    def measure(self, label, multi=1):
+        return self.get_results(label, multi=multi).csm
 
     # Function description
-    def nearest_structure(self, label, central_atom=None, multi=1, symbols=True):
+    def nearest_structure(self, label, multi=1):
+        return self.get_results(label, multi=multi).nearest_structure
 
-        hash = hashlib.md5('{}{}'.format(label, central_atom).encode()).hexdigest()
-        if hash not in self._results:
-            self._do_measure(label, central_atom=central_atom, multi=multi, symbols=symbols)
+    def optimum_axis(self, label, multi=1):
+        return self.get_results(label, multi=multi).optimum_axis
 
-        return self._results[hash].nearest_structure
+    def optimum_permutation(self, label, multi=1, symbols=True):
+        return self.get_results(label, multi=multi).optimum_permutation
 
-    def optimum_axis(self, label, central_atom=None, multi=1, symbols=True):
+    def reference_axis(self, label, multi=1):
+        return self.get_results(label, multi=multi).reference_axis
 
-        hash = hashlib.md5('{}{}'.format(label, central_atom).encode()).hexdigest()
-        if hash not in self._results:
-            self._do_measure(label, central_atom=central_atom, multi=multi, symbols=symbols)
+    def cms_multi(self, label, multi=1):
+        return self.get_results(label, multi=multi).cms_multi
 
-        return self._results[hash].optimum_axis
-
-    def optimum_permutation(self, label, central_atom=None, multi=1, symbols=True):
-
-        hash = hashlib.md5('{}{}'.format(label, central_atom).encode()).hexdigest()
-        if hash not in self._results:
-            self._do_measure(label, central_atom=central_atom, multi=multi, symbols=symbols)
-
-        return self._results[hash].optimum_permutation
-
-    def reference_axis(self, label, central_atom=None, multi=1, symbols=True):
-
-        hash = hashlib.md5('{}{}'.format(label, central_atom).encode()).hexdigest()
-        if hash not in self._results:
-            self._do_measure(label, central_atom=central_atom, multi=multi, symbols=symbols)
-
-        return self._results[hash].reference_axis
-
-    def cms_multi(self, label, central_atom=None, multi=1, symbols=True):
-
-        hash = hashlib.md5('{}{}'.format(label, central_atom).encode()).hexdigest()
-        if hash not in self._results:
-            self._do_measure(label, central_atom=central_atom, multi=multi, symbols=symbols)
-
-        return self._results[hash].cms_multi
-
-    def axis_multi(self, label, central_atom=None, multi=1, symbols=True):
-
-        hash = hashlib.md5('{}{}'.format(label, central_atom).encode()).hexdigest()
-        if hash not in self._results:
-            self._do_measure(label, central_atom=central_atom, multi=multi, symbols=symbols)
-
-        return self._results[hash].axis_multi
-
-    def _do_measure(self, label, central_atom, multi, symbols=True):
-
-        hash = hashlib.md5('{}{}'.format(label, central_atom).encode()).hexdigest()
-        if not symbols:
-            self._symbols = None
-        self._results[hash] = Symgroupy(self._coordinates,
-                                        group=label,
-                                        labels=self._symbols,
-                                        central_atom=central_atom,
-                                        multi=multi)
-
-    def results(self, label, central_atom=None, multi=1, symbols=True):
-
-        hash = hashlib.md5('{}{}'.format(label, central_atom).encode()).hexdigest()
-        if hash not in self._results:
-            self._do_measure(label, central_atom=central_atom, multi=multi, symbols=symbols)
-
-        return self._results[hash]
+    def axis_multi(self, label, multi=1):
+        return self.get_results(label, multi=multi).axis_multi

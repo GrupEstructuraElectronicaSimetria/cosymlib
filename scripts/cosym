@@ -125,7 +125,7 @@ if args.yaml_input:
             raise KeyError("Key %s is not valid" % key)
 
 if args.input_file is not None:
-    structures = file_io.read_input_file(args.input_file)
+    structures = file_io.read_input_file(args.input_file, read_multiple=True)
     symobj = Cosymlib(structures)
 
     try:
@@ -151,7 +151,7 @@ if args.shp_references:
         output = open('{}/L{}.xyz'.format(os.path.dirname(input_file), n_atoms), 'w')
     else:
         output = open('{}/ML{}.xyz'.format(os.path.dirname(input_file), n_atoms), 'w')
-    output.write(file_io.write_file_xyz(test_structure))
+    output.write(file_io.write_geometry_into_file_xyz(test_structure))
     # file_io.write_file_xyz(test_structure, output_name='ML{}_ref'.format(n_atoms))
 
 if args.info:
@@ -166,7 +166,7 @@ if args.shp_labels:
 
 reference_polyhedron = []
 if args.shp_measure == 'custom':
-    reference_polyhedron = file_io.get_molecule_from_file_xyz(args.custom_ref)
+    reference_polyhedron = file_io.get_geometry_from_file_xyz(args.custom_ref, read_multiple=True)
     [x.set_positions(args.central_atom - 1) for x in reference_polyhedron]
 elif not reference_polyhedron:
     if args.shp_measure == 'all':
@@ -212,11 +212,11 @@ if args.qsym_wfn:
         args.axis2 = np.array(args.axis2).astype(float)
     if args.center is not None:
         args.center = np.array(args.center).astype(float)
-    symobj.write_wnfsym_measure_2file(args.qsym_wfn,
-                                      vector_axis1=args.axis1,
-                                      vector_axis2=args.axis2,
-                                      center=args.center,
-                                      output_name=args.output_name)
+    symobj.write_wnfsym_measure_verbose(args.qsym_wfn,
+                                        vector_axis1=args.axis1,
+                                        vector_axis2=args.axis2,
+                                        center=args.center,
+                                        output_name=args.output_name)
 
     #Utils
     if args.mo_diagram:

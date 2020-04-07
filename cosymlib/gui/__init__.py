@@ -149,7 +149,7 @@ class MainWindow(QWidget):
 
         self.file_text.setText(str(self.filename))
         if self.filename:
-            self.geometries = file_io.read_input_file(self.filename)
+            self.geometries = file_io.read_input_file(self.filename, read_multiple=True)
             self.changeVertices(self.central_atom_name.isChecked())
             # SecondWindow(self, local_geometry=[self.x(), self.y()]).show()
 
