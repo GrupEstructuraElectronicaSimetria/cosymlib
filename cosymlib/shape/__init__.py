@@ -2,9 +2,13 @@ from cosymlib.shape import shp, shape_tools
 import numpy as np
 
 
-def _get_key(central_atom, label, label2=''):
-    label_key = label.lower()
-    label2_key = label2.lower()
+def _get_key(central_atom, reference, reference_2=''):
+    if isinstance(reference, str):
+        label_key = reference.lower()
+    else:
+        label_key = np.array2string(reference, precision=10)
+    label2_key = reference_2.lower()
+
     central_atom_key = int(central_atom)
     return central_atom_key, label_key, label2_key
 
@@ -67,7 +71,7 @@ class Shape:
 
     def get_path_deviation(self, shape_label1, shape_label2, central_atom=0):
 
-        key = _get_key(central_atom, shape_label1, label2=shape_label2)
+        key = _get_key(central_atom, shape_label1, reference_2=shape_label2)
         if key not in self._path_deviation:
             Sx = self.measure(shape_label1, central_atom)
             Sy = self.measure(shape_label2, central_atom)
@@ -83,7 +87,7 @@ class Shape:
 
     def get_generalized_coordinate(self, shape_label1, shape_label2, central_atom=0):
 
-        key = _get_key(central_atom, shape_label1, label2=shape_label2)
+        key = _get_key(central_atom, shape_label1, reference_2=shape_label2)
         if key not in self._gen_coord:
             Sq = self.measure(shape_label1, central_atom)
             if isinstance(shape_label1, np.ndarray):
