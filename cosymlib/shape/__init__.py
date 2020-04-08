@@ -1,4 +1,4 @@
-from cosymlib.shape import shp, shape_tools
+from cosymlib.shape import shp, tools
 import numpy as np
 
 
@@ -38,7 +38,7 @@ class Shape:
         key = _get_key(central_atom, label)
         if key not in self._measures:
             if isinstance(label, str):
-                reference_structure = shape_tools.get_test_structure(label, central_atom)
+                reference_structure = tools.get_test_structure(label, central_atom)
             else:
                 reference_structure = np.array(label)
 
@@ -54,7 +54,7 @@ class Shape:
         key = _get_key(central_atom, label)
         if key not in self._structures:
             if isinstance(label, str):
-                reference_structure = shape_tools.get_test_structure(label, central_atom)
+                reference_structure = tools.get_test_structure(label, central_atom)
             else:
                 reference_structure = np.array(label)
 
@@ -79,7 +79,7 @@ class Shape:
             if isinstance(shape_label1, np.ndarray):
                 structure_a = shape_label1
             else:
-                structure_a = shape_tools.get_test_structure(shape_label1, central_atom=central_atom)
+                structure_a = tools.get_test_structure(shape_label1, central_atom=central_atom)
             theta = np.arcsin(np.sqrt(Shape(structure_a).measure(shape_label2, central_atom=len(structure_a))) / 10)
             self._path_deviation[key] = ((new_theta / theta) - 1) * 100
 
@@ -93,7 +93,7 @@ class Shape:
             if isinstance(shape_label1, np.ndarray):
                 structure_a = shape_label1
             else:
-                structure_a = shape_tools.get_test_structure(shape_label1, central_atom=central_atom)
+                structure_a = tools.get_test_structure(shape_label1, central_atom=central_atom)
             theta = np.arcsin(np.sqrt(Shape(structure_a).measure(shape_label2, central_atom=len(structure_a))) / 10)
             self._gen_coord[key] = round(100 * np.arcsin(np.sqrt(Sq) / 10) / theta, 1)
 

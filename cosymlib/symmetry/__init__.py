@@ -1,4 +1,3 @@
-from cosymlib.symmetry import wfnsym, symgroup
 from wfnsympy import WfnSympy
 from symgroupy import Symgroupy
 from cosymlib import tools

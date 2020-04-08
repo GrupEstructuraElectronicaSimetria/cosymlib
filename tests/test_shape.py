@@ -13,7 +13,7 @@ class TestShape(unittest.TestCase):
         molecules, options = classic_inputs.read_old_input('data/shape/example01.dat')
         reference_polyhedron = []
         for number in options['%labels']:
-            reference_polyhedron.append(shape.shape_tools.get_shape_label(int(number), options['%n_atoms']))
+            reference_polyhedron.append(shape.tools.get_shape_label(int(number), options['%n_atoms']))
 
         results = [[shape.Shape(molecule).measure(reference_polyhedron[0], central_atom=options['%central_atom'])
                     for molecule in molecules],
@@ -32,7 +32,7 @@ class TestShape(unittest.TestCase):
         molecules, options = classic_inputs.read_old_input('data/shape/example02.dat')
         reference_polyhedron = []
         for number in options['%labels']:
-            reference_polyhedron.append(shape.shape_tools.get_shape_label(int(number), options['%n_atoms']))
+            reference_polyhedron.append(shape.tools.get_shape_label(int(number), options['%n_atoms']))
 
         results = [[shape.Shape(molecule).measure(reference_polyhedron[0], options['%central_atom'])
                     for molecule in molecules],
@@ -47,7 +47,7 @@ class TestShape(unittest.TestCase):
         molecules, options = classic_inputs.read_old_input('data/shape/example03.dat')
         reference_polyhedron = []
         for number in options['%labels']:
-            reference_polyhedron.append(shape.shape_tools.get_shape_label(int(number), options['%n_atoms']))
+            reference_polyhedron.append(shape.tools.get_shape_label(int(number), options['%n_atoms']))
         results = []
         for reference in reference_polyhedron:
             results.append([shape.Shape(molecule).measure(reference, central_atom=options['%central_atom'])
@@ -82,7 +82,7 @@ class TestShape(unittest.TestCase):
         molecules, options = classic_inputs.read_old_input('data/shape/example04.dat')
         reference_polyhedron = []
         for number in options['%labels']:
-            reference_polyhedron.append(shape.shape_tools.get_shape_label(int(number), options['%n_atoms']))
+            reference_polyhedron.append(shape.tools.get_shape_label(int(number), options['%n_atoms']))
         results = [[shape.Shape(molecule).structure(reference_polyhedron[0], central_atom=options['%central_atom'])
                     for molecule in molecules]]
         calculated_results = np.concatenate((results[0][0], results[0][1]))
@@ -128,7 +128,7 @@ class TestShape(unittest.TestCase):
         molecules, options = classic_inputs.read_old_input('data/shape/example05.dat')
         reference_polyhedron = []
         for number in options['%labels']:
-            reference_polyhedron.append(shape.shape_tools.get_shape_label(int(number), options['%n_atoms']))
+            reference_polyhedron.append(shape.tools.get_shape_label(int(number), options['%n_atoms']))
 
         results = [[shape.Shape(molecule).measure(reference_polyhedron[0], central_atom=options['%central_atom'])
                     for molecule in molecules],
@@ -167,7 +167,7 @@ class TestShape(unittest.TestCase):
         molecules, options = classic_inputs.read_old_input('data/shape/example06.dat')
         reference_polyhedron = []
         for number in options['%labels']:
-            reference_polyhedron.append(shape.shape_tools.get_shape_label(int(number), options['%n_atoms']))
+            reference_polyhedron.append(shape.tools.get_shape_label(int(number), options['%n_atoms']))
 
         symobj = Cosymlib(molecules)
         shape_measure, devpath, GenCoord = symobj.get_path_parameters(reference_polyhedron[0], reference_polyhedron[1],
@@ -178,7 +178,7 @@ class TestShape(unittest.TestCase):
         molecules, options = classic_inputs.read_old_input('data/shape/example06.dat')
         reference_polyhedron = []
         for number in options['%labels']:
-            reference_polyhedron.append(shape.shape_tools.get_shape_label(int(number), options['%n_atoms']))
+            reference_polyhedron.append(shape.tools.get_shape_label(int(number), options['%n_atoms']))
         symobj = Cosymlib(molecules)
         shape_measure, devpath, GenCoord = symobj.get_path_parameters(reference_polyhedron[0], reference_polyhedron[1],
                                                                       central_atom=options['%central_atom'], maxdev=10.0,
@@ -197,7 +197,7 @@ class TestShape(unittest.TestCase):
                     for ref in file_io.get_geometry_from_file_ref('data/shape/example08.ref', read_multiple=True):
                         reference_polyhedron.append(ref)
                 else:
-                    reference_polyhedron.append(shape.shape_tools.get_shape_label(int(number), options['%n_atoms']))
+                    reference_polyhedron.append(shape.tools.get_shape_label(int(number), options['%n_atoms']))
 
         results = [[shape.Shape(molecule).measure(reference_polyhedron[0], central_atom=central_atom)
                     for molecule in molecules], [shape.Shape(molecule).measure(reference_polyhedron[1].get_positions(),

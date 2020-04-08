@@ -1,7 +1,7 @@
 import cosymlib.file_io as file_io
 import cosymlib.shape as shape
-#import cosymlib.symmetry.symgroup as symgroup
 from cosymlib.symmetry import Symmetry
+
 
 def print_shape_data(geometries):
     print('{:10} {:^10} {:^10} {:^10}'.format('name', 'SP-4', 'SS-4', 'PP-5'))

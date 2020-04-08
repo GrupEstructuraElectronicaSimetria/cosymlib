@@ -1,14 +1,12 @@
-import os
-import sys
-import re
 from cosymlib.molecule import Molecule, Geometry, ElectronicStructure
-import numpy as np
 from cosymlib import tools
-from cosymlib.file_io import shape, wfnsym, symgroup
+from cosymlib.file_io import shape, symmetry
 from cosymlib import __version__
+import numpy as np
+import os, sys, re
 
 
-def nonblank_lines(f):
+def _non_blank_lines(f):
     for l in f:
         line = l.rstrip()
         if line:
@@ -39,6 +37,7 @@ def get_geometry_from_file_xyz(file_name, read_multiple=False):
     """
     Reads a XYZ file and returns the geometry of all structures in it
     :param file_name: file name
+    :param read_multiple: read multiple files if available
     :return: list of Geometry objects
     """
     input_molecule = [[], []]
@@ -79,6 +78,7 @@ def get_geometry_from_file_cor(file_name, read_multiple=False):
     """
     Reads a Conquest formatted file and the geometry of all structures in it
     :param file_name: file name
+    :param read_multiple: read multiple files if available
     :return: list of Geometry objects
     """
     input_molecule = [[], []]
@@ -220,7 +220,7 @@ def get_molecule_from_file_molden(file_name, read_multiple=False):
         lines.readline()
         lines.readline()
         name = lines.readline()
-        for line in nonblank_lines(lines):
+        for line in _non_blank_lines(lines):
 
             if '[' in line:
                 pass
@@ -427,8 +427,10 @@ def basis_format(basis_set_name,
 # OUTPUT part
 def header():
     txt_header = '-' * 70 + '\n'
-    txt_header += ' COSYM v{}\n Electronic Structure Group,  Universitat de Barcelona\n'.format(__version__)
-    txt_header += '-' * 70 + '\n' + '\n'
+    txt_header += ' COSYMLIB v{}\n Electronic Structure & Symmetry Group\n'.format(__version__)
+    txt_header += ' Institut de Quimica Teorica i Computacional (IQTC)\n'
+    txt_header += ' Universitat de Barcelona\n'
+    txt_header += '-' * 70 + '\n\n'
     return txt_header
 
 

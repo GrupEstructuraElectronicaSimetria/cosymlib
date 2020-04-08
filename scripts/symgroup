@@ -1,9 +1,11 @@
 #!/usr/bin/env python
+from cosymlib.file_io import read_input_file, write_input_info
+from cosymlib.symmetry.tools import print_symmetry_labels
+from cosymlib import Cosymlib
+from cosymlib.molecule.geometry import Geometry
 import argparse
 import yaml
 import sys
-from cosymlib import file_io
-from cosymlib.cosym_api import Cosymlib
 
 
 parser = argparse.ArgumentParser(description='Symgroup')
@@ -16,11 +18,10 @@ parser.add_argument(type=str,
                     dest="yaml_input",
                     nargs='?', default=None,
                     help='Perform the calculations with the command file')
-
 # Main options
 parser.add_argument('-m', '--measure',
                     dest='measure',
-                    action='store',
+                    metavar='label',
                     default=False,
                     help='Symgroup measure of input structure with reference group')
 parser.add_argument('-s', '--structure',
@@ -33,18 +34,15 @@ parser.add_argument('-l', '--labels',
                     action='store_true',
                     default=False,
                     help='return the possible symmetry labels that can be used in symgroup')
-parser.add_argument('-chirality',
-                    dest='chirality',
-                    action='store_true',
-                    default=False,
-                    help='search for a possible chirality in molecule')
 parser.add_argument('-o', '--output',
                     dest='output_name',
+                    metavar='filename',
                     default=None,
                     help='save in file name')
 parser.add_argument('-c', '--central_atom',
                     action='store',
                     dest='central_atom',
+                    metavar='N',
                     type=int,
                     default=0,
                     help='position of the central atom')
@@ -54,25 +52,23 @@ parser.add_argument('-info',
                     help='return information about the input geometries')
 
 # Modifiers
-parser.add_argument('-fix_perm',
-                    '--fix_permutation',
-                    dest='fix_permutation',
+parser.add_argument('--ignore_connectivity',
+                    dest='ignore_connectivity',
                     action='store_true',
                     default=False,
-                    help='use the given permutation to perform a calculation')
-parser.add_argument('--ignore_atom_labels',
-                    dest='ignore_atom_labels',
+                    help='ignore connectivity')
+parser.add_argument('--ignore_atoms_labels',
+                    dest='ignore_atoms_labels',
                     action='store_true',
                     default=False,
                     help='ignore atom labels from given structures')
-parser.add_argument('--ignore_connectivity',
-                    dest='ignore_connectivity',
-                    action='store',
-                    default=None,
-                    help='ignore the atoms connectivity in the calculation')
+parser.add_argument('--connectivity_thresh',
+                    dest='connectivity_thresh',
+                    metavar='R',
+                    default=1.1,
+                    help='connectivity threshold if not provided')
 parser.add_argument('--center',
-                    dest='center',
-                    action='store',
+                    dest='center', metavar='R',
                     default=None,
                     nargs=3,
                     help='Center for the symmetry operations')
@@ -92,36 +88,34 @@ if args.yaml_input:
 
 
 def extract_geometries(structure_list):
-    from cosymlib.molecule.geometry import Geometry
     geometry_list = []
     for structure in structure_list:
         if isinstance(structure, Geometry):
-            geometry_list.append(structure.geometry)
-        else:
             geometry_list.append(structure)
+        else:
+            geometry_list.append(structure.geometry)
 
     return geometry_list
 
-geometries = extract_geometries(file_io.read_input_file(args.input_file, read_multiple=True))
 
-if args.ignore_atom_labels:
+geometries = extract_geometries(read_input_file(args.input_file, read_multiple=True))
+
+if args.ignore_atoms_labels:
     for geometry in geometries:
         geometry._symbols = []
 
 symobj = Cosymlib(geometries)
 
 if args.info:
-    file_io.write_input_info(geometries, output_name=args.output_name)
+    write_input_info(geometries, output_name=args.output_name)
 
 if args.labels:
-    from cosymlib.symmetry.symmetry_tools import print_symmetry_labels
     print_symmetry_labels()
 
 # Symgroup commands
 if args.structure:
     symobj.write_symgroup_structure(args.measure,
                                     central_atom=args.central_atom,
-                                    symbols=not args.ignore_atom_labels,
                                     output_name=args.output_name)
 if args.measure:
     if args.output_name is None:

@@ -6,9 +6,10 @@ class TestWfnsym(unittest.TestCase):
 
     def setUp(self):
         self.structure = file_io.read_input_file('data/wfnsym/tih4_5d.fchk')
-        self.wfnsym = self.structure.get_mo_symmetry('Td', vector_axis1=[0., 0., 1.],
-                                                           vector_axis2=[-0.471418708, -0.816488390, -0.333333333],
-                                                           center=[0., 0., 0.])
+        self.mo_symmetry = self.structure.get_mo_symmetry('Td',
+                                                          vector_axis1=[0., 0., 1.],
+                                                          vector_axis2=[-0.471418708, -0.816488390, -0.333333333],
+                                                          center=[0., 0., 0.])
 
     def test_symmetry_overlap_analysis(self):
         td_labels = ['E', '2C3', '2C3', '2C3', '2C3', 'C2', 'C2', 'C2', '2S4', '2S4', '2S4',
@@ -93,14 +94,14 @@ class TestWfnsym(unittest.TestCase):
 
         import numpy as np
         print(np.array(soevs_a).shape)
-        print(self.wfnsym.mo_SOEVs_a.shape)
-        self.assertEqual(td_labels, self.wfnsym.SymLab)
-        testing.assert_array_equal(td_ideal_gt, self.wfnsym.ideal_gt)
-        testing.assert_allclose(soevs_a, self.wfnsym.mo_SOEVs_a, atol=1e-5)
-        testing.assert_allclose(soevs_a, self.wfnsym.mo_SOEVs_b, atol=1e-5)
-        testing.assert_allclose(wf_soevs_a, self.wfnsym.wf_SOEVs_a, atol=1e-5)
-        testing.assert_allclose(wf_soevs_a, self.wfnsym.wf_SOEVs_b, atol=1e-5)
-        testing.assert_allclose(wf_soevs, self.wfnsym.wf_SOEVs, atol=1e-5)
+        print(self.mo_symmetry.mo_SOEVs_a.shape)
+        self.assertEqual(td_labels, self.mo_symmetry.SymLab)
+        testing.assert_array_equal(td_ideal_gt, self.mo_symmetry.ideal_gt)
+        testing.assert_allclose(soevs_a, self.mo_symmetry.mo_SOEVs_a, atol=1e-5)
+        testing.assert_allclose(soevs_a, self.mo_symmetry.mo_SOEVs_b, atol=1e-5)
+        testing.assert_allclose(wf_soevs_a, self.mo_symmetry.wf_SOEVs_a, atol=1e-5)
+        testing.assert_allclose(wf_soevs_a, self.mo_symmetry.wf_SOEVs_b, atol=1e-5)
+        testing.assert_allclose(wf_soevs, self.mo_symmetry.wf_SOEVs, atol=1e-5)
 
     def test_grim_csm(self):
         grim = [5.29207960e-08, 3.42216243e+01, 4.61543073e+01, 4.61533851e+01,
@@ -113,8 +114,8 @@ class TestWfnsym(unittest.TestCase):
                1.59952399e-06, 1.59994741e-06, 1.59976660e-06, 2.04689851e-06,
                2.04689860e-06, 2.04686917e-06, 1.60018249e-06, 1.59933623e-06,
                1.59968333e-06]
-        testing.assert_array_almost_equal(grim, self.wfnsym.grim_coef)
-        testing.assert_array_almost_equal(csm, self.wfnsym.csm_coef)
+        testing.assert_array_almost_equal(grim, self.mo_symmetry.grim_coef)
+        testing.assert_array_almost_equal(csm, self.mo_symmetry.csm_coef)
 
     def test_symmetry_irreducible_representation_analysis(self):
         td_ir_labels = ['A1', 'A2', 'E', 'T1', 'T2']
@@ -144,12 +145,12 @@ class TestWfnsym(unittest.TestCase):
         wf_ir_b = [-5.64363371e-16, 9.99999991e-01, 3.60822483e-14, 5.82117687e-13, 1.67732268e-09]
         wf_ir = [9.99999983e-01, -1.00845258e-15, 7.22570152e-14, 3.35464508e-09, 1.16442966e-12]
 
-        self.assertEqual(td_ir_labels, self.wfnsym.IRLab)
-        testing.assert_array_almost_equal(mo_ir_alpha, self.wfnsym.mo_IRd_a)
-        testing.assert_array_almost_equal(mo_ir_alpha, self.wfnsym.mo_IRd_b)
-        testing.assert_array_almost_equal(wf_ir_a, self.wfnsym.wf_IRd_a)
-        testing.assert_array_almost_equal(wf_ir_b, self.wfnsym.wf_IRd_b)
-        testing.assert_array_almost_equal(wf_ir, self.wfnsym.wf_IRd)
+        self.assertEqual(td_ir_labels, self.mo_symmetry.IRLab)
+        testing.assert_array_almost_equal(mo_ir_alpha, self.mo_symmetry.mo_IRd_a)
+        testing.assert_array_almost_equal(mo_ir_alpha, self.mo_symmetry.mo_IRd_b)
+        testing.assert_array_almost_equal(wf_ir_a, self.mo_symmetry.wf_IRd_a)
+        testing.assert_array_almost_equal(wf_ir_b, self.mo_symmetry.wf_IRd_b)
+        testing.assert_array_almost_equal(wf_ir, self.mo_symmetry.wf_IRd)
 
     def test_symmetry_matrix(self):
 
@@ -220,4 +221,4 @@ class TestWfnsym(unittest.TestCase):
                            [[3.33333335e-01, 1.15837860e-05, 9.42809041e-01],
                             [1.15837860e-05, 1.00000000e+00, -1.63819472e-05],
                             [9.42809041e-01, -1.63819472e-05, -3.33333334e-01]]]
-        testing.assert_array_almost_equal(symmetry_matrix, self.wfnsym.SymMat)
+        testing.assert_array_almost_equal(symmetry_matrix, self.mo_symmetry.SymMat)

@@ -1,5 +1,4 @@
 from cosymlib import shape, tools
-from cosymlib.symmetry import symgroup
 from cosymlib.symmetry import Symmetry
 from cosymlib.symmetry.pointgroup import PointGroup
 import numpy as np

@@ -7,7 +7,7 @@ from PyQt5.QtGui import *
 from PyQt5 import QtOpenGL
 from PyQt5.Qt3DExtras import Qt3DWindow, QFirstPersonCameraController
 from PyQt5.Qt3DCore import QEntity
-from cosymlib.shape import shape_tools
+from cosymlib.shape import tools
 from cosymlib import file_io, shape
 import numpy as np
 
@@ -129,13 +129,13 @@ class MainWindow(QWidget):
         if state:
             self.central_atom_box.setReadOnly(False)
             if self.filename:
-                self.labels_on(shape_tools.get_structure_references(self.geometries[0].get_n_atoms() - 1))
+                self.labels_on(tools.get_structure_references(self.geometries[0].get_n_atoms() - 1))
         elif not state:
             # self.central_atom_box.clear()
             self.set_central_atom(0)
             self.central_atom_box.setReadOnly(True)
             if self.filename:
-                self.labels_on(shape_tools.get_structure_references(self.geometries[0].get_n_atoms()))
+                self.labels_on(tools.get_structure_references(self.geometries[0].get_n_atoms()))
 
     def labels_on(self, vertices):
         for n in vertices:

@@ -5,8 +5,8 @@ import sys
 from cosymlib.molecule.geometry import Geometry
 from cosymlib import file_io
 from cosymlib.file_io import classic_inputs
-from cosymlib.cosym_api import Cosymlib
-from cosymlib.shape import shape_tools
+from cosymlib import Cosymlib
+from cosymlib.shape import tools
 
 
 parser = argparse.ArgumentParser(description='Shape')
@@ -21,7 +21,7 @@ print('Starting...')
 
 # Shape's commands
 if args.n:
-    print(shape_tools.get_shape_label_info(args.n, old=True))
+    print(tools.get_shape_label_info(args.n, old=True))
 
 if args.input_file is not None:
     if os.stat(args.input_file).st_size == 0:
@@ -36,10 +36,10 @@ if args.input_file is not None:
         test_structure = []
         symbols = ['H' for _ in range(options['%n_atoms'])]
         symbols.append('N')
-        for label in shape_tools.get_structure_references(options['%n_atoms']):
+        for label in tools.get_structure_references(options['%n_atoms']):
             test_structure.append(Geometry(symbols=symbols,
-                                           positions=shape_tools.get_test_structure(label,
-                                                                                    central_atom=central_atom),
+                                           positions=tools.get_test_structure(label,
+                                                                              central_atom=central_atom),
                                            name=label))
 
         if central_atom == 0:
@@ -56,7 +56,7 @@ if args.input_file is not None:
                 for ref in file_io.get_geometry_from_file_ref(output_name + '.ref', read_multiple=True):
                     reference_polyhedron.append(ref)
             else:
-                reference_polyhedron.append(shape_tools.get_shape_label(int(number), options['%n_atoms']))
+                reference_polyhedron.append(tools.get_shape_label(int(number), options['%n_atoms']))
 
     if options['%fullout']:
         symobj.write_shape_structure_2file(reference_polyhedron,

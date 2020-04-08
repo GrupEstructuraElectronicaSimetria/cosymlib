@@ -3,7 +3,7 @@ import argparse
 import sys
 import yaml
 from cosymlib import file_io
-from cosymlib.cosym_api import Cosymlib
+from cosymlib import Cosymlib
 
 
 parser = argparse.ArgumentParser(description='Shape_map ')
