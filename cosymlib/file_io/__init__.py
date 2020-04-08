@@ -425,21 +425,21 @@ def basis_format(basis_set_name,
 
 
 # OUTPUT part
-def header():
-    txt_header = '-' * 70 + '\n'
-    txt_header += ' COSYMLIB v{}\n Electronic Structure & Symmetry Group\n'.format(__version__)
-    txt_header += ' Institut de Quimica Teorica i Computacional (IQTC)\n'
-    txt_header += ' Universitat de Barcelona\n'
-    txt_header += '-' * 70 + '\n\n'
-    return txt_header
+def header(output=sys.stdout):
+    output.write('-' * 70 + '\n')
+    output.write(' COSYMLIB v{}\n Electronic Structure & Symmetry Group\n'.format(__version__))
+    output.write(' Institut de Quimica Teorica i Computacional (IQTC)\n')
+    output.write(' Universitat de Barcelona\n')
+    output.write('-' * 70 + '\n\n')
 
 
-def write_input_info(initial_geometries, output_name=None):
-    if output_name is not None:
-        output = open(output_name + '.tab', 'w')
-    else:
-        output = sys.stdout
-    output.write(header())
+def footer(output=sys.stdout):
+    output.write('\n' + '-' * 70 + '\n')
+    output.write(' ' * 20 + 'End of calculation\n')
+    output.write('-' * 70 + '\n\n')
+
+
+def write_input_info(initial_geometries, output=sys.stdout):
 
     for ids, geometry in enumerate(initial_geometries):
         output.write('Structure {} : {}\n'.format(ids+1, geometry.get_name()))

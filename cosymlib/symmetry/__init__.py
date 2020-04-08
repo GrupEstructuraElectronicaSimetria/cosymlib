@@ -4,13 +4,14 @@ from cosymlib import tools
 import numpy as np
 
 
-def _get_key_symgroup(label, center, central_atom, connectivity, multi):
+def _get_key_symgroup(label, center, central_atom, connectivity, multi, connect_thresh):
     group_key = label.lower()
     center_key = ' '.join(['{:10.8f}'.format(n) for n in center]) if center is not None else None
     connectivity_key = np.array2string(connectivity, precision=10) if connectivity is not None else None
     multi_key = int(multi)
     central_atom_key = int(central_atom)
-    return group_key, center_key, central_atom_key, connectivity_key, multi_key
+    connect_thresh_key = '{:10.8f}'.format(connect_thresh)
+    return group_key, center_key, central_atom_key, connectivity_key, multi_key, connect_thresh_key
 
 
 def _get_key_wfnsym(group, vector_axis1, vector_axis2, center):
@@ -28,15 +29,21 @@ class Symmetry:
 
         # Allow geometry or molecule to be imported instead of crude Cartesian coordinates
         try:
+            # provided geometry
             self._coordinates = structure.get_positions()
             self._symbols = structure.get_symbols()
+            self._connectivity = structure.get_connectivity()
         except AttributeError:
             try:
+                # provided molecule
                 self._coordinates = structure.geometry.get_positions()
                 self._symbols = structure.geometry.get_symbols()
+                self._connectivity = structure.geometry.get_connectivity()
             except AttributeError:
+                # provided coordinates matrix
                 self._coordinates = structure
                 self._symbols = None
+                self._connectivity = None
 
         self._central_atom = central_atom
         self._results = {}
@@ -46,19 +53,26 @@ class Symmetry:
         except AttributeError:
             self._electronic_structure = None
 
-    def get_symgroup_results(self, label, multi, connectivity=None, center=None, central_atom=None):
+    def get_symgroup_results(self, label,
+                             multi=1,
+                             connectivity=None,
+                             center=None,
+                             central_atom=None,
+                             connect_thresh=1.1):
 
         if central_atom is None:
             central_atom = self._central_atom
 
-        key = _get_key_symgroup(label, center, central_atom, connectivity, multi)
+        key = _get_key_symgroup(label, center, central_atom, connectivity, multi, connect_thresh)
         if key not in self._results:
             self._results[key] = Symgroupy(self._coordinates,
                                            group=label,
                                            labels=self._symbols,
                                            central_atom=central_atom,
                                            multi=multi,
-                                           center=center)
+                                           center=center,
+                                           connectivity=self._connectivity,
+                                           connect_thresh=connect_thresh)
         return self._results[key]
 
     def get_wfnsym_results(self, group, vector_axis1, vector_axis2, center):

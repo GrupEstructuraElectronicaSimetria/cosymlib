@@ -14,6 +14,7 @@ class Geometry:
         self._symbols = []
         self._positions = []
         self._atom_groups = list(symbols)
+        self._connectivity = None
 
         if name.strip():
             self._name = name
@@ -52,6 +53,12 @@ class Geometry:
 
     def set_name(self, name):
         self._name = name
+
+    def get_connectivity(self):
+        return self._connectivity
+
+    def set_connectivity(self, connectivity):
+        self._connectivity = connectivity
 
     def set_positions(self, central_atom=0):
         atom, self._positions = self._positions[central_atom], np.delete(self._positions, central_atom, 0)

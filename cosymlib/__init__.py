@@ -3,12 +3,22 @@ __version__ = '0.7.4'
 from cosymlib.molecule import Molecule, Geometry
 from cosymlib import file_io
 from cosymlib.file_io.shape import write_shape_measure_data, write_minimal_distortion_path_analysis, write_shape_map
-from cosymlib.utils import get_shape_map, molecular_orbital_diagram, symmetry_energy_evolution
+from cosymlib.utils import get_shape_map, plot_molecular_orbital_diagram, plot_symmetry_energy_evolution
 from cosymlib.symmetry import Symmetry
 from cosymlib.shape import Shape
 from cosymlib.utils import get_shape_map
 
 import sys
+
+
+def _get_symgroup_arguments(locals):
+    kwargs = dict(locals)
+    del kwargs['self']
+    for element in ['self', 'output']:
+        if element in kwargs:
+            del kwargs[element]
+
+    return kwargs
 
 
 class Cosymlib:
@@ -63,7 +73,6 @@ class Cosymlib:
                                                                      fix_permutation))
                 references.append(reference)
 
-        output.write(file_io.header())
         output.write(write_shape_measure_data(shape_results_measures, molecules_name, references))
 
     def write_shape_structure_2file(self, shape_reference, central_atom=0, fix_permutation=False, output_name=None):
@@ -111,7 +120,6 @@ class Cosymlib:
         else:
             output = sys.stdout
 
-        output.write(file_io.header())
         csm, devpath, GenCoord = self.get_path_parameters(shape_label1, shape_label2, central_atom=central_atom,
                                                           maxdev=maxdev, mindev=mindev, maxgco=maxgco, mingco=mingco)
         names_order = [molecule.name for molecule in self._molecules]
@@ -119,48 +127,23 @@ class Cosymlib:
                                                      mingco, maxgco, names_order)
         output.write(txt)
 
-    def write_symgroup_measure_all_info(self, group, multi=1, central_atom=0, symbols=True, output_name=None):
-
-        if output_name is not None:
-            output = open(output_name + '.zout', 'w')
-        else:
-            output = sys.stdout
-
-        results = self.get_symgroup_results(group=group, multi=multi, central_atom=central_atom)
-        txt = file_io.header()
-        txt += file_io.symmetry.get_symgroup_data_txt(group, [molecule.geometry for molecule in self._molecules],
+    def write_symgroup_measure_all_info(self, group, multi=1, central_atom=0, center=None, output=sys.stdout):
+        results = self._get_symgroup_results_list(**_get_symgroup_arguments(locals()))
+        txt = file_io.symmetry.get_symgroup_data_txt(group, [molecule.geometry for molecule in self._molecules],
                                                       results)
         output.write(txt)
 
-    def print_symgroup_measure(self, group, multi=1, central_atom=0):
-        results = self.get_symgroup_results(group=group, multi=multi, central_atom=central_atom)
-        print(file_io.header())
-        print(file_io.symmetry.get_symgroup_measure_txt(group,
+    def write_symgroup_measure(self, group, multi=1, central_atom=0, connect_thresh=1.1, center=None, output=sys.stdout):
+        results = self._get_symgroup_results_list(**_get_symgroup_arguments(locals()))
+        txt = file_io.symmetry.get_symgroup_measure_txt(group,
                                                         [molecule.geometry for molecule in self._molecules],
-                                                        results))
-
-    def write_symgroup_measure(self, group, multi=1, central_atom=0, output_name=None):
-
-        if output_name is not None:
-            output = open(output_name + '.ztab', 'w')
-        else:
-            output = sys.stdout
-
-        results = self.get_symgroup_results(group=group, multi=multi, central_atom=central_atom)
-        txt = file_io.header()
-        txt += file_io.symmetry.get_symgroup_measure_txt(group, [molecule.geometry for molecule in self._molecules],
-                                                         results)
+                                                        results)
         output.write(txt)
 
-    def write_symgroup_structure(self, group, multi=1, central_atom=0, output_name=None):
+    def write_symgroup_structure(self, group, multi=1, central_atom=0, connect_thresh=1.1, center=None, output=sys.stdout):
 
-        if output_name is not None:
-            output = open(output_name + '_sym.xyz', 'w')
-        else:
-            output = sys.stdout
+        results = self._get_symgroup_results_list(**_get_symgroup_arguments(locals()))
 
-        self.write_symgroup_measure(group=group, multi=multi, central_atom=central_atom)
-        results = self.get_symgroup_results(group=group, multi=multi, central_atom=central_atom)
         geometries = []
         for idm, molecule in enumerate(self._molecules):
             geometries.append(Geometry(symbols=molecule.geometry.get_symbols(),
@@ -169,32 +152,28 @@ class Cosymlib:
 
         output.write(file_io.write_geometry_into_file_xyz(geometries))
 
-    def write_wnfsym_measure_verbose(self, group, vector_axis1=None, vector_axis2=None, center=None, output_name=None,
+    def write_wnfsym_measure_verbose(self, group,
+                                     vector_axis1=None,
+                                     vector_axis2=None,
+                                     center=None,
+                                     output=sys.stdout,
                                      n_molecule=0):
-        if output_name is not None:
-            output = open(output_name + '.wout', 'w')
-        else:
-            output = sys.stdout
+
 
         wfnsym_results = self.get_wfnsym_results(group, vector_axis1, vector_axis2, center)
-        txt = file_io.header()
-        txt += file_io.symmetry.get_operated_matrices_txt(group, self._molecules[n_molecule],
+        txt = file_io.symmetry.get_operated_matrices_txt(group, self._molecules[n_molecule],
                                                                wfnsym_results[n_molecule])
         txt += file_io.symmetry.get_overlap_analysis_txt(wfnsym_results[n_molecule])
         txt += file_io.symmetry.get_ir_analysis_txt(wfnsym_results[n_molecule])
         output.write(txt)
 
-    def write_wnfsym_sym_matrices_2file(self, group, vector_axis1=None, vector_axis2=None, center=None,
-                                        output_name=None,
-                                        n_molecule=0):
-        if output_name is not None:
-            output = open(output_name + '.wout', 'w')
-        else:
-            output = sys.stdout
+    def write_wnfsym_sym_matrices(self, group, vector_axis1=None, vector_axis2=None, center=None,
+                                  output=None,
+                                  n_molecule=0):
+
 
         wfnsym_results = self.get_wfnsym_results(group, vector_axis1, vector_axis2, center)
-        txt = file_io.header()
-        txt += file_io.symmetry.get_operated_matrices_txt(group, self._molecules[0],
+        txt = file_io.symmetry.get_operated_matrices_txt(group, self._molecules[0],
                                                                wfnsym_results[n_molecule])
         output.write(txt)
 
@@ -206,29 +185,23 @@ class Cosymlib:
             output = sys.stdout
 
         wfnsym_results = self.get_wfnsym_results(group, vector_axis1, vector_axis2, center)
-        txt = file_io.header()
-        txt += file_io.symmetry.get_overlap_analysis_txt(wfnsym_results[n_molecule])
+        txt = file_io.symmetry.get_overlap_analysis_txt(wfnsym_results[n_molecule])
         output.write(txt)
 
-    def write_wnfsym_ireducible_repr_2file(self, group, vector_axis1=None, vector_axis2=None, center=None,
-                                           output_name=None, n_molecule=0):
-        if output_name is not None:
-            output = open(output_name + '.wout', 'w')
-        else:
-            output = sys.stdout
+    def write_wnfsym_ireducible_repr(self, group, vector_axis1=None, vector_axis2=None, center=None,
+                                     output=sys.stdout, n_molecule=0):
 
         wfnsym_results = self.get_wfnsym_results(group, vector_axis1, vector_axis2, center)
-        txt = file_io.header()
-        txt += file_io.symmetry.get_ir_analysis_txt(wfnsym_results[n_molecule])
+        txt = file_io.symmetry.get_ir_analysis_txt(wfnsym_results[n_molecule])
         output.write(txt)
 
     def write_mo_diagram(self, group, vector_axis1=None, vector_axis2=None, center=None, n_molecule=0):
         wfnsym_results = self.get_wfnsym_results(group, vector_axis1, vector_axis2, center)
-        molecular_orbital_diagram(self._molecules[0], wfnsym_results[n_molecule])
+        plot_molecular_orbital_diagram(self._molecules[0], wfnsym_results[n_molecule])
 
     def write_sym_energy_evolution(self, group, vector_axis1=None, vector_axis2=None, center=None):
         wfnsym_results = self.get_wfnsym_results(group, vector_axis1, vector_axis2, center)
-        symmetry_energy_evolution(self._molecules, wfnsym_results)
+        plot_symmetry_energy_evolution(self._molecules, wfnsym_results)
 
     def get_shape_measure(self, label, kind, central_atom=0, fix_permutation=False):
         get_measure = 'get_shape_' + kind
@@ -277,17 +250,12 @@ class Cosymlib:
         generalized_coord = filter_results(generalized_coord, criteria, maxgco, mingco)
         return csm, devpath, generalized_coord
 
-    def get_symgroup_results(self, group, multi=1, central_atom=0):
-
-        results = []
+    def _get_symgroup_results_list(self, group, **kwargs):
+        results_list = []
         for molecule in self._molecules:
-            sym_mol = Symmetry(molecule.geometry, central_atom=central_atom)
-            results.append(sym_mol.get_symgroup_results(label=group, multi=multi))
-        return results
-
-
-        #return [molecule.geometry.get_symmetry_measure(label=group, multi=multi, central_atom=central_atom,
-        #                                               symbols=symbols) for molecule in self._molecules]
+            sym_mol = Symmetry(molecule.geometry)
+            results_list.append(sym_mol.get_symgroup_results(group, **kwargs))
+        return results_list
 
     def get_wfnsym_results(self, group, vector_axis1, vector_axis2, center):
         return [molecule.get_mo_symmetry(group, vector_axis1=vector_axis1, vector_axis2=vector_axis2, center=center)

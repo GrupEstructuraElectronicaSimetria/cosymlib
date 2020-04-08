@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from cosymlib.file_io import read_input_file, write_input_info
+from cosymlib.file_io import read_input_file, write_input_info, header, footer
 from cosymlib.symmetry.tools import print_symmetry_labels
 from cosymlib import Cosymlib
 from cosymlib.molecule.geometry import Geometry
@@ -69,12 +69,16 @@ parser.add_argument('--connectivity_thresh',
                     help='connectivity threshold if not provided')
 parser.add_argument('--center',
                     dest='center', metavar='R',
+                    type=float,
                     default=None,
                     nargs=3,
                     help='Center for the symmetry operations')
 
 
 args = parser.parse_args(sys.argv[1:])
+
+common_output = open(str(args.output_name), 'w') if args.output_name is not None else sys.stdout
+header(common_output)
 
 if args.yaml_input:
     with open(args.yaml_input, 'r') as stream:
@@ -100,28 +104,44 @@ def extract_geometries(structure_list):
 
 geometries = extract_geometries(read_input_file(args.input_file, read_multiple=True))
 
-if args.ignore_atoms_labels:
-    for geometry in geometries:
+for geometry in geometries:
+    if args.ignore_atoms_labels:
         geometry._symbols = []
+    if args.ignore_connectivity:
+        geometry.set_connectivity(None)
 
 symobj = Cosymlib(geometries)
 
-if args.info:
-    write_input_info(geometries, output_name=args.output_name)
 
 if args.labels:
     print_symmetry_labels()
+    exit()
+
+if args.info:
+    write_input_info(geometries, output=common_output)
+    exit()
 
 # Symgroup commands
-if args.structure:
-    symobj.write_symgroup_structure(args.measure,
-                                    central_atom=args.central_atom,
-                                    output_name=args.output_name)
 if args.measure:
+    symobj.write_symgroup_measure(args.measure,
+                                  central_atom=args.central_atom,
+                                  center=args.center,
+                                  connect_thresh=args.connectivity_thresh,
+                                  output=common_output)
+
+if args.structure:
     if args.output_name is None:
-        symobj.print_symgroup_measure(args.measure,
-                                      central_atom=args.central_atom)
+        print('\nClosest structure/s to reference')
+        symobj.write_symgroup_structure(args.measure,
+                                        central_atom=args.central_atom,
+                                        center=args.center,
+                                        connect_thresh=args.connectivity_thresh)
     else:
-        symobj.write_symgroup_measure(args.measure,
-                                      central_atom=args.central_atom,
-                                      output_name=args.output_name)
+        symobj.write_symgroup_structure(args.measure,
+                                        central_atom=args.central_atom,
+                                        connect_thresh=args.connectivity_thresh,
+                                        center=args.center,
+                                        output=open(args.output_name + '_sym.xyz', 'w'))
+
+footer(common_output)
+

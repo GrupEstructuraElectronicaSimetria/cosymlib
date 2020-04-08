@@ -1,14 +1,16 @@
 from cosymlib.shape import maps
 from cosymlib.file_io.shape import write_shape_map
 import numpy as np
+import sys
 
 
-def write_minimum_distortion_path_shape_2file(shape_label1, shape_label2, num_points=20, output_name=None):
+def minimum_distortion_path_shape(shape_label1, shape_label2, num_points=20, output=sys.stdout, show_plot=True):
+    import matplotlib.pyplot as plt
+
     path = get_shape_map(shape_label1, shape_label2, num_points)
     shape_map_txt = write_shape_map(shape_label1, shape_label2, path)
     print(shape_map_txt)
-    if output_name is None:
-        import matplotlib.pyplot as plt
+    if show_plot:
         plt.plot(path[0], path[1], 'k', linewidth=2.0)
         plt.xlabel(shape_label1)
         plt.ylabel(shape_label2)
@@ -19,8 +21,7 @@ def get_shape_map(shape_label1, shape_label2, num_points):
     return maps.get_shape_map(shape_label1, shape_label2, num_points)
 
 
-def molecular_orbital_diagram(molecule, wfnsym, mo_range=None):
-
+def plot_molecular_orbital_diagram(molecule, wfnsym, mo_range=None):
     import matplotlib.pyplot as plt
 
     labels = wfnsym.IRLab
@@ -68,8 +69,7 @@ def swap_vectors(v1, v2, position):
     return vector1, vector2
 
 
-def symmetry_energy_evolution(molecules, wfnsym, mo_range=None):
-
+def plot_symmetry_energy_evolution(molecules, wfnsym, mo_range=None):
     import matplotlib.pyplot as plt
 
     energies = []
