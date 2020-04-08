@@ -7,7 +7,7 @@ import numpy as np
 def _get_key_symgroup(label, center, central_atom, connectivity, multi, connect_thresh):
     group_key = label.lower()
     center_key = ' '.join(['{:10.8f}'.format(n) for n in center]) if center is not None else None
-    connectivity_key = np.array2string(connectivity, precision=10) if connectivity is not None else None
+    connectivity_key = np.array2string(np.array(connectivity), precision=10) if connectivity is not None else None
     multi_key = int(multi)
     central_atom_key = int(central_atom)
     connect_thresh_key = '{:10.8f}'.format(connect_thresh)
@@ -47,7 +47,6 @@ class Symmetry:
 
         self._central_atom = central_atom
         self._results = {}
-
         try:
             self._electronic_structure = structure.electronic_structure
         except AttributeError:
@@ -55,7 +54,6 @@ class Symmetry:
 
     def get_symgroup_results(self, label,
                              multi=1,
-                             connectivity=None,
                              center=None,
                              central_atom=None,
                              connect_thresh=1.1):
@@ -63,7 +61,7 @@ class Symmetry:
         if central_atom is None:
             central_atom = self._central_atom
 
-        key = _get_key_symgroup(label, center, central_atom, connectivity, multi, connect_thresh)
+        key = _get_key_symgroup(label, center, central_atom, self._connectivity, multi, connect_thresh)
         if key not in self._results:
             self._results[key] = Symgroupy(self._coordinates,
                                            group=label,

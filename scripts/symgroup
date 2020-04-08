@@ -106,7 +106,7 @@ geometries = extract_geometries(read_input_file(args.input_file, read_multiple=T
 
 for geometry in geometries:
     if args.ignore_atoms_labels:
-        geometry._symbols = []
+        geometry.set_symbols('X' * geometry.get_n_atoms())
     if args.ignore_connectivity:
         geometry.set_connectivity(None)
 
@@ -144,4 +144,3 @@ if args.structure:
                                         output=open(args.output_name + '_sym.xyz', 'w'))
 
 footer(common_output)
-

@@ -54,7 +54,7 @@ def get_symgroup_measure_txt(label, geometries, symgroup_results):
     for idx, geometry in enumerate(geometries):
         csm = symgroup_results[idx].csm
         max_name = len(max(geometry.get_name(), key=len))
-        sym_txt += '{}'.format(geometry.get_name())
+        sym_txt += '{} '.format(geometry.get_name())
         if max_name < 9:
             n = 18 - len(geometry.get_name())
         else:

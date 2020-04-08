@@ -8,13 +8,13 @@ class Geometry:
     def __init__(self,
                  positions,
                  symbols=(),
-                 name=None):
+                 name=None,
+                 connectivity=None):
 
         # self._central_atom = None
         self._symbols = []
         self._positions = []
         self._atom_groups = list(symbols)
-        self._connectivity = None
 
         if name.strip():
             self._name = name
@@ -45,6 +45,7 @@ class Geometry:
                 self._positions.append([float(j) for j in symbol])
 
         self._positions = np.array(self._positions)
+        self._connectivity = connectivity
         self._shape = shape.Shape(self)
         self._symgroup = Symmetry(self)
 
@@ -59,10 +60,17 @@ class Geometry:
 
     def set_connectivity(self, connectivity):
         self._connectivity = connectivity
+        self._symgroup._connectivity = connectivity
+
+    def set_symbols(self, symbols):
+        self._symbols = symbols
+        self._symgroup._symbols = symbols
 
     def set_positions(self, central_atom=0):
         atom, self._positions = self._positions[central_atom], np.delete(self._positions, central_atom, 0)
         self._positions = np.insert(self._positions, len(self._positions), atom, axis=0)
+        self._symgroup._positions= self._positions
+        self._shape._positions= self._positions
 
     def get_positions(self):
         return self._positions

@@ -368,6 +368,50 @@ def get_geometry_from_file_ref(file_name, read_multiple=False):
     return structures
 
 
+def get_geometry_from_file_pdb(file_name, read_multiple=False):
+    """
+    Reads a Conquest formatted file and the geometry of all structures in it
+    :param file_name: file name
+    :param read_multiple: read multiple files if available
+    :return: list of Geometry objects
+    """
+
+    file_txt = open(file_name, mode='r').read()
+
+    index_list = []
+    for i in re.finditer('TITLE', file_txt):
+        index_list.append(i.start())
+    index_list.append(len(file_txt))
+
+    geometries = []
+    for i in range(len(index_list)-1):
+        mol_section = file_txt[index_list[i]:index_list[i+1]]
+        coordinates = []
+        symbols = []
+        connect = []
+        name = ''
+        for line in mol_section.split('\n'):
+            if line.find('TITLE') > -1:
+                name = ' '.join(line.split()[1:])
+            if line.find('HETATM') > -1:
+                coordinates.append([float(num) for num in line.split()[4:7]])
+                symbols.append(line.split()[2])
+            if line.find('CONECT') > -1:
+                connect.append([int(num) for num in line.split()[2:]])
+
+        connectivity = []
+        for i, atom in enumerate(connect):
+            for j in atom:
+                connectivity.append((i+1, j))
+
+        geometries.append(Geometry(symbols=symbols,
+                                   positions=coordinates,
+                                   name=name,
+                                   connectivity=connectivity))
+
+    return geometries
+
+
 def basis_format(basis_set_name,
                  atomic_numbers,
                  atomic_symbols,

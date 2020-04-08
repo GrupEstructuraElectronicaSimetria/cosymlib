@@ -22,6 +22,11 @@ def print_csm(data):
     print('CSM ' + '  '.join(['{:7.3f}'.format(s) for s in data.csm_coef]))
 
 
+molecule = file_io.get_geometry_from_file_pdb('methane.pdb')[0]
+molecule.set_connectivity(None)
+print(molecule.get_symmetry_measure('c4'))
+exit()
+
 # Get structures from files
 molecules_set = file_io.get_geometry_from_file_xyz('coord.xyz', read_multiple=True)
 fragments_set = file_io.get_geometry_from_file_cor('coord.cor', read_multiple=True)
