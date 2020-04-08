@@ -1,5 +1,7 @@
 from cosymlib import shape, tools
 from cosymlib.symmetry import symgroup
+from cosymlib.symmetry import Symmetry
+from cosymlib.symmetry.pointgroup import PointGroup
 import numpy as np
 
 
@@ -44,7 +46,7 @@ class Geometry:
 
         self._positions = np.array(self._positions)
         self._shape = shape.Shape(self)
-        self._symgroup = symgroup.Symgroup(self)
+        self._symgroup = Symmetry(self)
 
     def get_name(self):
         return self._name
@@ -71,15 +73,18 @@ class Geometry:
     def get_shape_structure(self, shape_label, central_atom=0, fix_permutation=False):
         return self._shape.structure(shape_label, central_atom=central_atom, fix_permutation=fix_permutation)
 
-    def get_symmetry_measure(self, label, central_atom=0, multi=1, center=None, ignore_connectivity=False):
-        return self._symgroup.get_results(label, central_atom=central_atom, multi=multi,
-                                          center=center, ignore_connectivity=ignore_connectivity).csm
+    def get_symmetry_measure(self, label, central_atom=0, multi=1, center=None):
+        return self._symgroup.get_symgroup_results(label, central_atom=central_atom, multi=multi,
+                                                   center=center).csm
 
     def get_path_deviation(self, shape_label1, shape_label2, central_atom=0):
         return self._shape.get_path_deviation(shape_label1, shape_label2, central_atom)
 
     def get_generalized_coordinate(self, shape_label1, shape_label2, central_atom=0):
         return self._shape.get_generalized_coordinate(shape_label1, shape_label2, central_atom)
+
+    def get_pointgroup(self, tol=0.01):
+        return PointGroup(self, tolerance=tol).get_point_group()
 
 
 def chunks(l, n):

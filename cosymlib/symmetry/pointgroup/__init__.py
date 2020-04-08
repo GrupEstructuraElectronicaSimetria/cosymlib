@@ -4,7 +4,7 @@ from cosymlib.symmetry.pointgroup.operations import inversion, rotation_matrix, 
 from cosymlib.symmetry.pointgroup import sym_tools
 
 
-class CalculatePointGroup:
+class PointGroup:
 
     def __init__(self, geometry, tolerance=0.01, tol=0.3):
         self.tolerance = tolerance

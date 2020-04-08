@@ -10,9 +10,9 @@ def _get_key(label, center, central_atom, ignore_connectivity, multi):
     return group_key, center_key, central_atom_key, ignore_connectivity_key, multi_key
 
 
-class Symgroup:
+class SymgroupXXX:
 
-    def __init__(self, geometry, central_atom=None):
+    def __init__(self, geometry, central_atom=None, connectivity=None):
 
         # Allow geometry or molecule to be imported instead of crude Cartesian coordinates
         try:
@@ -27,9 +27,10 @@ class Symgroup:
                 self._symbols = None
 
         self._central_atom = central_atom
+        self._connectivity = connectivity
         self._results = {}
 
-    def get_results(self, label, multi, ignore_connectivity=True, center=None, central_atom=None):
+    def get_symgroup_results(self, label, multi, ignore_connectivity=True, center=None, central_atom=None):
 
         if central_atom is None:
             central_atom = self._central_atom
@@ -41,29 +42,29 @@ class Symgroup:
                                            labels=self._symbols,
                                            central_atom=central_atom,
                                            multi=multi,
-                                           ignore_connectivity=ignore_connectivity,
+                                           connectivity=self._connectivity,
                                            center=center)
         return self._results[key]
 
     # Function description
     def measure(self, label, multi=1):
-        return self.get_results(label, multi=multi).csm
+        return self.get_symgroup_results(label, multi=multi).csm
 
     # Function description
     def nearest_structure(self, label, multi=1):
-        return self.get_results(label, multi=multi).nearest_structure
+        return self.get_symgroup_results(label, multi=multi).nearest_structure
 
     def optimum_axis(self, label, multi=1):
-        return self.get_results(label, multi=multi).optimum_axis
+        return self.get_symgroup_results(label, multi=multi).optimum_axis
 
     def optimum_permutation(self, label, multi=1, symbols=True):
-        return self.get_results(label, multi=multi).optimum_permutation
+        return self.get_symgroup_results(label, multi=multi).optimum_permutation
 
     def reference_axis(self, label, multi=1):
-        return self.get_results(label, multi=multi).reference_axis
+        return self.get_symgroup_results(label, multi=multi).reference_axis
 
     def cms_multi(self, label, multi=1):
-        return self.get_results(label, multi=multi).cms_multi
+        return self.get_symgroup_results(label, multi=multi).cms_multi
 
     def axis_multi(self, label, multi=1):
-        return self.get_results(label, multi=multi).axis_multi
+        return self.get_symgroup_results(label, multi=multi).axis_multi

@@ -1,7 +1,7 @@
 import cosymlib.file_io as file_io
 import cosymlib.shape as shape
-import cosymlib.symmetry.symgroup as symgroup
-
+#import cosymlib.symmetry.symgroup as symgroup
+from cosymlib.symmetry import Symmetry
 
 def print_shape_data(geometries):
     print('{:10} {:^10} {:^10} {:^10}'.format('name', 'SP-4', 'SS-4', 'PP-5'))
@@ -53,8 +53,8 @@ print('measure: {:^10.3f} '.format(measure))
 print('measure: {:^10.3f} '.format(methane.get_symmetry_measure('C4', central_atom=1)))
 
 # Call symgroup as method of Symgroup class (semi function call)
-print('measure: {:^10.3f} '.format(symgroup.Symgroup(methane, central_atom=1).measure('C4')))
-print(symgroup.Symgroup(methane, central_atom=1).nearest_structure('C4'))
+print('measure: {:^10.3f} '.format(Symmetry(methane, central_atom=1).measure('C4')))
+print(Symmetry(methane, central_atom=1).nearest_structure('C4'))
 
 
 # test WFNSYM
@@ -62,9 +62,9 @@ print('\nWFNSYM\n--------')
 
 
 molecule = file_io.get_molecule_from_file_fchk('pirrol.fchk')
-molecules_set = file_io.read_input_file('pirrol.fchk', read_multiple=True, ignore_atom_labels=True)
+molecules_set = file_io.read_input_file('pirrol.fchk', read_multiple=True)
 print(molecules_set[0].geometry.get_symbols())
-exit()
+
 print(molecule)
 data = molecule.get_mo_symmetry('C2v',
                                  vector_axis1=[ 0.000000,  0.000000,  1.000000],  # valor defecte

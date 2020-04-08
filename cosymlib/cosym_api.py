@@ -2,8 +2,9 @@ from cosymlib.molecule import Molecule, Geometry
 from cosymlib import file_io
 from cosymlib.file_io.shape import write_shape_measure_data, write_minimal_distortion_path_analysis, write_shape_map
 from cosymlib.utils import get_shape_map, molecular_orbital_diagram, symmetry_energy_evolution
-from cosymlib.symmetry.symgroup import Symgroup
+# from cosymlib.symmetry.symgroup import Symgroup
 from cosymlib.symmetry.wfnsym import WfnSympy
+from cosymlib.symmetry import Symmetry
 from cosymlib.shape import Shape
 
 import sys
@@ -48,14 +49,14 @@ class Cosymlib:
         else:
             output = sys.stdout
 
-        molecules_name = [molecule.get_name() for molecule in self._molecules]
+        molecules_name = [molecule.name for molecule in self._molecules]
         shape_results_measures = []
         references = []
         for reference in shape_reference:
             if type(reference) is Geometry:
                 shape_results_measures.append(self.get_shape_measure(reference.get_positions(), 'measure', central_atom,
                                                                      fix_permutation))
-                references.append(reference.get_name())
+                references.append(reference.name)
             else:
                 shape_results_measures.append(self.get_shape_measure(reference, 'measure', central_atom,
                                                                      fix_permutation))
@@ -98,7 +99,7 @@ class Cosymlib:
             for idl, reference in enumerate(references):
                 geometries.append(Geometry(symbols=molecule.geometry.get_symbols(),
                                            positions=shape_results_structures[idl][idm],
-                                           name=molecule.get_name() + '_' + reference))
+                                           name=molecule.name + '_' + reference))
         output.write(file_io.write_geometry_into_file_xyz(geometries))
 
     def write_path_parameters_2file(self, shape_label1, shape_label2, central_atom=0,
@@ -112,7 +113,7 @@ class Cosymlib:
         output.write(file_io.header())
         csm, devpath, GenCoord = self.get_path_parameters(shape_label1, shape_label2, central_atom=central_atom,
                                                           maxdev=maxdev, mindev=mindev, maxgco=maxgco, mingco=mingco)
-        names_order = [molecule.get_name() for molecule in self._molecules]
+        names_order = [molecule.name for molecule in self._molecules]
         txt = write_minimal_distortion_path_analysis(csm, devpath, GenCoord, maxdev, mindev,
                                                      mingco, maxgco, names_order)
         output.write(txt)
@@ -163,7 +164,7 @@ class Cosymlib:
         for idm, molecule in enumerate(self._molecules):
             geometries.append(Geometry(symbols=molecule.geometry.get_symbols(),
                                        positions=results[idm].nearest_structure,
-                                       name=molecule.get_name() + '_' + group + ' with orientation ' +
+                                       name=molecule.name + '_' + group + ' with orientation ' +
                                             ' '.join('{:.8f}'.format(e) for e in results[idm].optimum_axis)))
         output.write(file_io.write_geometry_into_file_xyz(geometries))
 
@@ -279,8 +280,8 @@ class Cosymlib:
 
         results = []
         for molecule in self._molecules:
-            sym_mol = Symgroup(molecule.geometry, central_atom=central_atom)
-            results.append(sym_mol.get_results(label=group, multi=multi))
+            sym_mol = Symmetry(molecule.geometry, central_atom=central_atom)
+            results.append(sym_mol.get_symgroup_results(label=group, multi=multi))
         return results
 
 
@@ -332,4 +333,4 @@ class Cosymlib:
             plt.show()
 
     def write_point_group(self, tol=0.01):
-        return [molecule.get_pointgroup(tol) for molecule in self._molecules]
+        return [molecule.geometry.get_pointgroup(tol) for molecule in self._molecules]

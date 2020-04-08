@@ -1,29 +1,25 @@
 from cosymlib.molecule.geometry import Geometry
 from cosymlib.molecule.electronic_structure import ElectronicStructure
-from cosymlib.symmetry.wfnsym import WfnSym
-from cosymlib.symmetry.pointgroup import CalculatePointGroup
 from cosymlib.simulation import ExtendedHuckel
+from cosymlib.symmetry import Symmetry
+from cosymlib.shape import Shape
 
 
 class Molecule:
-
-    def __init__(self, geometry, ee=None):
+    def __init__(self, geometry, electronic_structure=None):
 
         if not geometry:
             print('No geometry found in the input file, check out input file for possible errors')
             exit()
-        self._geometry = geometry
         self._name = geometry.get_name()
-        self._electronic_structure = ee
-        if ee is not None:
-            self._wfnsym = WfnSym(self)
+        self._geometry = geometry
+        self._electronic_structure = electronic_structure
+        self._symmetry = None
+        self._shape = None
 
-    def get_name(self):
+    @property
+    def name(self):
         return self._name
-
-    # def set_wfnsym(self):
-        # self._electronic_structure = ee
-
 
     @property
     def geometry(self):
@@ -41,10 +37,18 @@ class Molecule:
                                                              valence_only=True)
         return self._electronic_structure
 
-    def get_mo_symmetry(self, group, vector_axis1=None, vector_axis2=None, center=None):
-        from copy import deepcopy
-        wfnsym = deepcopy(WfnSym(self))
-        return wfnsym.results(group, vector_axis1, vector_axis2, center)
+    @property
+    def symmetry(self):
+        if self._symmetry is None:
+            self._symmetry = Symmetry(self)
 
-    def get_pointgroup(self, tol=0.01):
-        return CalculatePointGroup(self._geometry, tolerance=tol).get_point_group()
+        return self._symmetry
+
+    @property
+    def shape(self):
+        if self._shape is None:
+            self._shape = Shape(self)
+        return self._shape
+
+    def get_mo_symmetry(self, group, vector_axis1=None, vector_axis2=None, center=None):
+        return self.symmetry.get_wfnsym_results(group, vector_axis1, vector_axis2, center)
