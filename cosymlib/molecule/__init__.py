@@ -3,6 +3,7 @@ from cosymlib.molecule.electronic_structure import ElectronicStructure
 from cosymlib.simulation import ExtendedHuckel
 from cosymlib.symmetry import Symmetry
 from cosymlib.shape import Shape
+from warnings import warn
 
 
 class Molecule:
@@ -28,7 +29,8 @@ class Molecule:
     @property
     def electronic_structure(self):
         if self._electronic_structure is None:
-            print('No electronic structure found in the input file. Starting a extended-huckel calculation to determine'
+            warn('No electronic structure found in the input file.' +
+                  'Starting a extended-huckel calculation to determine' +
                   'the molecular orbital coefficients...')
             eh = ExtendedHuckel(self.geometry)
             self._electronic_structure = ElectronicStructure(basis=eh.get_basis(),

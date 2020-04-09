@@ -180,13 +180,13 @@ elif not reference_polyhedron:
         reference_polyhedron = [args.shp_measure]
 
 if args.shp_structure:
-    symobj.write_shape_structure(reference_polyhedron,
+    symobj.print_shape_structure(reference_polyhedron,
                                  central_atom=args.central_atom,
                                  output_name=args.output_name,
                                  fix_permutation=args.fix_permutation)
 
 elif args.shp_measure or args.custom_ref:
-    symobj.write_shape_measure(reference_polyhedron,
+    symobj.print_shape_measure(reference_polyhedron,
                                central_atom=args.central_atom,
                                output_name=args.output_name,
                                fix_permutation=args.fix_permutation)
@@ -194,12 +194,12 @@ elif args.shp_measure or args.custom_ref:
 
 # Symgroup commands
 if args.sym_structure:
-    symobj.write_symgroup_structure(args.sym_measure,
+    symobj.print_symgroup_structure(args.sym_measure,
                                     central_atom=args.central_atom,
                                     symbols=not args.ignore_atom_labels,
                                     output_name=args.output_name)
 elif args.sym_measure:
-    symobj.write_symgroup_measure(args.sym_measure,
+    symobj.print_symgroup_measure(args.sym_measure,
                                   central_atom=args.central_atom,
                                   symbols=not args.ignore_atom_labels,
                                   filename=args.output_name)
@@ -212,7 +212,7 @@ if args.qsym_wfn:
         args.axis2 = np.array(args.axis2).astype(float)
     if args.center is not None:
         args.center = np.array(args.center).astype(float)
-    symobj.write_wnfsym_measure_verbose(args.qsym_wfn,
+    symobj.print_wnfsym_measure_verbose(args.qsym_wfn,
                                         vector_axis1=args.axis1,
                                         vector_axis2=args.axis2,
                                         center=args.center,
@@ -220,14 +220,14 @@ if args.qsym_wfn:
 
     #Utils
     if args.mo_diagram:
-        symobj.write_mo_diagram(args.qsym_wfn,
-                                vector_axis1=args.axis1,
-                                vector_axis2=args.axis2,
-                                center=args.center)
+        symobj.plot_mo_diagram(args.qsym_wfn,
+                               vector_axis1=args.axis1,
+                               vector_axis2=args.axis2,
+                               center=args.center)
 
 # Pointgroup command
 if args.pointgroup:
-    for idm, pg in enumerate(symobj.write_point_group()):
+    for idm, pg in enumerate(symobj.get_point_group()):
         print('The point group of molecule{} is: {}'.format(idm, pg))
 
 print('\nEnd of cosym calculation')

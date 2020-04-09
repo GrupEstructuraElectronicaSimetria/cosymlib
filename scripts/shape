@@ -116,14 +116,14 @@ elif not reference_polyhedron:
 
 
 if args.measure or args.custom_ref:
-    symobj.write_shape_measure(reference_polyhedron,
+    symobj.print_shape_measure(reference_polyhedron,
                                central_atom=args.central_atom,
                                fix_permutation=args.fix_permutation,
                                output=common_output)
 
 if args.structure:
     common_output.write("\nOriginal structures vs reference polyhedra\n")
-    symobj.write_shape_structure(reference_polyhedron,
+    symobj.print_shape_structure(reference_polyhedron,
                                  central_atom=args.central_atom,
                                  fix_permutation=args.fix_permutation,
                                  output=common_output)

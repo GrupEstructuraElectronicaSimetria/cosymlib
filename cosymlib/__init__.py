@@ -4,9 +4,6 @@ from cosymlib.molecule import Molecule, Geometry
 from cosymlib import file_io
 from cosymlib.file_io.shape import write_shape_measure_data, write_minimal_distortion_path_analysis, write_shape_map
 from cosymlib.utils import get_shape_map, plot_molecular_orbital_diagram, plot_symmetry_energy_evolution
-from cosymlib.symmetry import Symmetry
-from cosymlib.shape import Shape
-from cosymlib.utils import get_shape_map
 
 import sys
 
@@ -45,7 +42,7 @@ class Cosymlib:
             else:
                 raise AttributeError('Molecule object not found')
 
-    def write_shape_measure(self, shape_reference, central_atom=0, fix_permutation=False, output=sys.stdout):
+    def print_shape_measure(self, shape_reference, central_atom=0, fix_permutation=False, output=sys.stdout):
         """
         Method that prints to file shape's measure
         :param shape_reference: reference polyhedra label which user will compare with his polyhedra.
@@ -71,7 +68,7 @@ class Cosymlib:
 
         output.write(write_shape_measure_data(shape_results_measures, molecules_name, references))
 
-    def write_shape_structure(self, shape_reference, central_atom=0, fix_permutation=False, output=sys.stdout):
+    def print_shape_structure(self, shape_reference, central_atom=0, fix_permutation=False, output=sys.stdout):
         """
         Method that prints to file shape's structure
         :param shape_reference: reference polyhedra label which user will compare with his polyhedra.
@@ -106,7 +103,7 @@ class Cosymlib:
         for geometry in geometries:
             output.write(file_io.get_file_xyz_txt(geometry))
 
-    def write_path_parameters(self, shape_label1, shape_label2, central_atom=0,
+    def print_path_parameters(self, shape_label1, shape_label2, central_atom=0,
                               maxdev=15, mindev=0, maxgco=101, mingco=0, output=sys.stdout):
 
         #if output_name is not None:
@@ -121,20 +118,20 @@ class Cosymlib:
                                                      mingco, maxgco, names_order)
         output.write(txt)
 
-    def write_symgroup_measure_all_info(self, group, multi=1, central_atom=0, center=None, output=sys.stdout):
+    def print_symgroup_measure_info(self, group, multi=1, central_atom=0, center=None, output=sys.stdout):
         results = self._get_symgroup_results_list(**_get_symgroup_arguments(locals()))
         txt = file_io.symmetry.get_symgroup_data_txt(group, [molecule.geometry for molecule in self._molecules],
                                                       results)
         output.write(txt)
 
-    def write_symgroup_measure(self, group, multi=1, central_atom=0, connect_thresh=1.1, center=None, output=sys.stdout):
+    def print_symgroup_measure(self, group, multi=1, central_atom=0, connect_thresh=1.1, center=None, output=sys.stdout):
         results = self._get_symgroup_results_list(**_get_symgroup_arguments(locals()))
         txt = file_io.symmetry.get_symgroup_measure_txt(group,
                                                         [molecule.geometry for molecule in self._molecules],
                                                         results)
         output.write(txt)
 
-    def write_symgroup_structure(self, group, multi=1, central_atom=0, connect_thresh=1.1, center=None, output=sys.stdout):
+    def print_symgroup_structure(self, group, multi=1, central_atom=0, connect_thresh=1.1, center=None, output=sys.stdout):
 
         results = self._get_symgroup_results_list(**_get_symgroup_arguments(locals()))
 
@@ -147,7 +144,7 @@ class Cosymlib:
         for geometry in geometries:
             output.write(file_io.get_file_xyz_txt(geometry))
 
-    def write_wnfsym_measure_verbose(self, group,
+    def print_wnfsym_measure_verbose(self, group,
                                      vector_axis1=None,
                                      vector_axis2=None,
                                      center=None,
@@ -162,39 +159,33 @@ class Cosymlib:
         txt += file_io.symmetry.get_ir_analysis_txt(wfnsym_results[n_molecule])
         output.write(txt)
 
-    def write_wnfsym_sym_matrices(self, group, vector_axis1=None, vector_axis2=None, center=None,
-                                  output=None,
-                                  n_molecule=0):
-
+    def print_wnfsym_sym_matrices(self, group, vector_axis1=None, vector_axis2=None,
+                                  center=None, n_molecule=0, output=sys.stdout):
 
         wfnsym_results = self.get_wfnsym_results(group, vector_axis1, vector_axis2, center)
         txt = file_io.symmetry.get_operated_matrices_txt(group, self._molecules[0],
                                                                wfnsym_results[n_molecule])
         output.write(txt)
 
-    def write_wnfsym_sym_ovelap_2file(self, group, vector_axis1=None, vector_axis2=None, center=None, output_name=None,
-                                      n_molecule=0):
-        if output_name is not None:
-            output = open(output_name + '.wout', 'w')
-        else:
-            output = sys.stdout
+    def print_wnfsym_sym_ovelap(self, group, vector_axis1=None, vector_axis2=None,
+                                center=None, n_molecule=0, output=sys.stdout):
 
         wfnsym_results = self.get_wfnsym_results(group, vector_axis1, vector_axis2, center)
         txt = file_io.symmetry.get_overlap_analysis_txt(wfnsym_results[n_molecule])
         output.write(txt)
 
-    def write_wnfsym_ireducible_repr(self, group, vector_axis1=None, vector_axis2=None, center=None,
-                                     output=sys.stdout, n_molecule=0):
+    def print_wnfsym_ireducible_repr(self, group, vector_axis1=None, vector_axis2=None, center=None,
+                                     n_molecule=0, output=sys.stdout):
 
         wfnsym_results = self.get_wfnsym_results(group, vector_axis1, vector_axis2, center)
         txt = file_io.symmetry.get_ir_analysis_txt(wfnsym_results[n_molecule])
         output.write(txt)
 
-    def write_mo_diagram(self, group, vector_axis1=None, vector_axis2=None, center=None, n_molecule=0):
+    def plot_mo_diagram(self, group, vector_axis1=None, vector_axis2=None, center=None, n_molecule=0):
         wfnsym_results = self.get_wfnsym_results(group, vector_axis1, vector_axis2, center)
         plot_molecular_orbital_diagram(self._molecules[0], wfnsym_results[n_molecule])
 
-    def write_sym_energy_evolution(self, group, vector_axis1=None, vector_axis2=None, center=None):
+    def plot_sym_energy_evolution(self, group, vector_axis1=None, vector_axis2=None, center=None):
         wfnsym_results = self.get_wfnsym_results(group, vector_axis1, vector_axis2, center)
         plot_symmetry_energy_evolution(self._molecules, wfnsym_results)
 
@@ -248,24 +239,26 @@ class Cosymlib:
     def _get_symgroup_results_list(self, group, **kwargs):
         results_list = []
         for molecule in self._molecules:
-            sym_mol = Symmetry(molecule.geometry)
-            results_list.append(sym_mol.get_symgroup_results(group, **kwargs))
+            results_list.append(molecule.symmetry.get_symgroup_results(group, **kwargs))
         return results_list
 
     def get_wfnsym_results(self, group, vector_axis1, vector_axis2, center):
         return [molecule.get_mo_symmetry(group, vector_axis1=vector_axis1, vector_axis2=vector_axis2, center=center)
                 for molecule in self._molecules]
 
-    def write_minimum_distortion_path_shape_2file(self, shape_label1, shape_label2, central_atom=0,
-                                                  num_points=20, output_name=None):
+    def print_minimum_distortion_path_shape(self, shape_label1, shape_label2, central_atom=0,
+                                            num_points=20, output_name=None):
 
-        self.write_path_parameters(shape_label1, shape_label2, central_atom=central_atom, output_name=output_name)
         if output_name is not None:
             output = open(output_name + '_pth.csv', 'w')
             output2 = open(output_name + '_pth.xyz', 'w')
+            output3 = open(output_name, 'w')
         else:
             output = sys.stdout
             output2 = sys.stdout
+            output3 = sys.stdout
+
+        self.print_path_parameters(shape_label1, shape_label2, central_atom=central_atom, output=output3)
 
         if type(shape_label1) is Geometry:
             label1 = shape_label1.get_positions()
@@ -296,5 +289,5 @@ class Cosymlib:
             plt.ylabel(label2_name)
             plt.show()
 
-    def write_point_group(self, tol=0.01):
+    def get_point_group(self, tol=0.01):
         return [molecule.geometry.get_pointgroup(tol) for molecule in self._molecules]

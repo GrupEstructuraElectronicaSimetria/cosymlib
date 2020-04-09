@@ -105,7 +105,7 @@ if args.info:
 
 # Symgroup commands
 if args.measure:
-    symobj.write_symgroup_measure(args.measure,
+    symobj.print_symgroup_measure(args.measure,
                                   central_atom=args.central_atom,
                                   center=args.center,
                                   connect_thresh=args.connectivity_thresh,
@@ -114,12 +114,12 @@ if args.measure:
 if args.structure:
     if args.output_name is None:
         print('\nClosest structure/s to reference')
-        symobj.write_symgroup_structure(args.measure,
+        symobj.print_symgroup_structure(args.measure,
                                         central_atom=args.central_atom,
                                         center=args.center,
                                         connect_thresh=args.connectivity_thresh)
     else:
-        symobj.write_symgroup_structure(args.measure,
+        symobj.print_symgroup_structure(args.measure,
                                         central_atom=args.central_atom,
                                         connect_thresh=args.connectivity_thresh,
                                         center=args.center,

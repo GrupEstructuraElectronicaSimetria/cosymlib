@@ -56,6 +56,6 @@ elif not args.y:
     args.y = reference_polyhedron[0]
 
 if args.x:
-    symobj.write_minimum_distortion_path_shape_2file(args.x,
-                                                     args.y,
-                                                     central_atom=args.central_atom)
+    symobj.print_minimum_distortion_path_shape(args.x,
+                                               args.y,
+                                               central_atom=args.central_atom)

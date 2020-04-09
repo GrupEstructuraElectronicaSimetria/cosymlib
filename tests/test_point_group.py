@@ -10,6 +10,6 @@ class TestPointGroup(unittest.TestCase):
                         'S4', 'T', 'Th', 'Td', 'O', 'Oh']
         molecules = file_io.read_generic_structure_file('data/point_group/sym_molecules.xyz', read_multiple=True)
         symobj = Cosymlib(molecules)
-        calculated_point_groups = [pg for pg in (symobj.write_point_group())]
+        calculated_point_groups = [pg for pg in (symobj.get_point_group())]
         for pg1, pg2 in zip(point_groups, calculated_point_groups):
             self.assertEqual(pg1, pg2)
