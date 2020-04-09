@@ -15,55 +15,57 @@ import os
 parser = argparse.ArgumentParser(description='Shape')
 parser.add_argument(type=str,
                     dest='input_file',
-                    help='input file name(+extension)')
+                    help='input structures file')
 parser.add_argument(type=str,
                     dest="yaml_input",
                     nargs='?',
                     default=None,
-                    help='Perform the calculations with the command file')
+                    help='Input keywords file')
 # Main options
 parser.add_argument('-m', '--measure',
                     dest='measure',
+                    metavar='ST',
                     default=None,
-                    help='Shape measure of input structure with reference polyhedra')
+                    help='Request shape measure (use "custom" to use custom structure')
 parser.add_argument('-l', '--labels', action='store_true',
                     dest='labels',
                     default=False,
-                    help='show the reference labels for a given structure')
+                    help='show the reference shape labels')
 parser.add_argument('-s', '--structure',
                     dest='structure',
                     action='store_true',
                     default=False,
-                    help='return the closes input structure to the reference shape')
+                    help='get the closest input structure to the reference shape')
 parser.add_argument('-o', '--output_name',
                     dest='output_name',
                     metavar='Filename',
                     default=None,
-                    help='save in file name')
+                    help='store output to a file')
 parser.add_argument('-c', '--central_atom',
                     dest='central_atom',
+                    metavar='N',
                     type=int,
                     default=0,
-                    help='position of the central atom if exist')
+                    help='define a central atom of the structure')
 parser.add_argument('-r', '--references',
                     dest='references',
                     action='store_true',
                     default=False,
-                    help='return a file with the coordinates of reference polyhedra')
+                    help='store the coordinates of the reference polyhedra in a file')
 parser.add_argument('-info',
                     action='store_true',
                     default=False,
-                    help='return information about the input geometries')
+                    help='information about the input structures')
 parser.add_argument('--custom_ref',
                     dest='custom_ref',
                     metavar='filename',
                     default=None,
-                    help='take a given structure from the file and use it as reference')
+                    help='define filename containing the structure/s to be used as reference (requires -m custom)')
 parser.add_argument('--fix_permutation',
                     dest='fix_permutation',
                     action='store_true',
                     default=False,
-                    help='use the given permutation to perform a calculation')
+                    help='do not permutate atoms to perform the measure')
 
 args = parser.parse_args()
 
