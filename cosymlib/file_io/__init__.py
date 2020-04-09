@@ -365,6 +365,9 @@ def get_geometry_from_file_ref(file_name, read_multiple=False):
                     name = line.split()[0]
         structures.append(Geometry(positions=input_molecule,
                                    name=name))
+    if read_multiple is False:
+        return structures[0]
+
     return structures
 
 
@@ -408,6 +411,9 @@ def get_geometry_from_file_pdb(file_name, read_multiple=False):
                                    positions=coordinates,
                                    name=name,
                                    connectivity=connectivity))
+
+    if read_multiple is False:
+        return geometries[0]
 
     return geometries
 

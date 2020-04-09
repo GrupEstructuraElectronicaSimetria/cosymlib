@@ -22,11 +22,6 @@ def print_csm(data):
     print('CSM ' + '  '.join(['{:7.3f}'.format(s) for s in data.csm_coef]))
 
 
-molecule = file_io.get_geometry_from_file_pdb('methane.pdb')[0]
-molecule.set_connectivity(None)
-print(molecule.get_symmetry_measure('c4'))
-exit()
-
 # Get structures from files
 molecules_set = file_io.get_geometry_from_file_xyz('coord.xyz', read_multiple=True)
 fragments_set = file_io.get_geometry_from_file_cor('coord.cor', read_multiple=True)
@@ -50,6 +45,9 @@ print('structure:\n', shape.Shape(methane).structure('SP-4', central_atom=1))
 # test symgroup
 print('\nSYMMETRY\n--------')
 
+molecule = file_io.get_geometry_from_file_pdb('methane.pdb', read_multiple=False)
+print('measure C3: {} '.format(molecule.get_symmetry_measure('c3', center=[0, 0, 0])))
+
 # Check multiple calls of symgroup one calculatioin
 for i in range(100):
     measure = methane.get_symmetry_measure('C3', central_atom=1)
@@ -68,9 +66,7 @@ print('\nWFNSYM\n--------')
 
 molecule = file_io.get_molecule_from_file_fchk('pirrol.fchk')
 molecules_set = file_io.read_input_file('pirrol.fchk', read_multiple=True)
-print(molecules_set[0].geometry.get_symbols())
 
-print(molecule)
 data = molecule.get_mo_symmetry('C2v',
                                  vector_axis1=[ 0.000000,  0.000000,  1.000000],  # valor defecte
                                  # vector_axis2=[-2.027247,  0.000133, -0.898469],
