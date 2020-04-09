@@ -2,23 +2,25 @@ import os
 import yaml
 import numpy as np
 
-
 ideal_structures = None
 
 
 def get_test_structure(label, central_atom=0):
-
     global ideal_structures
+    from cosymlib.molecule.geometry import Geometry
+
     if ideal_structures is None:
         file_path = os.path.dirname(os.path.abspath(__file__)) + '/ideal_structures_center.yaml'
         with open(file_path, 'r') as stream:
             ideal_structures = yaml.load(stream, Loader=yaml.FullLoader)
     if central_atom == 0:
-        reference_structure = ideal_structures[label][:-1]
+        coordinates = ideal_structures[label.upper()][:-1]
     else:
-        reference_structure = ideal_structures[label]
+        coordinates = ideal_structures[label.upper()]
 
-    return reference_structure
+    return Geometry(positions=coordinates,
+                    name=label,
+                    symbols=['X'] * len(coordinates))
 
 
 def get_structure_references(vertices):
@@ -44,7 +46,10 @@ def get_shape_label(code, vertices):
             return label[0]
 
 
-def get_shape_label_info(vertices, old=False):
+def get_shape_label_info(vertices, old=False, with_central_atom=False):
+    if with_central_atom:
+        vertices = vertices-1
+
     txt = 'Available reference structures with {} Vertices:\n\n'.format(vertices)
     if old:
         txt += '{:<4} '.format('')

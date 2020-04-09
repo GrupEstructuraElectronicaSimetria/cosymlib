@@ -1,6 +1,6 @@
 import sys
 from cosymlib.molecule import Geometry
-from cosymlib.file_io import read_input_file
+from cosymlib.file_io import read_generic_structure_file
 import os.path
 
 
@@ -42,7 +42,7 @@ def read_old_input(file_name):
             n_atoms += 1
         if options['%conquest'] is not None:
             dir = os.path.dirname(os.path.abspath(file_name))
-            structures = read_input_file(os.path.join(dir, options['%conquest'] + '.cor'), read_multiple=True)
+            structures = read_generic_structure_file(os.path.join(dir, options['%conquest'] + '.cor'), read_multiple=True)
         else:
             while True:
                 if not line:

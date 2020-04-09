@@ -11,7 +11,7 @@ class Molecule:
         if not geometry:
             print('No geometry found in the input file, check out input file for possible errors')
             exit()
-        self._name = geometry.get_name()
+        self._name = geometry.name
         self._geometry = geometry
         self._electronic_structure = electronic_structure
         self._symmetry = None

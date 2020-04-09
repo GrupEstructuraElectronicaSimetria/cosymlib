@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-from cosymlib.file_io import read_input_file, write_input_info, header, footer
+from cosymlib.file_io.tools import add_extra_keywords, extract_geometries, header, footer, write_input_info
+from cosymlib.file_io import read_generic_structure_file
 from cosymlib.symmetry.tools import print_symmetry_labels
 from cosymlib import Cosymlib
-from cosymlib.molecule.geometry import Geometry
 import argparse
-import yaml
 import sys
 
 
@@ -21,7 +20,7 @@ parser.add_argument(type=str,
 # Main options
 parser.add_argument('-m', '--measure',
                     dest='measure',
-                    metavar='label',
+                    metavar='SG',
                     default=False,
                     help='Symgroup measure of input structure with reference group')
 parser.add_argument('-s', '--structure',
@@ -75,34 +74,17 @@ parser.add_argument('--center',
                     help='Center for the symmetry operations')
 
 
-args = parser.parse_args(sys.argv[1:])
+args = parser.parse_args()
 
 common_output = open(str(args.output_name), 'w') if args.output_name is not None else sys.stdout
 header(common_output)
 
+
 if args.yaml_input:
-    with open(args.yaml_input, 'r') as stream:
-        input_parameters = yaml.load(stream, Loader=yaml.FullLoader)
-
-    for key, value in input_parameters.items():
-        if key.lower() in args:
-            setattr(args, key.lower(), value)
-        else:
-            raise KeyError("Key {} is not valid".format(key))
+    add_extra_keywords(args, args.yaml_input)
 
 
-def extract_geometries(structure_list):
-    geometry_list = []
-    for structure in structure_list:
-        if isinstance(structure, Geometry):
-            geometry_list.append(structure)
-        else:
-            geometry_list.append(structure.geometry)
-
-    return geometry_list
-
-
-geometries = extract_geometries(read_input_file(args.input_file, read_multiple=True))
+geometries, n_atoms = extract_geometries(read_generic_structure_file(args.input_file, read_multiple=True))
 
 for geometry in geometries:
     if args.ignore_atoms_labels:

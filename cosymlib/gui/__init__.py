@@ -149,7 +149,7 @@ class MainWindow(QWidget):
 
         self.file_text.setText(str(self.filename))
         if self.filename:
-            self.geometries = file_io.read_input_file(self.filename, read_multiple=True)
+            self.geometries = file_io.read_generic_structure_file(self.filename, read_multiple=True)
             self.changeVertices(self.central_atom_name.isChecked())
             # SecondWindow(self, local_geometry=[self.x(), self.y()]).show()
 
@@ -179,7 +179,7 @@ class MainWindow(QWidget):
             # if self.directory is None:
             text = "SHAPE's measure " + self.label + "\n"
             for geometry in self.geometries:
-                text += '{:10} {:10.3f}'.format(geometry.get_name(),
+                text += '{:10} {:10.3f}'.format(geometry.name,
                                                 shape.Shape(geometry).measure(self.label, self.central_atom)) + '\n'
 
             self.results.setPlainText(text)

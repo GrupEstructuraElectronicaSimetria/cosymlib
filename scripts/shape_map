@@ -42,7 +42,7 @@ if args.yaml_input:
 
 reference_polyhedron = []
 if args.input_file is not None:
-    structures = file_io.read_input_file(args.input_file, read_multiple=True)
+    structures = file_io.read_generic_structure_file(args.input_file, read_multiple=True)
     symobj = Cosymlib(structures)
 
 if args.custom_ref is not None:

@@ -7,7 +7,7 @@ def print_shape_data(geometries):
     print('{:10} {:^10} {:^10} {:^10}'.format('name', 'SP-4', 'SS-4', 'PP-5'))
     print('-'*43)
     for geometry in geometries:
-        print('{:10} {:^10.3f} {:^10.3f} {:^10.3f}'.format(geometry.get_name(),
+        print('{:10} {:^10.3f} {:^10.3f} {:^10.3f}'.format(geometry.name,
                                                            geometry.get_shape_measure('SP-4', central_atom=1),
                                                            geometry.get_shape_measure('SS-4', central_atom=1),
                                                            geometry.get_shape_measure('PP-5')
@@ -65,7 +65,7 @@ print('\nWFNSYM\n--------')
 
 
 molecule = file_io.get_molecule_from_file_fchk('pirrol.fchk')
-molecules_set = file_io.read_input_file('pirrol.fchk', read_multiple=True)
+molecules_set = file_io.read_generic_structure_file('pirrol.fchk', read_multiple=True)
 
 data = molecule.get_mo_symmetry('C2v',
                                  vector_axis1=[ 0.000000,  0.000000,  1.000000],  # valor defecte

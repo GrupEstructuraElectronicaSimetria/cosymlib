@@ -1,7 +1,8 @@
 from cosymlib.molecule import Molecule, Geometry, ElectronicStructure
-from cosymlib import tools
 from cosymlib.file_io import shape, symmetry
-from cosymlib import __version__
+from cosymlib.file_io.tools import extract_geometries
+from cosymlib.tools import atomic_number_to_element
+
 import numpy as np
 import os, sys, re
 
@@ -13,8 +14,8 @@ def _non_blank_lines(f):
             yield line
 
 
-# INPUT part
-def read_input_file(input_name, read_multiple=False):
+# Read INPUT files
+def read_generic_structure_file(input_name, read_multiple=False):
     # print('Reading file {}...'.format(os.path.basename(input_name)))
     if os.stat(input_name).st_size == 0:
         raise FileExistsError('File {} is empty'.format(os.path.basename(input_name)))
@@ -166,7 +167,7 @@ def get_molecule_from_file_fchk(file_name, read_multiple=False):
         atomic_number = [int(num) for num in input_molecule[2]]
         symbols = []
         for number in atomic_number:
-            symbols.append(tools.atomic_number_to_element(number))
+            symbols.append(atomic_number_to_element(number))
 
         basis = basis_format(basis_set_name=basis_set,
                              atomic_numbers=atomic_number,
@@ -473,49 +474,41 @@ def basis_format(basis_set_name,
 
     return basis_set
 
-
-# OUTPUT part
-def header(output=sys.stdout):
-    output.write('-' * 70 + '\n')
-    output.write(' COSYMLIB v{}\n Electronic Structure & Symmetry Group\n'.format(__version__))
-    output.write(' Institut de Quimica Teorica i Computacional (IQTC)\n')
-    output.write(' Universitat de Barcelona\n')
-    output.write('-' * 70 + '\n\n')
+# Get OUPUT files
 
 
-def footer(output=sys.stdout):
-    output.write('\n' + '-' * 70 + '\n')
-    output.write(' ' * 20 + 'End of calculation\n')
-    output.write('-' * 70 + '\n\n')
+def get_file_xyz_txt(structure):
 
+    # Get xyz file format from Molecule or Geometry
 
-def write_input_info(initial_geometries, output=sys.stdout):
+    geometry = extract_geometries(structure)
 
-    for ids, geometry in enumerate(initial_geometries):
-        output.write('Structure {} : {}\n'.format(ids+1, geometry.get_name()))
-
-        for idn, array in enumerate(geometry.get_positions()):
-            output.write('{:2s}'.format(geometry.get_symbols()[idn]))
-            output.write(' {:11.7f} {:11.7f} {:11.7f}\n'.format(array[0], array[1], array[2]))
-        output.write('\n')
-
-
-def write_geometry_into_file_xyz(geometries):
-
-    # check if list
-    if not isinstance(geometries, list):
-        geometries = [geometries]
-
-    txt = ''
-    for geometry in geometries:
-        txt += '{}\n'.format(geometry.get_n_atoms())
-        txt += '{}\n'.format(geometry.get_name())
-        for idp, position in enumerate(geometry.get_positions()):
-            txt += '{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idp],
+    txt = '{}\n'.format(geometry.get_n_atoms())
+    txt += '{}\n'.format(geometry.name)
+    for idp, position in enumerate(geometry.get_positions()):
+        txt += '{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idp],
                                                               position[0], position[1], position[2])
     return txt
 
 
+def write_reference_structures_in_file_xyz(structures, central_atom=0):
+
+    structures = extract_geometries(structures, as_list=True)
+    n_atoms = structures[0].get_n_atoms()
+
+    if central_atom == 0:
+        f = open('L{}.xyz'.format(n_atoms), 'w')
+    else:
+        f = open('ML{}.xyz'.format(n_atoms), 'w')
+
+    txt = ''
+    for structure in structures:
+        txt += get_file_xyz_txt(structure)
+
+    f.write(txt)
+
+
+# Support functions
 def reformat_input(array):
     flat_list = []
     for sublist in array:

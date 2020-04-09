@@ -125,7 +125,7 @@ if args.yaml_input:
             raise KeyError("Key %s is not valid" % key)
 
 if args.input_file is not None:
-    structures = file_io.read_input_file(args.input_file, read_multiple=True)
+    structures = file_io.read_generic_structure_file(args.input_file, read_multiple=True)
     symobj = Cosymlib(structures)
 
     try:
@@ -151,7 +151,7 @@ if args.shp_references:
         output = open('{}/L{}.xyz'.format(os.path.dirname(input_file), n_atoms), 'w')
     else:
         output = open('{}/ML{}.xyz'.format(os.path.dirname(input_file), n_atoms), 'w')
-    output.write(file_io.write_geometry_into_file_xyz(test_structure))
+    output.write(file_io.get_file_xyz_txt(test_structure))
     # file_io.write_file_xyz(test_structure, output_name='ML{}_ref'.format(n_atoms))
 
 if args.info:
@@ -180,16 +180,16 @@ elif not reference_polyhedron:
         reference_polyhedron = [args.shp_measure]
 
 if args.shp_structure:
-    symobj.write_shape_structure_2file(reference_polyhedron,
-                                       central_atom=args.central_atom,
-                                       output_name=args.output_name,
-                                       fix_permutation=args.fix_permutation)
+    symobj.write_shape_structure(reference_polyhedron,
+                                 central_atom=args.central_atom,
+                                 output_name=args.output_name,
+                                 fix_permutation=args.fix_permutation)
 
 elif args.shp_measure or args.custom_ref:
-    symobj.write_shape_measure_2file(reference_polyhedron,
-                                     central_atom=args.central_atom,
-                                     output_name=args.output_name,
-                                     fix_permutation=args.fix_permutation)
+    symobj.write_shape_measure(reference_polyhedron,
+                               central_atom=args.central_atom,
+                               output_name=args.output_name,
+                               fix_permutation=args.fix_permutation)
 
 
 # Symgroup commands

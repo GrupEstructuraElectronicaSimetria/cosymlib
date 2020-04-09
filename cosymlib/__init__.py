@@ -45,7 +45,7 @@ class Cosymlib:
             else:
                 raise AttributeError('Molecule object not found')
 
-    def write_shape_measure_2file(self, shape_reference, central_atom=0, fix_permutation=False, output_name=None):
+    def write_shape_measure(self, shape_reference, central_atom=0, fix_permutation=False, output=sys.stdout):
         """
         Method that prints to file shape's measure
         :param shape_reference: reference polyhedra label which user will compare with his polyhedra.
@@ -55,16 +55,12 @@ class Cosymlib:
         :return: shape's measure in the output_name.tab file
         """
 
-        if output_name is not None:
-            output = open(output_name + '_tab.csv', 'w')
-        else:
-            output = sys.stdout
-
         molecules_name = [molecule.name for molecule in self._molecules]
         shape_results_measures = []
         references = []
         for reference in shape_reference:
             if type(reference) is Geometry:
+
                 shape_results_measures.append(self.get_shape_measure(reference.get_positions(), 'measure', central_atom,
                                                                      fix_permutation))
                 references.append(reference.name)
@@ -75,34 +71,30 @@ class Cosymlib:
 
         output.write(write_shape_measure_data(shape_results_measures, molecules_name, references))
 
-    def write_shape_structure_2file(self, shape_reference, central_atom=0, fix_permutation=False, output_name=None):
+    def write_shape_structure(self, shape_reference, central_atom=0, fix_permutation=False, output=sys.stdout):
         """
         Method that prints to file shape's structure
         :param shape_reference: reference polyhedra label which user will compare with his polyhedra.
-                            Reference labels can be found in [#f1]_
+                                Reference labels can be found in [#f1]_
         :param central_atom: position of the central atom in molecule if exist
         :param output_name: custom name without extension
         :return: shape's structure in the output_name.out file
         """
 
-        if output_name is not None:
-            output = open(output_name + '_shp.xyz', 'w')
-        else:
-            output = sys.stdout
-
         shape_results_structures = []
         references = []
         for reference in shape_reference:
-            if type(reference) is Geometry:
-                shape_results_structures.append(self.get_shape_measure(reference.get_positions(),
-                                                                       'structure', central_atom, fix_permutation))
-                references.append(reference.get_name())
-            else:
-                shape_results_structures.append(self.get_shape_measure(reference, 'structure', central_atom,
-                                                                       fix_permutation))
+            if isinstance(reference, str):
                 references.append(reference)
 
-        self.write_shape_measure_2file(shape_reference, central_atom, fix_permutation, output_name)
+            else:
+                references.append(reference.name)
+                reference = reference.get_positions()
+
+            shape_results_structures.append(self.get_shape_measure(reference,
+                                                                   'structure',
+                                                                   central_atom,
+                                                                   fix_permutation))
         geometries = []
         for idm, molecule in enumerate(self._molecules):
             geometries.append(molecule.geometry)
@@ -110,15 +102,17 @@ class Cosymlib:
                 geometries.append(Geometry(symbols=molecule.geometry.get_symbols(),
                                            positions=shape_results_structures[idl][idm],
                                            name=molecule.name + '_' + reference))
-        output.write(file_io.write_geometry_into_file_xyz(geometries))
 
-    def write_path_parameters_2file(self, shape_label1, shape_label2, central_atom=0,
-                                    maxdev=15, mindev=0, maxgco=101, mingco=0, output_name=None):
+        for geometry in geometries:
+            output.write(file_io.get_file_xyz_txt(geometry))
 
-        if output_name is not None:
-            output = open(output_name + '_tab.csv', 'w')
-        else:
-            output = sys.stdout
+    def write_path_parameters(self, shape_label1, shape_label2, central_atom=0,
+                              maxdev=15, mindev=0, maxgco=101, mingco=0, output=sys.stdout):
+
+        #if output_name is not None:
+        #    output = open(output_name + '_tab.csv', 'w')
+        #else:
+        #    output = sys.stdout
 
         csm, devpath, GenCoord = self.get_path_parameters(shape_label1, shape_label2, central_atom=central_atom,
                                                           maxdev=maxdev, mindev=mindev, maxgco=maxgco, mingco=mingco)
@@ -150,7 +144,8 @@ class Cosymlib:
                                        positions=results[idm].nearest_structure,
                                        name=molecule.name))
 
-        output.write(file_io.write_geometry_into_file_xyz(geometries))
+        for geometry in geometries:
+            output.write(file_io.get_file_xyz_txt(geometry))
 
     def write_wnfsym_measure_verbose(self, group,
                                      vector_axis1=None,
@@ -227,13 +222,13 @@ class Cosymlib:
 
         if type(shape_label1) is Geometry:
             label1 = shape_label1.get_positions()
-            label1_name = shape_label1.get_name()
+            label1_name = shape_label1.name
         else:
             label1 = shape_label1
             label1_name = shape_label1
         if type(shape_label2) is Geometry:
             label2 = shape_label2.get_positions()
-            label2_name = shape_label2.get_name()
+            label2_name = shape_label2.name
         else:
             label2 = shape_label2
             label2_name = shape_label2
@@ -264,7 +259,7 @@ class Cosymlib:
     def write_minimum_distortion_path_shape_2file(self, shape_label1, shape_label2, central_atom=0,
                                                   num_points=20, output_name=None):
 
-        self.write_path_parameters_2file(shape_label1, shape_label2, central_atom=central_atom, output_name=output_name)
+        self.write_path_parameters(shape_label1, shape_label2, central_atom=central_atom, output_name=output_name)
         if output_name is not None:
             output = open(output_name + '_pth.csv', 'w')
             output2 = open(output_name + '_pth.xyz', 'w')
@@ -274,13 +269,13 @@ class Cosymlib:
 
         if type(shape_label1) is Geometry:
             label1 = shape_label1.get_positions()
-            label1_name = shape_label1.get_name()
+            label1_name = shape_label1.name
         else:
             label1 = shape_label1
             label1_name = shape_label1
         if type(shape_label2) is Geometry:
             label2 = shape_label2.get_positions()
-            label2_name = shape_label2.get_name()
+            label2_name = shape_label2.name
         else:
             label2 = shape_label2
             label2_name = shape_label2
@@ -292,7 +287,7 @@ class Cosymlib:
         for ids, structure in enumerate(path[2]):
             test_structures.append(Geometry(symbols=['' for _ in range(len(structure))],
                                             positions=structure, name='map_structure{}'.format(ids)))
-        output2.write(file_io.write_geometry_into_file_xyz(test_structures))
+        output2.write(file_io.get_file_xyz_txt(test_structures))
         if output_name is None:
             import matplotlib.pyplot as plt
             plt.plot(path[0], path[1], 'k', linewidth=2.0)

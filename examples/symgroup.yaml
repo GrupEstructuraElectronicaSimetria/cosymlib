@@ -1,0 +1,7 @@
+# Symgroup command line
+measure: "C3v"
+structure: False
+# Optional command line
+central_atom: 1
+ignore_atoms_labels: False
+#center: [0., 0., 0.]

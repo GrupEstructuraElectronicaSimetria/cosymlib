@@ -39,13 +39,14 @@ class Shape:
         if key not in self._measures:
             if isinstance(label, str):
                 reference_structure = tools.get_test_structure(label, central_atom)
+                reference_coordinates = reference_structure.get_positions()
             else:
-                reference_structure = np.array(label)
+                reference_coordinates = np.array(label)
 
             if fix_permutation:
-                self._measures[key] = shp.cshm_fix(self._coordinates, reference_structure, central_atom)
+                self._measures[key] = shp.cshm_fix(self._coordinates, reference_coordinates, central_atom)
             else:
-                self._measures[key] = shp.cshm(self._coordinates, reference_structure, central_atom)
+                self._measures[key] = shp.cshm(self._coordinates, reference_coordinates, central_atom)
 
         return self._measures[key]
 
@@ -55,16 +56,17 @@ class Shape:
         if key not in self._structures:
             if isinstance(label, str):
                 reference_structure = tools.get_test_structure(label, central_atom)
+                reference_coordinates = reference_structure.get_positions()
             else:
-                reference_structure = np.array(label)
+                reference_coordinates = np.array(label)
 
             if fix_permutation:
                 self._structures[key], self._measures[key] = shp.poly_fix(self._coordinates,
-                                                                          reference_structure,
+                                                                          reference_coordinates,
                                                                           central_atom)
             else:
                 self._structures[key], self._measures[key] = shp.poly(self._coordinates,
-                                                                      reference_structure,
+                                                                      reference_coordinates,
                                                                       central_atom)
 
         return self._structures[key]
@@ -80,7 +82,7 @@ class Shape:
                 structure_a = shape_label1
             else:
                 structure_a = tools.get_test_structure(shape_label1, central_atom=central_atom)
-            theta = np.arcsin(np.sqrt(Shape(structure_a).measure(shape_label2, central_atom=len(structure_a))) / 10)
+            theta = np.arcsin(np.sqrt(Shape(structure_a).measure(shape_label2, central_atom=structure_a.get_n_atoms())) / 10)
             self._path_deviation[key] = ((new_theta / theta) - 1) * 100
 
         return self._path_deviation[key]
@@ -94,7 +96,7 @@ class Shape:
                 structure_a = shape_label1
             else:
                 structure_a = tools.get_test_structure(shape_label1, central_atom=central_atom)
-            theta = np.arcsin(np.sqrt(Shape(structure_a).measure(shape_label2, central_atom=len(structure_a))) / 10)
+            theta = np.arcsin(np.sqrt(Shape(structure_a).measure(shape_label2, central_atom=structure_a.get_n_atoms())) / 10)
             self._gen_coord[key] = round(100 * np.arcsin(np.sqrt(Sq) / 10) / theta, 1)
 
         return self._gen_coord[key]

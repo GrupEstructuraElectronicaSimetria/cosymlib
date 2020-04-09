@@ -49,8 +49,13 @@ class Geometry:
         self._shape = shape.Shape(self)
         self._symgroup = Symmetry(self)
 
-    def get_name(self):
+    def __len__(self):
+        return len(self._positions)
+
+    @ property
+    def name(self):
         return self._name
+
 
     def set_name(self, name):
         self._name = name

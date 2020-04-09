@@ -5,7 +5,7 @@ from numpy import testing
 class TestWfnsym(unittest.TestCase):
 
     def setUp(self):
-        self.structure = file_io.read_input_file('data/wfnsym/tih4_5d.fchk')
+        self.structure = file_io.read_generic_structure_file('data/wfnsym/tih4_5d.fchk')
         self.mo_symmetry = self.structure.get_mo_symmetry('Td',
                                                           vector_axis1=[0., 0., 1.],
                                                           vector_axis2=[-0.471418708, -0.816488390, -0.333333333],

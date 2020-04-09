@@ -15,7 +15,7 @@ def get_symgroup_data_txt(label, geometries, symgroup_results):
     sym_txt = 'Evaluating symmetry operation : {}\n'.format(label)
 
     for idx, geometry in enumerate(geometries):
-        sym_txt += '{}\n'.format(geometry.get_name())
+        sym_txt += '{}\n'.format(geometry.name)
         sym_txt += '\n'
         sym_txt += 'Centered Structure\n'
         sym_txt += sep_line
@@ -53,12 +53,12 @@ def get_symgroup_measure_txt(label, geometries, symgroup_results):
     sym_txt = 'Evaluating symmetry operation : {}\n \n'.format(label)
     for idx, geometry in enumerate(geometries):
         csm = symgroup_results[idx].csm
-        max_name = len(max(geometry.get_name(), key=len))
-        sym_txt += '{} '.format(geometry.get_name())
+        max_name = len(max(geometry.name, key=len))
+        sym_txt += '{} '.format(geometry.name)
         if max_name < 9:
-            n = 18 - len(geometry.get_name())
+            n = 18 - len(geometry.name)
         else:
-            n = 9 + max_name - len(geometry.get_name())
+            n = 9 + max_name - len(geometry.name)
         sym_txt += '{:{width}.{prec}f}\n'.format(csm, width=n, prec=3)
 
     return sym_txt
