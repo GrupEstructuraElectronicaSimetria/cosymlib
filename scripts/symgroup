@@ -22,29 +22,29 @@ parser.add_argument('-m', '--measure',
                     dest='measure',
                     metavar='SG',
                     default=False,
-                    help='Symgroup measure of input structure with reference group')
+                    help='Calculate the SG symmetry measure for input structure')
 parser.add_argument('-s', '--structure',
                     dest='structure',
                     action='store_true',
                     default=False,
-                    help='return the closes input structure to the reference symmetry')
+                    help='returns the closest SG-symmetric structure to the reference one')
 parser.add_argument('-l', '--labels',
                     dest='labels',
                     action='store_true',
                     default=False,
-                    help='return the possible symmetry labels that can be used in symgroup')
+                    help='prints the symmetry labels (SG) for the groups that can be used')
 parser.add_argument('-o', '--output',
                     dest='output_name',
                     metavar='filename',
                     default=None,
-                    help='save in file name')
+                    help='saves results in a file')
 parser.add_argument('-c', '--central_atom',
                     action='store',
                     dest='central_atom',
                     metavar='N',
                     type=int,
                     default=0,
-                    help='position of the central atom')
+                    help='central atom is in position N in the input structure')
 parser.add_argument('-info',
                     action='store_true',
                     default=False,
@@ -60,18 +60,18 @@ parser.add_argument('--ignore_atoms_labels',
                     dest='ignore_atoms_labels',
                     action='store_true',
                     default=False,
-                    help='ignore atom labels from given structures')
+                    help='ignore atom labels for structures in the input file')
 parser.add_argument('--connectivity_thresh',
                     dest='connectivity_thresh',
                     metavar='R',
                     default=1.1,
-                    help='connectivity threshold if not provided')
+                    help='threshold to determine if atoms are connected (Angs)')
 parser.add_argument('--center',
                     dest='center', metavar='R',
                     type=float,
                     default=None,
                     nargs=3,
-                    help='Center for the symmetry operations')
+                    help='Set the center for symmetry operations (Angs)')
 
 
 args = parser.parse_args()
