@@ -120,9 +120,13 @@ class Geometry:
         return self._shape.get_generalized_coordinate(shape_label1, shape_label2, central_atom)
 
     # Symmetry methods
-    def get_symmetry_measure(self, label, multi=1, central_atom=0, connect_thresh=1.1, center=None,):
+    def get_symmetry_measure(self, label, multi=1, central_atom=0, connect_thresh=1.1, center=None):
         self._symmetry.set_parameters(_get_symgroup_arguments(locals()))
         return self._symmetry.measure(label)
+
+    def get_symmetry_nearest_structure(self, label, multi=1, central_atom=0, connect_thresh=1.1, center=None):
+        self._symmetry.set_parameters(_get_symgroup_arguments(locals()))
+        return self._symmetry.nearest_structure(label)
 
     def get_pointgroup(self, tol=0.01):
         return PointGroup(self, tolerance=tol).get_point_group()

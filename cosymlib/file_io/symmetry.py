@@ -2,7 +2,7 @@ import sys
 from cosymlib import tools
 
 
-def get_symgroup_data_txt(label, geometries, symgroup_results):
+def DELETE_get_symgroup_data_txt(label, geometries, symgroup_results):
     # if output_name is not None:
     #     output = open(output_name + '.zout', 'w')
     #     output2 = open(output_name + '.ztab', 'w')

@@ -161,7 +161,7 @@ class Cosymlib:
 
         output.write(txt)
 
-    def print_geometric_measure(self, label, multi=1, central_atom=0, connect_thresh=1.1, center=None, output=sys.stdout):
+    def print_geometric_symmetry_measure(self, label, multi=1, central_atom=0, connect_thresh=1.1, center=None, output=sys.stdout):
         kwargs = _get_symgroup_arguments(locals())
 
         txt = 'Evaluating symmetry operation : {}\n \n'.format(label)
@@ -177,17 +177,14 @@ class Cosymlib:
 
         output.write(txt)
 
-    def print_symgroup_structure(self, group, multi=1, central_atom=0, connect_thresh=1.1, center=None, output=sys.stdout):
+    def print_symmetry_nearest_structure(self, label, multi=1, central_atom=0, connect_thresh=1.1, center=None, output=sys.stdout):
+        kwargs = _get_symgroup_arguments(locals())
 
-        results = self._get_symgroup_results_list(**_get_symgroup_arguments(locals()))
-
-        geometries = []
         for idm, molecule in enumerate(self._molecules):
-            geometries.append(Geometry(symbols=molecule.geometry.get_symbols(),
-                                       positions=results[idm].nearest_structure,
-                                       name=molecule.name))
+            geometry = Geometry(symbols=molecule.geometry.get_symbols(),
+                                positions=molecule.geometry.get_symmetry_nearest_structure(**kwargs),
+                                 name=molecule.name)
 
-        for geometry in geometries:
             output.write(file_io.get_file_xyz_txt(geometry))
 
     def print_wnfsym_measure_verbose(self, group,
@@ -196,7 +193,6 @@ class Cosymlib:
                                      center=None,
                                      output=sys.stdout,
                                      n_molecule=0):
-
 
         wfnsym_results = self.get_wfnsym_results(group, vector_axis1, vector_axis2, center)
         txt = file_io.symmetry.get_operated_matrices_txt(group, self._molecules[n_molecule],

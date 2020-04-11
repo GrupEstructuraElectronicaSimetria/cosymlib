@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 from cosymlib import file_io
-from cosymlib.molecule.geometry import Geometry
 from cosymlib.shape import tools
-from cosymlib.file_io.tools import add_extra_keywords, extract_geometries, header, footer, write_input_info
+from cosymlib.file_io.tools import add_extra_keywords, extract_geometries, print_header, print_footer, print_input_info
 from cosymlib.file_io import read_generic_structure_file
 from cosymlib.symmetry.tools import print_symmetry_labels
 from cosymlib import Cosymlib
 import argparse
 import sys
-import os
 
 
 # positional arguments
@@ -20,7 +18,7 @@ parser.add_argument(type=str,
                     dest="yaml_input",
                     nargs='?',
                     default=None,
-                    help='Input keywords file')
+                    help='input keywords file')
 # Main options
 parser.add_argument('-m', '--measure',
                     dest='measure',
@@ -70,7 +68,7 @@ parser.add_argument('--fix_permutation',
 args = parser.parse_args()
 
 common_output = open(str(args.output_name), 'w') if args.output_name is not None else sys.stdout
-header(common_output)
+print_header(common_output)
 
 
 if args.yaml_input:
@@ -91,7 +89,7 @@ if args.references:
     file_io.write_reference_structures_in_file_xyz(reference_structures, central_atom=args.central_atom)
 
 if args.info:
-    write_input_info(geometries, output=common_output)
+    print_input_info(geometries, output=common_output)
     exit()
 
 # Shape's commands
@@ -128,4 +126,4 @@ if args.structure:
                                  fix_permutation=args.fix_permutation,
                                  output=common_output)
 
-footer(common_output)
+print_footer(common_output)

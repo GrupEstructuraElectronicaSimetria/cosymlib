@@ -3,7 +3,7 @@ from cosymlib.molecule.geometry import Geometry
 from cosymlib import __version__
 
 
-def header(output=sys.stdout):
+def print_header(output=sys.stdout):
     output.write('-' * 70 + '\n')
     output.write(' COSYMLIB v{}\n Electronic Structure & Symmetry Group\n'.format(__version__))
     output.write(' Institut de Quimica Teorica i Computacional (IQTC)\n')
@@ -11,13 +11,13 @@ def header(output=sys.stdout):
     output.write('-' * 70 + '\n\n')
 
 
-def footer(output=sys.stdout):
+def print_footer(output=sys.stdout):
     output.write('\n' + '-' * 70 + '\n')
     output.write(' ' * 20 + 'End of calculation\n')
     output.write('-' * 70 + '\n\n')
 
 
-def write_input_info(initial_geometries, output=sys.stdout):
+def print_input_info(initial_geometries, output=sys.stdout):
 
     for ids, geometry in enumerate(initial_geometries):
         output.write('Structure {} : {}\n'.format(ids+1, geometry.name))
@@ -47,7 +47,6 @@ def extract_geometries(structure_list, as_list=False):
     :param as_list:
     :return:
     """
-
 
     if isinstance(structure_list, list):
         geometry_list = []
