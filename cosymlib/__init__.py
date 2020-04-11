@@ -2,6 +2,7 @@ __version__ = '0.7.4'
 
 from cosymlib.molecule import Molecule, Geometry
 from cosymlib import file_io
+from cosymlib import tools
 from cosymlib.file_io.shape import write_shape_measure_data, write_minimal_distortion_path_analysis, write_shape_map
 from cosymlib.utils import get_shape_map, plot_molecular_orbital_diagram, plot_symmetry_energy_evolution
 
@@ -118,17 +119,62 @@ class Cosymlib:
                                                      mingco, maxgco, names_order)
         output.write(txt)
 
-    def print_symgroup_measure_info(self, group, multi=1, central_atom=0, center=None, output=sys.stdout):
-        results = self._get_symgroup_results_list(**_get_symgroup_arguments(locals()))
-        txt = file_io.symmetry.get_symgroup_data_txt(group, [molecule.geometry for molecule in self._molecules],
-                                                      results)
+    # TODO: Change name of all symgroup named functions
+    def print_geometric_measure_info(self, label, multi=1, central_atom=0, center=None, output=sys.stdout):
+        kwargs = _get_symgroup_arguments(locals())
+
+        sep_line = '..................................................\n'
+
+        txt = 'Evaluating symmetry operation : {}\n'.format(label)
+
+        for idx, molecule in enumerate(self._molecules):
+            molecule.geometry._symmetry.set_parameters(kwargs)
+            txt += '{}\n'.format(molecule.name)
+            txt += '\n'
+            txt += 'Centered Structure\n'
+            txt += sep_line
+            center_mass = tools.center_mass(molecule.geometry.get_symbols(), molecule.geometry.get_positions())
+            for idn, array in enumerate(molecule.geometry.get_positions()):
+                array = array - center_mass
+                txt += '{:2} {:12.8f} {:12.8f} {:12.8f}\n'.format(molecule.geometry.get_symbols()[idn],
+                                                                      array[0], array[1], array[2])
+            txt += sep_line
+
+            txt += 'Optimal permutation\n'
+            for idn, permutation in enumerate(molecule.geometry._symmetry.optimum_permutation(label)):
+                txt += '{:2} {:2}\n'.format(idn + 1, permutation)
+            txt += '\n'
+
+            txt += 'Inverted structure\n'
+            for idn, axis in enumerate(molecule.geometry._symmetry.nearest_structure(label)):
+                txt += '{:2} {:12.8f} {:12.8f} {:12.8f}\n'.format(molecule.geometry.get_symbols()[idn],
+                                                                      axis[0], axis[1], axis[2])
+            txt += '\n'
+
+            txt += 'Reference axis\n'
+            for array in molecule.geometry._symmetry.reference_axis(label):
+                txt += '{:12.8f} {:12.8f} {:12.8f}\n'.format(array[0], array[1], array[2])
+            txt += '\n'
+
+            txt += 'Symmetry measure {:.5f}\n'.format(molecule.geometry.get_symmetry_measure(kwargs))
+            txt += sep_line
+
         output.write(txt)
 
-    def print_symgroup_measure(self, group, multi=1, central_atom=0, connect_thresh=1.1, center=None, output=sys.stdout):
-        results = self._get_symgroup_results_list(**_get_symgroup_arguments(locals()))
-        txt = file_io.symmetry.get_symgroup_measure_txt(group,
-                                                        [molecule.geometry for molecule in self._molecules],
-                                                        results)
+    def print_geometric_measure(self, label, multi=1, central_atom=0, connect_thresh=1.1, center=None, output=sys.stdout):
+        kwargs = _get_symgroup_arguments(locals())
+
+        txt = 'Evaluating symmetry operation : {}\n \n'.format(label)
+        for idx, molecule in enumerate(self._molecules):
+            csm = molecule.geometry.get_symmetry_measure(**kwargs)
+            max_name = len(max(molecule.name, key=len))
+            txt += '{} '.format(molecule.name)
+            if max_name < 9:
+                n = 18 - len(molecule.name)
+            else:
+                n = 9 + max_name - len(molecule.name)
+            txt += '{:{width}.{prec}f}\n'.format(csm, width=n, prec=3)
+
         output.write(txt)
 
     def print_symgroup_structure(self, group, multi=1, central_atom=0, connect_thresh=1.1, center=None, output=sys.stdout):
@@ -236,10 +282,13 @@ class Cosymlib:
         generalized_coord = filter_results(generalized_coord, criteria, maxgco, mingco)
         return csm, devpath, generalized_coord
 
+    # to be removed and each function call specific methods implemented in molecule/geometry
     def _get_symgroup_results_list(self, group, **kwargs):
+
         results_list = []
         for molecule in self._molecules:
-            results_list.append(molecule.symmetry.get_symgroup_results(group, **kwargs))
+            molecule.geometry._symmetry.set_parameters(kwargs)
+            results_list.append(molecule.geometry._symmetry.get_symgroup_results(group))
         return results_list
 
     def get_wfnsym_results(self, group, vector_axis1, vector_axis2, center):

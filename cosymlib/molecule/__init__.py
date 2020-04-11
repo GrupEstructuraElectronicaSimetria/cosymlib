@@ -7,16 +7,19 @@ from warnings import warn
 
 
 class Molecule:
-    def __init__(self, geometry, electronic_structure=None):
+    def __init__(self, geometry, electronic_structure=None, name=None):
 
         if not geometry:
             print('No geometry found in the input file, check out input file for possible errors')
             exit()
-        self._name = geometry.name
+        if name is None:
+            self._name = geometry.name
+
         self._geometry = geometry
         self._electronic_structure = electronic_structure
-        self._symmetry = None
-        self._shape = None
+        self._symmetry = geometry._symmetry
+        self._shape = geometry.shape
+        self._symmetry.set_electronic_structure(electronic_structure)
 
     @property
     def name(self):
@@ -37,20 +40,19 @@ class Molecule:
                                                              orbital_coefficients=[eh.get_mo_coefficients(), []],
                                                              mo_energies=eh.get_mo_energies(),
                                                              valence_only=True)
+            self.symmetry.set_electronic_structure(self._electronic_structure)
+
         return self._electronic_structure
 
+    # TODO: 'symmetry' and 'shape' properties should be removed. All methods inside these
+    # TODO: classes should be mirrored in geometry/molecule class
     @property
     def symmetry(self):
-        if self._symmetry is None:
-            self._symmetry = Symmetry(self)
-
         return self._symmetry
 
     @property
     def shape(self):
-        if self._shape is None:
-            self._shape = Shape(self)
         return self._shape
 
     def get_mo_symmetry(self, group, vector_axis1=None, vector_axis2=None, center=None):
-        return self.symmetry.get_wfnsym_results(group, vector_axis1, vector_axis2, center)
+        return self.symmetry._get_wfnsym_results(group, vector_axis1, vector_axis2, center)

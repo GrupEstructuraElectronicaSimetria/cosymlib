@@ -199,10 +199,10 @@ if args.sym_structure:
                                     symbols=not args.ignore_atom_labels,
                                     output_name=args.output_name)
 elif args.sym_measure:
-    symobj.print_symgroup_measure(args.sym_measure,
-                                  central_atom=args.central_atom,
-                                  symbols=not args.ignore_atom_labels,
-                                  filename=args.output_name)
+    symobj.print_geometric_measure(args.sym_measure,
+                                   central_atom=args.central_atom,
+                                   symbols=not args.ignore_atom_labels,
+                                   filename=args.output_name)
 
 # Wfnsym commands
 if args.qsym_wfn:

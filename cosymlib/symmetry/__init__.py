@@ -25,7 +25,11 @@ def _get_key_wfnsym(group, vector_axis1, vector_axis2, center):
 class Symmetry:
     def __init__(self,
                  structure,
-                 central_atom=None):
+                 central_atom=None,
+                 center=None,
+                 connect_thresh=1.1,
+                 multi=1
+                 ):
 
         # Allow geometry or molecule to be imported instead of crude Cartesian coordinates
         try:
@@ -46,38 +50,55 @@ class Symmetry:
                 self._connectivity = None
 
         self._central_atom = central_atom
+        self._center = center
+        self._connect_thresh = connect_thresh
+        self._multi = multi
         self._results = {}
         try:
             self._electronic_structure = structure.electronic_structure
         except AttributeError:
             self._electronic_structure = None
 
+    def set_parameters(self, parameters_dict):
+        for name, value in parameters_dict.items():
+            setattr(self, '_' + name, value)
+
+    def set_electronic_structure(self, electronic_structure):
+        self._electronic_structure = electronic_structure
+
     def get_symgroup_results(self, label,
-                             multi=1,
-                             center=None,
-                             central_atom=None,
-                             connect_thresh=1.1):
+                             # multi=1,  # no
+                             # center=None,  # no
+                             # central_atom=None,  # no
+                             # connect_thresh=1.1  # no
+                             ):
 
-        if central_atom is None:
-            central_atom = self._central_atom
+        """
+        # Temporal interface
+        if central_atom is not None:
+            self._central_atom = central_atom
 
-        key = _get_key_symgroup(label, center, central_atom, self._connectivity, multi, connect_thresh)
+        self._multi = multi
+        self._center = center
+        self._connect_thresh = connect_thresh
+        """
+
+        key = _get_key_symgroup(label, self._center, self._central_atom, self._connectivity, self._multi, self._connect_thresh)
         if key not in self._results:
             self._results[key] = Symgroupy(self._coordinates,
                                            group=label,
                                            labels=self._symbols,
-                                           central_atom=central_atom,
-                                           multi=multi,
-                                           center=center,
+                                           central_atom=self._central_atom,
+                                           multi=self._multi,
+                                           center=self._center,
                                            connectivity=self._connectivity,
-                                           connect_thresh=connect_thresh)
+                                           connect_thresh=self._connect_thresh)
         return self._results[key]
 
-    def get_wfnsym_results(self, group, vector_axis1, vector_axis2, center):
+    def _get_wfnsym_results(self, group, vector_axis1, vector_axis2, center):
 
         if self._electronic_structure is None:
-            print('Electronic structure not found')
-            exit()
+            raise Exception('Electronic structure not found')
 
         key = _get_key_wfnsym(group, vector_axis1, vector_axis2, center)
 
@@ -98,43 +119,45 @@ class Symmetry:
     #       Structure symmetry methods       #
     ##########################################
 
-    def measure(self, label, multi=1):
-        return self.get_symgroup_results(label, multi=multi).csm
+    def measure(self, label):
+        return self.get_symgroup_results(label).csm
 
-    def nearest_structure(self, label, multi=1):
-        return self.get_symgroup_results(label, multi=multi).nearest_structure
+    def nearest_structure(self, label):
+        return self.get_symgroup_results(label).nearest_structure
 
-    def optimum_axis(self, label, multi=1):
-        return self.get_symgroup_results(label, multi=multi).optimum_axis
+    def optimum_axis(self, label):
+        return self.get_symgroup_results(label).optimum_axis
 
-    def optimum_permutation(self, label, multi=1, symbols=True):
-        return self.get_symgroup_results(label, multi=multi).optimum_permutation
+    def optimum_permutation(self, label):
+        return self.get_symgroup_results(label).optimum_permutation
 
-    def reference_axis(self, label, multi=1):
-        return self.get_symgroup_results(label, multi=multi).reference_axis
+    def reference_axis(self, label):
+        return self.get_symgroup_results(label).reference_axis
 
     def cms_multi(self, label, multi=1):
-        return self.get_symgroup_results(label, multi=multi).cms_multi
+        self._multi = multi
+        return self.get_symgroup_results(label).cms_multi
 
     def axis_multi(self, label, multi=1):
-        return self.get_symgroup_results(label, multi=multi).axis_multi
+        self._multi = multi
+        return self.get_symgroup_results(label).axis_multi
 
     ##########################################
     #       Electronic symmetry methods      #
     ##########################################
 
     def symmetry_overlap_analysis(self, group, vector_axis1, vector_axis2, center):
-        results = self.get_wfnsym_results(group, vector_axis1, vector_axis2, center)
+        results = self._get_wfnsym_results(group, vector_axis1, vector_axis2, center)
 
         return [results.ideal_gt, results.SymLab, results.mo_SOEVs_a,
                 results.mo_SOEVs_b, results.wf_SOEVs_a, results.wf_SOEVs_b,
                 results.wf_SOEVs, results.grim_coef, results.csm_coef]
 
     def symmetry_irreducible_representation_analysis(self, group, vector_axis1, vector_axis2, center):
-        results = self.get_wfnsym_results(group, vector_axis1, vector_axis2, center)
+        results = self._get_wfnsym_results(group, vector_axis1, vector_axis2, center)
         return [results.IRLab, results.mo_IRd_a, results.mo_IRd_b,
                 results.wf_IRd_a, results.wf_IRd_b, results.wf_IRd]
 
     def symmetry_matrix(self, group, vector_axis1, vector_axis2, center):
-        results = self.get_wfnsym_results(group, vector_axis1, vector_axis2, center)
+        results = self._get_wfnsym_results(group, vector_axis1, vector_axis2, center)
         return results.SymMat

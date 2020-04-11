@@ -4,6 +4,16 @@ from cosymlib.symmetry.pointgroup import PointGroup
 import numpy as np
 
 
+def _get_symgroup_arguments(locals):
+    kwargs = dict(locals)
+    del kwargs['self']
+    for element in ['self']:
+        if element in kwargs:
+            del kwargs[element]
+
+    return kwargs
+
+
 class Geometry:
     def __init__(self,
                  positions,
@@ -47,15 +57,25 @@ class Geometry:
         self._positions = np.array(self._positions)
         self._connectivity = connectivity
         self._shape = shape.Shape(self)
-        self._symgroup = Symmetry(self)
+        self._symmetry = Symmetry(self)
 
     def __len__(self):
         return len(self._positions)
 
-    @ property
+    @property
     def name(self):
         return self._name
 
+    # TODO: 'symmetry' and 'shape' properties should be removed. All methods inside these
+    # TODO: classes should be mirrored in geometry/molecule class. See get_symmetry_measure()
+
+    @property
+    def symmetry(self):
+        return self._symmetry
+
+    @property
+    def shape(self):
+        return self._shape
 
     def set_name(self, name):
         self._name = name
@@ -65,16 +85,16 @@ class Geometry:
 
     def set_connectivity(self, connectivity):
         self._connectivity = connectivity
-        self._symgroup._connectivity = connectivity
+        self._symmetry._connectivity = connectivity
 
     def set_symbols(self, symbols):
         self._symbols = symbols
-        self._symgroup._symbols = symbols
+        self._symmetry._symbols = symbols
 
     def set_positions(self, central_atom=0):
         atom, self._positions = self._positions[central_atom], np.delete(self._positions, central_atom, 0)
         self._positions = np.insert(self._positions, len(self._positions), atom, axis=0)
-        self._symgroup._positions= self._positions
+        self._symmetry._positions= self._positions
         self._shape._positions= self._positions
 
     def get_positions(self):
@@ -86,21 +106,23 @@ class Geometry:
     def get_symbols(self):
         return self._symbols
 
+    # Shape methods
     def get_shape_measure(self, shape_label, central_atom=0, fix_permutation=False):
         return self._shape.measure(shape_label, central_atom=central_atom, fix_permutation=fix_permutation)
 
     def get_shape_structure(self, shape_label, central_atom=0, fix_permutation=False):
         return self._shape.structure(shape_label, central_atom=central_atom, fix_permutation=fix_permutation)
 
-    def get_symmetry_measure(self, label, central_atom=0, multi=1, center=None):
-        return self._symgroup.get_symgroup_results(label, central_atom=central_atom, multi=multi,
-                                                   center=center).csm
-
     def get_path_deviation(self, shape_label1, shape_label2, central_atom=0):
         return self._shape.get_path_deviation(shape_label1, shape_label2, central_atom)
 
     def get_generalized_coordinate(self, shape_label1, shape_label2, central_atom=0):
         return self._shape.get_generalized_coordinate(shape_label1, shape_label2, central_atom)
+
+    # Symmetry methods
+    def get_symmetry_measure(self, label, multi=1, central_atom=0, connect_thresh=1.1, center=None,):
+        self._symmetry.set_parameters(_get_symgroup_arguments(locals()))
+        return self._symmetry.measure(label)
 
     def get_pointgroup(self, tol=0.01):
         return PointGroup(self, tolerance=tol).get_point_group()

@@ -48,22 +48,6 @@ def get_symgroup_data_txt(label, geometries, symgroup_results):
     return sym_txt
 
 
-def get_symgroup_measure_txt(label, geometries, symgroup_results):
-
-    sym_txt = 'Evaluating symmetry operation : {}\n \n'.format(label)
-    for idx, geometry in enumerate(geometries):
-        csm = symgroup_results[idx].csm
-        max_name = len(max(geometry.name, key=len))
-        sym_txt += '{} '.format(geometry.name)
-        if max_name < 9:
-            n = 18 - len(geometry.name)
-        else:
-            n = 9 + max_name - len(geometry.name)
-        sym_txt += '{:{width}.{prec}f}\n'.format(csm, width=n, prec=3)
-
-    return sym_txt
-
-
 def get_operated_matrices_txt(group, molecule, parsed_data):
 
     geometry = molecule.geometry

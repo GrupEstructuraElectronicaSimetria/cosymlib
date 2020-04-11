@@ -83,8 +83,7 @@ header(common_output)
 if args.yaml_input:
     add_extra_keywords(args, args.yaml_input)
 
-
-geometries, n_atoms = extract_geometries(read_generic_structure_file(args.input_file, read_multiple=True))
+geometries = extract_geometries(read_generic_structure_file(args.input_file, read_multiple=True), as_list=True)
 
 for geometry in geometries:
     if args.ignore_atoms_labels:
@@ -105,11 +104,11 @@ if args.info:
 
 # Symgroup commands
 if args.measure:
-    symobj.print_symgroup_measure(args.measure,
-                                  central_atom=args.central_atom,
-                                  center=args.center,
-                                  connect_thresh=args.connectivity_thresh,
-                                  output=common_output)
+    symobj.print_geometric_measure(args.measure,
+                                   central_atom=args.central_atom,
+                                   center=args.center,
+                                   connect_thresh=args.connectivity_thresh,
+                                   output=common_output)
 
 if args.structure:
     if args.output_name is None:

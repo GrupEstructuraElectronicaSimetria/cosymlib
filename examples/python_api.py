@@ -46,7 +46,7 @@ print('structure:\n', shape.Shape(methane).structure('SP-4', central_atom=1))
 print('\nSYMMETRY\n--------')
 
 molecule = file_io.get_geometry_from_file_pdb('methane.pdb', read_multiple=False)
-print('measure C3: {} '.format(molecule.get_symmetry_measure('c3', center=[0, 0, 0])))
+print('measure C3: {} '.format(molecule.get_symmetry_measure('c3')))
 
 # Check multiple calls of symgroup one calculatioin
 for i in range(100):
