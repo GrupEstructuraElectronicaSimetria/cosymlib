@@ -1,5 +1,5 @@
 
-def write_shape_measure_data(measures, molecules_name, shape_label):
+def get_shape_measure_data_txt(measures, molecules_name, shape_label):
 
     txt_shape = '{}'.format('Structure')
     max_name = len(max(molecules_name, key=len))

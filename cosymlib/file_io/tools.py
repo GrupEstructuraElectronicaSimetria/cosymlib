@@ -31,11 +31,14 @@ def print_input_info(initial_geometries, output=sys.stdout):
 def add_extra_keywords(args, filename):
     with open(filename, 'r') as stream:
         input_parameters = yaml.load(stream, Loader=yaml.FullLoader)
-    for key, value in input_parameters.items():
-        if key.lower() in args:
-            setattr(args, key.lower(), value)
-        else:
-            raise KeyError("'{}' is not a valid input keyword".format(key))
+    try:
+        for key, value in input_parameters.items():
+            if key.lower() in args:
+                setattr(args, key.lower(), value)
+            else:
+                raise KeyError("'{}' is not a valid input keyword".format(key))
+    except AttributeError:
+        raise KeyError('Incorrect input file format')
 
 
 def extract_geometries(structure_list, as_list=False):

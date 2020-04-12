@@ -34,14 +34,14 @@ class Shape:
         self._gen_coord = {}
 
     # Function description
-    def measure(self, label, central_atom=0, fix_permutation=False):
-        key = _get_key(central_atom, label)
+    def measure(self, reference, central_atom=0, fix_permutation=False):
+        key = _get_key(central_atom, reference)
         if key not in self._measures:
-            if isinstance(label, str):
-                reference_structure = tools.get_test_structure(label, central_atom)
-                reference_coordinates = reference_structure.get_positions()
+            if isinstance(reference, str):
+                reference_structure = tools.get_test_structure(reference, central_atom)
             else:
-                reference_coordinates = np.array(label)
+                reference_structure = reference
+            reference_coordinates = reference_structure.get_positions()
 
             if fix_permutation:
                 self._measures[key] = shp.cshm_fix(self._coordinates, reference_coordinates, central_atom)

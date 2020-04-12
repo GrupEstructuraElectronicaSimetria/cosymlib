@@ -474,38 +474,21 @@ def basis_format(basis_set_name,
 
     return basis_set
 
+
 # Get OUPUT files
-
-
 def get_file_xyz_txt(structure):
 
-    # Get xyz file format from Molecule or Geometry
-
-    geometry = extract_geometries(structure)
-
-    txt = '{}\n'.format(geometry.get_n_atoms())
-    txt += '{}\n'.format(geometry.name)
-    for idp, position in enumerate(geometry.get_positions()):
-        txt += '{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idp],
-                                                              position[0], position[1], position[2])
-    return txt
-
-
-def write_reference_structures_in_file_xyz(structures, central_atom=0):
-
-    structures = extract_geometries(structures, as_list=True)
-    n_atoms = structures[0].get_n_atoms()
-
-    if central_atom == 0:
-        f = open('L{}.xyz'.format(n_atoms), 'w')
-    else:
-        f = open('ML{}.xyz'.format(n_atoms), 'w')
+    # Get xyz file format from Molecule or Geometry (or list)
+    geometries = extract_geometries(structure, as_list=True)
 
     txt = ''
-    for structure in structures:
-        txt += get_file_xyz_txt(structure)
-
-    f.write(txt)
+    for geometry in geometries:
+        txt += '{}\n'.format(geometry.get_n_atoms())
+        txt += '{}\n'.format(geometry.name)
+        for idp, position in enumerate(geometry.get_positions()):
+            txt += '{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idp],
+                                                                  position[0], position[1], position[2])
+    return txt
 
 
 # Support functions

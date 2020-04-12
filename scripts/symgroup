@@ -76,39 +76,32 @@ parser.add_argument('--center',
 
 args = parser.parse_args()
 
-common_output = open(str(args.output_name), 'w') if args.output_name is not None else sys.stdout
-print_header(common_output)
-
-
 if args.yaml_input:
     add_extra_keywords(args, args.yaml_input)
 
-geometries = extract_geometries(read_generic_structure_file(args.input_file, read_multiple=True), as_list=True)
+common_output = open(args.output_name, 'w') if args.output_name is not None else sys.stdout
+print_header(common_output)
 
-for geometry in geometries:
-    if args.ignore_atoms_labels:
-        geometry.set_symbols('X' * geometry.get_n_atoms())
-    if args.ignore_connectivity:
-        geometry.set_connectivity(None)
-
-symobj = Cosymlib(geometries)
-
+structures = read_generic_structure_file(args.input_file, read_multiple=True)
+structure_set = Cosymlib(structures,
+                         ignore_atoms_labels=args.ignore_atoms_labels,
+                         ignore_connectivity=args.ignore_connectivity)
 
 if args.labels:
     print_symmetry_labels()
     exit()
 
 if args.info:
-    print_input_info(geometries, output=common_output)
+    print_input_info(structure_set.get_geometries(), output=common_output)
     exit()
 
 # Symgroup commands
 if args.measure:
-    symobj.print_geometric_symmetry_measure(args.measure,
-                                            central_atom=args.central_atom,
-                                            center=args.center,
-                                            connect_thresh=args.connectivity_thresh,
-                                            output=common_output)
+    structure_set.print_geometric_symmetry_measure(args.measure,
+                                                   central_atom=args.central_atom,
+                                                   center=args.center,
+                                                   connect_thresh=args.connectivity_thresh,
+                                                   output=common_output)
 
 if args.structure:
     if args.output_name is None:
@@ -117,10 +110,10 @@ if args.structure:
     else:
         structure_output = open(args.output_name + '_sym.xyz', 'w')
 
-    symobj.print_symmetry_nearest_structure(args.measure,
-                                            central_atom=args.central_atom,
-                                            connect_thresh=args.connectivity_thresh,
-                                            center=args.center,
-                                            output=structure_output)
+    structure_set.print_symmetry_nearest_structure(args.measure,
+                                                   central_atom=args.central_atom,
+                                                   connect_thresh=args.connectivity_thresh,
+                                                   center=args.center,
+                                                   output=structure_output)
 
 print_footer(common_output)

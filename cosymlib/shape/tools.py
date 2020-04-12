@@ -13,10 +13,11 @@ def get_test_structure(label, central_atom=0):
         file_path = os.path.dirname(os.path.abspath(__file__)) + '/ideal_structures_center.yaml'
         with open(file_path, 'r') as stream:
             ideal_structures = yaml.load(stream, Loader=yaml.FullLoader)
+
     if central_atom == 0:
-        coordinates = ideal_structures[label.upper()][:-1]
+        coordinates = ideal_structures[label][:-1]
     else:
-        coordinates = ideal_structures[label.upper()]
+        coordinates = ideal_structures[label]
 
     return Geometry(positions=coordinates,
                     name=label,
