@@ -6,7 +6,7 @@ def _get_key(central_atom, reference, reference_2=''):
     if isinstance(reference, str):
         label_key = reference.lower()
     else:
-        label_key = np.array2string(reference, precision=10)
+        label_key = np.array2string(reference.get_positions(), precision=10)
     label2_key = reference_2.lower()
 
     central_atom_key = int(central_atom)

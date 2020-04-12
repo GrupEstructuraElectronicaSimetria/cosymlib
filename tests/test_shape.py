@@ -200,7 +200,7 @@ class TestShape(unittest.TestCase):
                     reference_polyhedron.append(shape.tools.get_shape_label(int(number), options['%n_atoms']))
 
         results = [[shape.Shape(molecule).measure(reference_polyhedron[0], central_atom=central_atom)
-                    for molecule in molecules], [shape.Shape(molecule).measure(reference_polyhedron[1].get_positions(),
+                    for molecule in molecules], [shape.Shape(molecule).measure(reference_polyhedron[1],
                                                                                central_atom=central_atom) for molecule
                                                  in molecules]]
 
