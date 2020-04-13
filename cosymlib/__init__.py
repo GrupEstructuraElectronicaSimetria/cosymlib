@@ -63,6 +63,12 @@ class Cosymlib:
     def get_geometries(self):
         return [mol.geometry for mol in self._molecules]
 
+    def print_info(self):
+        print('\033[1m{:20}   {:^5}\033[0m'.format('name', 'atoms'))
+        for molecule in self._molecules:
+            print('{:20} : {:5}'.format(molecule.name, molecule.geometry.get_n_atoms()))
+        print('Total structures: {}'.format(len(self._molecules)))
+
     @property
     def molecules(self):
         return self._molecules
@@ -265,40 +271,156 @@ class Cosymlib:
             output.write(file_io.get_file_xyz_txt(geometry))
 
     # This should just call methos within this class
-    def print_wnfsym_measure_verbose(self, group,
-                                     vector_axis1=None,
-                                     vector_axis2=None,
-                                     center=None,
-                                     output=sys.stdout,
-                                     n_molecule=0):
+    def OLD_print_wnfsym_measure_verbose(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
+        self.print_wnfsym_sym_matrices(group, axis=None, axis2=None, center=None, output=sys.stdout)
+        self.print_wnfsym_irreducible_repr(group, axis=None, axis2=None, center=None, output=sys.stdout)
 
-        wfnsym_results = self._get_wfnsym_results(group, vector_axis1, vector_axis2, center)
-        txt = file_io.symmetry.get_operated_matrices_txt(group, self._molecules[n_molecule],
-                                                               wfnsym_results[n_molecule])
-        txt += file_io.symmetry.get_overlap_analysis_txt(wfnsym_results[n_molecule])
-        txt += file_io.symmetry.get_ir_analysis_txt(wfnsym_results[n_molecule])
+    def print_wnfsym_sym_matrices(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
+
+        txt = ''
+        for molecule in self._molecules:
+
+            sym_mat = molecule.get_symmetry_matrix(group, axis=axis, axis2=axis2, center=center)
+
+            geometry = molecule.geometry
+            sym_lables = sym_mat['labels']
+            sym_matrices = sym_mat['matrix']
+
+            sep_line = '--------------------------------------------\n'
+            txt += 'MEASURES OF THE SYMMETRY GROUP:   {}\n'.format(group)
+            txt += 'Basis: {}\n'.format(list(molecule.electronic_structure.basis.keys())[0])
+            txt += sep_line
+            txt += ' Atomic Coordinates (Angstroms)\n'
+            txt += sep_line
+            for idn, array in enumerate(geometry.get_positions()):
+                txt += '{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idn],
+                                                                      array[0], array[1], array[2])
+            txt += sep_line
+            for i, group in enumerate(sym_lables):
+                txt += '\n'
+                txt += '@@@ Operation {0}: {1}'.format(i + 1, group)
+                txt += '\nSymmetry Transformation matrix\n'
+                for array in sym_matrices[i]:
+                    txt += ' {:11.6f} {:11.6f} {:11.6f}\n'.format(array[0], array[1], array[2])
+                txt += '\n'
+                txt += 'Symmetry Transformed Atomic Coordinates (Angstroms)\n'
+
+                for idn, array in enumerate(geometry.get_positions()):
+                    array2 = np.dot(array, sym_matrices[i].T)
+                    txt += '{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idn],
+                                                                          array2[0], array2[1], array2[2])
         output.write(txt)
 
-    def print_wnfsym_sym_matrices(self, group, vector_axis1=None, vector_axis2=None,
-                                  center=None, n_molecule=0, output=sys.stdout):
+    def print_wnfsym_sym_ovelap(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
 
-        wfnsym_results = self._get_wfnsym_results(group, vector_axis1, vector_axis2, center)
-        txt = file_io.symmetry.get_operated_matrices_txt(group, self._molecules[0],
-                                                               wfnsym_results[n_molecule])
+        txt = ''
+        for molecule in self._molecules:
+            mo_overlap = molecule.get_mo_overlaps(group, axis=axis, axis2=axis2, center=center)
+            wf_overlap = molecule.get_wf_overlaps(group, axis=axis, axis2=axis2, center=center)
+
+            ideal_gt = molecule.get_ideal_group_table(group, axis=axis, axis2=axis2, center=center)
+            wf_measure = molecule.get_wf_symmetry(group, axis=axis, axis2=axis2, center=center)
+
+            sep_line = '     ' + '---------' * len(ideal_gt['ir_labels']) + '\n'
+
+            txt += '\nMolecule : {}\n'.format(molecule.name)
+
+            txt += '\nIdeal Group Table\n'
+            txt += sep_line
+            txt += '     ' + '  '.join(['{:^7}'.format(s) for s in ideal_gt['ir_labels']])
+            txt += '\n'
+            txt += sep_line
+            for i, line in enumerate(ideal_gt['table']):
+                txt += '{:4}'.format(ideal_gt['ir_labels'][i]) + '  '.join(['{:7.3f}'.format(s) for s in line])
+                txt += '\n'
+            txt += sep_line
+
+            txt += '\nAlpha MOs: Symmetry Overlap Expectation Values\n'
+            txt += sep_line
+            txt += '     ' + '  '.join(['{:^7}'.format(s) for s in ideal_gt['ir_labels']])
+            txt += '\n'
+            txt += sep_line
+
+            for i, line in enumerate(mo_overlap['alpha']):
+                txt += '{:4d}'.format(i + 1) + '  '.join(['{:7.3f}'.format(s) for s in line])
+                txt += '\n'
+
+            txt += '\nBeta MOs: Symmetry Overlap Expectation Values\n'
+            txt += sep_line
+            txt += '     ' + '  '.join(['{:^7}'.format(s) for s in ideal_gt['ir_labels']])
+            txt += '\n'
+            txt += sep_line
+            for i, line in enumerate(mo_overlap['beta']):
+                txt += '{:4d}'.format(i + 1) + '  '.join(['{:7.3f}'.format(s) for s in line])
+                txt += '\n'
+
+            txt += '\nWaveFunction: Symmetry Overlap Expectation Values\n'
+            txt += sep_line
+            txt += '     ' + '  '.join(['{:^7}'.format(s) for s in ideal_gt['ir_labels']])
+            txt += '\n'
+            txt += sep_line
+            txt += 'a-wf' + '  '.join(['{:7.3f}'.format(s) for s in wf_overlap['alpha']])
+            txt += '\n'
+            txt += 'b-wf' + '  '.join(['{:7.3f}'.format(s) for s in wf_overlap['beta']])
+            txt += '\n'
+            txt += 'WFN ' + '  '.join(['{:7.3f}'.format(s) for s in wf_overlap['total']])
+            txt += '\n'
+
+            txt += '\nWaveFunction: CSM-like values\n'
+            txt += sep_line
+            txt += '     ' + '  '.join(['{:^7}'.format(s) for s in ideal_gt['ir_labels']])
+            txt += '\n'
+            txt += sep_line
+
+            txt += 'Grim' + '  '.join(['{:7.3f}'.format(s) for s in wf_measure['grim']])
+            txt += '\n'
+            txt += 'CSM ' + '  '.join(['{:7.3f}'.format(s) for s in wf_measure['csm']])
+            txt += '\n'
+
         output.write(txt)
 
-    def print_wnfsym_sym_ovelap(self, group, vector_axis1=None, vector_axis2=None,
-                                center=None, n_molecule=0, output=sys.stdout):
+    def print_wnfsym_irreducible_repr(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
 
-        wfnsym_results = self._get_wfnsym_results(group, vector_axis1, vector_axis2, center)
-        txt = file_io.symmetry.get_overlap_analysis_txt(wfnsym_results[n_molecule])
-        output.write(txt)
+        txt = ''
+        for molecule in self._molecules:
+            ir_mo = molecule.get_mo_irreducible_representations(group, axis=axis, axis2=axis2, center=center)
+            data_wf = molecule.get_wf_irreducible_representations(group, axis=axis, axis2=axis2, center=center)
 
-    def print_wnfsym_ireducible_repr(self, group, vector_axis1=None, vector_axis2=None, center=None,
-                                     n_molecule=0, output=sys.stdout):
+            # print(data_mo, data_wf)
+            txt = '\nMolecule : {}\n'.format(molecule.name)
 
-        wfnsym_results = self._get_wfnsym_results(group, vector_axis1, vector_axis2, center)
-        txt = file_io.symmetry.get_ir_analysis_txt(wfnsym_results[n_molecule])
+            sep_line = '     ' + '---------' * len(ir_mo['labels']) + '\n'
+
+            txt += '\nAlpha MOs: Irred. Rep. Decomposition\n'
+            txt += sep_line
+            txt += '     ' + '  '.join(['{:^7}'.format(s) for s in ir_mo['labels']])
+            txt += '\n'
+            txt += sep_line
+            for i, line in enumerate(ir_mo['alpha']):
+                txt += '{:4d}'.format(i + 1) + '  '.join(['{:7.3f}'.format(s) for s in line])
+                txt += '\n'
+
+            txt += '\nBeta MOs: Irred. Rep. Decomposition\n'
+            txt += sep_line
+            txt += '     ' + '  '.join(['{:^7}'.format(s) for s in ir_mo['labels']])
+            txt += '\n'
+            txt += sep_line
+            for i, line in enumerate(ir_mo['beta']):
+                txt += '{:4d}'.format(i + 1) + '  '.join(['{:7.3f}'.format(s) for s in line])
+                txt += '\n'
+
+            txt += '\nWaveFunction: Irred. Rep. Decomposition\n'
+            txt += sep_line
+            txt += '     ' + '  '.join(['{:^7}'.format(s) for s in ir_mo['labels']])
+            txt += '\n'
+            txt += sep_line
+            txt += 'a-wf' + '  '.join(['{:7.3f}'.format(s) for s in data_wf['alpha']])
+            txt += '\n'
+            txt += 'b-wf' + '  '.join(['{:7.3f}'.format(s) for s in data_wf['beta']])
+            txt += '\n'
+            txt += 'WFN ' + '  '.join(['{:7.3f}'.format(s) for s in data_wf['total']])
+            txt += '\n'
+
         output.write(txt)
 
     def plot_mo_diagram(self, group, vector_axis1=None, vector_axis2=None, center=None, n_molecule=0):
@@ -323,7 +445,7 @@ class Cosymlib:
         return [molecule.geometry.generalized_coordinate(shape_label1, shape_label2, central_atom)
                 for molecule in self._molecules]
 
-    # TODO: THis may be places inside Shape class
+    # TODO: This may be placed inside Shape class
     def get_path_parameters(self, shape_label1, shape_label2, central_atom=0, maxdev=15, mindev=0,
                             maxgco=101, mingco=0):
 

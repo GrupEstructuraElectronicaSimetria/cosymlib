@@ -212,11 +212,11 @@ if args.qsym_wfn:
         args.axis2 = np.array(args.axis2).astype(float)
     if args.center is not None:
         args.center = np.array(args.center).astype(float)
-    symobj.print_wnfsym_measure_verbose(args.qsym_wfn,
-                                        vector_axis1=args.axis1,
-                                        vector_axis2=args.axis2,
-                                        center=args.center,
-                                        output_name=args.output_name)
+    symobj.OLD_print_wnfsym_measure_verbose(args.qsym_wfn,
+                                            axis=args.axis1,
+                                            axis2=args.axis2,
+                                            center=args.center,
+                                            output_name=args.output_name)
 
     #Utils
     if args.mo_diagram:

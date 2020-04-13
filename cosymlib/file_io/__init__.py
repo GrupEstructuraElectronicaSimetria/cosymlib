@@ -1,5 +1,4 @@
 from cosymlib.molecule import Molecule, Geometry, ElectronicStructure
-from cosymlib.file_io import symmetry
 from cosymlib.file_io.tools import extract_geometries
 from cosymlib.tools import atomic_number_to_element
 
@@ -126,7 +125,7 @@ def get_molecule_from_file_fchk(file_name, read_multiple=False):
     input_molecule = [[] for _ in range(len(key_list))]
     read = False
     with open(file_name, mode='r') as lines:
-        name = lines.readline()
+        name = lines.readline().strip('\n')
         line = lines.readline().split()
         basis_set = line[-1]
         if 'R' in line[1]:

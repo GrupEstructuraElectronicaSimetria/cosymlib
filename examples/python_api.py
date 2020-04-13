@@ -1,6 +1,7 @@
 import cosymlib.file_io as file_io
 import cosymlib.shape as shape
 from cosymlib.symmetry import Symmetry
+from cosymlib import Cosymlib
 
 
 def print_shape_data(geometries):
@@ -70,6 +71,15 @@ molecules_set = file_io.read_generic_structure_file('pirrol.fchk', read_multiple
 data = molecule.get_mo_symmetry('C2v',
                                 axis=[0.000000, 0.000000, 1.000000],  # valor defecte
                                 # vector_axis2=[-2.027247,  0.000133, -0.898469],
-                                center=[0.002440, -0.000122,  0.017307])  # valor per defecte (CM)
+                                center=[0.002440, -0.000122,  0.017307]
+                                )  # valor per defecte (CM)
 
 print_csm(data)
+
+print('\nCOSYMLIB\n--------')
+
+molecules_group = Cosymlib(molecules_set)
+molecules_group.print_info()
+molecules_group.print_wnfsym_irreducible_repr('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
+molecules_group.print_wnfsym_sym_ovelap('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
+molecules_group.print_wnfsym_sym_matrices('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])

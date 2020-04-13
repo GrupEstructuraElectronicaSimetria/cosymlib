@@ -8,6 +8,7 @@ from warnings import warn
 def set_parameters(func):
     def wrapper(*args, **kwargs):
         args[0]._symmetry.set_parameters(kwargs)
+        args[0]._symmetry.set_electronic_structure(args[0].electronic_structure)
         return func(*args, **kwargs)
     return wrapper
 
@@ -38,9 +39,7 @@ class Molecule:
     @property
     def electronic_structure(self):
         if self._electronic_structure is None:
-            warn('No electronic structure found in the input file.' +
-                  'Starting a extended-huckel calculation to determine' +
-                  'the molecular orbital coefficients...')
+            warn('Warning: Electronic structure auto generated from extended Huckel')
             eh = ExtendedHuckel(self.geometry)
             self._electronic_structure = ElectronicStructure(basis=eh.get_basis(),
                                                              orbital_coefficients=[eh.get_mo_coefficients(), []],
@@ -81,3 +80,11 @@ class Molecule:
     @set_parameters
     def get_symmetry_matrix(self, group, axis=None, axis2=None, center=None):
         return self._symmetry.symmetry_matrix(group)
+
+    @set_parameters
+    def get_wf_symmetry(self, group, axis=None, axis2=None, center=None):
+        return self._symmetry.wf_measure(group)
+
+    @set_parameters
+    def get_ideal_group_table(self, group, axis=None, axis2=None, center=None):
+        return self._symmetry.wf_ideal_group_table(group)

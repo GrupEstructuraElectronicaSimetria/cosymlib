@@ -59,7 +59,6 @@ class Symmetry:
         self._axis2 = axis2
         self._results = {}
 
-
         try:
             self._electronic_structure = structure.electronic_structure
         except AttributeError:
@@ -101,16 +100,15 @@ class Symmetry:
 
     def _get_wfnsym_results(self, group):
 
-        if self._electronic_structure is None:
-            raise Exception('Electronic structure not found')
-
         key = _get_key_wfnsym(group, self._axis, self._axis2, self._center)
 
         if key not in self._results:
             self._results[key] = WfnSympy(coordinates=self._coordinates,
                                           symbols=self._symbols,
                                           basis=self._electronic_structure.basis,
-                                          center=self._center, VAxis=self._axis, VAxis2=self._axis2,
+                                          center=self._center,
+                                          VAxis=self._axis,
+                                          VAxis2=self._axis2,
                                           alpha_mo_coeff=self._electronic_structure.coefficients_a,
                                           beta_mo_coeff=self._electronic_structure.coefficients_b,
                                           charge=self._electronic_structure.charge,
@@ -150,6 +148,7 @@ class Symmetry:
     #       Electronic symmetry methods      #
     ##########################################
 
+    # TODO: Consider to migrate this methods data to pandas tabular structures
     def mo_irreducible_representations(self, group):
         results = self._get_wfnsym_results(group)
 
@@ -182,9 +181,22 @@ class Symmetry:
 
     def symmetry_matrix(self, group):
         results = self._get_wfnsym_results(group)
-        return results.SymMat
+        return {'labels': results.SymLab,
+                'matrix': results.SymMat}
 
-    # to be deleted
+    def wf_measure(self, group):
+        results = self._get_wfnsym_results(group)
+        return {'labels': results.SymLab,
+                'csm': results.csm_coef,
+                'grim': results.grim_coef}
+
+    def wf_ideal_group_table(self, group):
+        results = self._get_wfnsym_results(group)
+        return {'ir_labels' : results.IRLab,
+                'labels': results.SymLab,
+                'table': results.ideal_gt}
+
+    # Old method to be deleted
     def symmetry_overlap_analysis(self, group, vector_axis1, vector_axis2, center):
         results = self._get_wfnsym_results(group)
 
