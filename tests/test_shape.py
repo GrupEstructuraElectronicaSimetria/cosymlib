@@ -134,10 +134,10 @@ class TestShape(unittest.TestCase):
                     for molecule in molecules],
                    [shape.Shape(molecule).measure(reference_polyhedron[1], central_atom=options['%central_atom'])
                     for molecule in molecules]]
-        dev_path = [molecule.path_deviation(reference_polyhedron[0], reference_polyhedron[1],
+        dev_path = [molecule.get_path_deviation(reference_polyhedron[0], reference_polyhedron[1],
                                             central_atom=options['%central_atom'])
                     for molecule in molecules]
-        gen_coord = [molecule.generalized_coordinate(reference_polyhedron[0], reference_polyhedron[1],
+        gen_coord = [molecule.get_generalized_coordinate(reference_polyhedron[0], reference_polyhedron[1],
                                                      central_atom=options['%central_atom'])
                      for molecule in molecules]
         map = maps.get_shape_map(reference_polyhedron[0], reference_polyhedron[1], num_points=20)

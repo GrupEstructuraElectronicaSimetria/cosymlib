@@ -438,11 +438,11 @@ class Cosymlib:
                 for molecule in self._molecules]
 
     def get_molecule_path_deviation(self, shape_label1, shape_label2, central_atom=0):
-        return [molecule.geometry.path_deviation(shape_label1, shape_label2, central_atom) for molecule
+        return [molecule.geometry.get_path_deviation(shape_label1, shape_label2, central_atom) for molecule
                 in self._molecules]
 
     def get_molecule_generalized_coord(self, shape_label1, shape_label2, central_atom=0):
-        return [molecule.geometry.generalized_coordinate(shape_label1, shape_label2, central_atom)
+        return [molecule.geometry.get_generalized_coordinate(shape_label1, shape_label2, central_atom)
                 for molecule in self._molecules]
 
     # TODO: This may be placed inside Shape class
