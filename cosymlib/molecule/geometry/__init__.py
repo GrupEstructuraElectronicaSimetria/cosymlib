@@ -4,14 +4,11 @@ from cosymlib.symmetry.pointgroup import PointGroup
 import numpy as np
 
 
-def _get_symgroup_arguments(locals):
-    kwargs = dict(locals)
-    del kwargs['self']
-    for element in ['self']:
-        if element in kwargs:
-            del kwargs[element]
-
-    return kwargs
+def set_parameters(func):
+    def wrapper(*args, **kwargs):
+        args[0]._symmetry.set_parameters(kwargs)
+        return func(*args, **kwargs)
+    return wrapper
 
 
 class Geometry:
@@ -66,7 +63,7 @@ class Geometry:
     def name(self):
         return self._name
 
-    # TODO: 'symmetry' and 'shape' properties should be removed. All methods inside these
+    # TODO: 'symmetry' and 'shape' properties should be removed. Methods inside these
     # TODO: classes should be mirrored in geometry/molecule class. See get_symmetry_measure()
 
     @property
@@ -114,18 +111,18 @@ class Geometry:
         return self._shape.structure(shape_label, central_atom=central_atom, fix_permutation=fix_permutation)
 
     def get_path_deviation(self, shape_label1, shape_label2, central_atom=0):
-        return self._shape.get_path_deviation(shape_label1, shape_label2, central_atom)
+        return self._shape.path_deviation(shape_label1, shape_label2, central_atom)
 
     def get_generalized_coordinate(self, shape_label1, shape_label2, central_atom=0):
-        return self._shape.get_generalized_coordinate(shape_label1, shape_label2, central_atom)
+        return self._shape.generalized_coordinate(shape_label1, shape_label2, central_atom)
 
     # Symmetry methods
+    @set_parameters
     def get_symmetry_measure(self, label, multi=1, central_atom=0, connect_thresh=1.1, center=None):
-        self._symmetry.set_parameters(_get_symgroup_arguments(locals()))
         return self._symmetry.measure(label)
 
+    @set_parameters
     def get_symmetry_nearest_structure(self, label, multi=1, central_atom=0, connect_thresh=1.1, center=None):
-        self._symmetry.set_parameters(_get_symgroup_arguments(locals()))
         return self._symmetry.nearest_structure(label)
 
     def get_pointgroup(self, tol=0.01):

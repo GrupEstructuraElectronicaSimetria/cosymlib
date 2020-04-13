@@ -68,8 +68,8 @@ molecule = file_io.get_molecule_from_file_fchk('pirrol.fchk')
 molecules_set = file_io.read_generic_structure_file('pirrol.fchk', read_multiple=True)
 
 data = molecule.get_mo_symmetry('C2v',
-                                 vector_axis1=[ 0.000000,  0.000000,  1.000000],  # valor defecte
-                                 # vector_axis2=[-2.027247,  0.000133, -0.898469],
-                                 center=[0.002440, -0.000122,  0.017307])  # valor per defecte (CM)
+                                axis=[0.000000, 0.000000, 1.000000],  # valor defecte
+                                # vector_axis2=[-2.027247,  0.000133, -0.898469],
+                                center=[0.002440, -0.000122,  0.017307])  # valor per defecte (CM)
 
 print_csm(data)

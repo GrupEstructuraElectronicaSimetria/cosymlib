@@ -2,7 +2,7 @@ from cosymlib.shape import shp, tools
 import numpy as np
 
 
-def _get_key(central_atom, reference, reference_2=''):
+def _get_key(central_atom, reference, fix_permutation=False, reference_2=''):
     if isinstance(reference, str):
         label_key = reference.lower()
     else:
@@ -10,7 +10,9 @@ def _get_key(central_atom, reference, reference_2=''):
     label2_key = reference_2.lower()
 
     central_atom_key = int(central_atom)
-    return central_atom_key, label_key, label2_key
+    fix_permutation_key = str(bool(fix_permutation))
+
+    return central_atom_key, label_key, label2_key, fix_permutation_key
 
 
 class Shape:
@@ -35,7 +37,7 @@ class Shape:
 
     # Function description
     def measure(self, reference, central_atom=0, fix_permutation=False):
-        key = _get_key(central_atom, reference)
+        key = _get_key(central_atom, reference, fix_permutation=fix_permutation)
         if key not in self._measures:
             if isinstance(reference, str):
                 reference_structure = tools.get_test_structure(reference, central_atom)
@@ -52,7 +54,7 @@ class Shape:
 
     # Function description
     def structure(self, label, central_atom=0, fix_permutation=False):
-        key = _get_key(central_atom, label)
+        key = _get_key(central_atom, label, fix_permutation=fix_permutation)
         if key not in self._structures:
             if isinstance(label, str):
                 reference_structure = tools.get_test_structure(label, central_atom)
@@ -71,7 +73,7 @@ class Shape:
 
         return self._structures[key]
 
-    def get_path_deviation(self, shape_label1, shape_label2, central_atom=0):
+    def path_deviation(self, shape_label1, shape_label2, central_atom=0):
 
         key = _get_key(central_atom, shape_label1, reference_2=shape_label2)
         if key not in self._path_deviation:
@@ -87,7 +89,7 @@ class Shape:
 
         return self._path_deviation[key]
 
-    def get_generalized_coordinate(self, shape_label1, shape_label2, central_atom=0):
+    def generalized_coordinate(self, shape_label1, shape_label2, central_atom=0):
 
         key = _get_key(central_atom, shape_label1, reference_2=shape_label2)
         if key not in self._gen_coord:

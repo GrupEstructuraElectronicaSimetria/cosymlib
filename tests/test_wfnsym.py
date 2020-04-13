@@ -7,8 +7,8 @@ class TestWfnsym(unittest.TestCase):
     def setUp(self):
         self.structure = file_io.read_generic_structure_file('data/wfnsym/tih4_5d.fchk')
         self.mo_symmetry = self.structure.get_mo_symmetry('Td',
-                                                          vector_axis1=[0., 0., 1.],
-                                                          vector_axis2=[-0.471418708, -0.816488390, -0.333333333],
+                                                          axis=[0., 0., 1.],
+                                                          axis2=[-0.471418708, -0.816488390, -0.333333333],
                                                           center=[0., 0., 0.])
 
     def test_symmetry_overlap_analysis(self):
@@ -93,8 +93,8 @@ class TestWfnsym(unittest.TestCase):
                     0.99999998]
 
         import numpy as np
-        print(np.array(soevs_a).shape)
-        print(self.mo_symmetry.mo_SOEVs_a.shape)
+        #print(np.array(soevs_a).shape)
+        #print(self.mo_symmetry.mo_SOEVs_a.shape)
         self.assertEqual(td_labels, self.mo_symmetry.SymLab)
         testing.assert_array_equal(td_ideal_gt, self.mo_symmetry.ideal_gt)
         testing.assert_allclose(soevs_a, self.mo_symmetry.mo_SOEVs_a, atol=1e-5)

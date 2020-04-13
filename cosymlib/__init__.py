@@ -3,7 +3,6 @@ __version__ = '0.7.4'
 from cosymlib.molecule import Molecule, Geometry
 from cosymlib import file_io
 from cosymlib import tools
-from cosymlib.file_io.shape import get_shape_measure_data_txt, write_minimal_distortion_path_analysis, write_shape_map
 from cosymlib.utils import get_shape_map, plot_molecular_orbital_diagram, plot_symmetry_energy_evolution
 from cosymlib.shape.tools import get_structure_references
 
@@ -87,17 +86,46 @@ class Cosymlib:
                 reference_list = shape_reference
 
         molecules_names = [molecule.name for molecule in self._molecules]
-        shape_results_measures = []
+
+        measure_list = []
         references_names = []
         for reference in reference_list:
-            shape_results_measures.append(self.get_shape_measure(reference, 'measure', central_atom,
-                                                                 fix_permutation))
+            measure_list.append(self.get_shape_measure(reference,
+                                                       'measure',
+                                                       central_atom,
+                                                       fix_permutation))
+
             if type(reference) is Geometry:
                 references_names.append(reference.name)
             else:
                 references_names.append(reference)
 
-        output.write(get_shape_measure_data_txt(shape_results_measures, molecules_names, references_names))
+        txt_shape = '{}'.format('Structure')
+        max_name = len(max(molecules_names, key=len))
+        if max_name < 9:
+            n = 5
+        else:
+            n = max_name - 4
+        for label in references_names:
+            n += len(label)
+            txt_shape += '{}'.format(label.rjust(n))
+            n = 12 - len(label)
+        txt_shape += '\n\n'
+
+        for idx, name in enumerate(molecules_names):
+            max_name = len(max(molecules_names, key=len))
+            txt_shape += '{}'.format(name)
+            if max_name < 9:
+                n = 18 - len(name)
+            else:
+                n = 9 + max_name - len(name)
+            for idn, label in enumerate(references_names):
+                txt_shape += ', {:{width}.{prec}f}'.format(measure_list[idn][idx], width=n, prec=3)
+                n = 11
+            txt_shape += '\n'
+        txt_shape += '\n'
+
+        output.write(txt_shape)
 
     def print_shape_structure(self, shape_reference, central_atom=0, fix_permutation=False, output=sys.stdout):
         """
@@ -145,8 +173,27 @@ class Cosymlib:
         csm, devpath, GenCoord = self.get_path_parameters(shape_label1, shape_label2, central_atom=central_atom,
                                                           maxdev=maxdev, mindev=mindev, maxgco=maxgco, mingco=mingco)
         names_order = [molecule.name for molecule in self._molecules]
-        txt = write_minimal_distortion_path_analysis(csm, devpath, GenCoord, maxdev, mindev,
-                                                     mingco, maxgco, names_order)
+
+        txt = "Deviation threshold to calculate Path deviation function: {:2.1f}% - {:2.1f}%\n".format(mindev, maxdev)
+        txt += "Deviation threshold to calculate Generalized Coordinate: {:2.1f}% - {:2.1f}%\n".format(mingco, maxgco)
+        txt += "\n"
+        txt += '{:}'.format('structure'.upper())
+        txt += " {:>7} {:>9}".format(list(csm.keys())[0], list(csm.keys())[1])
+        txt += "{:>12} {:>9}".format('DevPath', 'GenCoord')
+        txt += "\n"
+
+        for idx, molecule_name in enumerate(names_order):
+            txt += '{}  ,'.format(molecule_name)
+            if molecule_name.strip() == '':
+                width = 6 + len(molecule_name)
+            else:
+                width = 14 - len(molecule_name)
+            for label in list(csm.keys()):
+                txt += ' {:{width}.{prec}f},'.format(csm[label][idx], width=width, prec=3)
+                width = 7
+            txt += '{:8.1f}, {:8}'.format(devpath[idx], GenCoord[idx])
+            txt += '\n'
+
         output.write(txt)
 
     # TODO: Change name of all symgroup named functions
@@ -217,6 +264,7 @@ class Cosymlib:
 
             output.write(file_io.get_file_xyz_txt(geometry))
 
+    # This should just call methos within this class
     def print_wnfsym_measure_verbose(self, group,
                                      vector_axis1=None,
                                      vector_axis2=None,
@@ -268,13 +316,14 @@ class Cosymlib:
                 for molecule in self._molecules]
 
     def get_molecule_path_deviation(self, shape_label1, shape_label2, central_atom=0):
-        return [molecule.geometry.get_path_deviation(shape_label1, shape_label2, central_atom) for molecule
+        return [molecule.geometry.path_deviation(shape_label1, shape_label2, central_atom) for molecule
                 in self._molecules]
 
     def get_molecule_generalized_coord(self, shape_label1, shape_label2, central_atom=0):
-        return [molecule.geometry.get_generalized_coordinate(shape_label1, shape_label2, central_atom)
+        return [molecule.geometry.generalized_coordinate(shape_label1, shape_label2, central_atom)
                 for molecule in self._molecules]
 
+    # TODO: THis may be places inside Shape class
     def get_path_parameters(self, shape_label1, shape_label2, central_atom=0, maxdev=15, mindev=0,
                             maxgco=101, mingco=0):
 
@@ -309,7 +358,7 @@ class Cosymlib:
         return csm, devpath, generalized_coord
 
     def _get_wfnsym_results(self, group, vector_axis1, vector_axis2, center):
-        return [molecule.get_mo_symmetry(group, vector_axis1=vector_axis1, vector_axis2=vector_axis2, center=center)
+        return [molecule.get_mo_symmetry(group, axis=vector_axis1, axis2=vector_axis2, center=center)
                 for molecule in self._molecules]
 
     def print_minimum_distortion_path_shape(self, shape_label1, shape_label2, central_atom=0,
@@ -341,7 +390,13 @@ class Cosymlib:
 
         path_parameters = self.get_path_parameters(shape_label1, shape_label2, central_atom=central_atom)[0]
         path = get_shape_map(label1, label2, num_points)
-        output.write(write_shape_map(label1_name, label2_name, path))
+
+        txt_shape = " {:6} {:6}\n".format(shape_label1, shape_label2)
+        for idx, value in enumerate(path[0]):
+            txt_shape += '{:6.3f}, {:6.3f}'.format(path[0][idx], path[1][idx])
+            txt_shape += '\n'
+        output.write(txt_shape)
+
         test_structures = []
         for ids, structure in enumerate(path[2]):
             test_structures.append(Geometry(symbols=['' for _ in range(len(structure))],

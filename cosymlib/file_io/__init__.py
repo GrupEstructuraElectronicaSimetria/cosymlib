@@ -1,5 +1,5 @@
 from cosymlib.molecule import Molecule, Geometry, ElectronicStructure
-from cosymlib.file_io import shape, symmetry
+from cosymlib.file_io import symmetry
 from cosymlib.file_io.tools import extract_geometries
 from cosymlib.tools import atomic_number_to_element
 

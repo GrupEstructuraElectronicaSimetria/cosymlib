@@ -1,9 +1,15 @@
 from cosymlib.molecule.geometry import Geometry
 from cosymlib.molecule.electronic_structure import ElectronicStructure
 from cosymlib.simulation import ExtendedHuckel
-from cosymlib.symmetry import Symmetry
-from cosymlib.shape import Shape
 from warnings import warn
+
+
+# Gets the parameters defined in the arguments of the function and sets them to Symmetry instance
+def set_parameters(func):
+    def wrapper(*args, **kwargs):
+        args[0]._symmetry.set_parameters(kwargs)
+        return func(*args, **kwargs)
+    return wrapper
 
 
 class Molecule:
@@ -18,7 +24,7 @@ class Molecule:
         self._geometry = geometry
         self._electronic_structure = electronic_structure
         self._symmetry = geometry._symmetry
-        self._shape = geometry.shape
+        self._shape = geometry._shape
         self._symmetry.set_electronic_structure(electronic_structure)
 
     @property
@@ -50,9 +56,28 @@ class Molecule:
     def symmetry(self):
         return self._symmetry
 
-    @property
-    def shape(self):
-        return self._shape
+    # TODO: Old method (to be deprecated)
+    @set_parameters
+    def get_mo_symmetry(self, group, axis=None, axis2=None, center=None):
+        return self.symmetry._get_wfnsym_results(group)
 
-    def get_mo_symmetry(self, group, vector_axis1=None, vector_axis2=None, center=None):
-        return self.symmetry._get_wfnsym_results(group, vector_axis1, vector_axis2, center)
+    # New ones (to substitute get_mo_symmetry)
+    @set_parameters
+    def get_mo_irreducible_representations(self, group, axis=None, axis2=None, center=None):
+        return self._symmetry.mo_irreducible_representations(group)
+
+    @set_parameters
+    def get_wf_irreducible_representations(self, group, axis=None, axis2=None, center=None):
+        return self._symmetry.wf_irreducible_representations(group)
+
+    @set_parameters
+    def get_mo_overlaps(self, group, axis=None, axis2=None, center=None):
+        return self._symmetry.mo_overlaps(group)
+
+    @set_parameters
+    def get_wf_overlaps(self, group, axis=None, axis2=None, center=None):
+        return self._symmetry.wf_overlaps(group)
+
+    @set_parameters
+    def get_symmetry_matrix(self, group, axis=None, axis2=None, center=None):
+        return self._symmetry.symmetry_matrix(group)

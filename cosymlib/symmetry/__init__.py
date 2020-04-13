@@ -25,10 +25,12 @@ def _get_key_wfnsym(group, vector_axis1, vector_axis2, center):
 class Symmetry:
     def __init__(self,
                  structure,
-                 central_atom=None,
+                 central_atom=0,
                  center=None,
                  connect_thresh=1.1,
-                 multi=1
+                 multi=1,
+                 axis=None,
+                 axis2=None
                  ):
 
         # Allow geometry or molecule to be imported instead of crude Cartesian coordinates
@@ -53,12 +55,17 @@ class Symmetry:
         self._center = center
         self._connect_thresh = connect_thresh
         self._multi = multi
+        self._axis = axis
+        self._axis2 = axis2
         self._results = {}
+
+
         try:
             self._electronic_structure = structure.electronic_structure
         except AttributeError:
             self._electronic_structure = None
 
+    # Modifier methods
     def set_parameters(self, parameters_dict):
         for name, value in parameters_dict.items():
             setattr(self, '_' + name, value)
@@ -66,12 +73,7 @@ class Symmetry:
     def set_electronic_structure(self, electronic_structure):
         self._electronic_structure = electronic_structure
 
-    def get_symgroup_results(self, label,
-                             # multi=1,  # no
-                             # center=None,  # no
-                             # central_atom=None,  # no
-                             # connect_thresh=1.1  # no
-                             ):
+    def _get_symgroup_results(self, group):
 
         """
         # Temporal interface
@@ -83,30 +85,32 @@ class Symmetry:
         self._connect_thresh = connect_thresh
         """
 
-        key = _get_key_symgroup(label, self._center, self._central_atom, self._connectivity, self._multi, self._connect_thresh)
+        # Crude calculation call methods
+        key = _get_key_symgroup(group, self._center, self._central_atom, self._connectivity, self._multi, self._connect_thresh)
         if key not in self._results:
             self._results[key] = Symgroupy(self._coordinates,
-                                           group=label,
+                                           group=group,
                                            labels=self._symbols,
                                            central_atom=self._central_atom,
                                            multi=self._multi,
                                            center=self._center,
                                            connectivity=self._connectivity,
                                            connect_thresh=self._connect_thresh)
+
         return self._results[key]
 
-    def _get_wfnsym_results(self, group, vector_axis1, vector_axis2, center):
+    def _get_wfnsym_results(self, group):
 
         if self._electronic_structure is None:
             raise Exception('Electronic structure not found')
 
-        key = _get_key_wfnsym(group, vector_axis1, vector_axis2, center)
+        key = _get_key_wfnsym(group, self._axis, self._axis2, self._center)
 
         if key not in self._results:
             self._results[key] = WfnSympy(coordinates=self._coordinates,
                                           symbols=self._symbols,
                                           basis=self._electronic_structure.basis,
-                                          center=center, VAxis=vector_axis1, VAxis2=vector_axis2,
+                                          center=self._center, VAxis=self._axis, VAxis2=self._axis2,
                                           alpha_mo_coeff=self._electronic_structure.coefficients_a,
                                           beta_mo_coeff=self._electronic_structure.coefficients_b,
                                           charge=self._electronic_structure.charge,
@@ -120,44 +124,81 @@ class Symmetry:
     ##########################################
 
     def measure(self, label):
-        return self.get_symgroup_results(label).csm
+        return self._get_symgroup_results(label).csm
 
     def nearest_structure(self, label):
-        return self.get_symgroup_results(label).nearest_structure
+        return self._get_symgroup_results(label).nearest_structure
 
     def optimum_axis(self, label):
-        return self.get_symgroup_results(label).optimum_axis
+        return self._get_symgroup_results(label).optimum_axis
 
     def optimum_permutation(self, label):
-        return self.get_symgroup_results(label).optimum_permutation
+        return self._get_symgroup_results(label).optimum_permutation
 
     def reference_axis(self, label):
-        return self.get_symgroup_results(label).reference_axis
+        return self._get_symgroup_results(label).reference_axis
 
     def cms_multi(self, label, multi=1):
         self._multi = multi
-        return self.get_symgroup_results(label).cms_multi
+        return self._get_symgroup_results(label).cms_multi
 
     def axis_multi(self, label, multi=1):
         self._multi = multi
-        return self.get_symgroup_results(label).axis_multi
+        return self._get_symgroup_results(label).axis_multi
 
     ##########################################
     #       Electronic symmetry methods      #
     ##########################################
 
+    def mo_irreducible_representations(self, group):
+        results = self._get_wfnsym_results(group)
+
+        return {'labels': results.SymLab,
+                'alpha': results.mo_IRd_a,
+                'beta': results.mo_IRd_b}
+
+    def wf_irreducible_representations(self, group):
+        results = self._get_wfnsym_results(group)
+
+        return {'labels': results.SymLab,
+                'alpha': results.wf_IRd_a,
+                'beta': results.wf_IRd_b,
+                'total': results.wf_IRd}
+
+    def mo_overlaps(self, group):
+        results = self._get_wfnsym_results(group)
+
+        return {'labels': results.SymLab,
+                'alpha': results.mo_SOEVs_a,
+                'beta': results.mo_SOEVs_b}
+
+    def wf_overlaps(self, group):
+        results = self._get_wfnsym_results(group)
+
+        return {'labels': results.SymLab,
+                'alpha': results.wf_SOEVs_a,
+                'beta': results.wf_SOEVs_b,
+                'total': results.wf_SOEVs}
+
+    def symmetry_matrix(self, group):
+        results = self._get_wfnsym_results(group)
+        return results.SymMat
+
+    # to be deleted
     def symmetry_overlap_analysis(self, group, vector_axis1, vector_axis2, center):
-        results = self._get_wfnsym_results(group, vector_axis1, vector_axis2, center)
+        results = self._get_wfnsym_results(group)
 
         return [results.ideal_gt, results.SymLab, results.mo_SOEVs_a,
                 results.mo_SOEVs_b, results.wf_SOEVs_a, results.wf_SOEVs_b,
                 results.wf_SOEVs, results.grim_coef, results.csm_coef]
 
+    # To be deleted
     def symmetry_irreducible_representation_analysis(self, group, vector_axis1, vector_axis2, center):
-        results = self._get_wfnsym_results(group, vector_axis1, vector_axis2, center)
+        results = self._get_wfnsym_results(group)
         return [results.IRLab, results.mo_IRd_a, results.mo_IRd_b,
                 results.wf_IRd_a, results.wf_IRd_b, results.wf_IRd]
 
-    def symmetry_matrix(self, group, vector_axis1, vector_axis2, center):
-        results = self._get_wfnsym_results(group, vector_axis1, vector_axis2, center)
+    # To be deleted
+    def old_symmetry_matrix(self, group, vector_axis1, vector_axis2, center):
+        results = self._get_wfnsym_results(group)
         return results.SymMat

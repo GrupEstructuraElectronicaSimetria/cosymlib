@@ -1,14 +1,18 @@
 from cosymlib.shape import maps
-from cosymlib.file_io.shape import write_shape_map
 import numpy as np
 import sys
 
 
-def minimum_distortion_path_shape(shape_label1, shape_label2, num_points=20, output=sys.stdout, show_plot=True):
+def plot_minimum_distortion_path_shape(shape_label1, shape_label2, num_points=20, output=sys.stdout, show_plot=True):
     import matplotlib.pyplot as plt
 
     path = get_shape_map(shape_label1, shape_label2, num_points)
-    shape_map_txt = write_shape_map(shape_label1, shape_label2, path)
+
+    shape_map_txt = " {:6} {:6}\n".format(shape_label1, shape_label2)
+    for idx, value in enumerate(path[0]):
+        shape_map_txt += '{:6.3f}, {:6.3f}'.format(path[0][idx], path[1][idx])
+        shape_map_txt += '\n'
+
     print(shape_map_txt)
     if show_plot:
         plt.plot(path[0], path[1], 'k', linewidth=2.0)
