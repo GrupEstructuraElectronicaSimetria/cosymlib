@@ -13,19 +13,19 @@ import sys
 parser = argparse.ArgumentParser(description='Shape')
 parser.add_argument(type=str,
                     dest='input_file',
-                    help='input structures file')
+                    help='input file with structures')
 parser.add_argument(type=str,
                     dest="yaml_input",
                     nargs='?',
                     default=None,
-                    help='input keywords file')
+                    help='Input file with keywords')
 
 # Main options
 parser.add_argument('-m', '--measure',
                     dest='measure',
-                    metavar='ST',
+                    metavar='SH',
                     default=None,
-                    help='Request shape measure (use "custom" to use custom structure')
+                    help='compute the SH measure of the input structures (use "custom" to use custom structure')
 parser.add_argument('-l', '--labels', action='store_true',
                     dest='labels',
                     default=False,
@@ -34,18 +34,18 @@ parser.add_argument('-s', '--structure',
                     dest='structure',
                     action='store_true',
                     default=False,
-                    help='get the closest input structure to the reference shape')
+                    help='return the nearest structure to the reference shape')
 parser.add_argument('-o', '--output_name',
                     dest='output_name',
-                    metavar='Filename',
+                    metavar='filename',
                     default=None,
-                    help='store output to a file')
+                    help='store the output into a file')
 parser.add_argument('-c', '--central_atom',
                     dest='central_atom',
                     metavar='N',
                     type=int,
                     default=0,
-                    help='define a central atom of the structure')
+                    help='define central atom as the atom in position N in the input structure')
 parser.add_argument('-r', '--references',
                     dest='references',
                     action='store_true',
@@ -54,7 +54,7 @@ parser.add_argument('-r', '--references',
 parser.add_argument('-info',
                     action='store_true',
                     default=False,
-                    help='information about the input structures')
+                    help='print information about the input structures')
 
 parser.add_argument('--custom_ref',
                     dest='custom_ref',
@@ -67,7 +67,7 @@ parser.add_argument('--fix_permutation',
                     dest='fix_permutation',
                     action='store_true',
                     default=False,
-                    help='do not permutate atoms to perform the measure')
+                    help='do not permute atoms')
 
 args = parser.parse_args()
 

@@ -245,7 +245,8 @@ class Cosymlib:
 
         output.write(txt)
 
-    def print_geometric_symmetry_measure(self, label, multi=1, central_atom=0, connect_thresh=1.1, center=None, output=sys.stdout):
+    def print_geometric_symmetry_measure(self, label, multi=1, central_atom=0, connect_thresh=1.1, center=None,
+                                         fix_permutation=False, output=sys.stdout):
         kwargs = _get_symgroup_arguments(locals())
 
         txt = 'Evaluating symmetry operation : {}\n \n'.format(label)
@@ -261,7 +262,8 @@ class Cosymlib:
 
         output.write(txt)
 
-    def print_symmetry_nearest_structure(self, label, multi=1, central_atom=0, connect_thresh=1.1, center=None, output=sys.stdout):
+    def print_symmetry_nearest_structure(self, label, multi=1, central_atom=0, connect_thresh=1.1, center=None,
+                                         fix_permutation=False, output=sys.stdout):
         kwargs = _get_symgroup_arguments(locals())
 
         for idm, molecule in enumerate(self._molecules):

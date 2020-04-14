@@ -30,7 +30,8 @@ class Symmetry:
                  connect_thresh=1.1,
                  multi=1,
                  axis=None,
-                 axis2=None
+                 axis2=None,
+                 fix_permutation=False,
                  ):
 
         # Allow geometry or molecule to be imported instead of crude Cartesian coordinates
@@ -57,6 +58,7 @@ class Symmetry:
         self._multi = multi
         self._axis = axis
         self._axis2 = axis2
+        self._fix_permutation=fix_permutation
         self._results = {}
 
         try:
@@ -94,7 +96,8 @@ class Symmetry:
                                            multi=self._multi,
                                            center=self._center,
                                            connectivity=self._connectivity,
-                                           connect_thresh=self._connect_thresh)
+                                           connect_thresh=self._connect_thresh,
+                                           fix_permutation=self._fix_permutation)
 
         return self._results[key]
 

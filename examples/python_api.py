@@ -54,7 +54,7 @@ for i in range(100):
     measure = methane.get_symmetry_measure('C3', central_atom=1)
 
 print('measure: {:^10.3f} '.format(measure))
-print('measure: {:^10.3f} '.format(methane.get_symmetry_measure('C4', central_atom=1)))
+print('measure: {:^10.3f} '.format(methane.get_symmetry_measure('C4', central_atom=1, fix_permutation=False)))
 
 # Call symgroup as method of Symgroup class (semi function call)
 print('measure: {:^10.3f} '.format(Symmetry(methane, central_atom=1).measure('C4')))
@@ -92,7 +92,3 @@ print('\n\n***********{}************'.format('print_wnfsym_sym_ovelap()'))
 molecules_group.print_wnfsym_sym_ovelap('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
 print('\n\n***********{}************'.format('print_wnfsym_sym_matrices()'))
 molecules_group.print_wnfsym_sym_matrices('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
-print('\n\n***********{}************'.format('plot_mo_diagram()'))
-molecules_group.plot_mo_diagram('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
-print('\n\n***********{}************'.format('plot_sym_energy_evolution()'))
-molecules_group.plot_sym_energy_evolution('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])

@@ -118,11 +118,13 @@ class Geometry:
 
     # Symmetry methods
     @set_parameters
-    def get_symmetry_measure(self, label, multi=1, central_atom=0, connect_thresh=1.1, center=None):
+    def get_symmetry_measure(self, label, multi=1, central_atom=0, connect_thresh=1.1,
+                             fix_permutation=False, center=None):
         return self._symmetry.measure(label)
 
     @set_parameters
-    def get_symmetry_nearest_structure(self, label, multi=1, central_atom=0, connect_thresh=1.1, center=None):
+    def get_symmetry_nearest_structure(self, label, multi=1, central_atom=0, connect_thresh=1.1,
+                                       fix_permutation=False, center=None):
         return self._symmetry.nearest_structure(label)
 
     def get_pointgroup(self, tol=0.01):

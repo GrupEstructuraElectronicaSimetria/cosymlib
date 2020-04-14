@@ -7,22 +7,22 @@ import argparse
 import sys
 
 
-parser = argparse.ArgumentParser(description='Symgroup')
+parser = argparse.ArgumentParser(description='symm')
 
 # positional arguments
 parser.add_argument(type=str,
                     dest='input_file',
-                    help='input structures file')
+                    help='input file with structures')
 parser.add_argument(type=str,
                     dest="yaml_input",
                     nargs='?', default=None,
-                    help='input keywords file')
+                    help='input file with keywords')
 # Main options
 parser.add_argument('-m', '--measure',
                     dest='measure',
                     metavar='SG',
                     default=False,
-                    help='Calculate the SG symmetry measure for input structure')
+                    help='compute the SG symmetry measure of the input structures')
 parser.add_argument('-s', '--structure',
                     dest='structure',
                     action='store_true',
@@ -37,10 +37,10 @@ parser.add_argument('-o', '--output',
                     dest='output_name',
                     metavar='filename',
                     default=None,
-                    help='saves results in a file')
+                    help='store output into a file')
 parser.add_argument('-c', '--central_atom',
                     action='store',
-                    dest='central_atom',
+                    dest='entral_atom',
                     metavar='N',
                     type=int,
                     default=0,
@@ -48,7 +48,7 @@ parser.add_argument('-c', '--central_atom',
 parser.add_argument('-info',
                     action='store_true',
                     default=False,
-                    help='return information about the input geometries')
+                    help='print information about the input structures')
 
 # Modifiers
 parser.add_argument('--ignore_connectivity',
@@ -73,7 +73,11 @@ parser.add_argument('--center',
                     default=None,
                     nargs=3,
                     help='fix coordinates x,y,z for the center of symmetry operations (Angs)')
-
+parser.add_argument('--fix_permutation',
+                    dest='fix_permutation',
+                    action='store_true',
+                    default=False,
+                    help='do not permute atoms')
 
 args = parser.parse_args()
 
@@ -102,7 +106,8 @@ if args.measure:
                                                    central_atom=args.central_atom,
                                                    center=args.center,
                                                    connect_thresh=args.connectivity_thresh,
-                                                   output=common_output)
+                                                   output=common_output,
+                                                   fix_permutation = args.fix_permutation)
 
 if args.structure:
     if args.output_name is None:
@@ -115,6 +120,7 @@ if args.structure:
                                                    central_atom=args.central_atom,
                                                    connect_thresh=args.connectivity_thresh,
                                                    center=args.center,
-                                                   output=structure_output)
+                                                   output=structure_output,
+                                                   fix_permutation=args.fix_permutation)
 
 print_footer(common_output)

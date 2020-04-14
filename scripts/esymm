@@ -7,43 +7,36 @@ import argparse
 import sys
 
 
-parser = argparse.ArgumentParser(description='WfnSym')
+parser = argparse.ArgumentParser(description='esymm')
 
 # positional arguments
 parser.add_argument(type=str,
                     dest='input_file',
-                    help='input structures file')
+                    help='input file with structures')
 parser.add_argument(type=str,
                     dest="yaml_input",
                     nargs='?', default=None,
-                    help='input keywords file')
+                    help='input file with keywords')
 # Main options
 parser.add_argument('-m', '--measure',
                     dest='measure',
                     metavar='SG',
                     default=False,
-                    help='Calculate the SG symmetry measure for input structure')
+                    help='compute the SG symmetry measure of the input structures')
 parser.add_argument('-l', '--labels',
                     dest='labels',
                     action='store_true',
                     default=False,
-                    help='prints the symmetry labels (SG) for the groups that can be used')
+                    help='print the symmetry labels (SG) for the groups that can be used')
 parser.add_argument('-o', '--output',
                     dest='output_name',
                     metavar='filename',
                     default=None,
-                    help='saves results in a file')
-parser.add_argument('-c', '--central_atom',
-                    action='store',
-                    dest='central_atom',
-                    metavar='N',
-                    type=int,
-                    default=0,
-                    help='central atom is in position N in the input structure')
+                    help='store output into a file')
 parser.add_argument('-info',
                     action='store_true',
                     default=False,
-                    help='return information about the input geometries')
+                    help='print information about the input structures')
 
 # Modifiers
 parser.add_argument('--center',
@@ -59,17 +52,14 @@ parser.add_argument('--axis',
                     type=float,
                     default=None,
                     nargs=3,
-                    help='main symmetry axis')
-
+                    help='set main symmetry axis')
 parser.add_argument('--axis2',
                     dest='axis2',
                     metavar='R',
                     type=float,
                     default=None,
                     nargs=3,
-                    help='secondary symmetry axis')
-
-
+                    help='set secondary symmetry axis')
 
 args = parser.parse_args()
 
