@@ -271,10 +271,10 @@ class Cosymlib:
 
             output.write(file_io.get_file_xyz_txt(geometry))
 
-    # This should just call methos within this class
+    # This should be substituted by calling methods within this class
     def OLD_print_wnfsym_measure_verbose(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
-        self.print_wnfsym_sym_matrices(group, axis=None, axis2=None, center=None, output=sys.stdout)
-        self.print_wnfsym_irreducible_repr(group, axis=None, axis2=None, center=None, output=sys.stdout)
+        self.print_wnfsym_sym_matrices(group, axis=axis, axis2=axis2, center=center, output=output)
+        self.print_wnfsym_irreducible_repr(group, axis=axis, axis2=axis2, center=center, output=output)
 
     def print_electronic_symmetry_measure(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
 
@@ -282,18 +282,17 @@ class Cosymlib:
         first = True
         for molecule in self._molecules:
             wf_measure = molecule.get_wf_symmetry(group, axis=axis, axis2=axis2, center=center)
-            wf_ir = molecule.get_wf_irreducible_representations(group, axis=axis, axis2=axis2, center=center)
 
             if first:
-                sep_line = '        ' + '---------' * len(wf_measure['labels']) + '\n'
+                sep_line = '          ' + '---------' * len(wf_measure['labels']) + '\n'
 
                 txt += '\nWaveFunction: CSM-like values\n'
                 txt += sep_line
-                txt += '        ' + '  '.join(['{:^7}'.format(s) for s in wf_measure['labels']])
+                txt += '           ' + '  '.join(['{:^7}'.format(s) for s in wf_measure['labels']])
                 txt += '\n'
                 txt += sep_line
 
-            txt += '{:.10} '.format(molecule.name) + '  '.join(['{:7.3f}'.format(s) for s in wf_measure['csm']])
+            txt += '{:<9} '.format(molecule.name) + '  '.join(['{:7.3f}'.format(s) for s in wf_measure['csm']])
             txt += '\n'
             first = False
 

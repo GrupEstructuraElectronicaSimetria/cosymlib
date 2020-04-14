@@ -66,7 +66,6 @@ print('\nWFNSYM\n--------')
 
 
 molecule = file_io.get_molecule_from_file_fchk('pirrol.fchk')
-molecules_set = file_io.read_generic_structure_file('pirrol.fchk', read_multiple=True)
 
 data = molecule.get_wf_symmetry('C2v',
                                 axis=[0.000000, 0.000000, 1.000000],  # valor defecte
@@ -77,12 +76,23 @@ data = molecule.get_wf_symmetry('C2v',
 print_csm(data)
 
 print('\nCOSYMLIB\n--------')
-
+molecules_set = file_io.get_geometry_from_file_xyz('coord_2.xyz', read_multiple=True)
 molecules_group = Cosymlib(molecules_set)
+print('\n\n***********{}************'.format('print_electronic_symmetry_measure()'))
 molecules_group.print_electronic_symmetry_measure('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
+
+
+molecules_set = file_io.read_generic_structure_file('pirrol.fchk', read_multiple=True)
+molecules_group = Cosymlib(molecules_set)
+print('\n\n***********{}************'.format('print_info()'))
 molecules_group.print_info()
+print('\n\n***********{}************'.format('print_wnfsym_irreducible_repr()'))
 molecules_group.print_wnfsym_irreducible_repr('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
+print('\n\n***********{}************'.format('print_wnfsym_sym_ovelap()'))
 molecules_group.print_wnfsym_sym_ovelap('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
+print('\n\n***********{}************'.format('print_wnfsym_sym_matrices()'))
 molecules_group.print_wnfsym_sym_matrices('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
+print('\n\n***********{}************'.format('plot_mo_diagram()'))
 molecules_group.plot_mo_diagram('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
+print('\n\n***********{}************'.format('plot_sym_energy_evolution()'))
 molecules_group.plot_sym_energy_evolution('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
