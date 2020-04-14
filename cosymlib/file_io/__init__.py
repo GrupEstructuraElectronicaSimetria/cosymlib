@@ -117,11 +117,12 @@ def get_geometry_from_file_cor(file_name, read_multiple=False):
     return geometries
 
 
+# TODO: This function should handle open and close shell, mo energies and more. A lot to improve!
 def get_molecule_from_file_fchk(file_name, read_multiple=False):
     key_list = ['Charge', 'Multiplicity', 'Atomic numbers', 'Current cartesian coordinates',
                 'Shell type', 'Number of primitives per shell', 'Shell to atom map', 'Primitive exponents',
                 'Contraction coefficients', 'P(S=P) Contraction coefficients',
-                'Alpha MO coefficients', 'Beta MO coefficients']
+                'Alpha Orbital Energies', 'Alpha MO coefficients', 'Beta MO coefficients', ]
     input_molecule = [[] for _ in range(len(key_list))]
     read = False
     with open(file_name, mode='r') as lines:
@@ -182,15 +183,18 @@ def get_molecule_from_file_fchk(file_name, read_multiple=False):
                             positions=coordinates,
                             name=name)
 
-        Ca = np.array(input_molecule[10], dtype=float).reshape(-1, int(np.sqrt(len(input_molecule[10]))))
-        if input_molecule[11]:
-            Cb = np.array(input_molecule[11], dtype=float).reshape(-1, int(np.sqrt(len(input_molecule[11]))))
+        Ca = np.array(input_molecule[11], dtype=float).reshape(-1, int(np.sqrt(len(input_molecule[11]))))
+        energies_alpha = np.array(input_molecule[10], dtype=float).tolist()
+        if input_molecule[12]:
+            Cb = np.array(input_molecule[12], dtype=float).reshape(-1, int(np.sqrt(len(input_molecule[12]))))
         else:
             Cb = []
+
         electronic_structure = ElectronicStructure(charge=input_molecule[0][0],
                                                    multiplicity=input_molecule[1][0],
                                                    basis=basis,
-                                                   orbital_coefficients=[Ca, Cb])
+                                                   orbital_coefficients=[Ca, Cb],
+                                                   mo_energies=energies_alpha)
 
         if read_multiple:
             return [Molecule(geometry, electronic_structure)]

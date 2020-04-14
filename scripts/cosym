@@ -221,8 +221,8 @@ if args.qsym_wfn:
     #Utils
     if args.mo_diagram:
         symobj.plot_mo_diagram(args.qsym_wfn,
-                               vector_axis1=args.axis1,
-                               vector_axis2=args.axis2,
+                               axis=args.axis1,
+                               axis2=args.axis2,
                                center=args.center)
 
 # Pointgroup command

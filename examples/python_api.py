@@ -18,9 +18,9 @@ def print_shape_data(geometries):
 
 def print_csm(data):
     print('\nWaveFunction: CSM-like values')
-    print('     ' + '  '.join(['{:^7}'.format(s) for s in data.SymLab]))
-    print('Grim' + '  '.join(['{:7.3f}'.format(s) for s in data.grim_coef]))
-    print('CSM ' + '  '.join(['{:7.3f}'.format(s) for s in data.csm_coef]))
+    print('     ' + '  '.join(['{:^7}'.format(s) for s in data['labels']]))
+    print('Grim' + '  '.join(['{:7.3f}'.format(s) for s in data['grim']]))
+    print('CSM ' + '  '.join(['{:7.3f}'.format(s) for s in data['csm']]))
 
 
 # Get structures from files
@@ -68,7 +68,7 @@ print('\nWFNSYM\n--------')
 molecule = file_io.get_molecule_from_file_fchk('pirrol.fchk')
 molecules_set = file_io.read_generic_structure_file('pirrol.fchk', read_multiple=True)
 
-data = molecule.get_mo_symmetry('C2v',
+data = molecule.get_wf_symmetry('C2v',
                                 axis=[0.000000, 0.000000, 1.000000],  # valor defecte
                                 # vector_axis2=[-2.027247,  0.000133, -0.898469],
                                 center=[0.002440, -0.000122,  0.017307]
@@ -79,7 +79,10 @@ print_csm(data)
 print('\nCOSYMLIB\n--------')
 
 molecules_group = Cosymlib(molecules_set)
+molecules_group.print_electronic_symmetry_measure('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
 molecules_group.print_info()
 molecules_group.print_wnfsym_irreducible_repr('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
 molecules_group.print_wnfsym_sym_ovelap('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
 molecules_group.print_wnfsym_sym_matrices('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
+molecules_group.plot_mo_diagram('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
+molecules_group.plot_sym_energy_evolution('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])

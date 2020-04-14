@@ -5,6 +5,7 @@ from cosymlib import file_io
 from cosymlib import tools
 from cosymlib.utils import get_shape_map, plot_molecular_orbital_diagram, plot_symmetry_energy_evolution
 from cosymlib.shape.tools import get_structure_references
+import matplotlib.pyplot as plt
 
 import sys
 import numpy as np
@@ -275,6 +276,29 @@ class Cosymlib:
         self.print_wnfsym_sym_matrices(group, axis=None, axis2=None, center=None, output=sys.stdout)
         self.print_wnfsym_irreducible_repr(group, axis=None, axis2=None, center=None, output=sys.stdout)
 
+    def print_electronic_symmetry_measure(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
+
+        txt = ''
+        first = True
+        for molecule in self._molecules:
+            wf_measure = molecule.get_wf_symmetry(group, axis=axis, axis2=axis2, center=center)
+            wf_ir = molecule.get_wf_irreducible_representations(group, axis=axis, axis2=axis2, center=center)
+
+            if first:
+                sep_line = '        ' + '---------' * len(wf_measure['labels']) + '\n'
+
+                txt += '\nWaveFunction: CSM-like values\n'
+                txt += sep_line
+                txt += '        ' + '  '.join(['{:^7}'.format(s) for s in wf_measure['labels']])
+                txt += '\n'
+                txt += sep_line
+
+            txt += '{:.10} '.format(molecule.name) + '  '.join(['{:7.3f}'.format(s) for s in wf_measure['csm']])
+            txt += '\n'
+            first = False
+
+        output.write(txt)
+
     def print_wnfsym_sym_matrices(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
 
         txt = ''
@@ -368,7 +392,7 @@ class Cosymlib:
 
             txt += '\nWaveFunction: CSM-like values\n'
             txt += sep_line
-            txt += '     ' + '  '.join(['{:^7}'.format(s) for s in ideal_gt['ir_labels']])
+            txt += '     ' + '  '.join(['{:^7}'.format(s) for s in wf_measure['labels']])
             txt += '\n'
             txt += sep_line
 
@@ -423,13 +447,85 @@ class Cosymlib:
 
         output.write(txt)
 
-    def plot_mo_diagram(self, group, vector_axis1=None, vector_axis2=None, center=None, n_molecule=0):
-        wfnsym_results = self._get_wfnsym_results(group, vector_axis1, vector_axis2, center)
-        plot_molecular_orbital_diagram(self._molecules[0], wfnsym_results[n_molecule])
+    def plot_mo_diagram(self, group, axis=None, axis2=None, center=None):
 
-    def plot_sym_energy_evolution(self, group, vector_axis1=None, vector_axis2=None, center=None):
-        wfnsym_results = self._get_wfnsym_results(group, vector_axis1, vector_axis2, center)
-        plot_symmetry_energy_evolution(self._molecules, wfnsym_results)
+        for molecule in self._molecules:
+
+            ir_mo = molecule.get_mo_irreducible_representations(group, axis=axis, axis2=axis2, center=center)
+
+            ird_a_max = [np.argmax(ird_a_orb) for ird_a_orb in ir_mo['alpha']]
+            energies = molecule.electronic_structure.energies
+
+            plt.figure()
+            plt.title('{}'.format(molecule.name))
+
+            ax1 = plt.axes()
+            ax1.axes.get_xaxis().set_visible(False)  # Hide x axis
+            # ax1.axes.get_yaxis().set_visible(True)
+
+            degeneracy = [[energies[0]]]
+            for energy in energies[1:]:
+                if abs(energy - degeneracy[-1][-1]) < 1e-3:
+                    degeneracy[-1].append(energy)
+                else:
+                    degeneracy.append([energy])
+
+            max_value = 5e-3
+            x_center = []
+            for ix in degeneracy:
+                if len(ix) == 1:
+                    x_center.append([0])
+                else:
+                    x_center.append(np.linspace(-max_value, max_value, len(ix)))
+            x_center = [y for x in x_center for y in x]
+
+            plt.scatter(x_center, energies, s=500, marker="_", linewidth=3)
+            for i in range(len(energies)):
+                plt.text(-max_value * 2, energies[i], ir_mo['labels'][ird_a_max[i]])
+
+        plt.show()
+
+    def plot_sym_energy_evolution(self, group, axis=None, axis2=None, center=None):
+        from cosymlib.utils import swap_vectors
+
+        energies = []
+        ird_a_max = []
+        for idm, molecule in enumerate(self._molecules):
+
+            ir_mo = molecule.get_mo_irreducible_representations(group, axis=axis, axis2=axis2, center=center)
+
+            labels = ir_mo['labels']
+
+            ird_a_max.append(np.array([np.argmax(ird_a_orb) for ird_a_orb in ir_mo['alpha']]))
+            energies.append(molecule.electronic_structure.energies)
+
+        energies_x_orbital = np.array(energies).T
+        ird_a_x_orbital = np.array(ird_a_max).T
+
+        for i in range(len(ird_a_x_orbital)):
+            for j in range(len(ird_a_x_orbital[i])):
+                if j == 0:
+                    old_ird = ird_a_x_orbital[i][0]
+                else:
+                    if old_ird != ird_a_x_orbital[i][j]:
+                        for k in range(len(ird_a_x_orbital) - i):
+                            if old_ird == ird_a_x_orbital[k + i][j]:
+                                ird_a_x_orbital[i], ird_a_x_orbital[k + i] = swap_vectors(ird_a_x_orbital[i],
+                                                                                          ird_a_x_orbital[k + i], j)
+                                energies_x_orbital[i], energies_x_orbital[k + i] = swap_vectors(energies_x_orbital[i],
+                                                                                                energies_x_orbital[
+                                                                                                    k + i],
+                                                                                                j)
+                                break
+                old_ird = ird_a_x_orbital[i][j]
+
+        for ide, energy in enumerate(energies_x_orbital):
+            x = np.arange(len(energy))
+            plt.plot(x, energy, marker='_')
+            for i in range(len(energy)):
+                plt.text(x[i], energy[i] + abs(energy[i]) * 0.001, labels[ird_a_x_orbital[ide][i]])
+
+        plt.show()
 
     def get_shape_measure(self, label, kind, central_atom=0, fix_permutation=False):
         get_measure = 'get_shape_' + kind
@@ -478,10 +574,6 @@ class Cosymlib:
         devpath = filter_results(devpath, criteria, maxgco, mingco)
         generalized_coord = filter_results(generalized_coord, criteria, maxgco, mingco)
         return csm, devpath, generalized_coord
-
-    def _get_wfnsym_results(self, group, vector_axis1, vector_axis2, center):
-        return [molecule.get_mo_symmetry(group, axis=vector_axis1, axis2=vector_axis2, center=center)
-                for molecule in self._molecules]
 
     def print_minimum_distortion_path_shape(self, shape_label1, shape_label2, central_atom=0,
                                             num_points=20, output_name=None):

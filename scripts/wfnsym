@@ -1,0 +1,101 @@
+#!/usr/bin/env python
+from cosymlib.file_io.tools import add_extra_keywords, extract_geometries, print_header, print_footer, print_input_info
+from cosymlib.file_io import read_generic_structure_file
+from cosymlib.symmetry.tools import print_symmetry_labels
+from cosymlib import Cosymlib
+import argparse
+import sys
+
+
+parser = argparse.ArgumentParser(description='WfnSym')
+
+# positional arguments
+parser.add_argument(type=str,
+                    dest='input_file',
+                    help='input structures file')
+parser.add_argument(type=str,
+                    dest="yaml_input",
+                    nargs='?', default=None,
+                    help='input keywords file')
+# Main options
+parser.add_argument('-m', '--measure',
+                    dest='measure',
+                    metavar='SG',
+                    default=False,
+                    help='Calculate the SG symmetry measure for input structure')
+parser.add_argument('-l', '--labels',
+                    dest='labels',
+                    action='store_true',
+                    default=False,
+                    help='prints the symmetry labels (SG) for the groups that can be used')
+parser.add_argument('-o', '--output',
+                    dest='output_name',
+                    metavar='filename',
+                    default=None,
+                    help='saves results in a file')
+parser.add_argument('-c', '--central_atom',
+                    action='store',
+                    dest='central_atom',
+                    metavar='N',
+                    type=int,
+                    default=0,
+                    help='central atom is in position N in the input structure')
+parser.add_argument('-info',
+                    action='store_true',
+                    default=False,
+                    help='return information about the input geometries')
+
+# Modifiers
+parser.add_argument('--center',
+                    dest='center',
+                    metavar='R',
+                    type=float,
+                    default=None,
+                    nargs=3,
+                    help='fix coordinates x,y,z for the center of symmetry operations (Angs)')
+parser.add_argument('--axis',
+                    dest='axis',
+                    metavar='R',
+                    type=float,
+                    default=None,
+                    nargs=3,
+                    help='main symmetry axis')
+
+parser.add_argument('--axis2',
+                    dest='axis2',
+                    metavar='R',
+                    type=float,
+                    default=None,
+                    nargs=3,
+                    help='secondary symmetry axis')
+
+
+
+args = parser.parse_args()
+
+if args.yaml_input:
+    add_extra_keywords(args, args.yaml_input)
+
+common_output = open(args.output_name, 'w') if args.output_name is not None else sys.stdout
+print_header(common_output)
+
+structures = read_generic_structure_file(args.input_file, read_multiple=True)
+structure_set = Cosymlib(structures)
+
+if args.labels:
+    print_symmetry_labels()
+    exit()
+
+if args.info:
+    print_input_info(structure_set.get_geometries(), output=common_output)
+    exit()
+
+# Symgroup commands
+if args.measure:
+    structure_set.print_electronic_symmetry_measure(args.measure,
+                                                    axis=args.axis,
+                                                    axis2=args.axis2,
+                                                    center=args.center,
+                                                    output=common_output)
+
+print_footer(common_output)

@@ -2,14 +2,15 @@ import unittest
 from cosymlib import file_io
 from numpy import testing
 
+
 class TestWfnsym(unittest.TestCase):
 
     def setUp(self):
         self.structure = file_io.read_generic_structure_file('data/wfnsym/tih4_5d.fchk')
-        self.mo_symmetry = self.structure.get_mo_symmetry('Td',
-                                                          axis=[0., 0., 1.],
-                                                          axis2=[-0.471418708, -0.816488390, -0.333333333],
-                                                          center=[0., 0., 0.])
+        self.mo_symmetry = self.structure.OLD_get_mo_symmetry('Td',
+                                                              axis=[0., 0., 1.],
+                                                              axis2=[-0.471418708, -0.816488390, -0.333333333],
+                                                              center=[0., 0., 0.])
 
     def test_symmetry_overlap_analysis(self):
         td_labels = ['E', '2C3', '2C3', '2C3', '2C3', 'C2', 'C2', 'C2', '2S4', '2S4', '2S4',

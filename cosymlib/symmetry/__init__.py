@@ -152,7 +152,7 @@ class Symmetry:
     def mo_irreducible_representations(self, group):
         results = self._get_wfnsym_results(group)
 
-        return {'labels': results.SymLab,
+        return {'labels': results.IRLab,
                 'alpha': results.mo_IRd_a,
                 'beta': results.mo_IRd_b}
 

@@ -13,9 +13,10 @@ class ElectronicStructure:
         self._valence_only = valence_only
         self._Ca = orbital_coefficients[0]
         if not orbital_coefficients[1]:
-            self._Cb = None
+            self._Cb = orbital_coefficients[0]
         else:
             self._Cb = orbital_coefficients[1]
+
         self._mo_energies = mo_energies
 
     @property

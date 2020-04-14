@@ -57,7 +57,8 @@ class Molecule:
 
     # TODO: Old method (to be deprecated)
     @set_parameters
-    def get_mo_symmetry(self, group, axis=None, axis2=None, center=None):
+    def OLD_get_mo_symmetry(self, group, axis=None, axis2=None, center=None):
+        warn('This method is deprecated', DeprecationWarning)
         return self.symmetry._get_wfnsym_results(group)
 
     # New ones (to substitute get_mo_symmetry)
