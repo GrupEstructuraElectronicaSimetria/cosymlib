@@ -400,11 +400,13 @@ def get_geometry_from_file_pdb(file_name, read_multiple=False):
         for line in mol_section.split('\n'):
             if line.find('TITLE') > -1:
                 name = ' '.join(line.split()[1:])
-            if line.find('HETATM') > -1:
+            if line.find('HETATM') > -1 or line.find('ATOM') > -1:
                 coordinates.append([float(num) for num in line.split()[4:7]])
                 symbols.append(line.split()[2])
             if line.find('CONECT') > -1:
                 connect.append([int(num) for num in line.split()[2:]])
+            if line.find('TER') > -1 or line.find('END') > -1:
+                break
 
         connectivity = []
         for i, atom in enumerate(connect):

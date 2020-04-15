@@ -1,13 +1,26 @@
-TITLE      Molecule Name
+TITLE      Methane
 REMARK   1 File created by GaussView 5.0.9
 HETATM    1  C           0      -0.498  -0.179   0.000                       C
 HETATM    2  H           0      -0.141  -1.188   0.000                       H
 HETATM    3  H           0      -0.141   0.325   0.874                       H
 HETATM    4  H           0      -0.141   0.325  -0.874                       H
 HETATM    5  H           0      -1.568  -0.179   0.000                       H
-END
 CONECT    1    2    3    4    5
 CONECT    2    1
 CONECT    3    1
 CONECT    4    1
 CONECT    5    1
+END
+TITLE      Methane distorted
+REMARK   1 File created by GaussView 5.0.9
+HETATM    1  C           0      -0.498  -0.179   0.100                       C
+HETATM    2  H           0      -0.141  -1.188   0.000                       H
+HETATM    3  H           0      -0.141   0.325   0.874                       H
+HETATM    4  H           0      -0.141   0.325  -0.874                       H
+HETATM    5  H           0      -1.568  -0.179   0.000                       H
+CONECT    1    2    3    4    5
+CONECT    2    1
+CONECT    3    1
+CONECT    4    1
+CONECT    5    1
+END
