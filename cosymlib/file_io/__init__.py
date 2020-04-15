@@ -404,14 +404,14 @@ def get_geometry_from_file_pdb(file_name, read_multiple=False):
                 coordinates.append([float(num) for num in line.split()[4:7]])
                 symbols.append(line.split()[2])
             if line.find('CONECT') > -1:
-                connect.append([int(num) for num in line.split()[2:]])
+                connect.append([int(num) for num in line.split()[1:]])
             if line.find('TER') > -1 or line.find('END') > -1:
                 break
 
         connectivity = []
-        for i, atom in enumerate(connect):
-            for j in atom:
-                connectivity.append((i+1, j))
+        for atom in connect:
+            for j in atom[1:]:
+                connectivity.append((atom[0], j))
 
         geometries.append(Geometry(symbols=symbols,
                                    positions=coordinates,
@@ -478,6 +478,22 @@ def basis_format(basis_set_name,
     basis_set['atoms'] = atoms_data
 
     return basis_set
+
+
+def get_connectivity_from_file(file_name):
+
+    file_txt = open(file_name, mode='r').read()
+
+    connect = []
+    for line in file_txt.split('\n'):
+            connect.append([int(num) for num in line.split()])
+
+    connectivity = []
+    for atom in connect:
+        for j in atom[1:]:
+            connectivity.append((atom[0], j))
+
+    return connectivity
 
 
 # Get OUPUT files

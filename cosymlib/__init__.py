@@ -29,7 +29,8 @@ class Cosymlib:
     def __init__(self,
                  structures,
                  ignore_atoms_labels=False,
-                 ignore_connectivity=False):
+                 ignore_connectivity=False,
+                 connectivity=None):
 
         self._molecules = []
         if isinstance(structures, list):
@@ -51,7 +52,9 @@ class Cosymlib:
         for molecule in self._molecules:
             if ignore_atoms_labels:
                 molecule.geometry.set_symbols('X' * molecule.geometry.get_n_atoms())
-            if ignore_connectivity:
+            if connectivity:
+                molecule.geometry.set_connectivity(connectivity)
+            elif ignore_connectivity:
                 molecule.geometry.set_connectivity(None)
 
     def get_n_atoms(self):
