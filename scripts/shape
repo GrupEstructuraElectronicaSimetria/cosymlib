@@ -80,10 +80,7 @@ structures = read_generic_structure_file(args.input_file, read_multiple=True)
 structure_set = Cosymlib(structures)
 
 n_atoms = structure_set.get_n_atoms()
-
-vertices = n_atoms
-if args.central_atom > 0:
-    vertices -= 1
+vertices = n_atoms if args.central_atom == 0 else n_atoms - 1
 
 if args.references:
 
