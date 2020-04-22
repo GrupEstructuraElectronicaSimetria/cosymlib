@@ -45,6 +45,9 @@ class Shape:
                 reference_structure = reference
             reference_coordinates = reference_structure.get_positions()
 
+            if len(self._coordinates) != len(reference_coordinates):
+                raise Exception('Reference and input structures have different number of atoms')
+
             if fix_permutation:
                 self._measures[key] = shp.cshm_fix(self._coordinates, reference_coordinates, central_atom)
             else:
@@ -61,6 +64,9 @@ class Shape:
                 reference_coordinates = reference_structure.get_positions()
             else:
                 reference_coordinates = np.array(label)
+
+            if len(self._coordinates) != len(reference_coordinates):
+                raise Exception('Reference and input structures have different number of atoms')
 
             if fix_permutation:
                 self._structures[key], self._measures[key] = shp.poly_fix(self._coordinates,

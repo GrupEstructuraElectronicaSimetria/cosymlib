@@ -91,9 +91,9 @@ if args.references:
         output_references = common_output
         print('Reference shapes\n----------------')
     elif args.central_atom == 0:
-        output_references = open('L{}.xyz'.format(n_atoms), 'w')
+        output_references = open('L{}.xyz'.format(vertices), 'w')
     else:
-        output_references = open('ML{}.xyz'.format(n_atoms), 'w')
+        output_references = open('ML{}.xyz'.format(vertices), 'w')
 
     for label in tools.get_structure_references(vertices):
         ref_structure = tools.get_test_structure(label, central_atom=args.central_atom)

@@ -16,12 +16,15 @@ def get_test_structure(label, central_atom=0):
 
     if central_atom == 0:
         coordinates = ideal_structures[label][:-1]
+        return Geometry(positions=coordinates,
+                        name=label,
+                        symbols=['L'] * len(coordinates))
+
     else:
         coordinates = ideal_structures[label]
-
-    return Geometry(positions=coordinates,
-                    name=label,
-                    symbols=['X'] * len(coordinates))
+        return Geometry(positions=coordinates,
+                        name=label,
+                        symbols=['L'] * (len(coordinates)-1) + ['M'])
 
 
 def get_structure_references(vertices):
