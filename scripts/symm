@@ -40,7 +40,7 @@ parser.add_argument('-o', '--output',
                     help='store output into a file')
 parser.add_argument('-c', '--central_atom',
                     action='store',
-                    dest='entral_atom',
+                    dest='central_atom',
                     metavar='N',
                     type=int,
                     default=0,

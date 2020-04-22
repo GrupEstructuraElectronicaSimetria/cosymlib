@@ -14,11 +14,12 @@ def set_parameters(func):
 
 
 class Molecule:
-    def __init__(self, geometry, electronic_structure=None, name=None):
+    def __init__(self, geometry,
+                 electronic_structure=None,
+                 name=None):
 
         if not geometry:
-            print('No geometry found in the input file, check out input file for possible errors')
-            exit()
+            raise Exception('No geometry found in the input file, check out input file for possible errors')
         if name is None:
             self._name = geometry.name
 

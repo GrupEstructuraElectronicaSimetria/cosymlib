@@ -22,12 +22,9 @@ class Geometry:
         self._symbols = []
         self._positions = []
         self._atom_groups = list(symbols)
+        self._name = name
 
-        if name.strip():
-            self._name = name
-        else:
-            self._name = ' ' * 5
-
+# TODO: This is a mess!
         for symbol in symbols:
             try:
                 int(symbol)
@@ -118,14 +115,18 @@ class Geometry:
 
     # Symmetry methods
     @set_parameters
-    def get_symmetry_measure(self, label, multi=1, central_atom=0, connect_thresh=1.1,
-                             fix_permutation=False, center=None):
+    def get_symmetry_measure(self, label, central_atom=0, connect_thresh=1.1,
+                             fix_permutation=False, center=None, permutation=None):
         return self._symmetry.measure(label)
 
     @set_parameters
-    def get_symmetry_nearest_structure(self, label, multi=1, central_atom=0, connect_thresh=1.1,
-                                       fix_permutation=False, center=None):
+    def get_symmetry_nearest_structure(self, label, central_atom=0, connect_thresh=1.1,
+                                       fix_permutation=False, center=None, permutation=None):
         return self._symmetry.nearest_structure(label)
+
+    @set_parameters
+    def get_optimum_permutation(self, label, central_atom=0, connect_thresh=1.1, center=None):
+        return self._symmetry.optimum_permutation(label)
 
     def get_pointgroup(self, tol=0.01):
         return PointGroup(self, tolerance=tol).get_point_group()
