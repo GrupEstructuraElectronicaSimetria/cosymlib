@@ -7,7 +7,7 @@ import argparse
 import sys
 
 
-parser = argparse.ArgumentParser(description='symm')
+parser = argparse.ArgumentParser(description='tsym')
 
 # positional arguments
 parser.add_argument(type=str,
@@ -45,7 +45,7 @@ parser.add_argument('-c', '--central_atom',
                     type=int,
                     default=0,
                     help='central atom is in position N in the input structure')
-parser.add_argument('-info',
+parser.add_argument('--info',
                     action='store_true',
                     default=False,
                     help='print information about the input structures')

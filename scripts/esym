@@ -7,7 +7,7 @@ import argparse
 import sys
 
 
-parser = argparse.ArgumentParser(description='esymm')
+parser = argparse.ArgumentParser(description='esym')
 
 # positional arguments
 parser.add_argument(type=str,
@@ -33,7 +33,7 @@ parser.add_argument('-o', '--output',
                     metavar='filename',
                     default=None,
                     help='store output into a file')
-parser.add_argument('-info',
+parser.add_argument('--info',
                     action='store_true',
                     default=False,
                     help='print information about the input structures')
