@@ -50,16 +50,17 @@ parser.add_argument('-r', '--references',
                     action='store_true',
                     default=False,
                     help='store the coordinates of the reference polyhedra in a file')
-parser.add_argument('--info',
-                    action='store_true',
-                    default=False,
-                    help='print information about the input structures')
 
-parser.add_argument('--custom_ref',
+parser.add_argument('-cref', '--custom_ref',
                     dest='custom_ref',
                     metavar='filename',
                     default=None,
                     help='define filename containing the structure/s to be used as reference (requires -m custom)')
+
+parser.add_argument('--info',
+                    action='store_true',
+                    default=False,
+                    help='print information about the input structures')
 
 # Modifiers
 parser.add_argument('--fix_permutation',
