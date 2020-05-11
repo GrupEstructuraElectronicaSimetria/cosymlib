@@ -33,6 +33,26 @@ parser.add_argument('-o', '--output',
                     metavar='filename',
                     default=None,
                     help='store output into a file')
+
+# addtional print
+parser.add_argument('--trans_matrices',
+                    dest='trans_matrices',
+                    default=False,
+                    action='store_true',
+                    help='print the transformation matrices')
+
+parser.add_argument('--mo_overlaps',
+                    dest='mo_overlaps',
+                    default=False,
+                    action='store_true',
+                    help='print the molecular orbitals overlap')
+
+parser.add_argument('--irrep',
+                    dest='irrep',
+                    default=False,
+                    action='store_true',
+                    help='print the irreducible representations')
+
 parser.add_argument('--info',
                     action='store_true',
                     default=False,
@@ -83,6 +103,27 @@ if args.info:
 # Symgroup commands
 if args.measure:
     structure_set.print_electronic_symmetry_measure(args.measure,
+                                                    axis=args.axis,
+                                                    axis2=args.axis2,
+                                                    center=args.center,
+                                                    output=common_output)
+
+    if args.trans_matrices:
+        structure_set.print_wnfsym_sym_matrices(args.measure,
+                                                axis=args.axis,
+                                                axis2=args.axis2,
+                                                center=args.center,
+                                                output=common_output)
+
+    if args.mo_overlaps:
+        structure_set.print_wnfsym_sym_ovelap(args.measure,
+                                              axis=args.axis,
+                                              axis2=args.axis2,
+                                              center=args.center,
+                                              output=common_output)
+
+    if args.irrep:
+        structure_set.print_wnfsym_irreducible_repr(args.measure,
                                                     axis=args.axis,
                                                     axis2=args.axis2,
                                                     center=args.center,

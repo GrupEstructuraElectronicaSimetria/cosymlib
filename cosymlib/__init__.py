@@ -1,4 +1,4 @@
-__version__ = '0.8.0'
+__version__ = '0.8.1'
 
 from cosymlib.molecule import Molecule, Geometry
 from cosymlib import file_io
@@ -30,7 +30,8 @@ class Cosymlib:
                  structures,
                  ignore_atoms_labels=False,
                  ignore_connectivity=False,
-                 connectivity=None):
+                 connectivity=None,
+                 connectivity_thresh=None):
 
         self._molecules = []
         if isinstance(structures, list):
@@ -52,9 +53,11 @@ class Cosymlib:
         for molecule in self._molecules:
             if ignore_atoms_labels:
                 molecule.geometry.set_symbols('X' * molecule.geometry.get_n_atoms())
-            if connectivity:
+            if connectivity_thresh is not None:
+                molecule.geometry.generate_connectivity(thresh=connectivity_thresh)
+            if connectivity is not None:
                 molecule.geometry.set_connectivity(connectivity)
-            elif ignore_connectivity:
+            if ignore_connectivity:
                 molecule.geometry.set_connectivity(None)
 
     def get_n_atoms(self):
@@ -248,8 +251,8 @@ class Cosymlib:
 
         output.write(txt)
 
-    def print_geometric_symmetry_measure(self, label, multi=1, central_atom=0, connect_thresh=1.1, center=None,
-                                         fix_permutation=False, output=sys.stdout):
+    def print_geometric_symmetry_measure(self, label, central_atom=0, connect_thresh=1.1, center=None,
+                                         output=sys.stdout):
         kwargs = _get_symgroup_arguments(locals())
 
         txt = 'Evaluating symmetry operation : {}\n \n'.format(label)
@@ -265,8 +268,8 @@ class Cosymlib:
 
         output.write(txt)
 
-    def print_symmetry_nearest_structure(self, label, multi=1, central_atom=0, connect_thresh=1.1, center=None,
-                                         fix_permutation=False, output=sys.stdout):
+    def print_symmetry_nearest_structure(self, label, central_atom=0, connect_thresh=1.1, center=None,
+                                         output=sys.stdout):
         kwargs = _get_symgroup_arguments(locals())
 
         for idm, molecule in enumerate(self._molecules):
@@ -355,7 +358,7 @@ class Cosymlib:
 
             txt += '\nIdeal Group Table\n'
             txt += sep_line
-            txt += '     ' + '  '.join(['{:^7}'.format(s) for s in ideal_gt['ir_labels']])
+            txt += '     ' + '  '.join(['{:^7}'.format(s) for s in ideal_gt['labels']])
             txt += '\n'
             txt += sep_line
             for i, line in enumerate(ideal_gt['table']):
@@ -365,7 +368,7 @@ class Cosymlib:
 
             txt += '\nAlpha MOs: Symmetry Overlap Expectation Values\n'
             txt += sep_line
-            txt += '     ' + '  '.join(['{:^7}'.format(s) for s in ideal_gt['ir_labels']])
+            txt += '     ' + '  '.join(['{:^7}'.format(s) for s in ideal_gt['labels']])
             txt += '\n'
             txt += sep_line
 
@@ -375,7 +378,7 @@ class Cosymlib:
 
             txt += '\nBeta MOs: Symmetry Overlap Expectation Values\n'
             txt += sep_line
-            txt += '     ' + '  '.join(['{:^7}'.format(s) for s in ideal_gt['ir_labels']])
+            txt += '     ' + '  '.join(['{:^7}'.format(s) for s in ideal_gt['labels']])
             txt += '\n'
             txt += sep_line
             for i, line in enumerate(mo_overlap['beta']):
@@ -384,7 +387,7 @@ class Cosymlib:
 
             txt += '\nWaveFunction: Symmetry Overlap Expectation Values\n'
             txt += sep_line
-            txt += '     ' + '  '.join(['{:^7}'.format(s) for s in ideal_gt['ir_labels']])
+            txt += '     ' + '  '.join(['{:^7}'.format(s) for s in ideal_gt['labels']])
             txt += '\n'
             txt += sep_line
             txt += 'a-wf' + '  '.join(['{:7.3f}'.format(s) for s in wf_overlap['alpha']])

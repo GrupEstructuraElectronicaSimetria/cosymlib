@@ -1,6 +1,7 @@
 from cosymlib import shape, tools
 from cosymlib.symmetry import Symmetry
 from cosymlib.symmetry.pointgroup import PointGroup
+from cosymlib.tools import generate_connectivity_from_geometry
 import numpy as np
 
 
@@ -16,7 +17,8 @@ class Geometry:
                  positions,
                  symbols=(),
                  name=None,
-                 connectivity=None):
+                 connectivity=None,
+                 connectivity_thresh=1.1):
 
         # self._central_atom = None
         self._symbols = []
@@ -49,7 +51,11 @@ class Geometry:
                 self._positions.append([float(j) for j in symbol])
 
         self._positions = np.array(self._positions)
-        self._connectivity = connectivity
+        if connectivity is None:
+            self._connectivity = generate_connectivity_from_geometry(self, thresh=connectivity_thresh)
+        else:
+            self._connectivity = connectivity
+
         self._shape = shape.Shape(self)
         self._symmetry = Symmetry(self)
 
@@ -100,6 +106,9 @@ class Geometry:
     def get_symbols(self):
         return self._symbols
 
+    def generate_connectivity(self, thresh=1.1):
+        self._connectivity = generate_connectivity_from_geometry(self, thresh=thresh)
+
     # Shape methods
     def get_shape_measure(self, shape_label, central_atom=0, fix_permutation=False):
         return self._shape.measure(shape_label, central_atom=central_atom, fix_permutation=fix_permutation)
@@ -116,12 +125,12 @@ class Geometry:
     # Symmetry methods
     @set_parameters
     def get_symmetry_measure(self, label, central_atom=0, connect_thresh=1.1,
-                             fix_permutation=False, center=None, permutation=None):
+                             center=None, permutation=None):
         return self._symmetry.measure(label)
 
     @set_parameters
     def get_symmetry_nearest_structure(self, label, central_atom=0, connect_thresh=1.1,
-                                       fix_permutation=False, center=None, permutation=None):
+                                       center=None, permutation=None):
         return self._symmetry.nearest_structure(label)
 
     @set_parameters

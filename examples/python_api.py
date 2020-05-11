@@ -54,7 +54,7 @@ for i in range(100):
     measure = methane.get_symmetry_measure('C3', central_atom=1)
 
 print('measure: {:^10.3f} '.format(measure))
-print('measure: {:^10.3f} '.format(methane.get_symmetry_measure('C4', central_atom=1, fix_permutation=False)))
+print('measure: {:^10.3f} '.format(methane.get_symmetry_measure('C4', central_atom=1)))
 
 # Call symgroup as method of Symgroup class (semi function call)
 print('measure: {:^10.3f} '.format(Symmetry(methane, central_atom=1).measure('C4')))

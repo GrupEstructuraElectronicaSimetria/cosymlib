@@ -31,7 +31,6 @@ class Symmetry:
                  multi=1,
                  axis=None,
                  axis2=None,
-                 fix_permutation=False,
                  permutation=None
                  ):
 
@@ -59,7 +58,6 @@ class Symmetry:
         self._multi = multi
         self._axis = axis
         self._axis2 = axis2
-        self._fix_permutation = fix_permutation
         self._results = {}
 
         if permutation is None:
@@ -101,7 +99,7 @@ class Symmetry:
                                            center=self._center,
                                            connectivity=self._connectivity,
                                            connect_thresh=self._connect_thresh,
-                                           fix_permutation=self._fix_permutation)
+                                           permutation=None)
 
         return self._results[key]
 

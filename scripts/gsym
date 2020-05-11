@@ -65,7 +65,7 @@ parser.add_argument('--connectivity_thresh',
                     dest='connectivity_thresh',
                     metavar='R',
                     type=float,
-                    default=1.1,
+                    default=None,
                     help='relative threshold to determine the connectivity (default: 1.1)')
 parser.add_argument('--connectivity_file',
                     dest='connectivity_file',
@@ -79,11 +79,7 @@ parser.add_argument('--center',
                     default=None,
                     nargs=3,
                     help='fix coordinates x,y,z for the center of symmetry operations (Angs)')
-parser.add_argument('--fix_permutation',
-                    dest='fix_permutation',
-                    action='store_true',
-                    default=False,
-                    help='do not permute atoms')
+
 
 args = parser.parse_args()
 
@@ -102,7 +98,8 @@ structures = read_generic_structure_file(args.input_file, read_multiple=True)
 structure_set = Cosymlib(structures,
                          ignore_atoms_labels=args.ignore_atoms_labels,
                          ignore_connectivity=args.ignore_connectivity,
-                         connectivity=connectivity)
+                         connectivity=connectivity,
+                         connectivity_thresh=args.connectivity_thresh)
 
 if args.labels:
     print_symmetry_labels()
@@ -118,8 +115,7 @@ if args.measure:
                                                    central_atom=args.central_atom,
                                                    center=args.center,
                                                    connect_thresh=args.connectivity_thresh,
-                                                   output=common_output,
-                                                   fix_permutation = args.fix_permutation)
+                                                   output=common_output)
 
 if args.structure:
     if args.output_name is None:
@@ -132,7 +128,6 @@ if args.structure:
                                                    central_atom=args.central_atom,
                                                    connect_thresh=args.connectivity_thresh,
                                                    center=args.center,
-                                                   output=structure_output,
-                                                   fix_permutation=args.fix_permutation)
+                                                   output=structure_output)
 
 print_footer(common_output)
