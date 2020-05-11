@@ -57,13 +57,19 @@ def generate_connectivity_from_geometry(geometry, thresh=1.1):
     from scipy.spatial import distance_matrix
 
     coordinates = geometry.get_positions()
-    radius = [periodic_table_info[sym]['covalent_radius'] for sym in geometry.get_symbols()]
+    try:
+        radius = [periodic_table_info[sym]['covalent_radius'] for sym in geometry.get_symbols()]
+    except KeyError:
+        return None
 
     distances_matrix = distance_matrix(coordinates, coordinates)
 
     radii_matrix = np.array([radius]*len(radius))
     radii_matrix = radii_matrix + radii_matrix.T
 
-    relative_differences = np.abs(radii_matrix - distances_matrix)/radii_matrix
+    try:
+        relative_differences = np.abs(radii_matrix - distances_matrix)/radii_matrix
+    except ValueError:
+        return None
 
     return (np.array(np.where(relative_differences < thresh - 1)).T + 1).tolist()
