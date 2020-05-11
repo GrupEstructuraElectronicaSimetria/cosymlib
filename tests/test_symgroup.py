@@ -25,7 +25,8 @@ class TestSymgroupCycles(unittest.TestCase):
                                              [-0.926250976,  0.939345948, 0.000000000],
                                              [-0.926250976, -0.939345948, 0.000000000]],
                                   # name='test',
-                                  symbols=['C', 'C', 'C', 'C', 'C']
+                                  symbols=['C', 'C', 'C', 'C', 'C'],
+                                  connectivity_thresh=1.5,
                                   )
 
     def test_symmetry_measure(self):

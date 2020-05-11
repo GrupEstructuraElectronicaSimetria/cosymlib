@@ -18,7 +18,7 @@ class Geometry:
                  symbols=(),
                  name=None,
                  connectivity=None,
-                 connectivity_thresh=1.1):
+                 connectivity_thresh=1.2):
 
         # self._central_atom = None
         self._symbols = []
