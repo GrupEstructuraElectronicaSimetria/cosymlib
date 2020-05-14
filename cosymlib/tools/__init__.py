@@ -1,6 +1,7 @@
 import os
 import yaml
 import numpy as np
+from warnings import warn
 
 
 file_path = os.path.dirname(os.path.abspath(__file__)) + '/periodic_table.yaml'
@@ -60,6 +61,7 @@ def generate_connectivity_from_geometry(geometry, thresh=1.1):
     try:
         radius = [periodic_table_info[sym]['covalent_radius'] for sym in geometry.get_symbols()]
     except KeyError:
+        warn('failed to generate connectivity')
         return None
 
     distances_matrix = distance_matrix(coordinates, coordinates)
@@ -70,6 +72,7 @@ def generate_connectivity_from_geometry(geometry, thresh=1.1):
     try:
         relative_differences = np.abs(radii_matrix - distances_matrix)/radii_matrix
     except ValueError:
+        warn('failed to generate connectivity')
         return None
 
     return (np.array(np.where(relative_differences < thresh - 1)).T + 1).tolist()
