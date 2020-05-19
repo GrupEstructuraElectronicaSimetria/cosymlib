@@ -24,7 +24,13 @@ def print_input_info(initial_geometries, output=sys.stdout):
 
         for idn, array in enumerate(geometry.get_positions()):
             output.write('{:2s}'.format(geometry.get_symbols()[idn]))
-            output.write(' {:11.7f} {:11.7f} {:11.7f}\n'.format(array[0], array[1], array[2]))
+            output.write(' {:11.7f} {:11.7f} {:11.7f}'.format(array[0], array[1], array[2]))
+
+            if geometry.get_connectivity() is not None:
+                output.write('  ' +
+                             '  '.join(['{:3}'.format(i+1) for i in range(geometry.get_n_atoms())
+                                        if [idn+1, i+1] in geometry.get_connectivity()])+
+                             '\n')
         output.write('\n')
 
 

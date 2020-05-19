@@ -76,3 +76,10 @@ def generate_connectivity_from_geometry(geometry, thresh=1.1):
         return None
 
     return (np.array(np.where(relative_differences < thresh - 1)).T + 1).tolist()
+
+
+def get_connectivity_matrix(connectivity, ndim):
+    cm = np.zeros((ndim, ndim), dtype=int)
+    for pair in connectivity:
+        cm[pair[0]-1, pair[1]-1] = 1
+    return cm
