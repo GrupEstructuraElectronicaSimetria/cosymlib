@@ -505,7 +505,7 @@ def get_file_xyz_txt(structure):
     txt = ''
     for geometry in geometries:
         txt += '{}\n'.format(geometry.get_n_atoms())
-        txt += '{}\n'.format(geometry.name)
+        txt += '{}\n'.format(geometry.name if geometry.name is not None else '')
         for idp, position in enumerate(geometry.get_positions()):
             txt += '{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idp],
                                                                   position[0], position[1], position[2])

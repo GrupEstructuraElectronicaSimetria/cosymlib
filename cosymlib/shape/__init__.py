@@ -56,14 +56,15 @@ class Shape:
         return self._measures[key]
 
     # Function description
-    def structure(self, label, central_atom=0, fix_permutation=False):
-        key = _get_key(central_atom, label, fix_permutation=fix_permutation)
+    def structure(self, reference, central_atom=0, fix_permutation=False):
+        key = _get_key(central_atom, reference, fix_permutation=fix_permutation)
         if key not in self._structures:
-            if isinstance(label, str):
-                reference_structure = tools.get_test_structure(label, central_atom)
-                reference_coordinates = reference_structure.get_positions()
+            if isinstance(reference, str):
+                reference_structure = tools.get_test_structure(reference, central_atom)
             else:
-                reference_coordinates = np.array(label)
+                reference_structure = reference
+
+            reference_coordinates = reference_structure.get_positions()
 
             if len(self._coordinates) != len(reference_coordinates):
                 raise Exception('Reference and input structures have different number of atoms')

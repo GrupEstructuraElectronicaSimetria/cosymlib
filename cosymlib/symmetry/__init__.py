@@ -27,7 +27,7 @@ class Symmetry:
                  structure,
                  central_atom=0,
                  center=None,
-                 connect_thresh=1.1,
+                 connect_thresh=1.2,
                  multi=1,
                  axis=None,
                  axis2=None,

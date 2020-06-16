@@ -38,7 +38,7 @@ def center_mass(elements, coordinates):
     return cm
 
 
-def generate_connectivity_from_geometry_slow(geometry, thresh=1.1):
+def generate_connectivity_from_geometry_slow(geometry, thresh=1.2):
     coor = geometry.get_positions()
     sym = geometry.get_symbols()
 
@@ -54,9 +54,8 @@ def generate_connectivity_from_geometry_slow(geometry, thresh=1.1):
     return connectivity
 
 
-def generate_connectivity_from_geometry(geometry, thresh=1.1):
+def generate_connectivity_from_geometry(geometry, thresh=1.2):
     from scipy.spatial import distance_matrix
-
     coordinates = geometry.get_positions()
     try:
         radius = [periodic_table_info[sym]['covalent_radius'] for sym in geometry.get_symbols()]

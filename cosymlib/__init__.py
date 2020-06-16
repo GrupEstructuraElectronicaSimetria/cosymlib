@@ -1,4 +1,4 @@
-__version__ = '0.8.1'
+__version__ = '0.8.2'
 
 from cosymlib.molecule import Molecule, Geometry
 from cosymlib import file_io
@@ -83,6 +83,8 @@ class Cosymlib:
     def print_shape_measure(self, shape_reference, central_atom=0, fix_permutation=False, output=sys.stdout):
         """
         Method that prints to file shape's measure
+
+
         :param shape_reference: reference label, list of labels, 'all' or polyhedra list
         :param central_atom: position of the central atom in molecule if exist
         :param output_name: custom name without extension
@@ -143,6 +145,7 @@ class Cosymlib:
     def print_shape_structure(self, shape_reference, central_atom=0, fix_permutation=False, output=sys.stdout):
         """
         Method that prints to file shape's structure
+
         :param shape_reference: reference polyhedra label which user will compare with his polyhedra.
                                 Reference labels can be found in [#f1]_
         :param central_atom: position of the central atom in molecule if exist
@@ -150,9 +153,18 @@ class Cosymlib:
         :return: shape's structure in the output_name.out file
         """
 
+        if shape_reference == 'all':
+            vertices = self.get_n_atoms() - int(bool(central_atom))
+            reference_list = get_structure_references(vertices)
+        else:
+            if isinstance(shape_reference, (str, Geometry)):
+                reference_list = [shape_reference]
+            else:
+                reference_list = shape_reference
+
         shape_results_structures = []
         references = []
-        for reference in shape_reference:
+        for reference in reference_list:
             if isinstance(reference, str):
                 references.append(reference)
 
@@ -168,9 +180,8 @@ class Cosymlib:
         for idm, molecule in enumerate(self._molecules):
             geometries.append(molecule.geometry)
             for idl, reference in enumerate(references):
-                geometries.append(Geometry(symbols=molecule.geometry.get_symbols(),
-                                           positions=shape_results_structures[idl][idm],
-                                           name=molecule.name + '_' + reference))
+                 shape_results_structures[idl][idm].set_name(molecule.name + '_' + reference)
+                 geometries.append(shape_results_structures[idl][idm])
 
         for geometry in geometries:
             output.write(file_io.get_file_xyz_txt(geometry))
@@ -273,10 +284,7 @@ class Cosymlib:
         kwargs = _get_symgroup_arguments(locals())
 
         for idm, molecule in enumerate(self._molecules):
-            geometry = Geometry(symbols=molecule.geometry.get_symbols(),
-                                positions=molecule.geometry.get_symmetry_nearest_structure(**kwargs),
-                                 name=molecule.name)
-
+            geometry = molecule.geometry.get_symmetry_nearest_structure(**kwargs)
             output.write(file_io.get_file_xyz_txt(geometry))
 
     # This should be substituted by calling methods within this class

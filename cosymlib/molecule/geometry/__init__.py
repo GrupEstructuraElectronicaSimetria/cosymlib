@@ -16,7 +16,7 @@ class Geometry:
     def __init__(self,
                  positions,
                  symbols=(),
-                 name=None,
+                 name='',
                  connectivity=None,
                  connectivity_thresh=1.2):
 
@@ -106,7 +106,7 @@ class Geometry:
     def get_symbols(self):
         return self._symbols
 
-    def generate_connectivity(self, thresh=1.1):
+    def generate_connectivity(self, thresh=1.2):
         self._connectivity = generate_connectivity_from_geometry(self, thresh=thresh)
 
     # Shape methods
@@ -114,7 +114,12 @@ class Geometry:
         return self._shape.measure(shape_label, central_atom=central_atom, fix_permutation=fix_permutation)
 
     def get_shape_structure(self, shape_label, central_atom=0, fix_permutation=False):
-        return self._shape.structure(shape_label, central_atom=central_atom, fix_permutation=fix_permutation)
+        from cosymlib.molecule.geometry import Geometry
+        structure_coordinates = self._shape.structure(shape_label, central_atom=central_atom, fix_permutation=fix_permutation)
+
+        return Geometry(symbols=self.get_symbols(),
+                        positions=structure_coordinates,
+                        name=self.name + '_structure')
 
     def get_path_deviation(self, shape_label1, shape_label2, central_atom=0):
         return self._shape.path_deviation(shape_label1, shape_label2, central_atom)
@@ -124,17 +129,20 @@ class Geometry:
 
     # Symmetry methods
     @set_parameters
-    def get_symmetry_measure(self, label, central_atom=0, connect_thresh=1.1,
+    def get_symmetry_measure(self, label, central_atom=0, connect_thresh=1.2,
                              center=None, permutation=None):
         return self._symmetry.measure(label)
 
     @set_parameters
-    def get_symmetry_nearest_structure(self, label, central_atom=0, connect_thresh=1.1,
+    def get_symmetry_nearest_structure(self, label, central_atom=0, connect_thresh=1.2,
                                        center=None, permutation=None):
-        return self._symmetry.nearest_structure(label)
+        return Geometry(symbols=self.get_symbols(),
+                        positions=self._symmetry.nearest_structure(label),
+                        name=self.name + '_nearest')
+        # return self._symmetry.nearest_structure(label)
 
     @set_parameters
-    def get_optimum_permutation(self, label, central_atom=0, connect_thresh=1.1, center=None):
+    def get_optimum_permutation(self, label, central_atom=0, connect_thresh=1.2, center=None):
         return self._symmetry.optimum_permutation(label)
 
     def get_pointgroup(self, tol=0.01):
