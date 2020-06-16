@@ -31,7 +31,6 @@ class Symmetry:
                  multi=1,
                  axis=None,
                  axis2=None,
-                 permutation=None
                  ):
 
         # Allow geometry or molecule to be imported instead of crude Cartesian coordinates
@@ -59,9 +58,6 @@ class Symmetry:
         self._axis = axis
         self._axis2 = axis2
         self._results = {}
-
-        if permutation is None:
-            self._permutation = [i+1 for i in range(len(self._coordinates))]
 
         try:
             self._electronic_structure = structure.electronic_structure

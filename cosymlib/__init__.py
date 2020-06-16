@@ -223,7 +223,6 @@ class Cosymlib:
     # TODO: Change name of all symgroup named functions
     def print_geometric_measure_info(self, label, multi=1, central_atom=0, center=None, output=sys.stdout):
         kwargs = _get_symgroup_arguments(locals())
-
         sep_line = '..................................................\n'
 
         txt = 'Evaluating symmetry operation : {}\n'.format(label)
@@ -256,13 +255,12 @@ class Cosymlib:
             for array in molecule.geometry._symmetry.reference_axis(label):
                 txt += '{:12.8f} {:12.8f} {:12.8f}\n'.format(array[0], array[1], array[2])
             txt += '\n'
-
-            txt += 'Symmetry measure {:.5f}\n'.format(molecule.geometry.get_symmetry_measure(kwargs))
+            txt += 'Symmetry measure {:.5f}\n'.format(molecule.geometry.get_symmetry_measure(**kwargs))
             txt += sep_line
 
         output.write(txt)
 
-    def print_geometric_symmetry_measure(self, label, central_atom=0, connect_thresh=1.1, center=None,
+    def print_geometric_symmetry_measure(self, label, central_atom=0, center=None,
                                          output=sys.stdout):
         kwargs = _get_symgroup_arguments(locals())
 
@@ -279,7 +277,7 @@ class Cosymlib:
 
         output.write(txt)
 
-    def print_symmetry_nearest_structure(self, label, central_atom=0, connect_thresh=1.1, center=None,
+    def print_symmetry_nearest_structure(self, label, central_atom=0, center=None,
                                          output=sys.stdout):
         kwargs = _get_symgroup_arguments(locals())
 

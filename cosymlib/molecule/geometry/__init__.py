@@ -129,21 +129,36 @@ class Geometry:
 
     # Symmetry methods
     @set_parameters
-    def get_symmetry_measure(self, label, central_atom=0, connect_thresh=1.2,
-                             center=None, permutation=None):
+    def get_symmetry_measure(self, label, central_atom=0, center=None, multi=1):
+        """
+        Returns the symmetry measure
+
+        :param label: symmetry group
+        :param central_atom: central atom position (0 if no central atom)
+        :param center: center of the measure
+        :return: the measure
+        """
+
         return self._symmetry.measure(label)
 
     @set_parameters
-    def get_symmetry_nearest_structure(self, label, central_atom=0, connect_thresh=1.2,
-                                       center=None, permutation=None):
+    def get_symmetry_nearest_structure(self, label, central_atom=0, center=None,  multi=1):
+        """
+        Returns the nearest ideal structure
+
+        :param label: symmetry group
+        :param central_atom: central atom position (0 if no central atom)
+        :param center: center of the measure
+        :return: the structure
+        """
         return Geometry(symbols=self.get_symbols(),
                         positions=self._symmetry.nearest_structure(label),
                         name=self.name + '_nearest')
         # return self._symmetry.nearest_structure(label)
 
     @set_parameters
-    def get_optimum_permutation(self, label, central_atom=0, connect_thresh=1.2, center=None):
-        return self._symmetry.optimum_permutation(label)
+    def get_symmetry_optimum_axis(self, label, central_atom=0, center=None):
+        return self._symmetry.optimum_axis(label)
 
     def get_pointgroup(self, tol=0.01):
         return PointGroup(self, tolerance=tol).get_point_group()

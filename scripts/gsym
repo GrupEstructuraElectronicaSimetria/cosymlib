@@ -114,7 +114,6 @@ if args.measure:
     structure_set.print_geometric_symmetry_measure(args.measure,
                                                    central_atom=args.central_atom,
                                                    center=args.center,
-                                                   connect_thresh=args.connectivity_thresh,
                                                    output=common_output)
 
 if args.structure:
@@ -126,7 +125,6 @@ if args.structure:
 
     structure_set.print_symmetry_nearest_structure(args.measure,
                                                    central_atom=args.central_atom,
-                                                   connect_thresh=args.connectivity_thresh,
                                                    center=args.center,
                                                    output=structure_output)
 
