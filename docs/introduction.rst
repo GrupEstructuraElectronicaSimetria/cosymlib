@@ -49,7 +49,7 @@ If both the problem and the reference structures Q and P are defined as a set of
 define the shape measure simply as:
 
 .. image:: CShM_eq.png
-    :height: 100px
+    :height: 105px
     :align: center
 
 where N is the number of vertices in the structures we are comparing, q\ :sub:`i`\  and
@@ -63,7 +63,7 @@ with respect to all possible ways to label the N vertices in the reference struc
 also needed.
 
 From the definition of S\ :sub:`P`\ (Q)  it follows that if Q and P have exactly the same shape,
-then S\ :sub:`P`\ (Q)=0. Since S\ :sub:`P`\ (Q)  is always positive, the larger its value, the
+then S\ :sub:`P`\ (Q) = 0. Since S\ :sub:`P`\ (Q)  is always positive, the larger its value, the
 less similar is Q to the ideal shape P. It can be shown that the maximum value for
 S\ :sub:`P`\ (Q) is 100, corresponding to the unphysical situation for which all vertices
 of Q collapse into a single point. A more detailed description of continuous shape measures and
@@ -98,17 +98,22 @@ To define a continuous measure for the degree of symmetry of an object one may p
 in the same way as for the definition of CShMs. The final result for the symmetry measure
 with respect to a given point symmetry group G, denoted as S\ :sub:`G`\ (Q), yields an expression
 totally analogous to the equation above, in which Q refers again to the problem structure,
-but where P is now the G-symmetric structure closest to Q. The minimization process in this
-case refers to the relative position of the two structures (translation), the orientation
-of the symmetry elements for the reference G-symmetric structure P, the scale factor, and again
-the labeling of vertices of the symmetric structure. Note that although the same equation may be
-used both to define shape and symmetry measures, there is a fundamental difference between the
+but where P is now the G-symmetric structure closest to Q:
+
+.. image:: CSM_eq.png
+    :height: 90px
+    :align: center
+
+The minimization process in this case refers to the relative position of the two structures (translation),
+the orientation of the symmetry elements for the reference G-symmetric structure P, the scale factor,
+and again, the labeling of vertices of the symmetric structure. Note that although the same equation may
+be used both to define shape and symmetry measures, there is a fundamental difference between the
 two procedures: while in computing a shape measure we know in advance the reference object
 P\ :sub:`0`\  , in the case of symmetry measures the shape of the closest G-symmetric structure
 is, in principle, previously unknown and must be found in the procedure of computing S\ :sub:`G`\ (Q).
 
 Consider, for instance that we would like to measure the rectangular symmetry for a given general
-quadrangle. Besides optimizing to seek for the translation, rotation and scaling that leads to the
+quadrangle. Besides optimizing to seek for the translation, rotation, and scaling that leads to the
 optimal overlap of our quadrangle Q with a particular rectangle P as in a shape measure, we will need
 to consider also which is the ratio between the side lengths of best matching rectangle and
 optimize also with respect to this parameter.
@@ -121,7 +126,7 @@ Although this additional optimization process may seem difficult to generalize f
 given symmetry group, it has been shown that it is possible to do it efficiently
 using either the folding–unfolding algorithm or via the calculation of intermediate symmetry
 operation measures. As in the case of shape measures, the values of CSMs are also limited
-between 0 and 100, with S\ :sub:`G`\ (Q)=0, meaning that Q is a G-symmetric shape. A more detailed
+between 0 and 100, with S\ :sub:`G`\ (Q) = 0, meaning that Q is a G-symmetric shape. A more detailed
 description of continuous shape measures and some of their applications in chemistry may be found
 in the following references: [CSM]_.
 
