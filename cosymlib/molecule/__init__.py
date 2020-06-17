@@ -45,6 +45,7 @@ class Molecule:
             self._electronic_structure = ElectronicStructure(basis=eh.get_basis(),
                                                              orbital_coefficients=[eh.get_mo_coefficients(), []],
                                                              mo_energies=eh.get_mo_energies(),
+                                                             multiplicity=eh.get_multiplicity(),
                                                              valence_only=True)
             self.symmetry.set_electronic_structure(self._electronic_structure)
 
