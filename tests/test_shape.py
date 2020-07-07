@@ -170,8 +170,12 @@ class TestShape(unittest.TestCase):
             reference_polyhedron.append(shape.tools.get_shape_label(int(number), options['%n_atoms']))
 
         symobj = Cosymlib(molecules)
-        shape_measure, devpath, GenCoord = symobj.get_path_parameters(reference_polyhedron[0], reference_polyhedron[1],
-                                                                      central_atom=options['%central_atom'], maxdev=5.0)
+        shape_measure, devpath, get_coord = symobj.get_path_parameters(reference_polyhedron[0], reference_polyhedron[1],
+                                                                       central_atom=options['%central_atom'])
+
+        filter_mask = [dv < 5.0 and gc < 101 for dv, gc in zip(devpath, get_coord)]
+        devpath = np.array(devpath)[filter_mask]
+
         self.assertTrue(np.allclose(nice_dev_path, devpath, atol=1e-1))
 
     def test_example07(self):
@@ -180,9 +184,12 @@ class TestShape(unittest.TestCase):
         for number in options['%labels']:
             reference_polyhedron.append(shape.tools.get_shape_label(int(number), options['%n_atoms']))
         symobj = Cosymlib(molecules)
-        shape_measure, devpath, GenCoord = symobj.get_path_parameters(reference_polyhedron[0], reference_polyhedron[1],
-                                                                      central_atom=options['%central_atom'], maxdev=10.0,
-                                                                      maxgco=60, mingco=40)
+        shape_measure, devpath, get_coord = symobj.get_path_parameters(reference_polyhedron[0], reference_polyhedron[1],
+                                                                       central_atom=options['%central_atom'])
+
+        filter_mask = [dv < 5.0 and 40 < gc < 60 for dv, gc in zip(devpath, get_coord)]
+        devpath = np.array(devpath)[filter_mask]
+
         self.assertTrue(np.allclose(0.2, devpath, atol=1e-1))
 
     def test_example08(self):
