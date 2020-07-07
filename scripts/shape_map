@@ -1,61 +1,126 @@
 #!/usr/bin/env python
-import argparse
-import sys
-import yaml
 from cosymlib import file_io
 from cosymlib import Cosymlib
-
+from cosymlib.file_io.tools import add_extra_keywords, print_header, print_footer, print_input_info
+from cosymlib.file_io import read_generic_structure_file
+from cosymlib.shape import tools
+import argparse
+import sys
 
 parser = argparse.ArgumentParser(description='Shape_map ')
-parser.add_argument(type=str, dest='input_file', help='input file name(+extension)')
-parser.add_argument('-o', '--output_name', dest='output_name', default=None, help='save in file name')
-parser.add_argument(type=str, dest="yaml_input", nargs='?', default=None,
-                    help='Perform the calculations with the command file')
-parser.add_argument('-c', '--central_atom', action='store', dest='central_atom',
-                    type=int, default=0, help='position of the central atom if exist')
-parser.add_argument('-custom_ref', action='store', dest='custom_ref', default=None,
-                    help='take a given structure from the file and use it as reference')
-parser.add_argument('-fix_perm', '--fix_permutation', dest='fix_permutation', action='store_true', default=False,
-                    help='use the given permutation to perform a calculation')
 
-# Shape input flags
-group_shape = parser.add_argument_group('Shape')
-group_shape.add_argument('-x', dest='x', action='store', default=False,
-                         help='x axis label')
-group_shape.add_argument('-y', dest='y', action='store', default=False,
-                         help='y axis label')
-group_shape.add_argument('-p', dest='p', action='store_true', default=False,
-                         help='Print all the information')
+# positional arguments
+parser.add_argument(type=str,
+                    dest='input_file',
+                    help='input file with structures')
+parser.add_argument(type=str,
+                    dest="yaml_input",
+                    nargs='?',
+                    default=None,
+                    help='Input file with keywords')
 
+# Main options
+parser.add_argument('-m', '--map',
+                    dest='map',
+                    metavar='SH',
+                    default=None,
+                    nargs=2,
+                    help='get map using shape 2 labels')
+parser.add_argument('-cref', '--custom_ref',
+                    dest='custom_ref',
+                    metavar='filename',
+                    default=None,
+                    help='get map using custom 2 structures from a file')
+parser.add_argument('-o', '--output_name',
+                    dest='output_name',
+                    metavar='filename',
+                    default=None,
+                    help='store the output into a file')
+parser.add_argument('-c', '--central_atom',
+                    dest='central_atom',
+                    metavar='N',
+                    type=int,
+                    default=0,
+                    help='define central atom as the atom in position N in the input structure')
 
-args = parser.parse_args(sys.argv[1:])
+# Extra options
+parser.add_argument('-l', '--labels', action='store_true',
+                    dest='labels',
+                    default=False,
+                    help='show the reference shape labels')
+parser.add_argument('--info',
+                    action='store_true',
+                    default=False,
+                    help='print information about the input structures')
+
+# Modifiers
+parser.add_argument('--fix_permutation',
+                    dest='fix_permutation',
+                    action='store_true',
+                    help='do not permute atoms')
+parser.add_argument('--min_dev',
+                    dest='min_dev',
+                    default=0.0,
+                    help='minimum deviation')
+parser.add_argument('--max_dev',
+                    dest='max_dev',
+                    default=100.0,
+                    help='maximum deviation')
+parser.add_argument('--min_gco',
+                    dest='min_gco',
+                    default=0.0,
+                    help='minimum coordinates gradient')
+parser.add_argument('--max_gco',
+                    dest='max_gco',
+                    action='store_true',
+                    default=100.0,
+                    help='maximum coordinates gradient')
+parser.add_argument('--n_points',
+                    dest='n_points',
+                    default=20,
+                    type=int,
+                    help='number of path structures to calculate')
+
+args = parser.parse_args()
 
 if args.yaml_input:
-    with open(args.yaml_input, 'r') as stream:
-        input_parameters = yaml.load(stream)
+    add_extra_keywords(args, args.yaml_input)
 
-    for key, value in input_parameters.items():
-        if key.lower() in args:
-            setattr(args, key.lower(), value)
-        else:
-            raise KeyError("Key %s is not valid" % key)
+common_output = open(args.output_name, 'w') if args.output_name is not None else sys.stdout
+print_header(common_output)
+
+structures = read_generic_structure_file(args.input_file, read_multiple=True)
+structure_set = Cosymlib(structures)
+n_atoms = structure_set.get_n_atoms()
+
+if args.info:
+    print_input_info(structure_set.get_geometries(), output=common_output)
+    exit()
+
+# Shape's commands
+if args.labels:
+    common_output.write(tools.get_shape_label_info(n_atoms, with_central_atom=args.central_atom))
+    exit()
 
 reference_polyhedron = []
-if args.input_file is not None:
-    structures = file_io.read_generic_structure_file(args.input_file, read_multiple=True)
-    symobj = Cosymlib(structures)
-
-if args.custom_ref is not None:
+if args.custom_ref:
     reference_polyhedron = file_io.get_geometry_from_file_xyz(args.custom_ref, read_multiple=True)
     [x.set_positions(args.central_atom - 1) for x in reference_polyhedron]
 
+    references = [geom for geom in reference_polyhedron]
+    args.map = 'custom'
+else:
+    references = args.map
 
-if not args.x:
-    args.x = reference_polyhedron[0]
-elif not args.y:
-    args.y = reference_polyhedron[0]
+if args.map:
+    structure_set.print_minimum_distortion_path_shape(references[0],
+                                                      references[1],
+                                                      central_atom=args.central_atom,
+                                                      min_dev=args.min_dev,
+                                                      max_dev=args.max_dev,
+                                                      min_gco=args.min_gco,
+                                                      max_gco=args.max_gco,
+                                                      num_points=args.n_points,
+                                                      output_name=args.output_name)
 
-if args.x:
-    symobj.print_minimum_distortion_path_shape(args.x,
-                                               args.y,
-                                               central_atom=args.central_atom)
+print_footer(common_output)

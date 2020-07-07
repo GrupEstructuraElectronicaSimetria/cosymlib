@@ -524,13 +524,13 @@ class Cosymlib:
     def get_path_parameters(self, shape_label1, shape_label2, central_atom=0):
 
         if type(shape_label1) is Geometry:
-            label1 = shape_label1.get_positions()
+            label1 = shape_label1
             label1_name = shape_label1.name
         else:
             label1 = shape_label1
             label1_name = shape_label1
         if type(shape_label2) is Geometry:
-            label2 = shape_label2.get_positions()
+            label2 = shape_label2
             label2_name = shape_label2.name
         else:
             label2 = shape_label2
@@ -540,12 +540,7 @@ class Cosymlib:
                label2_name: self.get_shape_measure(label2, 'measure', central_atom)}
         devpath = self.get_molecule_path_deviation(label1, label2, central_atom)
         generalized_coord = self.get_molecule_generalized_coord(label1, label2, central_atom)
-        #criteria = devpath
-        #devpath = filter_results(devpath, criteria, maxdev, mindev)
-        #generalized_coord = filter_results(generalized_coord, criteria, maxdev, mindev)
-        #criteria = generalized_coord
-        #devpath = filter_results(devpath, criteria, maxgco, mingco)
-        #generalized_coord = filter_results(generalized_coord, criteria, maxgco, mingco)
+
         return csm, devpath, generalized_coord
 
     def print_minimum_distortion_path_shape(self, shape_label1, shape_label2, central_atom=0,
@@ -587,22 +582,18 @@ class Cosymlib:
         txt_params += 'skipped {} structure/s\n\n'.format(filter_mask.count(False))
         output3.write(txt_params)
 
-        if type(shape_label1) is Geometry:
-            label1 = shape_label1.get_positions()
+        if isinstance(shape_label1, Geometry):
             label1_name = shape_label1.name
         else:
-            label1 = shape_label1
             label1_name = shape_label1
-        if type(shape_label2) is Geometry:
-            label2 = shape_label2.get_positions()
+        if isinstance(shape_label2, Geometry):
             label2_name = shape_label2.name
         else:
-            label2 = shape_label2
             label2_name = shape_label2
 
-        path = get_shape_path(label1, label2, num_points)
+        path = get_shape_path(shape_label1, shape_label2, num_points)
         txt_path = 'Minimum distortion path\n'
-        txt_path += ' {:^6}  {:^6}\n'.format(shape_label1, shape_label2)
+        txt_path += ' {:^6}  {:^6}\n'.format(label1_name, label2_name)
         for idx, value in enumerate(path[0]):
             txt_path += '{:6.3f}  {:6.3f}'.format(path[0][idx], path[1][idx])
             txt_path += '\n'

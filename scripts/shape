@@ -25,10 +25,6 @@ parser.add_argument('-m', '--measure',
                     metavar='SH',
                     default=None,
                     help='compute the SH measure of the input structures (use "custom" to use custom structure')
-parser.add_argument('-l', '--labels', action='store_true',
-                    dest='labels',
-                    default=False,
-                    help='show the reference shape labels')
 parser.add_argument('-s', '--structure',
                     dest='structure',
                     action='store_true',
@@ -50,13 +46,17 @@ parser.add_argument('-r', '--references',
                     action='store_true',
                     default=False,
                     help='store the coordinates of the reference polyhedra in a file')
-
 parser.add_argument('-cref', '--custom_ref',
                     dest='custom_ref',
                     metavar='filename',
                     default=None,
                     help='define filename containing the structure/s to be used as reference (requires -m custom)')
 
+# Extra options
+parser.add_argument('-l', '--labels', action='store_true',
+                    dest='labels',
+                    default=False,
+                    help='show the reference shape labels')
 parser.add_argument('--info',
                     action='store_true',
                     default=False,

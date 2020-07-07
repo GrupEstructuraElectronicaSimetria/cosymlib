@@ -1,12 +1,12 @@
 from cosymlib.shape import tools, Shape
 import numpy as np
-
+from cosymlib.molecule.geometry import Geometry
 
 def get_shape_map(shape_label1, shape_label2, num_points=20):
 
     path_structures = []
-    if isinstance(shape_label1, np.ndarray):
-        coordinates_a = shape_label1
+    if isinstance(shape_label1, Geometry):
+        coordinates_a = shape_label1.get_positions()
     else:
         coordinates_a = tools.get_test_structure(shape_label1, central_atom=1).get_positions()
     coordinates_b = Shape(coordinates_a).structure(shape_label2, central_atom=len(coordinates_a))

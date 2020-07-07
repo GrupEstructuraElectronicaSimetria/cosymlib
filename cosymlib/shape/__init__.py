@@ -7,7 +7,11 @@ def _get_key(central_atom, reference, fix_permutation=False, reference_2=''):
         label_key = reference.lower()
     else:
         label_key = np.array2string(reference.get_positions(), precision=10)
-    label2_key = reference_2.lower()
+
+    if isinstance(reference_2, str):
+        label2_key = reference_2.lower()
+    else:
+        label2_key = np.array2string(reference_2.get_positions(), precision=10)
 
     central_atom_key = int(central_atom)
     fix_permutation_key = str(bool(fix_permutation))
@@ -81,13 +85,13 @@ class Shape:
         return self._structures[key]
 
     def path_deviation(self, shape_label1, shape_label2, central_atom=0):
-
+        from cosymlib.molecule.geometry import Geometry
         key = _get_key(central_atom, shape_label1, reference_2=shape_label2)
         if key not in self._path_deviation:
             Sx = self.measure(shape_label1, central_atom)
             Sy = self.measure(shape_label2, central_atom)
             new_theta = np.arcsin(np.sqrt(Sx) / 10) + np.arcsin(np.sqrt(Sy) / 10)
-            if isinstance(shape_label1, np.ndarray):
+            if isinstance(shape_label1, Geometry):
                 structure_a = shape_label1
             else:
                 structure_a = tools.get_test_structure(shape_label1, central_atom=central_atom)
@@ -97,11 +101,12 @@ class Shape:
         return self._path_deviation[key]
 
     def generalized_coordinate(self, shape_label1, shape_label2, central_atom=0):
+        from cosymlib.molecule.geometry import Geometry
 
         key = _get_key(central_atom, shape_label1, reference_2=shape_label2)
         if key not in self._gen_coord:
             Sq = self.measure(shape_label1, central_atom)
-            if isinstance(shape_label1, np.ndarray):
+            if isinstance(shape_label1, Geometry):
                 structure_a = shape_label1
             else:
                 structure_a = tools.get_test_structure(shape_label1, central_atom=central_atom)
