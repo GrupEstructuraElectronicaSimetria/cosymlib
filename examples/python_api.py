@@ -74,6 +74,13 @@ measure_dict = molecule.get_wf_symmetry('C2v',
 print_csm(measure_dict)
 
 print('\nCOSYMLIB\n--------')
+
+geometries_list = file_io.get_geometry_from_file_xyz('coord.xyz', read_multiple=True)
+molecules_set = Cosymlib(geometries_list)
+
+molecules_set.print_shape_measure('SP-4', central_atom=1)
+molecules_set.print_minimum_distortion_path_shape('SP-4', 'SS-4', central_atom=1, max_dev=103, max_gco=200)
+
 geometries_list = file_io.get_geometry_from_file_xyz('coord_2.xyz', read_multiple=True)
 molecules_set = Cosymlib(geometries_list)
 print('\n\n***********{}************'.format('print_electronic_symmetry_measure()'))

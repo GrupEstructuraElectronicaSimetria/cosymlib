@@ -6,7 +6,7 @@ import sys
 def plot_minimum_distortion_path_shape(shape_label1, shape_label2, num_points=20, output=sys.stdout, show_plot=True):
     import matplotlib.pyplot as plt
 
-    path = get_shape_map(shape_label1, shape_label2, num_points)
+    path = get_shape_path(shape_label1, shape_label2, num_points)
 
     shape_map_txt = " {:6} {:6}\n".format(shape_label1, shape_label2)
     for idx, value in enumerate(path[0]):
@@ -21,7 +21,7 @@ def plot_minimum_distortion_path_shape(shape_label1, shape_label2, num_points=20
         plt.show()
 
 
-def get_shape_map(shape_label1, shape_label2, num_points):
+def get_shape_path(shape_label1, shape_label2, num_points):
     return maps.get_shape_map(shape_label1, shape_label2, num_points)
 
 

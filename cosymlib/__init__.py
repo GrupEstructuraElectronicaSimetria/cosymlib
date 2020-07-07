@@ -3,7 +3,7 @@ __version__ = '0.8.2'
 from cosymlib.molecule import Molecule, Geometry
 from cosymlib import file_io
 from cosymlib import tools
-from cosymlib.utils import get_shape_map, plot_molecular_orbital_diagram, plot_symmetry_energy_evolution
+from cosymlib.utils import get_shape_path, plot_molecular_orbital_diagram, plot_symmetry_energy_evolution
 from cosymlib.shape.tools import get_structure_references
 import matplotlib.pyplot as plt
 
@@ -185,40 +185,6 @@ class Cosymlib:
 
         for geometry in geometries:
             output.write(file_io.get_file_xyz_txt(geometry))
-
-    def print_path_parameters(self, shape_label1, shape_label2, central_atom=0,
-                              maxdev=15, mindev=0, maxgco=101, mingco=0, output=sys.stdout):
-
-        #if output_name is not None:
-        #    output = open(output_name + '_tab.csv', 'w')
-        #else:
-        #    output = sys.stdout
-
-        csm, devpath, GenCoord = self.get_path_parameters(shape_label1, shape_label2, central_atom=central_atom,
-                                                          maxdev=maxdev, mindev=mindev, maxgco=maxgco, mingco=mingco)
-        names_order = [molecule.name for molecule in self._molecules]
-
-        txt = "Deviation threshold to calculate Path deviation function: {:2.1f}% - {:2.1f}%\n".format(mindev, maxdev)
-        txt += "Deviation threshold to calculate Generalized Coordinate: {:2.1f}% - {:2.1f}%\n".format(mingco, maxgco)
-        txt += "\n"
-        txt += '{:}'.format('structure'.upper())
-        txt += " {:>7} {:>9}".format(list(csm.keys())[0], list(csm.keys())[1])
-        txt += "{:>12} {:>9}".format('DevPath', 'GenCoord')
-        txt += "\n"
-
-        for idx, molecule_name in enumerate(names_order):
-            txt += '{}  ,'.format(molecule_name)
-            if molecule_name.strip() == '':
-                width = 6 + len(molecule_name)
-            else:
-                width = 14 - len(molecule_name)
-            for label in list(csm.keys()):
-                txt += ' {:{width}.{prec}f},'.format(csm[label][idx], width=width, prec=3)
-                width = 7
-            txt += '{:8.1f}, {:8}'.format(devpath[idx], GenCoord[idx])
-            txt += '\n'
-
-        output.write(txt)
 
     # TODO: Change name of all symgroup named functions
     def print_geometric_measure_info(self, label, multi=1, central_atom=0, center=None, output=sys.stdout):
@@ -555,13 +521,7 @@ class Cosymlib:
                 for molecule in self._molecules]
 
     # TODO: This may be placed inside Shape class
-    def get_path_parameters(self, shape_label1, shape_label2, central_atom=0, maxdev=15, mindev=0,
-                            maxgco=101, mingco=0):
-
-        def filter_results(results, criteria, max, min):
-            filter = [True if x <= max and x >= min else False for x in criteria]
-            results = [i for indx, i in enumerate(results) if filter[indx] == True]
-            return results
+    def get_path_parameters(self, shape_label1, shape_label2, central_atom=0):
 
         if type(shape_label1) is Geometry:
             label1 = shape_label1.get_positions()
@@ -580,15 +540,16 @@ class Cosymlib:
                label2_name: self.get_shape_measure(label2, 'measure', central_atom)}
         devpath = self.get_molecule_path_deviation(label1, label2, central_atom)
         generalized_coord = self.get_molecule_generalized_coord(label1, label2, central_atom)
-        criteria = devpath
-        devpath = filter_results(devpath, criteria, maxdev, mindev)
-        generalized_coord = filter_results(generalized_coord, criteria, maxdev, mindev)
-        criteria = generalized_coord
-        devpath = filter_results(devpath, criteria, maxgco, mingco)
-        generalized_coord = filter_results(generalized_coord, criteria, maxgco, mingco)
+        #criteria = devpath
+        #devpath = filter_results(devpath, criteria, maxdev, mindev)
+        #generalized_coord = filter_results(generalized_coord, criteria, maxdev, mindev)
+        #criteria = generalized_coord
+        #devpath = filter_results(devpath, criteria, maxgco, mingco)
+        #generalized_coord = filter_results(generalized_coord, criteria, maxgco, mingco)
         return csm, devpath, generalized_coord
 
     def print_minimum_distortion_path_shape(self, shape_label1, shape_label2, central_atom=0,
+                                            min_dev=0, max_dev=15, min_gco=0, max_gco=101,
                                             num_points=20, output_name=None):
 
         if output_name is not None:
@@ -600,7 +561,31 @@ class Cosymlib:
             output2 = sys.stdout
             output3 = sys.stdout
 
-        self.print_path_parameters(shape_label1, shape_label2, central_atom=central_atom, output=output3)
+        csm, devpath, gen_coord = self.get_path_parameters(shape_label1, shape_label2, central_atom=central_atom)
+
+        txt_params = 'Deviation threshold to calculate Path deviation function: {:2.1f}% - {:2.1f}%\n'.format(min_dev, max_dev)
+        txt_params += 'Deviation threshold to calculate Generalized Coordinate: {:2.1f}% - {:2.1f}%\n'.format(min_gco, max_gco)
+        txt_params += '\n'
+        txt_params += '{:9} '.format('structure'.upper())
+        for csm_label in list(csm.keys()):
+            txt_params += '{:^8} '.format(csm_label)
+        txt_params += '{:^8} {:^8}'.format('DevPath', 'GenCoord')
+        txt_params += '\n'
+
+        filter_mask = [min_dev < dv < max_dev and min_gco < gc < max_gco for dv, gc in zip(devpath, gen_coord)]
+
+        for idx, molecule in enumerate(self._molecules):
+            if not filter_mask[idx]:
+                continue
+
+            txt_params += '{:9} '.format(molecule.name.strip())
+            for label in list(csm.keys()):
+                txt_params += '{:^8.3f} '.format(csm[label][idx])
+            txt_params += '{:^8.1f} {:^8.1f}'.format(devpath[idx], gen_coord[idx])
+            txt_params += '\n'
+
+        txt_params += 'skipped {} structure/s\n\n'.format(filter_mask.count(False))
+        output3.write(txt_params)
 
         if type(shape_label1) is Geometry:
             label1 = shape_label1.get_positions()
@@ -615,24 +600,26 @@ class Cosymlib:
             label2 = shape_label2
             label2_name = shape_label2
 
-        path_parameters = self.get_path_parameters(shape_label1, shape_label2, central_atom=central_atom)[0]
-        path = get_shape_map(label1, label2, num_points)
-
-        txt_shape = " {:6} {:6}\n".format(shape_label1, shape_label2)
+        path = get_shape_path(label1, label2, num_points)
+        txt_path = 'Minimum distortion path\n'
+        txt_path += ' {:^6}  {:^6}\n'.format(shape_label1, shape_label2)
         for idx, value in enumerate(path[0]):
-            txt_shape += '{:6.3f}, {:6.3f}'.format(path[0][idx], path[1][idx])
-            txt_shape += '\n'
-        output.write(txt_shape)
+            txt_path += '{:6.3f}  {:6.3f}'.format(path[0][idx], path[1][idx])
+            txt_path += '\n'
+        txt_path += '\n'
+        output.write(txt_path)
 
         test_structures = []
         for ids, structure in enumerate(path[2]):
             test_structures.append(Geometry(symbols=['' for _ in range(len(structure))],
                                             positions=structure, name='map_structure{}'.format(ids)))
         output2.write(file_io.get_file_xyz_txt(test_structures))
+
         if output_name is None:
             import matplotlib.pyplot as plt
             plt.plot(path[0], path[1], 'k', linewidth=2.0)
-            plt.scatter(path_parameters[label1_name], path_parameters[label2_name], linewidths=0.01)
+            plt.scatter(np.array(csm[label1_name])[filter_mask],
+                        np.array(csm[label2_name])[filter_mask], linewidths=0.01)
             plt.xlabel(label1_name)
             plt.ylabel(label2_name)
             plt.show()

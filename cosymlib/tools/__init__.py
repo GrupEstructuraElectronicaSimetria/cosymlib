@@ -60,7 +60,7 @@ def generate_connectivity_from_geometry(geometry, thresh=1.2):
     try:
         radius = [periodic_table_info[sym]['covalent_radius'] for sym in geometry.get_symbols()]
     except KeyError:
-        warn('failed to generate connectivity')
+        warn('failed to generate connectivity, no connectivity will be used')
         return None
 
     distances_matrix = distance_matrix(coordinates, coordinates)
