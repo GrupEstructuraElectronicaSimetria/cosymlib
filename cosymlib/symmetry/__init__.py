@@ -115,7 +115,8 @@ class Symmetry:
                                           charge=self._electronic_structure.charge,
                                           multiplicity=self._electronic_structure.multiplicity,
                                           group=group.upper(),
-                                          valence_only=self._electronic_structure.valence_only)
+                                          alpha_occupancy=self._electronic_structure.alpha_occupancy,
+                                          beta_occupancy=self._electronic_structure.beta_occupancy)
         return self._results[key]
 
     ##########################################

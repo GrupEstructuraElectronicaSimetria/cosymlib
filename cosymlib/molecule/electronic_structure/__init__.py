@@ -5,19 +5,26 @@ class ElectronicStructure:
                  basis=None,
                  orbital_coefficients=None,
                  mo_energies=None,
-                 valence_only=False):
+                 alpha_electrons=None,
+                 beta_electrons=None):
 
         self._charge = charge
         self._multiplicity = multiplicity
         self._basis = basis
-        self._valence_only = valence_only
+        # self._valence_only = valence_only
         self._Ca = orbital_coefficients[0]
-        if not orbital_coefficients[1]:
+        if len(orbital_coefficients[1]) == 0:
             self._Cb = orbital_coefficients[0]
         else:
             self._Cb = orbital_coefficients[1]
 
         self._mo_energies = mo_energies
+
+        self._alpha_occupancy = [1] * int(alpha_electrons[0])
+        self._beta_occupancy = [1] * int(beta_electrons[0])
+        if self._multiplicity > 1:
+            for i in range(self._multiplicity-1):
+                self._beta_occupancy.append(0)
 
     @property
     def charge(self):
@@ -43,6 +50,22 @@ class ElectronicStructure:
     def energies(self):
         return self._mo_energies
 
+    # @property
+    # def valence_only(self):
+    #     return self._valence_only
+
     @property
-    def valence_only(self):
-        return self._valence_only
+    def alpha_occupancy(self):
+        return self._alpha_occupancy
+
+    @property
+    def beta_occupancy(self):
+        return self._beta_occupancy
+
+    @property
+    def alpha_electrons(self):
+        return sum(self._alpha_occupancy)
+
+    @property
+    def beta_electrons(self):
+        return sum(self._beta_occupancy)
