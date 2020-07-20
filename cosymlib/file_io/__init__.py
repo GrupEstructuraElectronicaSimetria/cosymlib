@@ -119,10 +119,10 @@ def get_geometry_from_file_cor(file_name, read_multiple=False):
 
 # TODO: This function should handle open and close shell, mo energies and more. A lot to improve!
 def get_molecule_from_file_fchk(file_name, read_multiple=False):
-    key_list = ['Charge', 'Multiplicity', 'Atomic numbers', 'Current cartesian coordinates',
-                'Shell type', 'Number of primitives per shell', 'Shell to atom map', 'Primitive exponents',
-                'Contraction coefficients', 'P(S=P) Contraction coefficients',
-                'Alpha Orbital Energies', 'Alpha MO coefficients', 'Beta MO coefficients', ]
+    key_list = ['Charge', 'Multiplicity', 'Number of alpha electrons', 'Number of beta electrons', 'Atomic numbers',
+                'Current cartesian coordinates', 'Shell type', 'Number of primitives per shell', 'Shell to atom map',
+                'Primitive exponents', 'Contraction coefficients', 'P(S=P) Contraction coefficients',
+                'Alpha Orbital Energies', 'Alpha MO coefficients', 'Beta MO coefficients']
     input_molecule = [[] for _ in range(len(key_list))]
     read = False
     with open(file_name, mode='r') as lines:
@@ -146,7 +146,7 @@ def get_molecule_from_file_fchk(file_name, read_multiple=False):
                 if key in line:
                     if n == len(key_list) - 1:
                         break
-                    if options and idn != 2:
+                    if options and idn != 4:
                         input_molecule[idn].append(int(line.split()[-1]))
                         n = idn
                         break
@@ -159,12 +159,12 @@ def get_molecule_from_file_fchk(file_name, read_multiple=False):
                     read = True
                     break
 
-        for n in range(2, len(input_molecule) - 1):
+        for n in range(4, len(input_molecule)):
             input_molecule[n] = reformat_input(input_molecule[n])
         bohr_to_angstrom = 0.529177249
-        coordinates = np.array(input_molecule[3], dtype=float).reshape(-1, 3) * bohr_to_angstrom
+        coordinates = np.array(input_molecule[5], dtype=float).reshape(-1, 3) * bohr_to_angstrom
 
-        atomic_number = [int(num) for num in input_molecule[2]]
+        atomic_number = [int(num) for num in input_molecule[4]]
         symbols = []
         for number in atomic_number:
             symbols.append(atomic_number_to_element(number))
@@ -172,21 +172,21 @@ def get_molecule_from_file_fchk(file_name, read_multiple=False):
         basis = basis_format(basis_set_name=basis_set,
                              atomic_numbers=atomic_number,
                              atomic_symbols=symbols,
-                             shell_type=input_molecule[4],
-                             n_primitives=input_molecule[5],
-                             atom_map=input_molecule[6],
-                             p_exponents=input_molecule[7],
-                             c_coefficients=input_molecule[8],
-                             p_c_coefficients=input_molecule[9])
+                             shell_type=input_molecule[6],
+                             n_primitives=input_molecule[7],
+                             atom_map=input_molecule[8],
+                             p_exponents=input_molecule[9],
+                             c_coefficients=input_molecule[10],
+                             p_c_coefficients=input_molecule[11])
 
         geometry = Geometry(symbols=symbols,
                             positions=coordinates,
                             name=name)
 
-        Ca = np.array(input_molecule[11], dtype=float).reshape(-1, int(np.sqrt(len(input_molecule[11]))))
-        energies_alpha = np.array(input_molecule[10], dtype=float).tolist()
-        if input_molecule[12]:
-            Cb = np.array(input_molecule[12], dtype=float).reshape(-1, int(np.sqrt(len(input_molecule[12]))))
+        Ca = np.array(input_molecule[13], dtype=float).reshape(-1, int(np.sqrt(len(input_molecule[13]))))
+        energies_alpha = np.array(input_molecule[12], dtype=float).tolist()
+        if input_molecule[14]:
+            Cb = np.array(input_molecule[14], dtype=float).reshape(-1, int(np.sqrt(len(input_molecule[14]))))
         else:
             Cb = []
 
@@ -194,7 +194,9 @@ def get_molecule_from_file_fchk(file_name, read_multiple=False):
                                                    multiplicity=input_molecule[1][0],
                                                    basis=basis,
                                                    orbital_coefficients=[Ca, Cb],
-                                                   mo_energies=energies_alpha)
+                                                   mo_energies=energies_alpha,
+                                                   alpha_electrons=input_molecule[2],
+                                                   beta_electrons=input_molecule[3])
 
         if read_multiple:
             return [Molecule(geometry, electronic_structure)]

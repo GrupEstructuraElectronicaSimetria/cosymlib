@@ -11,7 +11,7 @@ class TestSymgroupFchk(unittest.TestCase):
         self._geometry = self._structure.geometry
 
     def test_symmetry_measure(self):
-        print(self._structure.geometry)
+        # print(self._structure.geometry)
         measure = self._geometry.get_symmetry_measure('C3', central_atom=1)
         self.assertAlmostEqual(measure, 0)
 
@@ -43,7 +43,7 @@ class TestSymgroupCycles(unittest.TestCase):
 
     def test_symmetry_nearest(self):
         nearest = self._geometry.get_symmetry_nearest_structure('C5').get_positions()
-        print(nearest)
+        # print(nearest)
         reference = [[ 4.05078542e-01, -1.24670356e+00,  0.00000000e+00],
                      [ 1.31086170e+00, -1.33226763e-16,  0.00000000e+00],
                      [ 4.05078542e-01,  1.24670356e+00,  0.00000000e+00],

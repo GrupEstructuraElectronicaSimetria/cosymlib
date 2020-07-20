@@ -93,9 +93,6 @@ class TestWfnsym(unittest.TestCase):
                     0.99999998, 0.99999998, 0.99999998, 0.99999998, 0.99999998, 0.99999998, 0.99999998, 0.99999998,
                     0.99999998]
 
-        import numpy as np
-        #print(np.array(soevs_a).shape)
-        #print(self.mo_symmetry.mo_SOEVs_a.shape)
         self.assertEqual(td_labels, self.mo_symmetry.SymLab)
         testing.assert_array_equal(td_ideal_gt, self.mo_symmetry.ideal_gt)
         testing.assert_allclose(soevs_a, self.mo_symmetry.mo_SOEVs_a, atol=1e-5)
