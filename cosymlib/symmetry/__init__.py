@@ -198,6 +198,18 @@ class Symmetry:
                 'labels': results.SymLab,
                 'table': results.ideal_gt}
 
+    def dens_measure(self, group):
+        results = self._get_wfnsym_results(group)
+        return {'labels': results.SymLab,
+                'csm': results.csm_dens,
+                'csm_coef': results.csm_dens_coef}
+
+    def axes(self, group):
+        results = self._get_wfnsym_results(group)
+        return {'center' : results.center,
+                'axis': results.axis,
+                'axis2': results.axis2}
+
     # Old method to be deleted
     def symmetry_overlap_analysis(self, group, vector_axis1, vector_axis2, center):
         results = self._get_wfnsym_results(group)

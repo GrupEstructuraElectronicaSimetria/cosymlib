@@ -1,4 +1,4 @@
-__version__ = '0.8.2'
+__version__ = '0.8.3'
 
 from cosymlib.molecule import Molecule, Geometry
 from cosymlib import file_io

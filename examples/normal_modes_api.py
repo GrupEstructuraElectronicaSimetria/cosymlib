@@ -47,11 +47,12 @@ def get_nm_vibration_path(geometry, normal_mode, points=10, backward=False, k=1.
 molecule = read_generic_structure_file('sf6.fchk')
 freq, nm_martices = read_normal_modes_gaussian('sf6_freq.out')
 k_points = 1.5
-n_freq = 0
-path = get_nm_vibration_path(molecule.geometry.get_positions(), nm_martices[0], k=k_points)
+points = 10
+n_freq = 1
+path = get_nm_vibration_path(molecule.geometry.get_positions(), nm_martices[n_freq - 1], k=k_points)
 
-x = np.linspace(k_points/10, k_points, 10)
-output = open('sf6_freq{}.xyz'.format(n_freq+1), 'w')
+x = np.linspace(k_points/points, k_points, points)
+output = open('sf6_freq{}.xyz'.format(n_freq), 'w')
 for ids, structure in enumerate(path):
     xi = '{:.2f}'.format(x[ids]).replace('.', '')
     txt = get_file_xyz_txt(Geometry(structure, symbols=molecule.geometry.get_symbols(), name='freq : ' + str(freq[0]) +
