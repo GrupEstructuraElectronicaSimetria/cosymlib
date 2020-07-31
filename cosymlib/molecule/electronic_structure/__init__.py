@@ -11,7 +11,6 @@ class ElectronicStructure:
         self._charge = charge
         self._multiplicity = multiplicity
         self._basis = basis
-        # self._valence_only = valence_only
         self._Ca = orbital_coefficients[0]
         if len(orbital_coefficients[1]) == 0:
             self._Cb = orbital_coefficients[0]
@@ -26,8 +25,10 @@ class ElectronicStructure:
             for i in range(self._multiplicity-1):
                 self._beta_occupancy.append(0)
 
-    def set_alpha_occupancy(self, occupancy):
+    def set_alpha_occupancy(self, occupancy, restricted=False):
         self._alpha_occupancy = occupancy
+        if restricted:
+            self.set_beta_occupancy(occupancy)
 
     def set_beta_occupancy(self, occupancy):
         self._beta_occupancy = occupancy
