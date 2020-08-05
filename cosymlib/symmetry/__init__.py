@@ -14,12 +14,14 @@ def _get_key_symgroup(label, center, central_atom, connectivity, multi, connect_
     return group_key, center_key, central_atom_key, connectivity_key, multi_key, connect_thresh_key
 
 
-def _get_key_wfnsym(group, vector_axis1, vector_axis2, center):
+def _get_key_wfnsym(group, vector_axis1, vector_axis2, center, alpha_occupancy, beta_occupancy):
     group_key = group.lower()
     vec1_key = ' '.join(['{:10.8f}'.format(n) for n in vector_axis1]) if vector_axis1 is not None else None
     vec2_key = ' '.join(['{:10.8f}'.format(n) for n in vector_axis2]) if vector_axis2 is not None else None
     center_key = ' '.join(['{:10.8f}'.format(n) for n in center]) if center is not None else None
-    return group_key, vec1_key, vec2_key, center_key
+    alpha_occupancy_key = ' '.join(['{:10.8f}'.format(n) for n in alpha_occupancy]) if alpha_occupancy is not None else None
+    beta_occupancy_key = ' '.join(['{:10.8f}'.format(n) for n in beta_occupancy]) if beta_occupancy is not None else None
+    return group_key, vec1_key, vec2_key, center_key, alpha_occupancy_key, beta_occupancy_key
 
 
 class Symmetry:
@@ -101,7 +103,8 @@ class Symmetry:
 
     def _get_wfnsym_results(self, group):
 
-        key = _get_key_wfnsym(group, self._axis, self._axis2, self._center)
+        key = _get_key_wfnsym(group, self._axis, self._axis2, self._center, self._electronic_structure.alpha_occupancy,
+                              self._electronic_structure.beta_occupancy)
 
         if key not in self._results:
             self._results[key] = WfnSympy(coordinates=self._coordinates,
