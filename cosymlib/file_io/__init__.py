@@ -126,7 +126,7 @@ def get_molecule_from_file_fchk(file_name, read_multiple=False):
     input_molecule = [[] for _ in range(len(key_list))]
     read = False
     with open(file_name, mode='r') as lines:
-        name = lines.readline().strip('\n')
+        name = lines.readline().split()[0]#.strip('\n')
         line = lines.readline().split()
         basis_set = line[-1]
         if 'R' in line[1]:

@@ -90,5 +90,13 @@ class Molecule:
         return self._symmetry.wf_measure(group)
 
     @set_parameters
+    def get_dens_symmetry(self, group, axis=None, axis2=None, center=None):
+        return self._symmetry.dens_measure(group)
+
+    @set_parameters
+    def get_symmetry_axes(self, group, axis=None, axis2=None, center=None):
+        return self._symmetry.axes(group)
+
+    @set_parameters
     def get_ideal_group_table(self, group, axis=None, axis2=None, center=None):
         return self._symmetry.wf_ideal_group_table(group)

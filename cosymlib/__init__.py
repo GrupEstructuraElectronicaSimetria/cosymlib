@@ -1,4 +1,4 @@
-__version__ = '0.8.4'
+__version__ = '0.8.5'
 
 from cosymlib.molecule import Molecule, Geometry
 from cosymlib import file_io
@@ -275,6 +275,42 @@ class Cosymlib:
             txt += '{:<9} '.format(molecule.name) + '  '.join(['{:7.3f}'.format(s) for s in wf_measure['csm']])
             txt += '\n'
             first = False
+
+        output.write(txt)
+
+    def print_electronic_density_measure(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
+
+        txt = ''
+        txt2 = ''
+        first = True
+        for molecule in self._molecules:
+            dens_measure = molecule.get_dens_symmetry(group, axis=axis, axis2=axis2, center=center)
+
+            if first:
+                sep_line = '          ' + '---------' * len(dens_measure['labels']) + '\n'
+
+                txt += '\nDensity: CSM-like values\n'
+                txt += sep_line
+                txt += '           ' + '  '.join(['{:^7}'.format(s) for s in dens_measure['labels']])
+                txt += '\n'
+                txt += sep_line
+
+                txt2 += '--------------\n'
+                txt2 += 'Total CSM {}\n'.format(group)
+                txt2 += '--------------\n'
+
+            txt += '{:<9} '.format(molecule.name) + '  '.join(['{:7.3f}'.format(s) for s in dens_measure['csm_coef']])
+            txt += '\n'
+            first = False
+            axes_information = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
+            txt2 += '{:<9} '.format(molecule.name) + '{:7.3f}\n'.format(dens_measure['csm'])
+            txt2 += '\ncenter: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])
+            txt2 += '\n'
+            txt2 += 'axis  : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis']])
+            txt2 += '\n'
+            txt2 += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
+
+        txt += '\n' + txt2
 
         output.write(txt)
 
