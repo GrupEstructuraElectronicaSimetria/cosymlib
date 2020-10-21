@@ -7,10 +7,6 @@ class TestWfnsym(unittest.TestCase):
 
     def setUp(self):
         self.structure = file_io.read_generic_structure_file('data/wfnsym/tih4_5d.fchk')
-        self.mo_symmetry = self.structure.OLD_get_mo_symmetry('Td',
-                                                              axis=[0., 0., 1.],
-                                                              axis2=[-0.471418708, -0.816488390, -0.333333333],
-                                                              center=[0., 0., 0.])
 
     def test_symmetry_overlap_analysis(self):
         td_labels = ['E', '2C3', '2C3', '2C3', '2C3', 'C2', 'C2', 'C2', '2S4', '2S4', '2S4',
@@ -93,13 +89,16 @@ class TestWfnsym(unittest.TestCase):
                     0.99999998, 0.99999998, 0.99999998, 0.99999998, 0.99999998, 0.99999998, 0.99999998, 0.99999998,
                     0.99999998]
 
-        self.assertEqual(td_labels, self.mo_symmetry.SymLab)
-        testing.assert_array_equal(td_ideal_gt, self.mo_symmetry.ideal_gt)
-        testing.assert_allclose(soevs_a, self.mo_symmetry.mo_SOEVs_a, atol=1e-5)
-        testing.assert_allclose(soevs_a, self.mo_symmetry.mo_SOEVs_b, atol=1e-5)
-        testing.assert_allclose(wf_soevs_a, self.mo_symmetry.wf_SOEVs_a, atol=1e-5)
-        testing.assert_allclose(wf_soevs_a, self.mo_symmetry.wf_SOEVs_b, atol=1e-5)
-        testing.assert_allclose(wf_soevs, self.mo_symmetry.wf_SOEVs, atol=1e-5)
+        self.assertEqual(td_labels, self.structure.get_ideal_group_table('Td',
+                                                                         axis=[0., 0., 1.],
+                                                                         axis2=[-0.471418708, -0.816488390, -0.333333333],
+                                                                         center=[0., 0., 0.])['labels'])
+        testing.assert_array_equal(td_ideal_gt, self.structure.get_ideal_group_table('Td')['table'])
+        testing.assert_allclose(soevs_a, self.structure.get_mo_overlaps('Td')['alpha'], atol=1e-5)
+        testing.assert_allclose(soevs_a, self.structure.get_mo_overlaps('Td')['beta'], atol=1e-5)
+        testing.assert_allclose(wf_soevs_a, self.structure.get_wf_overlaps('Td')['alpha'], atol=1e-5)
+        testing.assert_allclose(wf_soevs_a, self.structure.get_wf_overlaps('Td')['beta'], atol=1e-5)
+        testing.assert_allclose(wf_soevs, self.structure.get_wf_overlaps('Td')['total'], atol=1e-5)
 
     def test_grim_csm(self):
         grim = [5.29207960e-08, 3.42216243e+01, 4.61543073e+01, 4.61533851e+01,
@@ -112,8 +111,11 @@ class TestWfnsym(unittest.TestCase):
                1.59952399e-06, 1.59994741e-06, 1.59976660e-06, 2.04689851e-06,
                2.04689860e-06, 2.04686917e-06, 1.60018249e-06, 1.59933623e-06,
                1.59968333e-06]
-        testing.assert_array_almost_equal(grim, self.mo_symmetry.grim_coef)
-        testing.assert_array_almost_equal(csm, self.mo_symmetry.csm_coef)
+        testing.assert_array_almost_equal(grim, self.structure.get_wf_symmetry('Td',
+                                                                               axis=[0., 0., 1.],
+                                                                               axis2=[-0.471418708, -0.816488390, -0.333333333],
+                                                                               center=[0., 0., 0.])['grim'])
+        testing.assert_array_almost_equal(csm, self.structure.get_wf_symmetry('Td')['csm'])
 
     def test_symmetry_irreducible_representation_analysis(self):
         td_ir_labels = ['A1', 'A2', 'E', 'T1', 'T2']
@@ -143,12 +145,17 @@ class TestWfnsym(unittest.TestCase):
         wf_ir_b = [-5.64363371e-16, 9.99999991e-01, 3.60822483e-14, 5.82117687e-13, 1.67732268e-09]
         wf_ir = [9.99999983e-01, -1.00845258e-15, 7.22570152e-14, 3.35464508e-09, 1.16442966e-12]
 
-        self.assertEqual(td_ir_labels, self.mo_symmetry.IRLab)
-        testing.assert_array_almost_equal(mo_ir_alpha, self.mo_symmetry.mo_IRd_a)
-        testing.assert_array_almost_equal(mo_ir_alpha, self.mo_symmetry.mo_IRd_b)
-        testing.assert_array_almost_equal(wf_ir_a, self.mo_symmetry.wf_IRd_a)
-        testing.assert_array_almost_equal(wf_ir_b, self.mo_symmetry.wf_IRd_b)
-        testing.assert_array_almost_equal(wf_ir, self.mo_symmetry.wf_IRd)
+        self.assertEqual(td_ir_labels, self.structure.get_mo_irreducible_representations('Td',
+                                                                                         axis=[0., 0., 1.],
+                                                                                         axis2=[-0.471418708,
+                                                                                                -0.816488390,
+                                                                                                -0.333333333],
+                                                                                         center=[0., 0., 0.])['labels'])
+        testing.assert_array_almost_equal(mo_ir_alpha, self.structure.get_mo_irreducible_representations('Td')['alpha'])
+        testing.assert_array_almost_equal(mo_ir_alpha, self.structure.get_mo_irreducible_representations('Td')['beta'])
+        testing.assert_array_almost_equal(wf_ir_a, self.structure.get_wf_irreducible_representations('Td')['alpha'])
+        testing.assert_array_almost_equal(wf_ir_b, self.structure.get_wf_irreducible_representations('Td')['beta'])
+        testing.assert_array_almost_equal(wf_ir, self.structure.get_wf_irreducible_representations('Td')['total'])
 
     def test_symmetry_matrix(self):
 
@@ -219,4 +226,10 @@ class TestWfnsym(unittest.TestCase):
                            [[3.33333335e-01, 1.15837860e-05, 9.42809041e-01],
                             [1.15837860e-05, 1.00000000e+00, -1.63819472e-05],
                             [9.42809041e-01, -1.63819472e-05, -3.33333334e-01]]]
-        testing.assert_array_almost_equal(symmetry_matrix, self.mo_symmetry.SymMat)
+        testing.assert_array_almost_equal(symmetry_matrix, self.structure.get_symmetry_matrix('Td',
+                                                                                         axis=[0., 0., 1.],
+                                                                                         axis2=[-0.471418708,
+                                                                                                -0.816488390,
+                                                                                                -0.333333333],
+                                                                                         center=[0., 0., 0.])['matrix'])
+#

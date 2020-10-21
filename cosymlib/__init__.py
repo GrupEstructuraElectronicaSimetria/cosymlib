@@ -309,6 +309,7 @@ class Cosymlib:
             txt2 += 'axis  : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis']])
             txt2 += '\n'
             txt2 += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
+            txt2 += '\n'
 
         txt += '\n' + txt2
 

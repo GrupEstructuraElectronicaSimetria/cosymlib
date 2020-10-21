@@ -25,10 +25,12 @@ class ElectronicStructure:
             for i in range(self._multiplicity-1):
                 self._beta_occupancy.append(0)
 
-    def set_alpha_occupancy(self, occupancy, restricted=False):
+    def set_occupancy(self, occupancy):
+        self.set_alpha_occupancy(occupancy)
+        self.set_beta_occupancy(occupancy)
+
+    def set_alpha_occupancy(self, occupancy):
         self._alpha_occupancy = occupancy
-        if restricted:
-            self.set_beta_occupancy(occupancy)
 
     def set_beta_occupancy(self, occupancy):
         self._beta_occupancy = occupancy
