@@ -121,6 +121,6 @@ if args.map:
                                                       min_gco=args.min_gco,
                                                       max_gco=args.max_gco,
                                                       num_points=args.n_points,
-                                                      output_name=args.output_name)
+                                                      output=args.output_name)
 
 print_footer(common_output)

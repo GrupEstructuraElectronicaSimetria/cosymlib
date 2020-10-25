@@ -1,4 +1,4 @@
-__version__ = '0.8.7'
+__version__ = '0.8.8'
 
 from cosymlib.molecule import Molecule, Geometry
 from cosymlib import file_io
@@ -582,12 +582,12 @@ class Cosymlib:
 
     def print_minimum_distortion_path_shape(self, shape_label1, shape_label2, central_atom=0,
                                             min_dev=0, max_dev=15, min_gco=0, max_gco=101,
-                                            num_points=20, output_name=None):
+                                            num_points=20, output=None):
 
-        if output_name is not None:
-            output = open(output_name + '_pth.csv', 'w')
-            output2 = open(output_name + '_pth.xyz', 'w')
-            output3 = open(output_name, 'w')
+        if output is not None:
+            output = open(output + '_pth.csv', 'w')
+            output2 = open(output + '_pth.xyz', 'w')
+            output3 = open(output, 'w')
         else:
             output = sys.stdout
             output2 = sys.stdout
@@ -643,7 +643,7 @@ class Cosymlib:
                                             positions=structure, name='map_structure{}'.format(ids)))
         output2.write(file_io.get_file_xyz_txt(test_structures))
 
-        if output_name is None:
+        if output is None:
             import matplotlib.pyplot as plt
             plt.plot(path[0], path[1], 'k', linewidth=2.0)
             plt.scatter(np.array(csm[label1_name])[filter_mask],

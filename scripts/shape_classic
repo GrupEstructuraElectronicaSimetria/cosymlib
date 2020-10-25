@@ -59,18 +59,25 @@ if args.input_file is not None:
                 reference_polyhedron.append(tools.get_shape_label(int(number), options['%n_atoms']))
 
     if options['%fullout']:
+        output_name = open(output_name + '.tab', 'w')
+        symobj.print_shape_measure(reference_polyhedron,
+                                   central_atom=central_atom,
+                                   output=output_name)
         symobj.print_shape_structure(reference_polyhedron,
                                      central_atom=central_atom,
                                      output=output_name)
+
     elif options['%path']:
+        output_name = open(output_name + '.tab', 'w')
         if len(reference_polyhedron) > 2:
             print('Error. No more than two labels can be specified for a path calculation')
             exit()
         symobj.print_minimum_distortion_path_shape(reference_polyhedron[0],
                                                    reference_polyhedron[1],
                                                    central_atom=central_atom,
-                                                   output_name=output_name)
+                                                   output=output_name)
     else:
+        output_name = open(output_name + '.tab', 'w')
         symobj.print_shape_measure(reference_polyhedron,
                                    central_atom=central_atom,
                                    output=output_name)
