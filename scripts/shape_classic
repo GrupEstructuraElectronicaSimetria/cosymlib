@@ -61,7 +61,7 @@ if args.input_file is not None:
     if options['%fullout']:
         symobj.print_shape_structure(reference_polyhedron,
                                      central_atom=central_atom,
-                                     output_name=output_name)
+                                     output=output_name)
     elif options['%path']:
         if len(reference_polyhedron) > 2:
             print('Error. No more than two labels can be specified for a path calculation')
@@ -73,7 +73,7 @@ if args.input_file is not None:
     else:
         symobj.print_shape_measure(reference_polyhedron,
                                    central_atom=central_atom,
-                                   output_name=output_name)
+                                   output=output_name)
 
 
     # if args.custom_reference_structure is not None:
