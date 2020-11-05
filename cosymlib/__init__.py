@@ -643,7 +643,7 @@ class Cosymlib:
                                             positions=structure, name='map_structure{}'.format(ids)))
         output2.write(file_io.get_file_xyz_txt(test_structures))
 
-        if output is None:
+        if output is sys.stdout:
             import matplotlib.pyplot as plt
             plt.plot(path[0], path[1], 'k', linewidth=2.0)
             plt.scatter(np.array(csm[label1_name])[filter_mask],
