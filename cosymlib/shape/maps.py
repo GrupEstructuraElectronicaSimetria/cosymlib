@@ -2,6 +2,7 @@ from cosymlib.shape import tools, Shape
 import numpy as np
 from cosymlib.molecule.geometry import Geometry
 
+
 def get_shape_map(shape_label1, shape_label2, num_points=20):
 
     path_structures = []

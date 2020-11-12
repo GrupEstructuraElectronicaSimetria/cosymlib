@@ -1,4 +1,5 @@
 import huckelpy
+from huckelpy import file_io
 
 
 class ExtendedHuckel:
@@ -30,5 +31,5 @@ class ExtendedHuckel:
         return self._total_electrons - self._alpha_electrons
 
     def build_fchk_file(self, name):
-        txt_fchk = huckelpy.file_io.build_fchk(self._EH)
+        txt_fchk = file_io.build_fchk(self._EH)
         open(name + '.fchk', 'w').write(txt_fchk)

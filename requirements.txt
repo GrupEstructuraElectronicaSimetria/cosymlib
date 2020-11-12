@@ -7,4 +7,4 @@ matplotlib
 PyYAML>=5.1
 symgroupy
 wfnsympy
-huckelpy
+huckelpy>=0.2
