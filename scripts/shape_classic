@@ -1,23 +1,31 @@
 #!/usr/bin/env python
+from cosymlib import Cosymlib, __version__
+from cosymlib import file_io
+from cosymlib.file_io.tools import add_extra_keywords, print_header, print_footer
+from cosymlib.molecule.geometry import Geometry
+from cosymlib.file_io import classic_inputs
+from cosymlib.shape import tools
 import argparse
 import os
 import sys
-from cosymlib.molecule.geometry import Geometry
-from cosymlib import file_io
-from cosymlib.file_io import classic_inputs
-from cosymlib import Cosymlib
-from cosymlib.shape import tools
-
 
 parser = argparse.ArgumentParser(description='Shape')
 parser.add_argument(type=str, dest='input_file', nargs='?', help='input file name(+extension)')
 parser.add_argument('-n', dest='n', action='store', default=None,
                     type=int, help='show the reference labels for a given structure')
+parser.add_argument('-v', '--version', dest='version', action='store_true', default=False,
+                    help='print information about the input structures')
 
 
 args = parser.parse_args(sys.argv[1:])
 
-print('Starting...')
+if args.version:
+    print('Cosymlib version = {}'.format(__version__))
+    exit()
+
+if args.input_file is None:
+    print('No input file selected!'.format(args.input_file))
+    exit()
 
 # Shape's commands
 if args.n:
@@ -44,9 +52,12 @@ if args.input_file is not None:
 
         if central_atom == 0:
             output = open('{}/L{}.xyz'.format(os.path.dirname(output_name), options['%n_atoms']), 'w')
+            print_header(output)
         else:
             output = open('{}/ML{}.xyz'.format(os.path.dirname(output_name), options['%n_atoms']), 'w')
+            print_header(output)
         output.write(file_io.get_file_xyz_txt(test_structure))
+        print_footer(output)
         exit()
 
     reference_polyhedron = []
@@ -60,15 +71,18 @@ if args.input_file is not None:
 
     if options['%fullout']:
         output_name = open(output_name + '.tab', 'w')
+        print_header(output_name)
         symobj.print_shape_measure(reference_polyhedron,
                                    central_atom=central_atom,
                                    output=output_name)
         symobj.print_shape_structure(reference_polyhedron,
                                      central_atom=central_atom,
                                      output=output_name)
+        print_footer(output_name)
 
     elif options['%path']:
         output_name = open(output_name + '.tab', 'w')
+        print_header(output_name)
         if len(reference_polyhedron) > 2:
             print('Error. No more than two labels can be specified for a path calculation')
             exit()
@@ -76,11 +90,14 @@ if args.input_file is not None:
                                                    reference_polyhedron[1],
                                                    central_atom=central_atom,
                                                    output=output_name)
+        print_footer(output_name)
     else:
         output_name = open(output_name + '.tab', 'w')
+        print_header(output_name)
         symobj.print_shape_measure(reference_polyhedron,
                                    central_atom=central_atom,
                                    output=output_name)
+        print_footer(output_name)
 
 
     # if args.custom_reference_structure is not None:
@@ -101,4 +118,5 @@ if args.input_file is not None:
     #                                        central_atom=args.central_atom_position,
     #                                        output_name=args.output_name)
 
-print('End of shape calculation')
+# print('End of shape calculation')
+

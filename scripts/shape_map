@@ -1,17 +1,19 @@
 #!/usr/bin/env python
+from cosymlib import Cosymlib, __version__
 from cosymlib import file_io
-from cosymlib import Cosymlib
 from cosymlib.file_io.tools import add_extra_keywords, print_header, print_footer, print_input_info
 from cosymlib.file_io import read_generic_structure_file
 from cosymlib.shape import tools
 import argparse
 import sys
+import yaml
 
 parser = argparse.ArgumentParser(description='Shape_map ')
 
 # positional arguments
 parser.add_argument(type=str,
                     dest='input_file',
+                    nargs='?', default=None,
                     help='input file with structures')
 parser.add_argument(type=str,
                     dest="yaml_input",
@@ -52,6 +54,11 @@ parser.add_argument('--info',
                     action='store_true',
                     default=False,
                     help='print information about the input structures')
+parser.add_argument('-v', '--version',
+                    dest='version',
+                    action='store_true',
+                    default=False,
+                    help='print information about the input structures')
 
 # Modifiers
 parser.add_argument('--fix_permutation',
@@ -88,10 +95,25 @@ parser.add_argument('--n_points',
 args = parser.parse_args()
 
 if args.yaml_input:
-    add_extra_keywords(args, args.yaml_input)
+    with open(args.yaml_input, 'r') as stream:
+        input_parameters = yaml.load(stream, Loader=yaml.FullLoader)
+
+    for key, value in input_parameters.items():
+        if key.lower() in args:
+            setattr(args, key.lower(), value)
+        else:
+            raise KeyError("Key %s is not valid" % key)
+
+if args.version:
+    print('Cosymlib version = {}'.format(__version__))
+    exit()
 
 common_output = open(args.output_name, 'w') if args.output_name is not None else sys.stdout
 print_header(common_output)
+
+if args.input_file is None:
+    print('No input file selected!'.format(args.input_file))
+    exit()
 
 structures = read_generic_structure_file(args.input_file, read_multiple=True)
 structure_set = Cosymlib(structures)

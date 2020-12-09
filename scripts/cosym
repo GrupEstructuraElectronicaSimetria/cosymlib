@@ -1,21 +1,24 @@
 #!/usr/bin/env python
-import argparse
-import numpy as np
-import yaml
-import sys
+from cosymlib import Cosymlib, __version__
 from cosymlib import file_io
-from cosymlib.molecule.geometry import Geometry
-from cosymlib import Cosymlib
+from cosymlib.file_io.tools import add_extra_keywords, print_header, print_footer, print_input_info
 from cosymlib.shape import tools
+from cosymlib.molecule.geometry import Geometry
+import argparse
+import sys
+import yaml
 import os
+import numpy as np
 
 
 parser = argparse.ArgumentParser(description='Cosym')
-parser.add_argument(type=str, dest='input_file', help='input file name(+extension)')
+parser.add_argument(type=str, dest='input_file', nargs='?', default=None, help='input file name(+extension)')
 parser.add_argument(type=str, dest="yaml_input", nargs='?', default=None,
                     help='Perform the calculations with the command file')
 parser.add_argument('-o', '--output_name', dest='output_name', default=None, help='save in file name')
-parser.add_argument('-info', action='store_true', default=False, help='return information about the input geometries')
+parser.add_argument('--info', action='store_true', default=False, help='return information about the input geometries')
+parser.add_argument('-v', '--version', dest='version', action='store_true', default=False,
+                    help='print information about the input structures')
 
 parser.add_argument('-c', '--central_atom', action='store', dest='central_atom',
                     type=int, default=0, help='position of the central atom if exist')
@@ -112,7 +115,7 @@ parser.add_argument('-mo_diagram', dest="mo_diagram", action='store_true', defau
 
 
 args = parser.parse_args(sys.argv[1:])
-print('Starting...')
+# print('Starting...')
 
 if args.yaml_input:
     with open(args.yaml_input, 'r') as stream:
@@ -124,7 +127,17 @@ if args.yaml_input:
         else:
             raise KeyError("Key %s is not valid" % key)
 
-if args.input_file is not None:
+if args.version:
+    print('Cosymlib version = {}'.format(__version__))
+    exit()
+
+common_output = open(args.output_name, 'w') if args.output_name is not None else sys.stdout
+print_header(common_output)
+
+if args.input_file is None:
+    print('No input file selected!'.format(args.input_file))
+    exit()
+else:
     structures = file_io.read_generic_structure_file(args.input_file, read_multiple=True)
     symobj = Cosymlib(structures)
 
@@ -155,7 +168,8 @@ if args.shp_references:
     # file_io.write_file_xyz(test_structure, output_name='ML{}_ref'.format(n_atoms))
 
 if args.info:
-    file_io.write_input_info(structures, output_name=args.output_name)
+    print_input_info(structures, output=common_output)
+    exit()
 
 # Shape's commands
 if args.shp_labels:
@@ -230,4 +244,5 @@ if args.pointgroup:
     for idm, pg in enumerate(symobj.get_point_group()):
         print('The point group of molecule{} is: {}'.format(idm, pg))
 
-print('\nEnd of cosym calculation')
+# print('\nEnd of cosym calculation')
+print_footer(common_output)

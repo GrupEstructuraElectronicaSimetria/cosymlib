@@ -1,10 +1,11 @@
 #!/usr/bin/env python
-from cosymlib.file_io.tools import add_extra_keywords, extract_geometries, print_header, print_footer, print_input_info
+from cosymlib import Cosymlib, __version__
+from cosymlib.file_io.tools import add_extra_keywords, print_header, print_footer, print_input_info
 from cosymlib.file_io import read_generic_structure_file, get_connectivity_from_file
 from cosymlib.symmetry.tools import print_symmetry_labels
-from cosymlib import Cosymlib
 import argparse
 import sys
+import yaml
 
 
 parser = argparse.ArgumentParser(description='tsym')
@@ -12,6 +13,7 @@ parser = argparse.ArgumentParser(description='tsym')
 # positional arguments
 parser.add_argument(type=str,
                     dest='input_file',
+                    nargs='?', default=None,
                     help='input file with structures')
 parser.add_argument(type=str,
                     dest="yaml_input",
@@ -28,11 +30,6 @@ parser.add_argument('-s', '--structure',
                     action='store_true',
                     default=False,
                     help='returns the nearest SG-symmetric structure to the reference one')
-parser.add_argument('-l', '--labels',
-                    dest='labels',
-                    action='store_true',
-                    default=False,
-                    help='prints the symmetry labels (SG) for the groups that can be used')
 parser.add_argument('-o', '--output',
                     dest='output_name',
                     metavar='filename',
@@ -45,7 +42,19 @@ parser.add_argument('-c', '--central_atom',
                     type=int,
                     default=0,
                     help='central atom is in position N in the input structure')
+
+# Extra options
+parser.add_argument('-l', '--labels',
+                    dest='labels',
+                    action='store_true',
+                    default=False,
+                    help='prints the symmetry labels (SG) for the groups that can be used')
 parser.add_argument('--info',
+                    action='store_true',
+                    default=False,
+                    help='print information about the input structures')
+parser.add_argument('-v', '--version',
+                    dest='version',
                     action='store_true',
                     default=False,
                     help='print information about the input structures')
@@ -84,10 +93,25 @@ parser.add_argument('--center',
 args = parser.parse_args()
 
 if args.yaml_input:
-    add_extra_keywords(args, args.yaml_input)
+    with open(args.yaml_input, 'r') as stream:
+        input_parameters = yaml.load(stream, Loader=yaml.FullLoader)
+
+    for key, value in input_parameters.items():
+        if key.lower() in args:
+            setattr(args, key.lower(), value)
+        else:
+            raise KeyError("Key %s is not valid" % key)
+
+if args.version:
+    print('Cosymlib version = {}'.format(__version__))
+    exit()
 
 common_output = open(args.output_name, 'w') if args.output_name is not None else sys.stdout
 print_header(common_output)
+
+if args.input_file is None:
+    print('No input file selected!'.format(args.input_file))
+    exit()
 
 if args.connectivity_file:
     connectivity = get_connectivity_from_file(args.connectivity_file)
