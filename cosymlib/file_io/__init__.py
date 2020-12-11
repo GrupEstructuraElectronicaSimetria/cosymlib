@@ -61,7 +61,13 @@ def get_geometry_from_file_xyz(file_name, read_multiple=False):
                                                   positions=input_molecule[1],
                                                   name=name))
                     input_molecule = [[], []]
-                    name = line.split()[0]
+                    try:
+                        name = line.split()[0]
+                    except IndexError:
+                        if read_multiple:
+                            return geometries
+                        else:
+                            return geometries[0]
 
         molecule = Geometry(symbols=input_molecule[0],
                                   positions=input_molecule[1],
@@ -69,7 +75,7 @@ def get_geometry_from_file_xyz(file_name, read_multiple=False):
         if read_multiple:
             geometries.append(molecule)
         else:
-            return molecule
+            return geometries[0]
 
     return geometries
 
