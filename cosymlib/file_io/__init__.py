@@ -4,6 +4,7 @@ from cosymlib.tools import atomic_number_to_element
 
 import numpy as np
 import os, sys, re
+import warnings
 
 
 def _non_blank_lines(f):
@@ -43,12 +44,12 @@ def get_geometry_from_file_xyz(file_name, read_multiple=False):
     input_molecule = [[], []]
     geometries = []
     with open(file_name, mode='r') as lines:
-        lines.readline()
+        n_atoms = int(lines.readline())
         name = lines.readline()
         if name.strip():
             name = name.split()[0]
         for line in lines:
-            if '$' in line or '#' in line:
+            if '$' in line or '#' in line or line.strip() == '':
                 pass
             else:
                 try:
@@ -57,18 +58,20 @@ def get_geometry_from_file_xyz(file_name, read_multiple=False):
                     input_molecule[1].append(line.split()[1:])
                 except (ValueError, IndexError):
                     if input_molecule[0]:
+                        if len(input_molecule[0]) != n_atoms:
+                            warnings.warn('Number of atoms in first line and number of atoms provided are not equal')
                         geometries.append(Geometry(symbols=input_molecule[0],
-                                                  positions=input_molecule[1],
-                                                  name=name))
+                                                   positions=input_molecule[1],
+                                                   name=name))
+
                     input_molecule = [[], []]
                     try:
+                        n_atoms = int(line.split()[0])
+                    except (ValueError):
                         name = line.split()[0]
-                    except IndexError:
-                        if read_multiple:
-                            return geometries
-                        else:
-                            return geometries[0]
 
+        if len(input_molecule[0]) != n_atoms:
+            warnings.warn('Number of atoms in first line and number of atoms provided are not equal')
         molecule = Geometry(symbols=input_molecule[0],
                                   positions=input_molecule[1],
                                   name=name)
@@ -94,7 +97,7 @@ def get_geometry_from_file_cor(file_name, read_multiple=False):
         name = line.replace('**FRAG**', '')[:-1]
         name = name.replace(' ', '')
         for line in lines:
-            if '$' in line or '#' in line:
+            if '$' in line or '#' in line or line.strip() == '':
                 pass
             else:
                 try:
