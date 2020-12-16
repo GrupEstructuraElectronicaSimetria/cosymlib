@@ -78,7 +78,7 @@ def get_geometry_from_file_xyz(file_name, read_multiple=False):
         if read_multiple:
             geometries.append(molecule)
         else:
-            return geometries[0]
+            return molecule
 
     return geometries
 
