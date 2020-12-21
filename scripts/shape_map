@@ -111,11 +111,12 @@ if args.version:
 common_output = open(args.output_name, 'w') if args.output_name is not None else sys.stdout
 print_header(common_output)
 
-if args.input_file is None:
-    print('No input file selected!'.format(args.input_file))
-    exit()
+try:
+    structures = read_generic_structure_file(args.input_file, read_multiple=True)
+except Exception as e:
+    sys.exit('No input file selected! An existing file must be provide')
 
-structures = read_generic_structure_file(args.input_file, read_multiple=True)
+# structures = read_generic_structure_file(args.input_file, read_multiple=True)
 structure_set = Cosymlib(structures)
 n_atoms = structure_set.get_n_atoms()
 

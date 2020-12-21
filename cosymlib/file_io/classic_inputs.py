@@ -1,7 +1,9 @@
-import sys
-from cosymlib.molecule import Geometry
-from cosymlib.file_io import read_generic_structure_file
-import os.path
+from cosymlib.file_io import get_geometry_from_file_cor
+from cosymlib.file_io import custom_errors
+
+import os
+import tempfile
+import warnings
 
 
 def read_old_input(file_name):
@@ -10,11 +12,11 @@ def read_old_input(file_name):
     :param file_name: file name
     :return: list of Geometry objects and options
     """
-    input_molecule = [[], []]
-    structures = []
+
     options = {'%out': None, '%conquest': None, '%external': False, '%fullout': False, '%test': False,
                '%n_atoms': 0, '%central_atom': 0, '%labels': 0, '%path': False}
 
+    idl = 0
     with open(file_name, mode='r') as lines:
         while True:
             line = lines.readline().split()
@@ -36,36 +38,30 @@ def read_old_input(file_name):
                         options['%labels'] = line
                 except (ValueError, IndexError):
                     break
+            idl += 1
 
         n_atoms = options['%n_atoms']
         if options['%central_atom'] != 0:
             n_atoms += 1
         if options['%conquest'] is not None:
             dir = os.path.dirname(os.path.abspath(file_name))
-            structures = read_generic_structure_file(os.path.join(dir, options['%conquest'] + '.cor'), read_multiple=True)
+            structures = get_geometry_from_file_cor(os.path.join(dir, options['%conquest'] + '.cor'), read_multiple=True)
         else:
-            while True:
-                if not line:
-                    break
-                name = line[0]
-                for i in range(n_atoms):
-                    line = lines.readline().split()
-                    if '!' in line:
-                        pass
+            tmp = tempfile.NamedTemporaryFile(mode='w+t', dir=os.getcwd())
+            tmp_lines = lines.readlines()
+            try:
+                # Write data to the temporary file
+                tmp.write(line[0]+'\n')
+                idl += 1
+                for line in tmp_lines:
+                    if line.strip() == '':
+                        warnings.warn('Line {} is empty'.format(idl + 1), custom_errors.EmptyLineWarning)
                     else:
-                        if len(line) == 4:
-                            input_molecule[0].append(line[0])
-                            input_molecule[1].append(line[1:])
-                        elif len(line) == 5:
-                            input_molecule[0].append(line[0])
-                            input_molecule[1].append(line[1:-1])
-                        else:
-                            sys.exit('Wrong input format')
-                if input_molecule[0]:
-                    structures.append(Geometry(symbols=input_molecule[0],
-                                               positions=input_molecule[1],
-                                               name=name))
-                    input_molecule = [[], []]
-                line = lines.readline().split()
+                        tmp.write(line)
+                    idl += 1
+                tmp.seek(0)
+                structures = get_geometry_from_file_cor(tmp.name, read_multiple=True)
+            finally:
+                tmp.close()
 
     return [structures, options]

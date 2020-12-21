@@ -109,16 +109,17 @@ if args.version:
 common_output = open(args.output_name, 'w') if args.output_name is not None else sys.stdout
 print_header(common_output)
 
-if args.input_file is None:
-    print('No input file selected!'.format(args.input_file))
-    exit()
+try:
+    structures = read_generic_structure_file(args.input_file, read_multiple=True)
+except Exception as e:
+    sys.exit('No input file selected! An existing file must be provide')
 
 if args.connectivity_file:
     connectivity = get_connectivity_from_file(args.connectivity_file)
 else:
     connectivity = None
 
-structures = read_generic_structure_file(args.input_file, read_multiple=True)
+# structures = read_generic_structure_file(args.input_file, read_multiple=True)
 structure_set = Cosymlib(structures,
                          ignore_atoms_labels=args.ignore_atoms_labels,
                          ignore_connectivity=args.ignore_connectivity,
