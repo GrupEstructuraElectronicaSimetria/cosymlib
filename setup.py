@@ -1,4 +1,6 @@
 from numpy.distutils.core import setup, Extension
+import os
+
 
 def get_version_number():
     for l in open('cosymlib/__init__.py', 'r').readlines():
@@ -11,6 +13,12 @@ shape = Extension('cosymlib.shape.shp',
                   # extra_compile_args=['-std=c99'],
                   #include_dirs=include_dirs_numpy,
                   sources=['fortran/shp.pyf', 'fortran/shp.f90'])
+
+on_rtd = os.environ.get('READTHEDOCS') == 'True'
+if on_rtd:
+    ext_modules = []
+else:
+    ext_modules = [shape]
 
 setup(name='cosymlib',
       version=get_version_number(),
@@ -36,4 +44,4 @@ setup(name='cosymlib',
                'scripts/shape',
                'scripts/shape_map',
                'scripts/shape_classic'],
-      ext_modules=[shape])
+      ext_modules=ext_modules)
