@@ -147,9 +147,9 @@ class Cosymlib:
         Method that prints to file shape's structure
 
         :param shape_reference: reference polyhedra label which user will compare with his polyhedra.
-                                Reference labels can be found in [#f1]_
         :param central_atom: position of the central atom in molecule if exist
-        :param output_name: custom name without extension
+        :param fix_permutation: True or False
+        :param output: custom name without extension
         :return: shape's structure in the output_name.out file
         """
 

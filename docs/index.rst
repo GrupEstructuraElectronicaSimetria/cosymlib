@@ -10,8 +10,6 @@
 cosymlib
 ########
 
--------------
-
 **Cosymlib** is a python library for computing continuous symmetry & shape measures (CSMs & CShMs).
 Although its main aim is to provide simple and ready-to-use tools for the analysis of the symmetry &
 shape of molecules, many of the procedures contained in **cosymlib** can be easily applied to
@@ -62,5 +60,3 @@ and the Institut de Química Teòrica i Computacional (IQTCUB). University of Ba
 .. image:: images/logo_mmaeztu.png
     :height: 52px
     :align: left
-
-
