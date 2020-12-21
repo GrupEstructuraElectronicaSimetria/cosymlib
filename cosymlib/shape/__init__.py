@@ -20,7 +20,13 @@ def _get_key(central_atom, reference, fix_permutation=False, reference_2=''):
 
 
 class Shape:
+    """
+    Shape class
+
+    :param geometry:
+    """
     def __init__(self, geometry):
+
 
         # Allow geometry or molecule to be imported instead of crude Cartesian coordinates
         try:
@@ -38,6 +44,7 @@ class Shape:
         self._test_structures = {}
         self._path_deviation = {}
         self._gen_coord = {}
+
 
     # Function description
     def measure(self, reference, central_atom=0, fix_permutation=False):

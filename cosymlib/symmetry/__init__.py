@@ -25,6 +25,18 @@ def _get_key_wfnsym(group, vector_axis1, vector_axis2, center, alpha_occupancy, 
 
 
 class Symmetry:
+    """
+    Symmetry class
+
+    :param structure:
+    :param central_atom:
+    :param center:
+    :param connect_thresh:
+    :param multi:
+    :param axis:
+    :param axis2:
+    """
+
     def __init__(self,
                  structure,
                  central_atom=0,

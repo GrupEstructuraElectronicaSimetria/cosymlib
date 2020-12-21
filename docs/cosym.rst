@@ -4,7 +4,7 @@
 Executing program
 =================
 
-This script run symeess from terminal
+This script run cosymlib from terminal
 
 .. module:: scripts/cosym
 

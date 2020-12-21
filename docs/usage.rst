@@ -109,6 +109,7 @@ x, y, z for each atom (vertex) in the structure.
 ``fname.xyz`` files read by shape may contain a single structure as in the previous example or
 multiple structures (all with the same number of atoms), in which case a block:
 ::
+
     Title
     label1 x  y  z
      ...
@@ -124,6 +125,7 @@ file formats)*.
 The basic call to the shape script must provide the the file containing the input structure and the
 reference shape with respect to which the shape measure is calculated.
 ::
+
    $ shape input_file -m SH
 
 where ``input_file`` is a file containing the structural information in a valid format, for instance
@@ -241,6 +243,7 @@ Using
 
 we find:
 ::
+
     Available reference structures with 7 Vertices:
 
     Label       Sym       Info
@@ -268,6 +271,7 @@ Note also that, as shown in this example, the position of the ``-c N``  and
 ``-m OC-6`` flags, or the ``input_file`` in the call to the shape script is totally irrelevant
 and any combination such as:
 ::
+
     $ shape cocl6.xyz -c 1 -m OC-6
 
     $ shape  -c 1 -m OC-6 cocl6.xyz
@@ -285,6 +289,7 @@ call.
 Let us consider a ``struct.xyz`` file containing the geometry for an approximately square
 H\ :sub:`4`\  molecule.
 ::
+
     4
     H4 Quadrangle
     H    1.1   0.9  0.0
@@ -300,6 +305,7 @@ is the closest square to its actual distorted structure we may use:
 
 which will yield:
 ::
+
     Starting...
     ----------------------------------------------------------------------
      COSYM v0.7.4
@@ -329,7 +335,7 @@ with the coordinates of the problem structure and its closest ideal (square)
 structure, which we can use to plot the superposition of problem structure (in red)
 and the ideal reference (in blue):
 
-.. image:: quadr.png
+.. image:: images/quadr.png
     :height: 220 px
     :align: center
 
@@ -435,7 +441,7 @@ our previous ``SHAPE`` program.  Follow the link below  for a pdf version of the
 SHAPE ver. 2.1 where you will find all information to perform a continuous shape analysis using
 this option.
 
-:download: `SHAPE ver. 2.1 User's guide.  <User_Manual_SHAPE_v2.1.pdf>`_
+:download:`SHAPE ver. 2.1 User's guide <downloads/manual_shape_2_1.pdf>`
 
 
 
@@ -481,10 +487,7 @@ qqqqq
 
 Using cosymlib's APIs
 ---------------------
-
 qqqqq
-
---------
 
 
 

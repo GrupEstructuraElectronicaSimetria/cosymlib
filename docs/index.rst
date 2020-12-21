@@ -1,6 +1,6 @@
 .. highlight:: rst
 
-.. image:: ml8.png
+.. image:: images/ml8.png
     :height: 80px
     :align: left
 
@@ -39,6 +39,7 @@ The basic tasks included in the current version of **cosymlib** are:
     usage
     tutorials
     links
+    api
 
 **Cosymlib** is being developed by the **Electronic Structure & Symmetry (ESS)** group
 at the Department de Ciència de Material i Química Física
@@ -46,19 +47,19 @@ and the Institut de Química Teòrica i Computacional (IQTCUB). University of Ba
 
 ------
 
-.. image:: logo-ess.tiff
+.. image:: images/logo-ess.tiff
     :height: 52px
     :align: left
 
-.. image:: logo_ub.jpg
+.. image:: images/logo_ub.jpg
     :height: 52px
     :align: left
 
-.. image:: logo_iqtc.png
+.. image:: images/logo_iqtc.png
     :height: 52px
     :align: left
 
-.. image:: logo_mmaeztu.png
+.. image:: images/logo_mmaeztu.png
     :height: 52px
     :align: left
 

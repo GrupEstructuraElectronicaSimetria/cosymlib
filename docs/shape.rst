@@ -9,7 +9,7 @@ This is the shape module
 
   shape_references
 
-.. automodule:: symeess.shape
+.. automodule:: cosymlib.shape
    :members:
    :show-inheritance:
 

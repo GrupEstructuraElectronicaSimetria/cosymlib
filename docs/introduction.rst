@@ -36,7 +36,7 @@ In a nutshell, the continuous shape measure S\ :sub:`P`\ (Q) of object Q with re
 reference shape P is an indicator of how much Q resembles another object P\ :sub:`0`\  with a given
 ideal shape, for instance a square as in the figure below.
 
-.. image:: CShM_def.png
+.. image:: images/CShM_def.png
     :height: 160px
     :align: center
 
@@ -48,7 +48,7 @@ Q and P, where P is the image of P\ :sub:`0`\  after these transformations.
 If both the problem and the reference structures Q and P are defined as a set of vertices, we can
 define the shape measure simply as:
 
-.. image:: CShM_eq.png
+.. image:: images/CShM_eq.png
     :height: 105px
     :align: center
 
@@ -100,7 +100,7 @@ with respect to a given point symmetry group G, denoted as S\ :sub:`G`\ (Q), yie
 totally analogous to the equation above, in which Q refers again to the problem structure,
 but where P is now the G-symmetric structure closest to Q:
 
-.. image:: CSM_eq.png
+.. image:: images/CSM_eq.png
     :height: 90px
     :align: center
 
@@ -118,7 +118,7 @@ optimal overlap of our quadrangle Q with a particular rectangle P as in a shape 
 to consider also which is the ratio between the side lengths of best matching rectangle and
 optimize also with respect to this parameter.
 
-.. image:: CSM_def.png
+.. image:: images/CSM_def.png
     :height: 180px
     :align: center
 
@@ -167,7 +167,7 @@ prominent role in chemistry. A chiral object is usually described as an object t
 superposed with its mirror image. In this sense, we could obtain a continuous chirality measure
 by using the same equation as for shape measures just by replacing P by the mirror image of Q.
 
-.. image:: CCM_def.png
+.. image:: images/CCM_def.png
     :height: 150px
     :align: center
 
@@ -208,7 +208,7 @@ continuous symmetry and shape measures to more complex objects that cannot be si
 by a set of vertices such as matrices or functions. In this case the definition of the continuous
 symmetry measure is:
 
-.. image:: QCSM_eq.png
+.. image:: images/QCSM_eq.png
     :height: 60px
     :align: center
 
@@ -220,7 +220,7 @@ h symmetry operations g\ :sub:`i`\  that form group G. The precise definition on
 overlaps depends, of course, on the nature of the object Q. For molecular orbitals as obtained in
 a quantum chemical calculation we have:
 
-.. image:: soev_eq.png
+.. image:: images/soev_eq.png
     :height: 40px
     :align: center
 
@@ -230,7 +230,7 @@ wavefunction) by the whole electron density. Using this type of symmetry measure
 to compare the symmetry contents of the electronic structure of molecules, for instance by comparing
 the inversion symmetry measure for different diatomic molecules as in the example below:
 
-.. image:: QCSM_example.png
+.. image:: images/QCSM_example.png
     :height: 150px
     :align: center
 

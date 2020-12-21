@@ -31,10 +31,10 @@ sys.path.insert(0, os.path.abspath('../'))
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ['sphinx.ext.autodoc',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.mathjax',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.githubpages']
+              'sphinx.ext.intersphinx',
+              'sphinx.ext.mathjax',
+              'sphinx.ext.viewcode',
+              'sphinx.ext.githubpages']
 
 
 # Add any paths that contain templates here, relative to this directory.
@@ -51,8 +51,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'cosymlib'
-copyright = u'2017, Efrem & Abel'
-author = u'Efrem & Abel'
+copyright = u'2017, E. Bernuz, A. Carreras, M. Llunell & P. Alemany'
+author = u'E. Bernuz, A. Carreras, M. Llunell & P. Alemany'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -82,7 +82,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 todo_include_todos = False
 
 
-autodoc_mock_imports = ['cosymlib.molecule']
+autodoc_mock_imports = ['cosymlib.molecule, cosymlib.shape', 'wfnsympy', 'symgroupy']
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -152,7 +152,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'cosymlib.tex', u'cosymlib Documentation',
-     u'Efrem \\& Abel', 'manual'),
+     u'E. Bernuz, A. Carreras, M. Llunell & P. Alemany', 'manual'),
 ]
 
 
