@@ -23,7 +23,14 @@ def _get_symgroup_arguments(locals):
 
 class Cosymlib:
     """
-    Main class of cosymlib program that can perform all the jobs
+    Main cosymlib class
+
+    :param structures: list of Geometry or Molecule type objects
+    :param ignore_atoms_labels: If True ignore atomic element labels is symmetry calculations
+    :param ignore_connectivity: If True ignore connectivity in symmetry calculations
+    :param connectivity: List of pairs if atom indices that are considered connected
+    :param connectivity_thresh: Connectivity threshold (Ionic radius is used as reference)
+
     """
 
     def __init__(self,
@@ -61,6 +68,12 @@ class Cosymlib:
                 molecule.geometry.set_connectivity(None)
 
     def get_n_atoms(self):
+        """
+        Returns the number of atoms if all structures contains the same number of atoms,
+        else raise exception.
+
+        :return: number of atoms
+        """
         n_atoms_unique_list = np.unique([mol.geometry.get_n_atoms() for mol in self._molecules])
         if len(n_atoms_unique_list) > 1:
             raise Exception('Not all structures have same number of atoms')
@@ -68,9 +81,19 @@ class Cosymlib:
         return n_atoms_unique_list[0]
 
     def get_geometries(self):
+        """
+        Returns the geometry of all structures
+
+        :return: list of Geometry objects
+        """
         return [mol.geometry for mol in self._molecules]
 
     def print_info(self):
+        """
+        Prints general information about the structures
+
+        :return:
+        """
         print('\033[1m{:20}   {:^5}\033[0m'.format('name', 'atoms'))
         for molecule in self._molecules:
             print('{:20} : {:5}'.format(molecule.name, molecule.geometry.get_n_atoms()))
@@ -78,17 +101,21 @@ class Cosymlib:
 
     @property
     def molecules(self):
+        """
+        Returns the molecules
+
+        :return: List of Molecule objects
+        """
         return self._molecules
 
     def print_shape_measure(self, shape_reference, central_atom=0, fix_permutation=False, output=sys.stdout):
         """
-        Method that prints to file shape's measure
+        Prints the shape measure of all structures in format
 
-
-        :param shape_reference: reference label, list of labels, 'all' or polyhedra list
-        :param central_atom: position of the central atom in molecule if exist
-        :param output_name: custom name without extension
-        :return: shape's measure in the output_name.tab file
+        :param shape_reference: reference label
+        :param central_atom: position of the central atom
+        :param output: defines the output pipe (default: standard output) #TODO: search proper name for "output pipe"
+        :return:
         """
 
         if shape_reference == 'all':
@@ -144,13 +171,13 @@ class Cosymlib:
 
     def print_shape_structure(self, shape_reference, central_atom=0, fix_permutation=False, output=sys.stdout):
         """
-        Method that prints to file shape's structure
+        Prints the nearest shape structure in format
 
-        :param shape_reference: reference polyhedra label which user will compare with his polyhedra.
-        :param central_atom: position of the central atom in molecule if exist
-        :param fix_permutation: True or False
-        :param output: custom name without extension
-        :return: shape's structure in the output_name.out file
+        :param shape_reference: reference label
+        :param central_atom: position of the central atom
+        :param fix_permutation: Do not permute atoms during shape calculations
+        :param output: defines the output pipe (default: standard output) #TODO: search proper name for "output pipe"
+        :return:
         """
 
         if shape_reference == 'all':
@@ -188,6 +215,16 @@ class Cosymlib:
 
     # TODO: Change name of all symgroup named functions
     def print_geometric_measure_info(self, label, multi=1, central_atom=0, center=None, output=sys.stdout):
+        """
+        Prints geometric symmetry measure verbose
+
+        :param label: symmetry group
+        :param multi: number of axis
+        :param central_atom: position of the central atom
+        :param center: center of symmetry. By default center is optimized
+        :param output: defines the output pipe (default: standard output) #TODO: search proper name for "output pipe"
+        :return:
+        """
         kwargs = _get_symgroup_arguments(locals())
         sep_line = '..................................................\n'
 
@@ -226,8 +263,16 @@ class Cosymlib:
 
         output.write(txt)
 
-    def print_geometric_symmetry_measure(self, label, central_atom=0, center=None,
-                                         output=sys.stdout):
+    def print_geometric_symmetry_measure(self, label, central_atom=0, center=None, output=sys.stdout):
+        """
+        Prints geometric symmetry measure in format
+
+        :param label: symmetry group
+        :param central_atom: position of the central atom
+        :param center: center of symmetry. By default center is optimized
+        :param output: defines the output pipe (default: standard output) #TODO: search proper name for "output pipe"
+        :return:
+        """
         kwargs = _get_symgroup_arguments(locals())
 
         txt = 'Evaluating symmetry operation : {}\n \n'.format(label)
@@ -243,8 +288,16 @@ class Cosymlib:
 
         output.write(txt)
 
-    def print_symmetry_nearest_structure(self, label, central_atom=0, center=None,
-                                         output=sys.stdout):
+    def print_symmetry_nearest_structure(self, label, central_atom=0, center=None, output=sys.stdout):
+        """
+        Prints the nearest structure to ideal symmetric structure
+
+        :param label: symmetry group
+        :param central_atom: position of the central atom
+        :param center: center of symmetry. By default center is optimized
+        :param output: defines the output pipe (default: standard output) #TODO: search proper name for "output pipe"
+        :return:
+        """
         kwargs = _get_symgroup_arguments(locals())
 
         for idm, molecule in enumerate(self._molecules):
@@ -464,6 +517,15 @@ class Cosymlib:
         output.write(txt)
 
     def plot_mo_diagram(self, group, axis=None, axis2=None, center=None):
+        """
+        Plots Molecular orbitals diagram
+
+        :param group:
+        :param axis:
+        :param axis2:
+        :param center:
+        :return:
+        """
 
         for molecule in self._molecules:
 
@@ -544,6 +606,15 @@ class Cosymlib:
         plt.show()
 
     def get_shape_measure(self, label, kind, central_atom=0, fix_permutation=False):
+        """
+        Get shape measure
+
+        :param label: reference label
+        :param kind:
+        :param central_atom: position of the central atom
+        :param fix_permutation: do not permute atoms during shape calculations
+        :return: the shape measure
+        """
         get_measure = 'get_shape_' + kind
         return [getattr(molecule.geometry, get_measure)(label, central_atom=central_atom,
                                                         fix_permutation=fix_permutation)
@@ -653,4 +724,9 @@ class Cosymlib:
             plt.show()
 
     def get_point_group(self, tol=0.01):
+        """
+
+        :param tol:
+        :return:
+        """
         return [molecule.geometry.get_pointgroup(tol) for molecule in self._molecules]
