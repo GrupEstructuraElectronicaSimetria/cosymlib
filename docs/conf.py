@@ -82,7 +82,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 todo_include_todos = False
 
 
-autodoc_mock_imports = ['cosymlib.molecule, cosymlib.shape', 'wfnsympy', 'symgroupy']
+autodoc_mock_imports = ['cosymlib.molecule', 'wfnsympy', 'symgroupy']
 
 # -- Options for HTML output ----------------------------------------------
 
