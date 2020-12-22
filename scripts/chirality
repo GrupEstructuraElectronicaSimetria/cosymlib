@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 from cosymlib import Cosymlib, __version__
-from cosymlib.file_io.tools import add_extra_keywords, print_header, print_footer, print_input_info
-from cosymlib.file_io import read_generic_structure_file, get_connectivity_from_file
-from cosymlib.symmetry.tools import print_symmetry_labels
+from cosymlib.file_io.tools import print_header, print_footer, print_input_info
+from cosymlib.file_io import read_generic_structure_file
 import argparse
 import sys
 import yaml
 
 
+# positional arguments
 parser = argparse.ArgumentParser(description='gsym')
 
 # positional arguments
@@ -25,11 +25,6 @@ parser.add_argument('-m', '--measure',
                     metavar='SG',
                     default=False,
                     help='compute the SG symmetry measure of the input structures')
-parser.add_argument('-s', '--structure',
-                    dest='structure',
-                    action='store_true',
-                    default=False,
-                    help='returns the nearest SG-symmetric structure to the reference one')
 parser.add_argument('-o', '--output',
                     dest='output_name',
                     metavar='filename',
@@ -44,11 +39,6 @@ parser.add_argument('-c', '--central_atom',
                     help='central atom is in position N in the input structure')
 
 # Extra options
-parser.add_argument('-l', '--labels',
-                    dest='labels',
-                    action='store_true',
-                    default=False,
-                    help='prints the symmetry labels (SG) for the groups that can be used')
 parser.add_argument('--info',
                     action='store_true',
                     default=False,
@@ -60,35 +50,12 @@ parser.add_argument('-v', '--version',
                     help='print information about the input structures')
 
 # Modifiers
-parser.add_argument('--ignore_connectivity',
-                    dest='ignore_connectivity',
-                    action='store_true',
-                    default=False,
-                    help='ignore connectivity')
-parser.add_argument('--ignore_atoms_labels',
-                    dest='ignore_atoms_labels',
-                    action='store_true',
-                    default=False,
-                    help='ignore atom labels for structures in the input file')
-parser.add_argument('--connectivity_thresh',
-                    dest='connectivity_thresh',
-                    metavar='R',
-                    type=float,
-                    default=None,
-                    help='relative threshold to determine the connectivity (default: 1.1)')
-parser.add_argument('--connectivity_file',
-                    dest='connectivity_file',
-                    metavar='filename',
-                    default=None,
-                    help='use connectivity stored in file')
-
 parser.add_argument('--center',
                     dest='center', metavar='R',
                     type=float,
                     default=None,
                     nargs=3,
                     help='fix coordinates x,y,z for the center of symmetry operations (Angs)')
-
 
 args = parser.parse_args()
 
@@ -114,43 +81,28 @@ try:
 except Exception as e:
     sys.exit('No input file selected! An existing file must be provide')
 
-if args.connectivity_file:
-    connectivity = get_connectivity_from_file(args.connectivity_file)
-else:
-    connectivity = None
 
-# structures = read_generic_structure_file(args.input_file, read_multiple=True)
-structure_set = Cosymlib(structures,
-                         ignore_atoms_labels=args.ignore_atoms_labels,
-                         ignore_connectivity=args.ignore_connectivity,
-                         connectivity=connectivity,
-                         connectivity_thresh=args.connectivity_thresh)
-
-if args.labels:
-    print_symmetry_labels()
-    exit()
+structure_set = Cosymlib(structures)
 
 if args.info:
     print_input_info(structure_set.get_geometries(), output=common_output)
     exit()
 
+# if not args.measure:
+#     reference = ['ci', 'cs']
+# elif args.measure not in ['ci', 'cs']:
+#     reference = ['ci', 'cs', args.measure]
+# else:
+#     reference = args.measure
+if not args.measure:
+    sys.exit('User should provide a symmetry group measure')
+reference = args.measure.lower()
+
 # Symgroup commands
 if args.measure:
-    structure_set.print_geometric_symmetry_measure(args.measure,
+    structure_set.print_geometric_symmetry_measure(reference,
                                                    central_atom=args.central_atom,
                                                    center=args.center,
                                                    output=common_output)
-
-if args.structure:
-    if args.output_name is None:
-        structure_output = common_output
-        print('\nClosest structure/s to reference')
-    else:
-        structure_output = open(args.output_name + '_sym.xyz', 'w')
-
-    structure_set.print_symmetry_nearest_structure(args.measure,
-                                                   central_atom=args.central_atom,
-                                                   center=args.center,
-                                                   output=structure_output)
 
 print_footer(common_output)
