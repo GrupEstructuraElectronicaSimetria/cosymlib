@@ -26,15 +26,15 @@ def _get_key_wfnsym(group, vector_axis1, vector_axis2, center, alpha_occupancy, 
 
 class Symmetry:
     """
-    Symmetry class
+    Symmetry main class
 
-    :param structure:
-    :param central_atom:
-    :param center:
-    :param connect_thresh:
-    :param multi:
-    :param axis:
-    :param axis2:
+    :param structure: a geometry, molecule or array type object
+    :param central_atom: central atom position
+    :param center: center of symmetry. By default center is optimized
+    :param connect_thresh: Connectivity threshold (Ionic radius is used as reference)
+    :param multi: number of symmetry axis to find
+    :param axis: main symmetry axis (If None, then optimize)
+    :param axis2: secondary symmetry axis (If None, then optimize)
     """
 
     def __init__(self,
@@ -80,6 +80,12 @@ class Symmetry:
 
     # Modifier methods
     def set_parameters(self, parameters_dict):
+        """
+        Set symmetry calculation related parameters
+
+        :param parameters_dict: parameters in dictionary
+        :return:
+        """
         for name, value in parameters_dict.items():
             setattr(self, '_' + name, value)
 
@@ -137,25 +143,71 @@ class Symmetry:
     ##########################################
 
     def measure(self, label):
+        """
+        Get symmetry measure
+
+        :param label: point group label
+        :return: the measure
+        """
         return self._get_symgroup_results(label).csm
 
     def nearest_structure(self, label):
+        """
+        Get nearest structure
+
+        :param label: point group label
+        :return: the structure
+        """
+        # TODO: Improve this docstring
+
         return self._get_symgroup_results(label).nearest_structure
 
     def optimum_axis(self, label):
+        """
+        Get the optimum main symmetry axis
+
+        :param label: point group label
+        :return:
+        """
         return self._get_symgroup_results(label).optimum_axis
 
     def optimum_permutation(self, label):
+        """
+        Get the optimum atoms permutation
+
+        :param label: point group label
+        :return:
+        """
         return self._get_symgroup_results(label).optimum_permutation
 
     def reference_axis(self, label):
+        """
+        Get reference axis
+
+        :param label: point group label
+        :return:
+        """
         return self._get_symgroup_results(label).reference_axis
 
     def cms_multi(self, label, multi=1):
+        """
+        Get symmetry measure of the optimum N axis
+
+        :param label: point group label
+        :param multi: number of axis
+        :return: list of measures
+        """
         self._multi = multi
         return self._get_symgroup_results(label).cms_multi
 
     def axis_multi(self, label, multi=1):
+        """
+        Get the optimum N axis
+
+        :param label: point group label
+        :param multi: number of axis
+        :return: list of axis
+        """
         self._multi = multi
         return self._get_symgroup_results(label).axis_multi
 

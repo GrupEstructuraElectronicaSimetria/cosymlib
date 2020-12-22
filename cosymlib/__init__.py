@@ -220,7 +220,7 @@ class Cosymlib:
         Prints geometric symmetry measure verbose
 
         :param label: symmetry group
-        :param multi: number of axis
+        :param multi: number of symmetry axis to find
         :param central_atom: position of the central atom
         :param center: center of symmetry. By default center is optimized
         :param output: defines the output pipe (default: standard output) #TODO: search proper name for "output pipe"

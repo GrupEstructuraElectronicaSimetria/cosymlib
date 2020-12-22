@@ -1,4 +1,5 @@
 from cosymlib.shape import shp, tools
+from cosymlib.molecule.geometry import Geometry
 import numpy as np
 
 
@@ -21,21 +22,20 @@ def _get_key(central_atom, reference, fix_permutation=False, reference_2=''):
 
 class Shape:
     """
-    Shape class
+    Shape main class
 
-    :param geometry:
+    :param structure: a geometry, molecule or array type object
     """
-    def __init__(self, geometry):
-
+    def __init__(self, structure):
 
         # Allow geometry or molecule to be imported instead of crude Cartesian coordinates
         try:
-            self._coordinates = geometry.get_positions()
+            self._coordinates = structure.get_positions()
         except AttributeError:
             try:
-                self._coordinates = geometry.geometry.get_positions()
+                self._coordinates = structure.geometry.get_positions()
             except AttributeError:
-                self._coordinates = geometry
+                self._coordinates = structure
 
         self._coordinates = np.ascontiguousarray(self._coordinates)
 
@@ -45,9 +45,15 @@ class Shape:
         self._path_deviation = {}
         self._gen_coord = {}
 
-
-    # Function description
     def measure(self, reference, central_atom=0, fix_permutation=False):
+        """
+        Get shape measure
+
+        :param reference: reference shape label or Geometry object
+        :param central_atom: central atom position
+        :param fix_permutation: do not permute atoms during shape calculations
+        :return: the measure
+        """
         key = _get_key(central_atom, reference, fix_permutation=fix_permutation)
         if key not in self._measures:
             if isinstance(reference, str):
@@ -66,8 +72,15 @@ class Shape:
 
         return self._measures[key]
 
-    # Function description
     def structure(self, reference, central_atom=0, fix_permutation=False):
+        """
+        Get the nearest structure to reference
+
+        :param reference: reference shape label or Geometry object
+        :param central_atom: central atom position
+        :param fix_permutation: do not permute atoms during shape calculations
+        :return: the structure
+        """
         key = _get_key(central_atom, reference, fix_permutation=fix_permutation)
         if key not in self._structures:
             if isinstance(reference, str):
@@ -92,7 +105,16 @@ class Shape:
         return self._structures[key]
 
     def path_deviation(self, shape_label1, shape_label2, central_atom=0):
-        from cosymlib.molecule.geometry import Geometry
+        """
+        Get the path deviation
+
+        :param shape_label1: first shape reference label or Geometry object
+        :param shape_label2: second shape reference label or Geometry object
+        :param central_atom: central atom position
+        :return: the path deviation
+        """
+        # TODO: Someone improve the description of this function
+
         key = _get_key(central_atom, shape_label1, reference_2=shape_label2)
         if key not in self._path_deviation:
             Sx = self.measure(shape_label1, central_atom)
@@ -108,7 +130,14 @@ class Shape:
         return self._path_deviation[key]
 
     def generalized_coordinate(self, shape_label1, shape_label2, central_atom=0):
-        from cosymlib.molecule.geometry import Geometry
+        """
+        Get the generalized coordinate
+
+        :param shape_label1: first shape reference label or Geometry object
+        :param shape_label2: second shape reference label or Geometry object
+        :param central_atom: central atom position
+        :return:
+        """
 
         key = _get_key(central_atom, shape_label1, reference_2=shape_label2)
         if key not in self._gen_coord:
