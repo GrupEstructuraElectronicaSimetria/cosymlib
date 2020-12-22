@@ -1,5 +1,4 @@
 from cosymlib.shape import shp, tools
-from cosymlib.molecule.geometry import Geometry
 import numpy as np
 
 
@@ -120,10 +119,11 @@ class Shape:
             Sx = self.measure(shape_label1, central_atom)
             Sy = self.measure(shape_label2, central_atom)
             new_theta = np.arcsin(np.sqrt(Sx) / 10) + np.arcsin(np.sqrt(Sy) / 10)
-            if isinstance(shape_label1, Geometry):
-                structure_a = shape_label1
-            else:
+            if isinstance(shape_label1, str):
                 structure_a = tools.get_test_structure(shape_label1, central_atom=central_atom)
+            else:
+                structure_a = shape_label1
+
             theta = np.arcsin(np.sqrt(Shape(structure_a).measure(shape_label2, central_atom=structure_a.get_n_atoms())) / 10)
             self._path_deviation[key] = ((new_theta / theta) - 1) * 100
 
@@ -142,10 +142,11 @@ class Shape:
         key = _get_key(central_atom, shape_label1, reference_2=shape_label2)
         if key not in self._gen_coord:
             Sq = self.measure(shape_label1, central_atom)
-            if isinstance(shape_label1, Geometry):
-                structure_a = shape_label1
-            else:
+            if isinstance(shape_label1, str):
                 structure_a = tools.get_test_structure(shape_label1, central_atom=central_atom)
+            else:
+                structure_a = shape_label1
+
             theta = np.arcsin(np.sqrt(Shape(structure_a).measure(shape_label2, central_atom=structure_a.get_n_atoms())) / 10)
             self._gen_coord[key] = round(100 * np.arcsin(np.sqrt(Sq) / 10) / theta, 1)
 
