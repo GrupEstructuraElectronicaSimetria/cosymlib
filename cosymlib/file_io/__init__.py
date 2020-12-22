@@ -8,11 +8,27 @@ import os, re
 import warnings
 
 
+comment_line = ('#', '!', '$')
+
+
 def _non_blank_lines(f):
     for l in f:
         line = l.rstrip()
         if line:
             yield line
+
+
+def check_geometries_vertices(geometries, file_name):
+    n_atoms = geometries[0].get_n_atoms()
+    idl = 0
+    for idg, geometry in enumerate(geometries):
+        if geometry.get_n_atoms() != n_atoms:
+            warnings.warn('Error in structure {}: Line {} of file {}\n '
+                          'Number of vertices does not match with other structures\n'.format(idg + 1, idl + 1,
+                                                                                             file_name),
+                          custom_errors.DifferentVerteciesWarning)
+        idl += geometry.get_n_atoms() + 2
+
 
 # Read INPUT files
 def read_generic_structure_file(input_name, read_multiple=False):
@@ -43,9 +59,11 @@ def get_geometry_from_file_xyz(file_name, read_multiple=False):
     """
     input_molecule = [[], []]
     geometries = []
+    n_atoms = None
     with open(file_name, mode='r') as lines:
         for idl, line in enumerate(lines):
-            if '$' in line or '#' in line:
+            # if '$' in line or '#' in line or '!' in line:
+            if line.lstrip().startswith(comment_line):
                 pass
             elif line.strip() == '':
                 warnings.warn('Line {} is empty'.format(idl + 1), custom_errors.EmptyLineWarning)
@@ -57,22 +75,23 @@ def get_geometry_from_file_xyz(file_name, read_multiple=False):
                 except IndexError:
                     if input_molecule[0]:
                         if len(input_molecule[0]) != n_atoms:
-                            warnings.warn('Number of atoms in first line and number '
-                                          'of atoms provided are not equal'.format(idl - len(input_molecule[0])),
+                            warnings.warn('Number of atoms around line {} and number '
+                                          'of atoms provided are not equal'.format(idl - len(input_molecule[0]) - 1),
                                           custom_errors.MissingLineWarning)
                         geometries.append(Geometry(symbols=input_molecule[0],
                                                    positions=input_molecule[1],
                                                    name=name))
+                        n_atoms = None
 
                     input_molecule = [[], []]
-                    try:
+                    if n_atoms is None:
                         n_atoms = int(line.split()[0])
-                    except ValueError:
+                    else:
                         name = line.split()[0]
 
         if len(input_molecule[0]) != n_atoms:
             warnings.warn('Number of atoms in line {} and number '
-                          'of atoms provided are not equal'.format(idl - len(input_molecule[0])),
+                          'of atoms provided are not equal'.format(idl - len(input_molecule[0]) - 1),
                           custom_errors.MissingLineWarning)
 
         geometries.append(Geometry(symbols=input_molecule[0],
@@ -81,17 +100,8 @@ def get_geometry_from_file_xyz(file_name, read_multiple=False):
         if not read_multiple:
             return geometries[0]
 
-# Check if all geometries are of the same vertices
-    n_atoms = geometries[0].get_n_atoms()
-    idl = 0
-    for idg, geometry in enumerate(geometries):
-        if geometry.get_n_atoms() != n_atoms:
-            # raise custom_errors.DifferentVerteciesStructures(idg + 1, idl + 1, file_name)
-            warnings.warn('Error in structure {}: Line {} of file {}\n '
-                          'Number of vertices does not match with other structures\n'.format(idg + 1, idl + 1,
-                                                                                             file_name),
-                          custom_errors.DifferentVerteciesWarning)
-        idl += geometry.get_n_atoms() + 2
+    # Check if all geometries are of the same vertices
+    check_geometries_vertices(geometries, file_name)
 
     return geometries
 
@@ -108,7 +118,7 @@ def get_geometry_from_file_cor(file_name, read_multiple=False):
     with open(file_name, mode='r') as lines:
 
         for idl, line in enumerate(lines):
-            if '$' in line or '#' in line or '!' in line:
+            if line.lstrip().startswith(comment_line):
                 pass
             elif line.strip() == '':
                 warnings.warn('Line {} is empty'.format(idl + 1), custom_errors.EmptyLineWarning)
@@ -138,16 +148,7 @@ def get_geometry_from_file_cor(file_name, read_multiple=False):
             return geometries[0]
 
     # Check if all geometries are of the same vertices
-    n_atoms = geometries[0].get_n_atoms()
-    idl = 0
-    for idg, geometry in enumerate(geometries):
-        if geometry.get_n_atoms() != n_atoms:
-            # raise custom_errors.DifferentVerteciesStructures(idg + 1, idl + 1, file_name)
-            warnings.warn('Error in structure {}: Line {} of file {}\n '
-                          'Number of vertices does not match with other structures\n'.format(idg + 1, idl + 1,
-                                                                                             file_name),
-                          custom_errors.DifferentVerteciesWarning)
-        idl += geometry.get_n_atoms() + 2
+    check_geometries_vertices(geometries, file_name)
 
     return geometries
 
@@ -388,8 +389,10 @@ def get_geometry_from_file_ref(file_name, read_multiple=False):
         lines.readline()
         name = lines.readline().split()[0]
         for line in lines:
-            if '$' in line or '#' in line:
+            if line.lstrip().startswith(comment_line):
                 pass
+            # elif line.strip() == '':
+            #     warnings.warn('Line {} is empty'.format(idl + 1), custom_errors.EmptyLineWarning)
             else:
                 try:
                     if len(line.split()) > 3:
@@ -401,7 +404,7 @@ def get_geometry_from_file_ref(file_name, read_multiple=False):
                 except (ValueError, IndexError):
                     if input_molecule:
                         structures.append(Geometry(positions=input_molecule,
-                                                  name=name))
+                                                   name=name))
                     input_molecule = []
                     name = line.split()[0]
         structures.append(Geometry(positions=input_molecule,
