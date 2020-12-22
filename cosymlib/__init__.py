@@ -3,6 +3,7 @@ __version__ = '0.9.1'
 from cosymlib.molecule import Molecule, Geometry
 from cosymlib import file_io
 from cosymlib import tools
+from cosymlib.utils import swap_vectors
 from cosymlib.utils import get_shape_path, plot_molecular_orbital_diagram, plot_symmetry_energy_evolution
 from cosymlib.shape.tools import get_structure_references
 import matplotlib.pyplot as plt
@@ -236,9 +237,9 @@ class Cosymlib:
             txt += '\n'
             txt += 'Centered Structure\n'
             txt += sep_line
-            center_mass = tools.center_mass(molecule.geometry.get_symbols(), molecule.geometry.get_positions())
+            cm = tools.center_mass(molecule.geometry.get_symbols(), molecule.geometry.get_positions())
             for idn, array in enumerate(molecule.geometry.get_positions()):
-                array = array - center_mass
+                array = array - cm
                 txt += '{:2} {:12.8f} {:12.8f} {:12.8f}\n'.format(molecule.geometry.get_symbols()[idn],
                                                                       array[0], array[1], array[2])
             txt += sep_line
@@ -564,7 +565,6 @@ class Cosymlib:
         plt.show()
 
     def plot_sym_energy_evolution(self, group, axis=None, axis2=None, center=None):
-        from cosymlib.utils import swap_vectors
 
         energies = []
         ird_a_max = []
@@ -613,20 +613,29 @@ class Cosymlib:
         :param kind:
         :param central_atom: position of the central atom
         :param fix_permutation: do not permute atoms during shape calculations
-        :return: the shape measure
+        :return: shape measures list
         """
         get_measure = 'get_shape_' + kind
-        return [getattr(molecule.geometry, get_measure)(label, central_atom=central_atom,
-                                                        fix_permutation=fix_permutation)
-                for molecule in self._molecules]
+
+        return [geometry.get_shape_measure(label, central_atom=central_atom, fix_permutation=fix_permutation)
+                for geometry in self.get_geometries()]
 
     def get_molecule_path_deviation(self, shape_label1, shape_label2, central_atom=0):
-        return [molecule.geometry.get_path_deviation(shape_label1, shape_label2, central_atom) for molecule
-                in self._molecules]
+        """
+        Get molecule path deviation
+
+        :param shape_label1: first shape reference label
+        :param shape_label2: second shape reference label
+        :param central_atom: position of the central atom
+        :return:
+        """
+        return [geometry.get_path_deviation(shape_label1, shape_label2, central_atom) for geometry
+                in self.get_geometries()]
 
     def get_molecule_generalized_coord(self, shape_label1, shape_label2, central_atom=0):
-        return [molecule.geometry.get_generalized_coordinate(shape_label1, shape_label2, central_atom)
-                for molecule in self._molecules]
+
+        return [geometry.get_generalized_coordinate(shape_label1, shape_label2, central_atom)
+                for geometry in self.get_geometries()]
 
     # TODO: This may be placed inside Shape class
     def get_path_parameters(self, shape_label1, shape_label2, central_atom=0):
@@ -654,6 +663,20 @@ class Cosymlib:
     def print_minimum_distortion_path_shape(self, shape_label1, shape_label2, central_atom=0,
                                             min_dev=0, max_dev=15, min_gco=0, max_gco=101,
                                             num_points=20, output=None):
+        """
+        Print the minimum distortion path
+
+        :param shape_label1: first reference shape label
+        :param shape_label2: second reference shape label
+        :param central_atom: position of the central atom
+        :param min_dev:
+        :param max_dev:
+        :param min_gco:
+        :param max_gco:
+        :param num_points: number of points
+        :param output: defines the output pipe (default: standard output) #TODO: search proper name for "output pipe"
+        :return:
+        """
 
         if output is not None:
             output = open(output + '_pth.csv', 'w')
@@ -725,8 +748,9 @@ class Cosymlib:
 
     def get_point_group(self, tol=0.01):
         """
+        Get the point group of all structures
 
-        :param tol:
-        :return:
+        :param tol: tolerance
+        :return: a list of point group labels
         """
         return [molecule.geometry.get_pointgroup(tol) for molecule in self._molecules]
