@@ -22,7 +22,7 @@ parser.add_argument('-v', '--version', dest='version', action='store_true', defa
 
 parser.add_argument('-c', '--central_atom', action='store', dest='central_atom',
                     type=int, default=0, help='position of the central atom if exist')
-parser.add_argument('-custom_ref', action='store', dest='custom_ref', default=None,
+parser.add_argument('-cref', '--custom_ref', action='store', dest='custom_ref', default=None,
                     help='take a given structure from the file and use it as reference')
 parser.add_argument('-fix_perm', '--fix_permutation', dest='fix_permutation', action='store_true', default=False,
                     help='use the given permutation to perform a calculation')
@@ -134,38 +134,43 @@ if args.version:
 common_output = open(args.output_name, 'w') if args.output_name is not None else sys.stdout
 print_header(common_output)
 
-if args.input_file is None:
-    print('No input file selected!'.format(args.input_file))
-    exit()
-else:
+try:
     structures = file_io.read_generic_structure_file(args.input_file, read_multiple=True)
-    symobj = Cosymlib(structures)
+except Exception as e:
+    sys.exit('No input file selected! An existing file must be provide')
 
-    try:
-        n_atoms = structures[0].geometry.get_n_atoms()
-    except AttributeError:
-        try:
-            n_atoms = structures[0].get_n_atoms()
-        except AttributeError:
-            raise AttributeError('Molecule object not found')
-    if args.central_atom != 0:
-        n_atoms -= 1
+symobj = Cosymlib(structures)
+
+n_atoms = symobj.get_n_atoms()
+vertices = n_atoms if args.central_atom == 0 else n_atoms - 1
 
 if args.shp_references:
-    test_structure = []
-    symbols = ['H' for _ in range(n_atoms)]
-    symbols.append('N')
-    for label in tools.get_structure_references(n_atoms):
-        test_structure.append(Geometry(symbols=symbols,
-                                       positions=tools.get_test_structure(label, central_atom=args.central_atom),
-                                       name=label))
-    input_file, file_extension = os.path.splitext(args.input_file)
-    if args.central_atom == 0:
-        output = open('{}/L{}.xyz'.format(os.path.dirname(input_file), n_atoms), 'w')
+    # test_structure = []
+    # symbols = ['H' for _ in range(n_atoms)]
+    # symbols.append('N')
+    # for label in tools.get_structure_references(n_atoms):
+    #     test_structure.append(Geometry(symbols=symbols,
+    #                                    positions=tools.get_test_structure(label,
+    #                                                                       central_atom=args.central_atom).get_positions(),
+    #                                    name=label))
+    # input_file, file_extension = os.path.splitext(args.input_file)
+    # if args.central_atom == 0:
+    #     output = open('{}/L{}.xyz'.format(os.path.dirname(input_file), n_atoms), 'w')
+    # else:
+    #     output = open('{}/ML{}.xyz'.format(os.path.dirname(input_file), n_atoms), 'w')
+    # output.write(file_io.get_file_xyz_txt(test_structure))
+
+    if args.output_name is None:
+        output_references = common_output
+        print('Reference shapes\n----------------')
+    elif args.central_atom == 0:
+        output_references = open('L{}.xyz'.format(vertices), 'w')
     else:
-        output = open('{}/ML{}.xyz'.format(os.path.dirname(input_file), n_atoms), 'w')
-    output.write(file_io.get_file_xyz_txt(test_structure))
-    # file_io.write_file_xyz(test_structure, output_name='ML{}_ref'.format(n_atoms))
+        output_references = open('ML{}.xyz'.format(vertices), 'w')
+
+    for label in tools.get_structure_references(vertices):
+        ref_structure = tools.get_test_structure(label, central_atom=args.central_atom)
+        output_references.write(file_io.get_file_xyz_txt(ref_structure))
 
 if args.info:
     print_input_info(structures, output=common_output)
@@ -178,31 +183,26 @@ if args.shp_labels:
     else:
         print(tools.get_shape_label_info(n_atoms))
 
-reference_polyhedron = []
+reference = []
 if args.shp_measure == 'custom':
-    reference_polyhedron = file_io.get_geometry_from_file_xyz(args.custom_ref, read_multiple=True)
-    [x.set_positions(args.central_atom - 1) for x in reference_polyhedron]
-elif not reference_polyhedron:
-    if args.shp_measure == 'all':
-        try:
-            n_atoms = structures[0].geometry.get_n_atoms()
-        except AttributeError:
-            n_atoms = structures[0].get_n_atoms()
-        c = int(bool(args.central_atom))
-        reference_polyhedron = tools.get_structure_references(n_atoms - c)
+    if args.custom_ref is not None:
+        reference = file_io.get_geometry_from_file_xyz(args.custom_ref, read_multiple=True)
+        [x.set_positions(args.central_atom - 1) for x in reference]
     else:
-        reference_polyhedron = [args.shp_measure]
+        sys.exit('Custom reference file not defined (use -cref or --custom_ref filename)')
+else:
+    reference = args.shp_measure
 
 if args.shp_structure:
-    symobj.print_shape_structure(reference_polyhedron,
+    symobj.print_shape_structure(reference,
                                  central_atom=args.central_atom,
-                                 output=args.output_name,
+                                 output=common_output,
                                  fix_permutation=args.fix_permutation)
 
 elif args.shp_measure or args.custom_ref:
-    symobj.print_shape_measure(reference_polyhedron,
+    symobj.print_shape_measure(reference,
                                central_atom=args.central_atom,
-                               output=args.output_name,
+                               output=common_output,
                                fix_permutation=args.fix_permutation)
 
 
@@ -211,7 +211,7 @@ if args.sym_structure:
     symobj.print_symmetry_nearest_structure(args.sym_measure,
                                             central_atom=args.central_atom,
                                             symbols=not args.ignore_atom_labels,
-                                            output=args.output_name)
+                                            output=common_output)
 elif args.sym_measure:
     symobj.print_geometric_symmetry_measure(args.sym_measure,
                                             central_atom=args.central_atom,
