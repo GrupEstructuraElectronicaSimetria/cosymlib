@@ -175,31 +175,7 @@ class Cosymlib:
             else:
                 references_names.append(reference)
 
-        txt_shape = '{}'.format('Structure')
-        max_name = len(max(molecules_names, key=len))
-        if max_name < 9:
-            n = 5
-        else:
-            n = max_name - 4
-        for label in references_names:
-            n += len(label)
-            txt_shape += '{}'.format(label.rjust(n))
-            n = 12 - len(label)
-        txt_shape += '\n\n'
-
-        for idx, name in enumerate(molecules_names):
-            max_name = len(max(molecules_names, key=len))
-            txt_shape += '{}'.format(name)
-            if max_name < 9:
-                n = 18 - len(name)
-            else:
-                n = 9 + max_name - len(name)
-            for idn, label in enumerate(references_names):
-                txt_shape += ', {:{width}.{prec}f}'.format(measure_list[idn][idx], width=n, prec=3)
-                n = 11
-            txt_shape += '\n'
-        txt_shape += '\n'
-
+        txt_shape = get_table_format(references_names, molecules_names, measure_list)
         output.write(txt_shape)
 
     def print_shape_structure(self, shape_reference, central_atom=0, fix_permutation=False, output=sys.stdout):
