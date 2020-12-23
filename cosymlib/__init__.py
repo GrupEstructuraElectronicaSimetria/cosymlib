@@ -22,6 +22,38 @@ def _get_symgroup_arguments(locals):
     return kwargs
 
 
+def get_table_format(labels, molecules_names, data):
+
+    txt = 'Structure'
+    max_len_name = 12
+    max_name = 0
+    names = []
+    for name in molecules_names:
+        if len(name) > max_len_name:
+            max_name = 12
+            names.append(name[:(max_len_name - 1)])
+        elif len(name) > max_name:
+            max_name = len(name)
+            names.append(name)
+
+    n = max_len_name - 3
+    for label in labels:
+        n += len(label)
+        txt += '{}'.format(label.rjust(n))
+        n = 11 - len(label)
+    txt += '\n\n'
+
+    for idx, name in enumerate(names):
+        txt += '{:{width}}'.format(name + ',', width=max_len_name)
+        n = 11
+        for idn, label in enumerate(labels):
+            txt += '{:>{width}.{prec}f},'.format(data[idn][idx], width=n, prec=3)
+            n = 10
+        txt += '\n'
+    txt += '\n'
+    return txt
+
+
 class Cosymlib:
     """
     Main cosymlib class
@@ -304,6 +336,18 @@ class Cosymlib:
         for idm, molecule in enumerate(self._molecules):
             geometry = molecule.geometry.get_symmetry_nearest_structure(**kwargs)
             output.write(file_io.get_file_xyz_txt(geometry))
+
+    def print_chirality_measure(self, labels, central_atom=0, center=None, output=sys.stdout):
+
+        csm_list = []
+        for label in labels:
+            csm_list.append([geometry.get_symmetry_measure(label, central_atom=central_atom, center=center)
+                             for geometry in self.get_geometries()])
+
+        molecules_names = [molecule.name for molecule in self._molecules]
+        txt = get_table_format(labels, molecules_names, csm_list)
+
+        output.write(txt)
 
     # This should be substituted by calling methods within this class
     def OLD_print_wnfsym_measure_verbose(self, group, axis=None, axis2=None, center=None, output=sys.stdout):

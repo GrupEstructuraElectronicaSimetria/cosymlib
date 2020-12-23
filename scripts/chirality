@@ -23,8 +23,9 @@ parser.add_argument(type=str,
 parser.add_argument('-m', '--measure',
                     dest='measure',
                     metavar='SG',
-                    default=False,
-                    help='compute the SG symmetry measure of the input structures')
+                    default=0,
+                    type=int,
+                    help='compute the chiral symmetry measure of the input structures')
 parser.add_argument('-o', '--output',
                     dest='output_name',
                     metavar='filename',
@@ -76,33 +77,36 @@ if args.version:
 common_output = open(args.output_name, 'w') if args.output_name is not None else sys.stdout
 print_header(common_output)
 
-try:
-    structures = read_generic_structure_file(args.input_file, read_multiple=True)
-except Exception as e:
-    sys.exit('No input file selected! An existing file must be provide')
+if args.input_file is None:
+    parser.error('No input file selected! An existing file must be provide')
 
-
+structures = read_generic_structure_file(args.input_file, read_multiple=True)
 structure_set = Cosymlib(structures)
 
 if args.info:
     print_input_info(structure_set.get_geometries(), output=common_output)
     exit()
 
-# if not args.measure:
-#     reference = ['ci', 'cs']
-# elif args.measure not in ['ci', 'cs']:
-#     reference = ['ci', 'cs', args.measure]
-# else:
-#     reference = args.measure
-if not args.measure:
-    sys.exit('User should provide a symmetry group measure')
-reference = args.measure.lower()
+if args.measure == 0:
+    reference = ['Ci', 'Cs']
+elif args.measure == 1:
+    reference = ['Cs']
+elif args.measure == 2:
+    reference = ['Ci']
+elif int(args.measure) % 2 != 0:
+    raise ValueError('For Sn chirality measure choose an even value between 2-n')
+else:
+    for n in range(4, args.measure + 1):
+        if n%2 == 0:
+            reference = ['Ci', 'Cs', 'S'+str(n)]
 
-# Symgroup commands
+reference = [r.lower() for r in reference]
+
+# Chirality commands
 if args.measure:
-    structure_set.print_geometric_symmetry_measure(reference,
-                                                   central_atom=args.central_atom,
-                                                   center=args.center,
-                                                   output=common_output)
+    structure_set.print_chirality_measure(reference,
+                                          central_atom=args.central_atom,
+                                          center=args.center,
+                                          output=common_output)
 
 print_footer(common_output)

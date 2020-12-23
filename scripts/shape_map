@@ -2,7 +2,6 @@
 from cosymlib import Cosymlib, __version__
 from cosymlib import file_io
 from cosymlib.file_io.tools import add_extra_keywords, print_header, print_footer, print_input_info
-from cosymlib.file_io import read_generic_structure_file
 from cosymlib.shape import tools
 import argparse
 import sys
@@ -111,12 +110,10 @@ if args.version:
 common_output = open(args.output_name, 'w') if args.output_name is not None else sys.stdout
 print_header(common_output)
 
-try:
-    structures = read_generic_structure_file(args.input_file, read_multiple=True)
-except Exception as e:
-    sys.exit('No input file selected! An existing file must be provide')
+if args.input_file is None:
+    parser.error('No input file selected! An existing file must be provide')
 
-# structures = read_generic_structure_file(args.input_file, read_multiple=True)
+structures = file_io.read_generic_structure_file(args.input_file, read_multiple=True)
 structure_set = Cosymlib(structures)
 n_atoms = structure_set.get_n_atoms()
 
