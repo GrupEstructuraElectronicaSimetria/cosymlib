@@ -1,7 +1,7 @@
 import unittest
 from cosymlib import file_io
 from numpy import testing
-from cosymlib.molecule import Geometry
+from cosymlib.molecule.geometry import Geometry
 
 
 class TestSymgroupFchk(unittest.TestCase):

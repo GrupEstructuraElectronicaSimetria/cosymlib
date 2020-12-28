@@ -1,5 +1,8 @@
 API Reference
 =============
+
+Cosymlib
+--------
 .. automodule:: cosymlib
     :members: Cosymlib
 
