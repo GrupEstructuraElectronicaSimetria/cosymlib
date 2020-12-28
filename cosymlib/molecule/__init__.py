@@ -46,10 +46,22 @@ class Molecule:
 
     @property
     def geometry(self):
+        """
+        Get the geometry
+
+        :return: The geometry
+        :rtype: Geometry
+        """
         return self._geometry
 
     @property
     def electronic_structure(self):
+        """
+        Get the electronic structure
+
+        :return: The electronic structure
+        :rtype: ElectronicStructure
+        """
         if self._electronic_structure is None:
             warn('Warning: Electronic structure auto generated from extended Huckel')
             eh = ExtendedHuckel(self.geometry)

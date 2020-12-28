@@ -27,7 +27,7 @@ class Cosymlib:
     """
     Main cosymlib class
 
-    :param structures: List of Geometry or Molecule type objects
+    :param structures: List of :class:`~cosymlib.molecule.geometry.Geometry` or :class:`~cosymlib.molecule.Molecule` type objects
     :type structures: list
     :param ignore_atoms_labels: Ignore atomic element labels is symmetry calculations
     :type ignore_atoms_labels: bool
@@ -92,7 +92,7 @@ class Cosymlib:
         """
         Get the geometries
 
-        :return: List of Geometry objects
+        :return: List of :class:`~cosymlib.molecule.geometry.Geometry` objects
         :rtype: list
         """
         return [mol.geometry for mol in self._molecules]
@@ -111,7 +111,7 @@ class Cosymlib:
         """
         Get the molecules
 
-        :return: List of Molecule objects
+        :return: List of :class:`~cosymlib.molecule.Molecule` objects
         :rtype: list
         """
         return self._molecules
