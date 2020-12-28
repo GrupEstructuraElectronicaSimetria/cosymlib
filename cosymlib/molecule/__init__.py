@@ -1,4 +1,4 @@
-from cosymlib.molecule.geometry import Geometry
+#from cosymlib.molecule.geometry import Geometry
 from cosymlib.molecule.electronic_structure import ElectronicStructure
 from cosymlib.simulation import ExtendedHuckel
 from warnings import warn
@@ -14,9 +14,18 @@ def set_parameters(func):
 
 
 class Molecule:
+    """
+    Molecule class 2
+    """
     def __init__(self, geometry,
                  electronic_structure=None,
                  name=None):
+        """
+
+        :param geometry:
+        :param electronic_structure:
+        :param name:
+        """
 
         if not geometry:
             raise Exception('No geometry found in the input file, check out input file for possible errors')

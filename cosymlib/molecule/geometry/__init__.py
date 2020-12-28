@@ -13,6 +13,10 @@ def set_parameters(func):
 
 
 class Geometry:
+    """
+    Geometry class
+
+    """
     def __init__(self,
                  positions,
                  symbols=(),

@@ -1,6 +1,7 @@
 __version__ = '0.9.1'
 
-from cosymlib.molecule import Molecule, Geometry
+from cosymlib.molecule import Molecule
+from cosymlib.molecule.geometry import Geometry
 from cosymlib import file_io
 from cosymlib import tools
 from cosymlib.utils import swap_vectors

@@ -14,3 +14,13 @@ Shape
     :members: Shape
     :noindex:
 
+Molecule
+--------
+.. automodule:: cosymlib.molecule
+    :members: Molecule
+
+Geometry
+--------
+.. automodule:: cosymlib.molecule.geometry
+    :members: Geometry
+

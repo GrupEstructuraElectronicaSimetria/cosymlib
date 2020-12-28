@@ -1,4 +1,6 @@
-from cosymlib.molecule import Molecule, Geometry, ElectronicStructure
+from cosymlib.molecule import Molecule
+from cosymlib.molecule.geometry import Geometry
+from cosymlib.molecule.electronic_structure import ElectronicStructure
 from cosymlib.file_io.tools import extract_geometries
 from cosymlib.tools import atomic_number_to_element
 from cosymlib.file_io import custom_errors
