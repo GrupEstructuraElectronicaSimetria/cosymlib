@@ -3,9 +3,11 @@ from cosymlib.symmetry import Symmetry
 from cosymlib.symmetry.pointgroup import PointGroup
 from cosymlib.tools import generate_connectivity_from_geometry
 import numpy as np
+from functools import wraps
 
 
 def set_parameters(func):
+    @wraps(func)
     def wrapper(*args, **kwargs):
         args[0]._symmetry.set_parameters(kwargs)
         return func(*args, **kwargs)
@@ -125,12 +127,30 @@ class Geometry:
         self._shape._positions= self._positions
 
     def get_positions(self):
+        """
+        Get the positions in Cartesian coordinates
+
+        :return: the coordinates
+        :rtype: list
+        """
         return self._positions
 
     def get_n_atoms(self):
+        """
+        Get the number of atoms
+
+        :return: number of atoms
+        :rtype: int
+        """
         return len(self.get_positions())
 
     def get_symbols(self):
+        """
+        Get the atomic elements symbols
+
+        :return: the symbols
+        :rtype: list
+        """
         return self._symbols
 
     def generate_connectivity(self, thresh=1.2):
@@ -138,6 +158,18 @@ class Geometry:
 
     # Shape methods
     def get_shape_measure(self, shape_label, central_atom=0, fix_permutation=False):
+        """
+        Get the Shape measure
+
+        :param shape_label: Reference shape label
+        :type shape_label: str
+        :param central_atom: the central atom position
+        :type central_atom: int
+        :param fix_permutation: Do not permute atoms
+        :type fix_permutation: bool
+        :return: The measure
+        :rtype: float
+        """
         return self._shape.measure(shape_label, central_atom=central_atom, fix_permutation=fix_permutation)
 
     def get_shape_structure(self, shape_label, central_atom=0, fix_permutation=False):
@@ -158,12 +190,16 @@ class Geometry:
     @set_parameters
     def get_symmetry_measure(self, label, central_atom=0, center=None, multi=1):
         """
-        Returns the symmetry measure
+        Get the symmetry measure
 
-        :param label: symmetry group
+        :param label: Symmetry point group
+        :type label: str
         :param central_atom: central atom position (0 if no central atom)
-        :param center: center of the measure
-        :return: the measure
+        :type central_atom: int
+        :param center: center of the measure in Cartesian coordinates
+        :type center: list
+        :return: The symmetry measure
+        :rtype: float
         """
 
         return self._symmetry.measure(label)
@@ -173,10 +209,14 @@ class Geometry:
         """
         Returns the nearest ideal structure
 
-        :param label: symmetry group
+        :param label: symmetry point group
+        :type label: str
         :param central_atom: central atom position (0 if no central atom)
-        :param center: center of the measure
-        :return: the structure
+        :type central_atom: int
+        :param center: center of the measure in Cartesian coordinates
+        :type center: list
+        :return: The structure
+        :rtype: Structure
         """
         return Geometry(symbols=self.get_symbols(),
                         positions=self._symmetry.nearest_structure(label),
@@ -188,6 +228,13 @@ class Geometry:
         return self._symmetry.optimum_axis(label)
 
     def get_pointgroup(self, tol=0.01):
+        """
+        Get the symmetry point group
+        :param tol: The tolerance
+        :type tol: float
+        :return: The point group
+        :rtype: str
+        """
         return PointGroup(self, tolerance=tol).get_point_group()
 
 
