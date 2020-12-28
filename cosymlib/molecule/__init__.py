@@ -15,17 +15,19 @@ def set_parameters(func):
 
 class Molecule:
     """
-    Molecule class 2
+    Main molecule class
+
+    :param geometry: The geometry
+    :type geometry: Geometry
+    :param electronic_structure: The electronic structure
+    :type electronic_structure: ElectronicStructure
+    :param name: Molecule name
+    :type name: str
+
     """
     def __init__(self, geometry,
                  electronic_structure=None,
                  name=None):
-        """
-
-        :param geometry:
-        :param electronic_structure:
-        :param name:
-        """
 
         if not geometry:
             raise Exception('No geometry found in the input file, check out input file for possible errors')

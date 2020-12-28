@@ -14,7 +14,30 @@ def set_parameters(func):
 
 class Geometry:
     """
-    Geometry class
+    Main geometry class
+
+    :param positions: Cartesian coordinates
+    :type positions: list
+    :param symbols: Atomic elements symbols
+    :type symbols: list
+    :param name: Geometry name
+    :type name: str
+    :param connectivity: Connectivity list
+    :type connectivity: list
+    :param connectivity_thresh: Connectivity threshold
+    :type connectivity_thresh: float
+
+    :example:
+
+    .. code-block:: python
+
+        water = Geometry(positions=[[0.0, 0.0, 0.0],
+                                    [0.0, 1.0, 0.0],
+                                    [0.0, 0.0, 1.0],
+                         symbols=['O', 'H', 'H'],
+                         name='water molecule',
+                         connectivity=[[1, 2], [1, 3]])
+
 
     """
     def __init__(self,

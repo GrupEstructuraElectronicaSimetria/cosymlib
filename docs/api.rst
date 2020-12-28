@@ -27,3 +27,8 @@ Geometry
 .. automodule:: cosymlib.molecule.geometry
     :members: Geometry
 
+Electronic structure
+--------------------
+.. automodule:: cosymlib.molecule.electronic_structure
+    :members: ElectronicStructure
+

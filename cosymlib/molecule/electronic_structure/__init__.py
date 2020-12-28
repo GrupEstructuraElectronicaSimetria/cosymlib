@@ -1,4 +1,23 @@
 class ElectronicStructure:
+    """
+    Main Electronic structure class
+
+    :param charge: The charge
+    :type charge: int
+    :param multiplicity: The multiplicity
+    :type multiplicity: int
+    :param basis: The basis set
+    :type basis: list
+    :param orbital_coefficients: Molecular orbital coefficients
+    :type orbital_coefficients: list
+    :param mo_energies: Molecular orbital energies
+    :type mo_energies: list
+    :param alpha_electrons: Number of alpha electrons
+    :type alpha_electrons: int
+    :param beta_electrons: Number of beta electrons
+    :type beta_electrons: int
+
+    """
     def __init__(self,
                  charge=0,
                  multiplicity=1,

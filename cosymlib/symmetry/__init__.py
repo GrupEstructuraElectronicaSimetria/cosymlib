@@ -29,12 +29,19 @@ class Symmetry:
     Symmetry main class
 
     :param structure: a geometry, molecule or array type object
+    :type structure: Geometry, Molecule, np.array
     :param central_atom: central atom position
-    :param center: center of symmetry. By default center is optimized
+    :type central_atom: int
+    :param center: center of symmetry in Cartesian coordinates. By default center is optimized
+    :type center: list
     :param connect_thresh: Connectivity threshold (Ionic radius is used as reference)
-    :param multi: number of symmetry axis to find
-    :param axis: main symmetry axis (If None, then optimize)
+    :type connect_thresh: float
+    :param multi: Number of symmetry axis to find
+    :type multi: int
+    :param axis: Main symmetry axis (If None, then optimize)
+    :type axis: list
     :param axis2: secondary symmetry axis (If None, then optimize)
+    :type axis2: list
     """
 
     def __init__(self,
@@ -84,7 +91,7 @@ class Symmetry:
         Set symmetry calculation related parameters
 
         :param parameters_dict: parameters in dictionary
-        :return:
+        :type parameters_dict: dict
         """
         for name, value in parameters_dict.items():
             setattr(self, '_' + name, value)
@@ -146,8 +153,10 @@ class Symmetry:
         """
         Get symmetry measure
 
-        :param label: point group label
-        :return: the measure
+        :param label: Point group label
+        :type label: str
+        :return: The measure
+        :rtype: float
         """
         return self._get_symgroup_results(label).csm
 
@@ -155,8 +164,10 @@ class Symmetry:
         """
         Get nearest structure
 
-        :param label: point group label
-        :return: the structure
+        :param label: Point group label
+        :type label: str
+        :return: The structure
+        :rtype: Structure
         """
         # TODO: Improve this docstring
 
@@ -166,8 +177,10 @@ class Symmetry:
         """
         Get the optimum main symmetry axis
 
-        :param label: point group label
-        :return:
+        :param label: Point group label
+        :type label: str
+        :return: The axis
+        :rtype: list
         """
         return self._get_symgroup_results(label).optimum_axis
 
@@ -176,7 +189,8 @@ class Symmetry:
         Get the optimum atoms permutation
 
         :param label: point group label
-        :return:
+        :return: The permutation
+        :rtype: list
         """
         return self._get_symgroup_results(label).optimum_permutation
 
@@ -185,7 +199,9 @@ class Symmetry:
         Get reference axis
 
         :param label: point group label
-        :return:
+        :type label: str
+        :return: The axis
+        :rtype: list
         """
         return self._get_symgroup_results(label).reference_axis
 
@@ -194,8 +210,11 @@ class Symmetry:
         Get symmetry measure of the optimum N axis
 
         :param label: point group label
+        :type label: str
         :param multi: number of axis
-        :return: list of measures
+        :type multi: int
+        :return: The measures
+        :rtype: list
         """
         self._multi = multi
         return self._get_symgroup_results(label).cms_multi
@@ -205,8 +224,11 @@ class Symmetry:
         Get the optimum N axis
 
         :param label: point group label
+        :type label: str
         :param multi: number of axis
-        :return: list of axis
+        :type multi: int
+        :return: List of axis
+        :rtype: list
         """
         self._multi = multi
         return self._get_symgroup_results(label).axis_multi

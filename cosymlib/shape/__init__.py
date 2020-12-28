@@ -24,6 +24,7 @@ class Shape:
     Shape main class
 
     :param structure: a geometry, molecule or array type object
+    :type structure: list
     """
     def __init__(self, structure):
 
@@ -48,10 +49,14 @@ class Shape:
         """
         Get shape measure
 
-        :param reference: reference shape label or Geometry object
-        :param central_atom: central atom position
-        :param fix_permutation: do not permute atoms during shape calculations
-        :return: the measure
+        :param reference: Reference shape label or Geometry object
+        :type reference: str
+        :param central_atom: Central atom position
+        :type central_atom: int
+        :param fix_permutation: Do not permute atoms during shape calculations
+        :type fix_permutation: bool
+        :return: The measure
+        :rtype: float
         """
         key = _get_key(central_atom, reference, fix_permutation=fix_permutation)
         if key not in self._measures:
@@ -75,10 +80,14 @@ class Shape:
         """
         Get the nearest structure to reference
 
-        :param reference: reference shape label or Geometry object
-        :param central_atom: central atom position
-        :param fix_permutation: do not permute atoms during shape calculations
-        :return: the structure
+        :param reference: Reference shape label or Geometry object
+        :type reference: str, Geometry
+        :param central_atom: Central atom position
+        :type central_atom: int, Geometry
+        :param fix_permutation: Do not permute atoms during shape calculations
+        :type fix_permutation: bool
+        :return: The structure
+        :rtype: Structure
         """
         key = _get_key(central_atom, reference, fix_permutation=fix_permutation)
         if key not in self._structures:
@@ -107,10 +116,14 @@ class Shape:
         """
         Get the path deviation
 
-        :param shape_label1: first shape reference label or Geometry object
-        :param shape_label2: second shape reference label or Geometry object
-        :param central_atom: central atom position
-        :return: the path deviation
+        :param shape_label1: First shape reference label or Geometry object
+        :type shape_label1: str, Geometry
+        :param shape_label2: Second shape reference label or Geometry object
+        :type shape_label2: str, Geometry
+        :param central_atom: Central atom position
+        :type central_atom: int
+        :return: The path deviation
+        :rtype: float
         """
         # TODO: Someone improve the description of this function
 
@@ -133,10 +146,13 @@ class Shape:
         """
         Get the generalized coordinate
 
-        :param shape_label1: first shape reference label or Geometry object
-        :param shape_label2: second shape reference label or Geometry object
-        :param central_atom: central atom position
-        :return:
+        :param shape_label1: First shape reference label or Geometry object
+        :type shape_label1: str, Geometry
+        :param shape_label2: Second shape reference label or Geometry object
+        :type shape_label2: str, Geometry
+        :param central_atom: Central atom position
+        :type central_atom: int
+        :return: The generalized coordinate
         """
 
         key = _get_key(central_atom, shape_label1, reference_2=shape_label2)
