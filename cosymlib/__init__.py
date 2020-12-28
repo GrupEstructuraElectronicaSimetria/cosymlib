@@ -5,7 +5,7 @@ from cosymlib import file_io
 from cosymlib import tools
 from cosymlib.utils import swap_vectors
 from cosymlib.utils import get_shape_path, plot_molecular_orbital_diagram, plot_symmetry_energy_evolution
-from cosymlib.shape.tools import get_structure_references
+from cosymlib.shape.tools import get_structure_references, get_sym_from_label
 import matplotlib.pyplot as plt
 
 import sys
@@ -216,9 +216,11 @@ class Cosymlib:
         for idm, molecule in enumerate(self._molecules):
             geometries.append(molecule.geometry)
             for idl, reference in enumerate(references):
-                 shape_results_structures[idl][idm].set_name(molecule.name + '_' + reference)
-                 geometries.append(shape_results_structures[idl][idm])
+                shape_results_structures[idl][idm].set_name(molecule.name + ' ' + reference + ' ' +
+                                                            get_sym_from_label(reference))
+                geometries.append(shape_results_structures[idl][idm])
 
+        print("\nOriginal structures vs reference polyhedra in file {}\n".format(output.name))
         for geometry in geometries:
             output.write(file_io.get_file_xyz_txt(geometry))
 
@@ -637,7 +639,7 @@ class Cosymlib:
         """
         get_measure = 'get_shape_' + kind
 
-        return [geometry.get_shape_measure(label, central_atom=central_atom, fix_permutation=fix_permutation)
+        return [getattr(geometry, get_measure)(label, central_atom=central_atom, fix_permutation=fix_permutation)
                 for geometry in self.get_geometries()]
 
     def get_molecule_path_deviation(self, shape_label1, shape_label2, central_atom=0):

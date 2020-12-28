@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 from cosymlib import Cosymlib, __version__
 from cosymlib import file_io
-from  cosymlib.file_io import errors
+from cosymlib.file_io import errors
 from cosymlib.file_io.tools import add_extra_keywords, print_header, print_footer, print_input_info
 from cosymlib.shape import tools
 import argparse
+import os
 import sys
 import yaml
 
@@ -133,21 +134,24 @@ if args.measure == 'custom':
         reference = file_io.read_generic_structure_file(args.custom_ref, read_multiple=True)
         [x.set_positions(args.central_atom - 1) for x in reference]
     else:
-        sys.exit('Custom reference file not defined (use -cref or --custom_ref filename)')
+        sys.exit('Custom reference file not selected (use -cref or --custom_ref filename)')
 else:
     reference = args.measure
 
+if args.structure:
+    if common_output is sys.stdout:
+        input_dir = os.path.dirname(args.input_file)
+        output_str = open(input_dir + '/structures.xyz', 'w')
+    else:
+        output_str = common_output
+    structure_set.print_shape_structure(reference,
+                                        central_atom=args.central_atom,
+                                        fix_permutation=args.fix_permutation,
+                                        output=output_str)
 if args.measure:
     structure_set.print_shape_measure(reference,
                                       central_atom=args.central_atom,
                                       fix_permutation=args.fix_permutation,
                                       output=common_output)
-
-if args.structure:
-    common_output.write("\nOriginal structures vs reference polyhedra\n")
-    structure_set.print_shape_structure(reference,
-                                        central_atom=args.central_atom,
-                                        fix_permutation=args.fix_permutation,
-                                        output=common_output)
 
 print_footer(common_output)

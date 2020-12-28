@@ -52,6 +52,13 @@ def get_shape_label(code, vertices):
             return label[0]
 
 
+def get_sym_from_label(label):
+    vertices = label[-1]
+    for labels in shape_structure_references['{} Vertices'.format(vertices)]:
+        if labels[0] == label:
+            return labels[2]
+
+
 def get_shape_label_info(vertices, old=False, with_central_atom=False):
     if with_central_atom:
         vertices = vertices-1
