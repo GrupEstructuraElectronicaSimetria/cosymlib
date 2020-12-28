@@ -2,9 +2,15 @@
 [![Coverage Status](https://coveralls.io/repos/github/GrupEstructuraElectronicaSimetria/cosymlib/badge.svg?branch=master)](https://coveralls.io/github/GrupEstructuraElectronicaSimetria/cosymlib?branch=master)
 [![PyPI version](https://badge.fury.io/py/cosymlib.svg)](https://badge.fury.io/py/symeess)
 
-COSYM
-=====
-Python library to calculate continuous shape and symmetry measures
+CoSymLib
+========
+Python library for continuous shape and symmetry measures
+
+Main features
+-------------
+- Continuous Shape and Symmetry measures of molecular geometries
+- Continuous Symmetry measures of electronic structure of molecules
+- Support for XYZ, coor & fchk file types
 
 
 Installation instructions
@@ -17,8 +23,8 @@ Installation instructions
     - Symgroupy
     - Wfnsympy
     - Huckelpy
-    - tinker-tk
-    - Blas/Lapack
+    - Blas & Lapack libraries
+    - Fortran compiler
 
 2. Download the source code and place it in the installation
 directory
@@ -31,7 +37,7 @@ this software
 
 Contact info
 ------------
-Electronic Structure & Symmetry group.
-Department of Materials Science and Physical Chemistry.
-Institut de Química Teòrica i Computacional (IQTC-UB)
+Electronic Structure & Symmetry group  
+Department of Materials Science and Physical Chemistry  
+Institut de Química Teòrica i Computacional (IQTC-UB)  
 University of Barcelona
