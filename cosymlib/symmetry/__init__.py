@@ -54,23 +54,15 @@ class Symmetry:
                  axis2=None,
                  ):
 
-        # Allow geometry or molecule to be imported instead of crude Cartesian coordinates
         try:
-            # provided geometry
             self._coordinates = structure.get_positions()
             self._symbols = structure.get_symbols()
             self._connectivity = structure.get_connectivity()
         except AttributeError:
-            try:
-                # provided molecule
-                self._coordinates = structure.geometry.get_positions()
-                self._symbols = structure.geometry.get_symbols()
-                self._connectivity = structure.geometry.get_connectivity()
-            except AttributeError:
-                # provided coordinates matrix
-                self._coordinates = structure
-                self._symbols = None
-                self._connectivity = None
+            # Interpret as numpy array of coordinates
+            self._coordinates = structure
+            self._symbols = None
+            self._connectivity = None
 
         self._central_atom = central_atom
         self._center = center
@@ -298,7 +290,7 @@ class Symmetry:
                 'axis2': results.axis2}
 
     # Old method to be deleted
-    def symmetry_overlap_analysis(self, group, vector_axis1, vector_axis2, center):
+    def Osymmetry_overlap_analysis(self, group, vector_axis1, vector_axis2, center):
         results = self._get_wfnsym_results(group)
 
         return [results.ideal_gt, results.SymLab, results.mo_SOEVs_a,
@@ -306,12 +298,12 @@ class Symmetry:
                 results.wf_SOEVs, results.grim_coef, results.csm_coef]
 
     # To be deleted
-    def symmetry_irreducible_representation_analysis(self, group, vector_axis1, vector_axis2, center):
+    def Osymmetry_irreducible_representation_analysis(self, group, vector_axis1, vector_axis2, center):
         results = self._get_wfnsym_results(group)
         return [results.IRLab, results.mo_IRd_a, results.mo_IRd_b,
                 results.wf_IRd_a, results.wf_IRd_b, results.wf_IRd]
 
     # To be deleted
-    def old_symmetry_matrix(self, group, vector_axis1, vector_axis2, center):
+    def Oold_symmetry_matrix(self, group, vector_axis1, vector_axis2, center):
         results = self._get_wfnsym_results(group)
         return results.SymMat

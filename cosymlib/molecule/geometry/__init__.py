@@ -110,6 +110,12 @@ class Geometry:
         self._name = name
 
     def get_connectivity(self):
+        """
+        Get connectivity as a list of pairs of connected atoms
+
+        :return: The connectivity
+        :rtype: list
+        """
         return self._connectivity
 
     def set_connectivity(self, connectivity):

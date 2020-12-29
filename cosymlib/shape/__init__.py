@@ -24,7 +24,7 @@ class Shape:
     Shape main class
 
     :param structure: a geometry, molecule or array type object
-    :type structure: list
+    :type structure: Geometry, Molecule, np.array
     """
     def __init__(self, structure):
 
@@ -32,10 +32,8 @@ class Shape:
         try:
             self._coordinates = structure.get_positions()
         except AttributeError:
-            try:
-                self._coordinates = structure.geometry.get_positions()
-            except AttributeError:
-                self._coordinates = structure
+            # Try to get from numpy array
+            self._coordinates = structure
 
         self._coordinates = np.ascontiguousarray(self._coordinates)
 

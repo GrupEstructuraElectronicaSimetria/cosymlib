@@ -81,6 +81,10 @@ class Molecule:
     def symmetry(self):
         return self._symmetry
 
+    @property
+    def shape(self):
+        return self._shape
+
     # TODO: Old method (to be deprecated)
     @set_parameters
     def OLD_get_mo_symmetry(self, group, axis=None, axis2=None, center=None):
@@ -123,3 +127,44 @@ class Molecule:
     @set_parameters
     def get_ideal_group_table(self, group, axis=None, axis2=None, center=None):
         return self._symmetry.wf_ideal_group_table(group)
+
+    # Mirror methods in geometry
+    def get_connectivity(self):
+        return self.geometry.get_connectivity()
+
+    def get_positions(self):
+        """
+        Get the positions in Cartesian coordinates
+
+        :return: the coordinates
+        :rtype: list
+        """
+        return self.geometry.get_positions()
+
+    def get_n_atoms(self):
+        """
+        Get the number of atoms
+
+        :return: number of atoms
+        :rtype: int
+        """
+        return len(self.get_positions())
+
+    def get_symbols(self):
+        """
+        Get the atomic elements symbols
+
+        :return: the symbols
+        :rtype: list
+        """
+        return self.geometry.get_symbols()
+
+    def get_pointgroup(self, tol=0.01):
+        """
+        Get the symmetry point group
+        :param tol: The tolerance
+        :type tol: float
+        :return: The point group
+        :rtype: str
+        """
+        return self.geometry.get_point_group(tol=tol)
