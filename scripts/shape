@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 from cosymlib import Cosymlib, __version__
 from cosymlib import file_io
-from  cosymlib.file_io import custom_errors
-from cosymlib.file_io.tools import add_extra_keywords, print_header, print_footer, print_input_info
+from cosymlib.file_io.tools import print_header, print_footer, print_input_info
 from cosymlib.shape import tools
 import argparse
+import os
 import sys
 import yaml
 
@@ -60,6 +60,10 @@ parser.add_argument('-l', '--labels', action='store_true',
                     dest='labels',
                     default=False,
                     help='show the reference shape labels')
+parser.add_argument('-n',
+                    dest='n',
+                    default=False,
+                    help='show the reference shape labels of n vertices')
 parser.add_argument('--info',
                     action='store_true',
                     default=False,
@@ -93,15 +97,18 @@ if args.version:
     print('Cosymlib version = {}'.format(__version__))
     exit()
 
+
 common_output = open(args.output_name, 'w') if args.output_name is not None else sys.stdout
 print_header(common_output)
 
-try:
-    structures = file_io.read_generic_structure_file(args.input_file, read_multiple=True)
-except Exception as e:
-    sys.exit('No input file selected! An existing file must be provide')
+if args.n:
+    common_output.write(tools.get_shape_label_info(args.n, with_central_atom=args.central_atom))
+    exit()
 
-# structures = file_io.read_generic_structure_file(args.input_file, read_multiple=True)
+if args.input_file is None:
+    parser.error('No input file selected! An existing file must be provide')
+
+structures = file_io.read_generic_structure_file(args.input_file, read_multiple=True)
 structure_set = Cosymlib(structures)
 
 n_atoms = structure_set.get_n_atoms()
@@ -135,21 +142,24 @@ if args.measure == 'custom':
         reference = file_io.read_generic_structure_file(args.custom_ref, read_multiple=True)
         [x.set_positions(args.central_atom - 1) for x in reference]
     else:
-        sys.exit('Custom reference file not defined (use -cref or --custom_ref filename)')
+        sys.exit('Custom reference file not selected (use -cref or --custom_ref filename)')
 else:
     reference = args.measure
 
+if args.structure:
+    if common_output is sys.stdout:
+        input_dir = os.path.dirname(args.input_file)
+        output_str = open(input_dir + '/structures.xyz', 'w')
+    else:
+        output_str = common_output
+    structure_set.print_shape_structure(reference,
+                                        central_atom=args.central_atom,
+                                        fix_permutation=args.fix_permutation,
+                                        output=output_str)
 if args.measure:
     structure_set.print_shape_measure(reference,
                                       central_atom=args.central_atom,
                                       fix_permutation=args.fix_permutation,
                                       output=common_output)
-
-if args.structure:
-    common_output.write("\nOriginal structures vs reference polyhedra\n")
-    structure_set.print_shape_structure(reference,
-                                        central_atom=args.central_atom,
-                                        fix_permutation=args.fix_permutation,
-                                        output=common_output)
 
 print_footer(common_output)

@@ -8,7 +8,7 @@ def warning_on_one_line(message, category, filename, lineno, file=None, line=Non
 warnings.formatwarning = warning_on_one_line
 
 
-class MissingLineWarning(Warning):
+class MissingAtomWarning(Warning):
     pass
 
 

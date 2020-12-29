@@ -1,5 +1,5 @@
 from cosymlib.file_io import get_geometry_from_file_cor
-from cosymlib.file_io import custom_errors
+from cosymlib.file_io import errors
 
 import os
 import tempfile
@@ -55,7 +55,7 @@ def read_old_input(file_name):
                 idl += 1
                 for line in tmp_lines:
                     if line.strip() == '':
-                        warnings.warn('Line {} is empty'.format(idl + 1), custom_errors.EmptyLineWarning)
+                        warnings.warn('Line {} is empty'.format(idl + 1), errors.EmptyLineWarning)
                     else:
                         tmp.write(line)
                     idl += 1

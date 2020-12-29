@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from cosymlib import Cosymlib, __version__
 from cosymlib import file_io
-from cosymlib.file_io.tools import add_extra_keywords, print_header, print_footer
+from cosymlib.file_io.tools import print_header, print_footer
 from cosymlib.molecule.geometry import Geometry
 from cosymlib.file_io import classic_inputs
 from cosymlib.shape import tools
@@ -23,16 +23,13 @@ if args.version:
     print('Cosymlib version = {}'.format(__version__))
     exit()
 
-try:
-    open(args.input_file)
-except Exception as e:
-    sys.exit('No input file selected! An existing file must be provide')
-
 # Shape's commands
 if args.n:
     print(tools.get_shape_label_info(args.n, old=True))
 
-if args.input_file is not None:
+if args.input_file is None:
+    parser.error('No input file selected! An existing file must be provide')
+else:
     if os.stat(args.input_file).st_size == 0:
         raise FileExistsError('File {} is empty'.format(os.path.basename(args.input_file)))
     output_name, file_extension = os.path.splitext(args.input_file)
@@ -46,9 +43,9 @@ if args.input_file is not None:
         symbols = ['H' for _ in range(options['%n_atoms'])]
         symbols.append('N')
         for label in tools.get_structure_references(options['%n_atoms']):
+            positions = tools.get_test_structure(label, central_atom=central_atom).get_positions()
             test_structure.append(Geometry(symbols=symbols,
-                                           positions=tools.get_test_structure(label,
-                                                                              central_atom=central_atom).get_positions(),
+                                           positions=positions,
                                            name=label))
 
         if central_atom == 0:
@@ -100,7 +97,6 @@ if args.input_file is not None:
                                    output=output_name)
         print_footer(output_name)
 
-
     # if args.custom_reference_structure is not None:
     #     reference_polyhedron = file_io.read_input_file(args.custom_reference_structure)
     # elif not reference_polyhedron:
@@ -120,4 +116,3 @@ if args.input_file is not None:
     #                                        output_name=args.output_name)
 
 # print('End of shape calculation')
-
