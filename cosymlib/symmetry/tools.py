@@ -9,6 +9,7 @@ def print_symmetry_labels():
     for k, label in operations.items():
         print('{:6} {}'.format(k, label))
 
+
 def get_group_num_from_label(label):
 
     operations = {'Cn':  '',

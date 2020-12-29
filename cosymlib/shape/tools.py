@@ -5,6 +5,22 @@ import numpy as np
 ideal_structures = None
 
 
+def distance(p1, p2):
+    return np.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2 + (p1[2] - p2[2]) ** 2)
+
+
+def resize_structure(structure, center=(0, 0, 0), resize_distance=2.5):
+    resized_structure = []
+    max_distance = max([distance(coordinate, center) for coordinate in structure])
+    if max_distance >= resize_distance:
+        resized_structure = structure
+    else:
+        for coordinate in structure:
+            new_coordinate = resize_distance*(np.array(coordinate))/max_distance
+            resized_structure.append(list(new_coordinate))
+    return resized_structure
+
+
 def get_test_structure(label, central_atom=0):
     global ideal_structures
     from cosymlib.molecule.geometry import Geometry
@@ -14,22 +30,21 @@ def get_test_structure(label, central_atom=0):
         with open(file_path, 'r') as stream:
             ideal_structures = yaml.load(stream, Loader=yaml.FullLoader)
 
-    try:
-        if central_atom == 0:
-            coordinates = ideal_structures[label][:-1]
-            return Geometry(positions=coordinates,
-                            name=label,
-                            symbols=['L'] * len(coordinates),
-                            connectivity=[])
+    if central_atom == 0:
+        coordinates = ideal_structures[label][:-1]
+        # coordinates = resize_structure(ideal_structures[label][:-1])
+        return Geometry(positions=coordinates,
+                        name=label,
+                        symbols=['L'] * len(coordinates),
+                        connectivity=[])
 
-        else:
-            coordinates = ideal_structures[label]
-            return Geometry(positions=coordinates,
-                            name=label,
-                            symbols=['L'] * (len(coordinates)-1) + ['M'],
-                            connectivity=[])
-    except KeyError as e:
-        raise Exception('Shape reference label "{}" not found!'.format(e.args[0]))
+    else:
+        coordinates = ideal_structures[label]
+        # coordinates = resize_structure(ideal_structures[label], center=ideal_structures[label][-1])
+        return Geometry(positions=coordinates,
+                        name=label,
+                        symbols=['L'] * (len(coordinates)-1) + ['M'],
+                        connectivity=[])
 
 
 def get_structure_references(vertices):
@@ -53,6 +68,13 @@ def get_shape_label(code, vertices):
     for label in shape_structure_references[str(vertices)+' Vertices']:
         if label[1] == code:
             return label[0]
+
+
+def get_sym_from_label(label):
+    vertices = label[-1]
+    for labels in shape_structure_references['{} Vertices'.format(vertices)]:
+        if labels[0] == label:
+            return labels[2]
 
 
 def get_shape_label_info(vertices, old=False, with_central_atom=False):

@@ -6,7 +6,7 @@ from cosymlib import file_io
 from cosymlib import tools
 from cosymlib.utils import swap_vectors
 from cosymlib.utils import get_shape_path, plot_molecular_orbital_diagram, plot_symmetry_energy_evolution
-from cosymlib.shape.tools import get_structure_references
+from cosymlib.shape.tools import get_structure_references, get_sym_from_label
 import matplotlib.pyplot as plt
 
 import sys
@@ -21,6 +21,38 @@ def _get_symgroup_arguments(locals):
             del kwargs[element]
 
     return kwargs
+
+
+def get_table_format(labels, molecules_names, data):
+
+    txt = 'Structure'
+    max_len_name = 12
+    max_name = 0
+    names = []
+    for name in molecules_names:
+        if len(name) > max_len_name:
+            max_name = 12
+            names.append(name[:(max_len_name - 1)])
+        elif len(name) > max_name:
+            max_name = len(name)
+            names.append(name)
+
+    n = max_len_name - 3
+    for label in labels:
+        n += len(label)
+        txt += '{}'.format(label.rjust(n))
+        n = 11 - len(label)
+    txt += '\n\n'
+
+    for idx, name in enumerate(names):
+        txt += '{:{width}}'.format(name + ',', width=max_len_name)
+        n = 11
+        for idn, label in enumerate(labels):
+            txt += '{:>{width}.{prec}f},'.format(data[idn][idx], width=n, prec=3)
+            n = 10
+        txt += '\n'
+    txt += '\n'
+    return txt
 
 
 class Cosymlib:
@@ -152,31 +184,7 @@ class Cosymlib:
             else:
                 references_names.append(reference)
 
-        txt_shape = '{}'.format('Structure')
-        max_name = len(max(molecules_names, key=len))
-        if max_name < 9:
-            n = 5
-        else:
-            n = max_name - 4
-        for label in references_names:
-            n += len(label)
-            txt_shape += '{}'.format(label.rjust(n))
-            n = 12 - len(label)
-        txt_shape += '\n\n'
-
-        for idx, name in enumerate(molecules_names):
-            max_name = len(max(molecules_names, key=len))
-            txt_shape += '{}'.format(name)
-            if max_name < 9:
-                n = 18 - len(name)
-            else:
-                n = 9 + max_name - len(name)
-            for idn, label in enumerate(references_names):
-                txt_shape += ', {:{width}.{prec}f}'.format(measure_list[idn][idx], width=n, prec=3)
-                n = 11
-            txt_shape += '\n'
-        txt_shape += '\n'
-
+        txt_shape = get_table_format(references_names, molecules_names, measure_list)
         output.write(txt_shape)
 
     def print_shape_structure(self, shape_reference, central_atom=0, fix_permutation=False, output=sys.stdout):
@@ -220,9 +228,11 @@ class Cosymlib:
         for idm, molecule in enumerate(self._molecules):
             geometries.append(molecule.geometry)
             for idl, reference in enumerate(references):
-                 shape_results_structures[idl][idm].set_name(molecule.name + '_' + reference)
-                 geometries.append(shape_results_structures[idl][idm])
+                shape_results_structures[idl][idm].set_name(molecule.name + ' ' + reference + ' ' +
+                                                            get_sym_from_label(reference))
+                geometries.append(shape_results_structures[idl][idm])
 
+        print("\nOriginal structures vs reference polyhedra in file {}\n".format(output.name))
         for geometry in geometries:
             output.write(file_io.get_file_xyz_txt(geometry))
 
@@ -326,6 +336,18 @@ class Cosymlib:
         for idm, molecule in enumerate(self._molecules):
             geometry = molecule.geometry.get_symmetry_nearest_structure(**kwargs)
             output.write(file_io.get_file_xyz_txt(geometry))
+
+    def print_chirality_measure(self, labels, central_atom=0, center=None, output=sys.stdout):
+
+        csm_list = []
+        for label in labels:
+            csm_list.append([geometry.get_symmetry_measure(label, central_atom=central_atom, center=center)
+                             for geometry in self.get_geometries()])
+
+        molecules_names = [molecule.name for molecule in self._molecules]
+        txt = get_table_format(labels, molecules_names, csm_list)
+
+        output.write(txt)
 
     # This should be substituted by calling methods within this class
     def OLD_print_wnfsym_measure_verbose(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
@@ -644,7 +666,7 @@ class Cosymlib:
         """
         get_measure = 'get_shape_' + kind
 
-        return [geometry.get_shape_measure(label, central_atom=central_atom, fix_permutation=fix_permutation)
+        return [getattr(geometry, get_measure)(label, central_atom=central_atom, fix_permutation=fix_permutation)
                 for geometry in self.get_geometries()]
 
     def get_molecule_path_deviation(self, shape_label1, shape_label2, central_atom=0):
