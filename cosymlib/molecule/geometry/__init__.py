@@ -222,7 +222,7 @@ class Geometry:
         :param center: center of the measure in Cartesian coordinates
         :type center: list
         :return: The structure
-        :rtype: Structure
+        :rtype: Geometry
         """
         return Geometry(symbols=self.get_symbols(),
                         positions=self._symmetry.nearest_structure(label),
