@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from cosymlib import Cosymlib, __version__
 from cosymlib import file_io
-from cosymlib.file_io.tools import add_extra_keywords, print_header, print_footer
+from cosymlib.file_io.tools import print_header, print_footer
 from cosymlib.molecule.geometry import Geometry
 from cosymlib.file_io import classic_inputs
 from cosymlib.shape import tools
@@ -43,9 +43,9 @@ else:
         symbols = ['H' for _ in range(options['%n_atoms'])]
         symbols.append('N')
         for label in tools.get_structure_references(options['%n_atoms']):
+            positions = tools.get_test_structure(label, central_atom=central_atom).get_positions()
             test_structure.append(Geometry(symbols=symbols,
-                                           positions=tools.get_test_structure(label,
-                                                                              central_atom=central_atom).get_positions(),
+                                           positions=positions,
                                            name=label))
 
         if central_atom == 0:
@@ -97,7 +97,6 @@ else:
                                    output=output_name)
         print_footer(output_name)
 
-
     # if args.custom_reference_structure is not None:
     #     reference_polyhedron = file_io.read_input_file(args.custom_reference_structure)
     # elif not reference_polyhedron:
@@ -117,4 +116,3 @@ else:
     #                                        output_name=args.output_name)
 
 # print('End of shape calculation')
-

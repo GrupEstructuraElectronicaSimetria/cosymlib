@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 from cosymlib import Cosymlib, __version__
 from cosymlib import file_io
-from cosymlib.file_io.tools import add_extra_keywords, print_header, print_footer, print_input_info
+from cosymlib.file_io.tools import print_header, print_footer, print_input_info
 from cosymlib.shape import tools
-from cosymlib.molecule.geometry import Geometry
 import argparse
 import sys
 import yaml
@@ -48,6 +47,10 @@ group_shape.add_argument('-shp_l', '--shp_labels', action='store_true',
                          dest='shp_labels',
                          default=False,
                          help='show the reference labels for a given structure')
+group_shape.add_argument('-shp_n',
+                         dest='shp_n',
+                         default=False,
+                         help='show the reference labels of n vertices')
 group_shape.add_argument('-shp_s', '--shp_structure',
                          dest='shp_structure',
                          action='store_true',
@@ -70,12 +73,12 @@ group_pointgroup.add_argument('-pointgroup',
 
 # Symgroup input flags
 group_symgroup = parser.add_argument_group('Symgroup')
-group_symgroup.add_argument('-sym_m','--sym_measure',
+group_symgroup.add_argument('-sym_m', '--sym_measure',
                             dest='sym_measure',
                             action='store',
                             default=None,
                             help='Symgroup measure of input structure with reference group')
-group_symgroup.add_argument('-sym_s','--sym_structure',
+group_symgroup.add_argument('-sym_s', '--sym_structure',
                             dest='sym_structure',
                             action='store_true',
                             default=False,
@@ -133,6 +136,10 @@ if args.version:
 
 common_output = open(args.output_name, 'w') if args.output_name is not None else sys.stdout
 print_header(common_output)
+
+if args.shp_n:
+    common_output.write(tools.get_shape_label_info(args.shp_n, with_central_atom=args.central_atom))
+    exit()
 
 if args.input_file is None:
     parser.error('No input file selected! An existing file must be provide')
@@ -221,7 +228,7 @@ if args.qsym_wfn:
                                             center=args.center,
                                             output=args.output_name)
 
-    #Utils
+    # Utils
     if args.mo_diagram:
         symobj.plot_mo_diagram(args.qsym_wfn,
                                axis=args.axis1,

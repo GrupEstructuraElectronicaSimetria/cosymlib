@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 from cosymlib import Cosymlib, __version__
 from cosymlib import file_io
-from cosymlib.file_io import errors
-from cosymlib.file_io.tools import add_extra_keywords, print_header, print_footer, print_input_info
+from cosymlib.file_io.tools import print_header, print_footer, print_input_info
 from cosymlib.shape import tools
 import argparse
 import os
@@ -61,6 +60,10 @@ parser.add_argument('-l', '--labels', action='store_true',
                     dest='labels',
                     default=False,
                     help='show the reference shape labels')
+parser.add_argument('-n',
+                    dest='n',
+                    default=False,
+                    help='show the reference shape labels of n vertices')
 parser.add_argument('--info',
                     action='store_true',
                     default=False,
@@ -94,8 +97,13 @@ if args.version:
     print('Cosymlib version = {}'.format(__version__))
     exit()
 
+
 common_output = open(args.output_name, 'w') if args.output_name is not None else sys.stdout
 print_header(common_output)
+
+if args.n:
+    common_output.write(tools.get_shape_label_info(args.n, with_central_atom=args.central_atom))
+    exit()
 
 if args.input_file is None:
     parser.error('No input file selected! An existing file must be provide')

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from cosymlib import Cosymlib, __version__
-from cosymlib.file_io.tools import add_extra_keywords, print_header, print_footer, print_input_info
+from cosymlib.file_io.tools import print_header, print_footer, print_input_info
 from cosymlib.file_io import read_generic_structure_file, get_connectivity_from_file
 from cosymlib.symmetry.tools import print_symmetry_labels
 import argparse
