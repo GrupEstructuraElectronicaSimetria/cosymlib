@@ -30,21 +30,24 @@ def get_test_structure(label, central_atom=0):
         with open(file_path, 'r') as stream:
             ideal_structures = yaml.load(stream, Loader=yaml.FullLoader)
 
-    if central_atom == 0:
-        coordinates = ideal_structures[label][:-1]
-        # coordinates = resize_structure(ideal_structures[label][:-1])
-        return Geometry(positions=coordinates,
-                        name=label,
-                        symbols=['L'] * len(coordinates),
-                        connectivity=[])
+    try:
+        if central_atom == 0:
+            coordinates = ideal_structures[label][:-1]
+            # coordinates = resize_structure(ideal_structures[label][:-1])
+            return Geometry(positions=coordinates,
+                            name=label,
+                            symbols=['L'] * len(coordinates),
+                            connectivity=[])
 
-    else:
-        coordinates = ideal_structures[label]
-        # coordinates = resize_structure(ideal_structures[label], center=ideal_structures[label][-1])
-        return Geometry(positions=coordinates,
-                        name=label,
-                        symbols=['L'] * (len(coordinates)-1) + ['M'],
-                        connectivity=[])
+        else:
+            coordinates = ideal_structures[label]
+            # coordinates = resize_structure(ideal_structures[label], center=ideal_structures[label][-1])
+            return Geometry(positions=coordinates,
+                            name=label,
+                            symbols=['L'] * (len(coordinates)-1) + ['M'],
+                            connectivity=[])
+    except KeyError as e:
+        raise Exception('Shape reference label "{}" not found!'.format(e.args[0]))
 
 
 def get_structure_references(vertices):
