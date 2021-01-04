@@ -10,6 +10,18 @@ import os
 import numpy as np
 
 
+def write_reference_structures(vertices, central_atom, directory):
+    if central_atom == 0:
+        output_references = open(directory + '/L{}.xyz'.format(vertices), 'x')
+    else:
+        output_references = open(directory + '/ML{}.xyz'.format(vertices), 'x')
+
+    print("\nReference structures in file {}\n".format(output_references.name))
+    for label in tools.get_structure_references(vertices):
+        ref_structure = tools.get_reference_structure(label, central_atom=central_atom)
+        output_references.write(file_io.get_file_xyz_txt(ref_structure))
+
+
 parser = argparse.ArgumentParser(description='Cosym')
 parser.add_argument(type=str, dest='input_file', nargs='?', default=None, help='input file name(+extension)')
 parser.add_argument(type=str, dest="yaml_input", nargs='?', default=None,
@@ -47,10 +59,6 @@ group_shape.add_argument('-shp_l', '--shp_labels', action='store_true',
                          dest='shp_labels',
                          default=False,
                          help='show the reference labels for a given structure')
-group_shape.add_argument('-shp_n',
-                         dest='shp_n',
-                         default=False,
-                         help='show the reference labels of n vertices')
 group_shape.add_argument('-shp_s', '--shp_structure',
                          dest='shp_structure',
                          action='store_true',
@@ -61,7 +69,14 @@ group_shape.add_argument('-shp_r', '--shp_references',
                          action='store_true',
                          default=False,
                          help='return a file with the coordinates of reference polyhedra')
-
+group_shape.add_argument('--shp_labels_n',
+                         dest='shp_labels_n',
+                         default=False,
+                         help='show the reference labels of n vertices')
+group_shape.add_argument('--shp_references_n',
+                         dest='shp_references_n',
+                         default=False,
+                         help='store the coordinates of the reference polyhedra of n vertices in a file')
 
 # PointGroup input flags
 group_pointgroup = parser.add_argument_group('PointGroup')
@@ -137,8 +152,13 @@ if args.version:
 common_output = open(args.output_name, 'w') if args.output_name is not None else sys.stdout
 print_header(common_output)
 
-if args.shp_n:
-    common_output.write(tools.get_shape_label_info(args.shp_n, with_central_atom=args.central_atom))
+if args.shp_labels_n:
+    common_output.write(tools.get_shape_label_info(int(args.shp_labels_n), with_central_atom=args.central_atom))
+    exit()
+
+if args.shp_references_n:
+    input_dir = os.getcwd()
+    write_reference_structures(args.shp_references_n, args.central_atom, input_dir)
     exit()
 
 if args.input_file is None:
@@ -153,15 +173,7 @@ vertices = n_atoms if args.central_atom == 0 else n_atoms - 1
 if args.shp_references:
 
     input_dir = os.path.dirname(args.input_file)
-    if args.central_atom == 0:
-        output_references = open(input_dir + '/L{}.xyz'.format(vertices), 'w')
-    else:
-        output_references = open(input_dir + '/ML{}.xyz'.format(vertices), 'w')
-
-    print("\nReference structures in file {}\n".format(output_references.name))
-    for label in tools.get_structure_references(vertices):
-        ref_structure = tools.get_reference_structure(label, central_atom=args.central_atom)
-        output_references.write(file_io.get_file_xyz_txt(ref_structure))
+    write_reference_structures(vertices, args.central_atom, input_dir)
 
 if args.info:
     print_input_info(structures, output=common_output)
