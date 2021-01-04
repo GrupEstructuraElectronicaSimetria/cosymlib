@@ -21,7 +21,7 @@ def resize_structure(structure, center=(0, 0, 0), resize_distance=2.5):
     return resized_structure
 
 
-def get_test_structure(label, central_atom=0):
+def get_reference_structure(label, central_atom=0):
     global ideal_structures
     from cosymlib.molecule.geometry import Geometry
 

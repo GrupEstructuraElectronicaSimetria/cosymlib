@@ -212,13 +212,15 @@ class Cosymlib:
 
         shape_results_structures = []
         references = []
+        sym_labels = []
         for reference in reference_list:
             if isinstance(reference, str):
                 references.append(reference)
-
+                sym_labels.append(get_sym_from_label(reference))
             else:
                 references.append(reference.name)
-                reference = reference.get_positions()
+                sym_labels.append('')
+                # reference = reference.get_positions()
 
             shape_results_structures.append(self.get_shape_measure(reference,
                                                                    'structure',
@@ -229,7 +231,7 @@ class Cosymlib:
             geometries.append(molecule.geometry)
             for idl, reference in enumerate(references):
                 shape_results_structures[idl][idm].set_name(molecule.name + ' ' + reference + ' ' +
-                                                            get_sym_from_label(reference))
+                                                            sym_labels[idl])
                 geometries.append(shape_results_structures[idl][idm])
 
         print("\nOriginal structures vs reference polyhedra in file {}\n".format(output.name))

@@ -43,7 +43,7 @@ else:
         symbols = ['H' for _ in range(options['%n_atoms'])]
         symbols.append('N')
         for label in tools.get_structure_references(options['%n_atoms']):
-            positions = tools.get_test_structure(label, central_atom=central_atom).get_positions()
+            positions = tools.get_reference_structure(label, central_atom=central_atom).get_positions()
             test_structure.append(Geometry(symbols=symbols,
                                            positions=positions,
                                            name=label))

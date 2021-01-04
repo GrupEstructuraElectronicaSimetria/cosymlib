@@ -9,7 +9,7 @@ def get_shape_map(shape_label1, shape_label2, num_points=20):
     if isinstance(shape_label1, Geometry):
         coordinates_a = shape_label1.get_positions()
     else:
-        coordinates_a = tools.get_test_structure(shape_label1, central_atom=1).get_positions()
+        coordinates_a = tools.get_reference_structure(shape_label1, central_atom=1).get_positions()
     coordinates_b = Shape(coordinates_a).structure(shape_label2, central_atom=len(coordinates_a))
     coordinates_b = np.concatenate((coordinates_b[1:], [coordinates_b[0]]))
 

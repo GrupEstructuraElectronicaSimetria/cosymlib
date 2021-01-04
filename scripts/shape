@@ -116,16 +116,15 @@ vertices = n_atoms if args.central_atom == 0 else n_atoms - 1
 
 if args.references:
 
-    if args.output_name is None:
-        output_references = common_output
-        print('Reference shapes\n----------------')
-    elif args.central_atom == 0:
-        output_references = open('L{}.xyz'.format(vertices), 'w')
+    input_dir = os.path.dirname(args.input_file)
+    if args.central_atom == 0:
+        output_references = open(input_dir + '/L{}.xyz'.format(vertices), 'w')
     else:
-        output_references = open('ML{}.xyz'.format(vertices), 'w')
+        output_references = open(input_dir + '/ML{}.xyz'.format(vertices), 'w')
 
+    print("\nReference structures in file {}\n".format(output_references.name))
     for label in tools.get_structure_references(vertices):
-        ref_structure = tools.get_test_structure(label, central_atom=args.central_atom)
+        ref_structure = tools.get_reference_structure(label, central_atom=args.central_atom)
         output_references.write(file_io.get_file_xyz_txt(ref_structure))
 
 if args.info:
@@ -148,8 +147,8 @@ else:
 
 if args.structure:
     if common_output is sys.stdout:
-        input_dir = os.path.dirname(args.input_file)
-        output_str = open(input_dir + '/structures.xyz', 'w')
+        file_name, file_extension = os.path.splitext(args.input_file)
+        output_str = open(file_name + '_near.xyz', 'w')
     else:
         output_str = common_output
     structure_set.print_shape_structure(reference,
