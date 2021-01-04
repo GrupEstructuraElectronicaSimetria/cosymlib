@@ -2,6 +2,7 @@
 from cosymlib.molecule.electronic_structure import ElectronicStructure
 from cosymlib.simulation import ExtendedHuckel
 from warnings import warn
+from copy import deepcopy
 
 
 # Gets the parameters defined in the arguments of the function and sets them to Symmetry instance
@@ -39,6 +40,12 @@ class Molecule:
         self._symmetry = geometry._symmetry
         self._shape = geometry._shape
         self._symmetry.set_electronic_structure(electronic_structure)
+
+    def molecule_copy(self):
+        return deepcopy(self)
+
+    def set_name(self, name):
+        self._name = name
 
     @property
     def name(self):

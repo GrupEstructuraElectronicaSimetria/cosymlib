@@ -11,9 +11,9 @@ import yaml
 
 def write_reference_structures(vertices, central_atom, directory):
     if central_atom == 0:
-        output_references = open(directory + '/L{}.xyz'.format(vertices), 'x')
+        output_references = open(directory + '/L{}_refs.xyz'.format(vertices), 'x')
     else:
-        output_references = open(directory + '/ML{}.xyz'.format(vertices), 'x')
+        output_references = open(directory + '/ML{}_refs.xyz'.format(vertices), 'x')
 
     print("\nReference structures in file {}\n".format(output_references.name))
     for label in tools.get_structure_references(vertices):
@@ -122,7 +122,7 @@ if args.labels_n:
 
 if args.references_n:
     input_dir = os.getcwd()
-    write_reference_structures(args.references_n, args.central_atom, input_dir)
+    write_reference_structures(int(args.references_n), args.central_atom, input_dir)
     exit()
 
 if args.input_file is None:
