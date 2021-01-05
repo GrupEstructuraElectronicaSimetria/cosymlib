@@ -227,18 +227,18 @@ def get_molecule_from_file_fchk(file_name, read_multiple=False):
         else:
             Cb = []
 
-        electronic_structure = ElectronicStructure(charge=input_molecule[0][0],
-                                                   multiplicity=input_molecule[1][0],
-                                                   basis=basis,
+        electronic_structure = ElectronicStructure(basis=basis,
                                                    orbital_coefficients=[Ca, Cb],
+                                                   charge=input_molecule[0][0],
+                                                   multiplicity=input_molecule[1][0],
                                                    mo_energies=energies_alpha,
-                                                   alpha_electrons=input_molecule[2],
-                                                   beta_electrons=input_molecule[3])
+                                                   alpha_occupancy=[1]*int(input_molecule[2][0]),
+                                                   beta_occupancy=[1]*int(input_molecule[3][0]))
 
         if read_multiple:
             return [Molecule(geometry, electronic_structure)]
-        else:
-            return Molecule(geometry, electronic_structure)
+
+        return Molecule(geometry, electronic_structure)
 
 
 def get_molecule_from_file_molden(file_name, read_multiple=False):
@@ -299,7 +299,7 @@ def get_molecule_from_file_molden(file_name, read_multiple=False):
                             spin = re.split('[= ]', line)[-1]
                             input_molecule[spin + ' MO coefficients'].append([])
                         elif 'Occup' in line:
-                            occupation[spin].append(float(line.split('=')[-1]))
+                            occupation[spin].append(int(float(line.split('=')[-1])))
                         else:
                             input_molecule[spin+' MO coefficients'][-1].append(line.split()[1])
 
@@ -327,21 +327,22 @@ def get_molecule_from_file_molden(file_name, read_multiple=False):
         symbols = []
         for atom_number in input_molecule['Atomic numbers']:
             total_n_electrons += int(atom_number)
-            symbols.append(tools.atomic_number_to_element(atom_number))
+            symbols.append(atomic_number_to_element(atom_number))
 
-        occupation['Alpha'] = np.array(occupation['Alpha'], dtype=float)
-        occupation['Beta'] = np.array(occupation['Beta'], dtype=float)
+        new_occupation = []
         if len(occupation['Beta']) == 0:
-            if 2.0 not in occupation['Alpha']:
-                occupation['Alpha'] = 2*occupation['Alpha']
-            n_electrons = sum(occupation['Alpha'])
-            input_molecule['Multiplicity'].append(sum(map(lambda x: x % 2 == 1, occupation['Alpha'])) + 1)
-        else:
-            if 2.0 not in occupation['Beta']:
-                occupation['Beta'] = 2*occupation['Beta']
-            n_electrons = sum(occupation['Alpha'] + occupation['Beta'])
-            input_molecule['Multiplicity'].append(sum(occupation['Alpha'] - occupation['Beta']) + 1)
-
+            if 2 not in occupation['Alpha']:
+                occupation['Beta'] = occupation['Alpha']
+            else:
+                for occup in occupation['Alpha']:
+                    new_occupation.append(occup//2)
+                    if occup == 2:
+                        occupation['Beta'].append(1)
+                    else:
+                        occupation['Beta'].append(0)
+                occupation['Alpha'] = new_occupation
+        n_electrons = sum(occupation['Alpha'] + occupation['Beta'])
+        input_molecule['Multiplicity'].append(sum(occupation['Alpha']) - sum(occupation['Beta']) + 1)
         input_molecule['Charge'].append(int(total_n_electrons - n_electrons))
 
         basis = basis_format(basis_set_name='UNKNOWN',
@@ -364,16 +365,18 @@ def get_molecule_from_file_molden(file_name, read_multiple=False):
         else:
             Cb = []
 
-        ee = ElectronicStructure(charge=input_molecule['Charge'][0],
-                                 multiplicity=input_molecule['Multiplicity'][0],
-                                 basis=basis,
+        ee = ElectronicStructure(basis=basis,
                                  orbital_coefficients=[Ca, Cb],
-                                 mo_energies=input_molecule['MO Energies'])
+                                 charge=input_molecule['Charge'][0],
+                                 multiplicity=input_molecule['Multiplicity'][0],
+                                 mo_energies=input_molecule['MO Energies'],
+                                 alpha_occupancy=occupation['Alpha'],
+                                 beta_occupancy=occupation['Beta'])
 
         if read_multiple:
             return [Molecule(geometry, ee)]
-        else:
-            Molecule(geometry, ee)
+
+        return Molecule(geometry, ee)
 
 
 def get_geometry_from_file_ref(file_name, read_multiple=False):

@@ -76,8 +76,8 @@ class Molecule:
                                                              orbital_coefficients=[eh.get_mo_coefficients(), []],
                                                              mo_energies=eh.get_mo_energies(),
                                                              multiplicity=eh.get_multiplicity(),
-                                                             alpha_electrons=[eh.get_alpha_electrons()],
-                                                             beta_electrons=[eh.get_beta_electrons()])
+                                                             alpha_occupancy=[1]*eh.get_alpha_electrons(),
+                                                             beta_occupancy=[1]*eh.get_beta_electrons())
             self.symmetry.set_electronic_structure(self._electronic_structure)
 
         return self._electronic_structure

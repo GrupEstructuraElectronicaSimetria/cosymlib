@@ -7,15 +7,15 @@ class ElectronicStructure:
     :param multiplicity: The multiplicity
     :type multiplicity: int
     :param basis: The basis set
-    :type basis: list
+    :type basis: dict
     :param orbital_coefficients: Molecular orbital coefficients
     :type orbital_coefficients: list
     :param mo_energies: Molecular orbital energies
     :type mo_energies: list
-    :param alpha_electrons: Number of alpha electrons
-    :type alpha_electrons: int
-    :param beta_electrons: Number of beta electrons
-    :type beta_electrons: int
+    :param alpha_occupancy: Number of alpha electrons
+    :type alpha_occupancy: list
+    :param beta_occupancy: Number of beta electrons
+    :type beta_occupancy: list
 
     """
     def __init__(self,
@@ -24,8 +24,8 @@ class ElectronicStructure:
                  charge=0,
                  multiplicity=1,
                  mo_energies=None,
-                 alpha_electrons=None,
-                 beta_electrons=None):
+                 alpha_occupancy=None,
+                 beta_occupancy=None):
 
         self._charge = charge
         self._multiplicity = multiplicity
@@ -38,11 +38,14 @@ class ElectronicStructure:
 
         self._mo_energies = mo_energies
 
-        self._alpha_occupancy = [1] * int(alpha_electrons[0])
-        self._beta_occupancy = [1] * int(beta_electrons[0])
-        if self._multiplicity > 1:
-            for i in range(self._multiplicity-1):
-                self._beta_occupancy.append(0)
+        # self._alpha_occupancy = [1] * int(alpha_occupancy[0])
+        # self._beta_occupancy = [1] * int(beta_electrons[0])
+        self._alpha_occupancy = alpha_occupancy
+        self._beta_occupancy = beta_occupancy
+        self._occupancy_consistency()
+        # if self._multiplicity > 1:
+        #     for i in range(self._multiplicity-1):
+        #         self._beta_occupancy.append(0)
         self._total_electrons = sum(self._alpha_occupancy) + sum(self._beta_occupancy)
 
     def set_occupancy(self, occupancy):
