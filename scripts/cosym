@@ -133,7 +133,6 @@ parser.add_argument('-mo_diagram', dest="mo_diagram", action='store_true', defau
 
 
 args = parser.parse_args(sys.argv[1:])
-# print('Starting...')
 
 if args.yaml_input:
     with open(args.yaml_input, 'r') as stream:
@@ -252,5 +251,4 @@ if args.pointgroup:
     for idm, pg in enumerate(symobj.get_point_group()):
         print('The point group of molecule{} is: {}'.format(idm, pg))
 
-# print('\nEnd of cosym calculation')
 print_footer(common_output)

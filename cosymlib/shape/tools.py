@@ -9,7 +9,7 @@ def distance(p1, p2):
     return np.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2 + (p1[2] - p2[2]) ** 2)
 
 
-def resize_structure(structure, center=(0, 0, 0), resize_distance=2.5):
+def resize_structure(structure, center=(0, 0, 0), resize_distance=1.0):
     resized_structure = []
     max_distance = max([distance(coordinate, center) for coordinate in structure])
     if max_distance >= resize_distance:
