@@ -43,7 +43,7 @@ else:
         symbols = ['H' for _ in range(options['%n_atoms'])]
         symbols.append('N')
         for label in tools.get_structure_references(options['%n_atoms']):
-            positions = tools.get_test_structure(label, central_atom=central_atom).get_positions()
+            positions = tools.get_reference_structure(label, central_atom=central_atom).get_positions()
             test_structure.append(Geometry(symbols=symbols,
                                            positions=positions,
                                            name=label))
@@ -82,8 +82,7 @@ else:
         output_name = open(output_name + '.tab', 'w')
         print_header(output_name)
         if len(reference_polyhedron) > 2:
-            print('Error. No more than two labels can be specified for a path calculation')
-            exit()
+            raise Exception('No more than two labels can be specified for a path calculation')
         symobj.print_minimum_distortion_path_shape(reference_polyhedron[0],
                                                    reference_polyhedron[1],
                                                    central_atom=central_atom,
@@ -96,23 +95,3 @@ else:
                                    central_atom=central_atom,
                                    output=output_name)
         print_footer(output_name)
-
-    # if args.custom_reference_structure is not None:
-    #     reference_polyhedron = file_io.read_input_file(args.custom_reference_structure)
-    # elif not reference_polyhedron:
-    #     reference_polyhedron = [args.shape_label]
-    #
-
-    #
-    # if args.shape_map:
-    #     symobj.write_minimum_distortion_path_shape_2file(args.shape_map[0],
-    #                                                      args.shape_map[1],
-    #                                                      central_atom=args.central_atom_position,
-    #                                                      show=True)
-    # if args.shape_path:
-    #     symobj.write_path_parameters_2file(args.shape_map[0],
-    #                                        args.shape_map[1],
-    #                                        central_atom=args.central_atom_position,
-    #                                        output_name=args.output_name)
-
-# print('End of shape calculation')

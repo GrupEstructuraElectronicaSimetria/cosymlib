@@ -1,4 +1,4 @@
-__version__ = '0.9.1'
+__version__ = '0.9.2'
 
 from cosymlib.molecule import Molecule
 from cosymlib.molecule.geometry import Geometry
@@ -10,6 +10,7 @@ from cosymlib.shape.tools import get_structure_references, get_sym_from_label
 import matplotlib.pyplot as plt
 
 import sys
+import os
 import numpy as np
 
 
@@ -59,7 +60,8 @@ class Cosymlib:
     """
     Main cosymlib class
 
-    :param structures: List of :class:`~cosymlib.molecule.geometry.Geometry` or :class:`~cosymlib.molecule.Molecule` type objects
+    :param structures: List of :class:`~cosymlib.molecule.geometry.Geometry` or :class:`~cosymlib.molecule.Molecule`
+    type objects
     :type structures: list
     :param ignore_atoms_labels: Ignore atomic element labels is symmetry calculations
     :type ignore_atoms_labels: bool
@@ -156,6 +158,8 @@ class Cosymlib:
         :type shape_reference: str
         :param central_atom: Position of the central atom
         :type central_atom: int
+        :param fix_permutation: Do not permute atoms during shape calculations
+        :type fix_permutation: bool
         :param output: Display hook
         :type output: hook
         """
@@ -212,13 +216,15 @@ class Cosymlib:
 
         shape_results_structures = []
         references = []
+        sym_labels = []
         for reference in reference_list:
             if isinstance(reference, str):
                 references.append(reference)
-
+                sym_labels.append(get_sym_from_label(reference))
             else:
                 references.append(reference.name)
-                reference = reference.get_positions()
+                sym_labels.append('')
+                # reference = reference.get_positions()
 
             shape_results_structures.append(self.get_shape_measure(reference,
                                                                    'structure',
@@ -229,7 +235,7 @@ class Cosymlib:
             geometries.append(molecule.geometry)
             for idl, reference in enumerate(references):
                 shape_results_structures[idl][idm].set_name(molecule.name + ' ' + reference + ' ' +
-                                                            get_sym_from_label(reference))
+                                                            sym_labels[idl])
                 geometries.append(shape_results_structures[idl][idm])
 
         print("\nOriginal structures vs reference polyhedra in file {}\n".format(output.name))
@@ -267,7 +273,7 @@ class Cosymlib:
             for idn, array in enumerate(molecule.geometry.get_positions()):
                 array = array - cm
                 txt += '{:2} {:12.8f} {:12.8f} {:12.8f}\n'.format(molecule.geometry.get_symbols()[idn],
-                                                                      array[0], array[1], array[2])
+                                                                  array[0], array[1], array[2])
             txt += sep_line
 
             txt += 'Optimal permutation\n'
@@ -278,7 +284,7 @@ class Cosymlib:
             txt += 'Inverted structure\n'
             for idn, axis in enumerate(molecule.geometry._symmetry.nearest_structure(label)):
                 txt += '{:2} {:12.8f} {:12.8f} {:12.8f}\n'.format(molecule.geometry.get_symbols()[idn],
-                                                                      axis[0], axis[1], axis[2])
+                                                                  axis[0], axis[1], axis[2])
             txt += '\n'
 
             txt += 'Reference axis\n'
@@ -373,6 +379,14 @@ class Cosymlib:
             txt += '{:<9} '.format(molecule.name) + '  '.join(['{:7.3f}'.format(s) for s in wf_measure['csm']])
             txt += '\n'
             first = False
+        axes_information = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
+        txt += '\nSymmetry parameters\n'
+        txt += 'center: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])
+        txt += '\n'
+        txt += 'axis  : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis']])
+        txt += '\n'
+        txt += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
+        txt += '\n'
 
         output.write(txt)
 
@@ -402,7 +416,8 @@ class Cosymlib:
             first = False
             axes_information = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
             txt2 += '{:<9} '.format(molecule.name) + '{:7.3f}\n'.format(dens_measure['csm'])
-            txt2 += '\ncenter: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])
+            txt2 += '\nSymmetry parameters\n'
+            txt2 += 'center: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])
             txt2 += '\n'
             txt2 += 'axis  : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis']])
             txt2 += '\n'
@@ -432,7 +447,7 @@ class Cosymlib:
             txt += sep_line
             for idn, array in enumerate(geometry.get_positions()):
                 txt += '{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idn],
-                                                                      array[0], array[1], array[2])
+                                                                  array[0], array[1], array[2])
             txt += sep_line
             for i, group in enumerate(sym_lables):
                 txt += '\n'
@@ -446,7 +461,7 @@ class Cosymlib:
                 for idn, array in enumerate(geometry.get_positions()):
                     array2 = np.dot(array, sym_matrices[i].T)
                     txt += '{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idn],
-                                                                          array2[0], array2[1], array2[2])
+                                                                      array2[0], array2[1], array2[2])
         output.write(txt)
 
     def print_wnfsym_sym_ovelap(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
@@ -558,6 +573,15 @@ class Cosymlib:
             txt += '\n'
             txt += 'WFN ' + '  '.join(['{:7.3f}'.format(s) for s in data_wf['total']])
             txt += '\n'
+
+        axes_information = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
+        txt += '\nSymmetry parameters\n'
+        txt += 'center: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])
+        txt += '\n'
+        txt += 'axis  : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis']])
+        txt += '\n'
+        txt += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
+        txt += '\n'
 
         output.write(txt)
 
@@ -733,23 +757,26 @@ class Cosymlib:
         :type max_gco: float
         :param num_points: Number of points
         :type num_points: int
-        :param output: Display hook
-        :type output: hook
+        :param output1: Display hook
+        :type output1: hook
         """
 
         if output is not None:
-            output = open(output + '_pth.csv', 'w')
-            output2 = open(output + '_pth.xyz', 'w')
-            output3 = open(output, 'w')
+            output_name, file_extension = os.path.splitext(output.name)
+            output1 = open(output_name + '_pth.csv', 'w')
+            output2 = open(output_name + '_pth.xyz', 'w')
+            output3 = output
         else:
-            output = sys.stdout
+            output1 = sys.stdout
             output2 = sys.stdout
             output3 = sys.stdout
 
         csm, devpath, gen_coord = self.get_path_parameters(shape_label1, shape_label2, central_atom=central_atom)
 
-        txt_params = 'Deviation threshold to calculate Path deviation function: {:2.1f}% - {:2.1f}%\n'.format(min_dev, max_dev)
-        txt_params += 'Deviation threshold to calculate Generalized Coordinate: {:2.1f}% - {:2.1f}%\n'.format(min_gco, max_gco)
+        txt_params = 'Deviation threshold to calculate Path deviation function: ' \
+                     '{:2.1f}% - {:2.1f}%\n'.format(min_dev, max_dev)
+        txt_params += 'Deviation threshold to calculate Generalized Coordinate: ' \
+                      '{:2.1f}% - {:2.1f}%\n'.format(min_gco, max_gco)
         txt_params += '\n'
         txt_params += '{:9} '.format('structure'.upper())
         for csm_label in list(csm.keys()):
@@ -769,6 +796,7 @@ class Cosymlib:
             txt_params += '{:^8.1f} {:^8.1f}'.format(devpath[idx], gen_coord[idx])
             txt_params += '\n'
 
+        # self.print_shape_measure()
         txt_params += 'skipped {} structure/s\n\n'.format(filter_mask.count(False))
         output3.write(txt_params)
 
@@ -788,7 +816,7 @@ class Cosymlib:
             txt_path += '{:6.3f}  {:6.3f}'.format(path[0][idx], path[1][idx])
             txt_path += '\n'
         txt_path += '\n'
-        output.write(txt_path)
+        output1.write(txt_path)
 
         test_structures = []
         for ids, structure in enumerate(path[2]):
@@ -796,7 +824,7 @@ class Cosymlib:
                                             positions=structure, name='map_structure{}'.format(ids)))
         output2.write(file_io.get_file_xyz_txt(test_structures))
 
-        if output is sys.stdout:
+        if output1 is sys.stdout:
             import matplotlib.pyplot as plt
             plt.plot(path[0], path[1], 'k', linewidth=2.0)
             plt.scatter(np.array(csm[label1_name])[filter_mask],

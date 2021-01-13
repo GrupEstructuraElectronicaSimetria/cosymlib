@@ -24,8 +24,8 @@ def print_csm(data):
 
 
 # Get structures from files
-geometries_list = file_io.get_geometry_from_file_xyz('coord.xyz', read_multiple=True)
-fragments_list = file_io.get_geometry_from_file_cor('coord.cor', read_multiple=True)
+geometries_list = file_io.get_geometry_from_file_xyz('../old_examples/coord.xyz', read_multiple=True)
+fragments_list = file_io.get_geometry_from_file_cor('../old_examples/coord.cor', read_multiple=True)
 
 # Call shape as method of Geometry class
 print_shape_data(geometries_list)
@@ -46,7 +46,7 @@ print('structure:\n', shape.Shape(methane).structure('SP-4', central_atom=1))
 # test symgroup
 print('\nSYMMETRY\n--------')
 
-geometries_list = file_io.get_geometry_from_file_pdb('methane.pdb', read_multiple=True)
+geometries_list = file_io.get_geometry_from_file_pdb('../old_examples/methane.pdb', read_multiple=True)
 print('measure C3: {} '.format(geometries_list[0].get_symmetry_measure('c3')))
 
 # Check multiple calls of symgroup one calculatioin
@@ -65,7 +65,7 @@ print(Symmetry(methane, central_atom=1).nearest_structure('C4'))
 print('\nWFNSYM\n--------')
 
 
-molecule = file_io.get_molecule_from_file_fchk('pirrol.fchk', read_multiple=False)
+molecule = file_io.get_molecule_from_file_fchk('../old_examples/pirrol.fchk', read_multiple=False)
 
 measure_dict = molecule.get_wf_symmetry('C2v',
                                         axis=[0.000000, 0.000000, 1.000000],  # valor defecte
@@ -75,13 +75,13 @@ print_csm(measure_dict)
 
 print('\nCOSYMLIB\n--------')
 
-geometries_list = file_io.get_geometry_from_file_xyz('coord.xyz', read_multiple=True)
+geometries_list = file_io.get_geometry_from_file_xyz('../old_examples/coord.xyz', read_multiple=True)
 molecules_set = Cosymlib(geometries_list)
 
 molecules_set.print_shape_measure('SP-4', central_atom=1)
 molecules_set.print_minimum_distortion_path_shape('SP-4', 'SS-4', central_atom=1, max_dev=103, max_gco=200)
 
-geometries_list = file_io.get_geometry_from_file_xyz('coord_2.xyz', read_multiple=True)
+geometries_list = file_io.get_geometry_from_file_xyz('../old_examples/coord_2.xyz', read_multiple=True)
 molecules_set = Cosymlib(geometries_list)
 print('\n\n***********{}************'.format('print_electronic_symmetry_measure()'))
 molecules_set.print_electronic_symmetry_measure('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])

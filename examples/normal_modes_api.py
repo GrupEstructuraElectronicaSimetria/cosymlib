@@ -45,7 +45,7 @@ def get_nm_vibration_path(geometry, normal_mode, points=10, backward=False, k=1.
 
 
 molecule = read_generic_structure_file('sf6.fchk')
-freq, nm_martices = read_normal_modes_gaussian('sf6_freq.out')
+freq, nm_martices = read_normal_modes_gaussian('../old_examples/sf6_freq.out')
 k_points = 1.5
 points = 10
 n_freq = 1

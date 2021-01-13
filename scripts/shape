@@ -9,6 +9,18 @@ import sys
 import yaml
 
 
+def write_reference_structures(vertices, central_atom, directory):
+    if central_atom == 0:
+        output_references = open(directory + '/L{}_refs.xyz'.format(vertices), 'x')
+    else:
+        output_references = open(directory + '/ML{}_refs.xyz'.format(vertices), 'x')
+
+    print("\nReference structures in file {}\n".format(output_references.name))
+    for label in tools.get_structure_references(vertices):
+        ref_structure = tools.get_reference_structure(label, central_atom=central_atom)
+        output_references.write(file_io.get_file_xyz_txt(ref_structure))
+
+
 # positional arguments
 parser = argparse.ArgumentParser(description='Shape', allow_abbrev=False)
 parser.add_argument(type=str,
@@ -60,10 +72,6 @@ parser.add_argument('-l', '--labels', action='store_true',
                     dest='labels',
                     default=False,
                     help='show the reference shape labels')
-parser.add_argument('-n',
-                    dest='n',
-                    default=False,
-                    help='show the reference shape labels of n vertices')
 parser.add_argument('--info',
                     action='store_true',
                     default=False,
@@ -73,6 +81,14 @@ parser.add_argument('-v', '--version',
                     action='store_true',
                     default=False,
                     help='print information about the input structures')
+parser.add_argument('--labels_n',
+                    dest='labels_n',
+                    default=False,
+                    help='show the reference shape labels of n vertices')
+parser.add_argument('--references_n',
+                    dest='references_n',
+                    default=False,
+                    help='store the coordinates of the reference polyhedra of n vertices in a file')
 
 # Modifiers
 parser.add_argument('--fix_permutation',
@@ -97,12 +113,16 @@ if args.version:
     print('Cosymlib version = {}'.format(__version__))
     exit()
 
-
 common_output = open(args.output_name, 'w') if args.output_name is not None else sys.stdout
 print_header(common_output)
 
-if args.n:
-    common_output.write(tools.get_shape_label_info(args.n, with_central_atom=args.central_atom))
+if args.labels_n:
+    common_output.write(tools.get_shape_label_info(int(args.labels_n), with_central_atom=args.central_atom))
+    exit()
+
+if args.references_n:
+    input_dir = os.getcwd()
+    write_reference_structures(int(args.references_n), args.central_atom, input_dir)
     exit()
 
 if args.input_file is None:
@@ -115,18 +135,8 @@ n_atoms = structure_set.get_n_atoms()
 vertices = n_atoms if args.central_atom == 0 else n_atoms - 1
 
 if args.references:
-
-    if args.output_name is None:
-        output_references = common_output
-        print('Reference shapes\n----------------')
-    elif args.central_atom == 0:
-        output_references = open('L{}.xyz'.format(vertices), 'w')
-    else:
-        output_references = open('ML{}.xyz'.format(vertices), 'w')
-
-    for label in tools.get_structure_references(vertices):
-        ref_structure = tools.get_test_structure(label, central_atom=args.central_atom)
-        output_references.write(file_io.get_file_xyz_txt(ref_structure))
+    input_dir = os.path.dirname(args.input_file)
+    write_reference_structures(vertices, args.central_atom, input_dir)
 
 if args.info:
     print_input_info(structure_set.get_geometries(), output=common_output)
@@ -148,8 +158,8 @@ else:
 
 if args.structure:
     if common_output is sys.stdout:
-        input_dir = os.path.dirname(args.input_file)
-        output_str = open(input_dir + '/structures.xyz', 'w')
+        file_name, file_extension = os.path.splitext(args.input_file)
+        output_str = open(file_name + '_near.xyz', 'w')
     else:
         output_str = common_output
     structure_set.print_shape_structure(reference,

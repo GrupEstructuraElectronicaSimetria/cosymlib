@@ -59,7 +59,7 @@ class Shape:
         key = _get_key(central_atom, reference, fix_permutation=fix_permutation)
         if key not in self._measures:
             if isinstance(reference, str):
-                reference_structure = tools.get_test_structure(reference, central_atom)
+                reference_structure = tools.get_reference_structure(reference, central_atom)
             else:
                 reference_structure = reference
             reference_coordinates = reference_structure.get_positions()
@@ -90,7 +90,7 @@ class Shape:
         key = _get_key(central_atom, reference, fix_permutation=fix_permutation)
         if key not in self._structures:
             if isinstance(reference, str):
-                reference_structure = tools.get_test_structure(reference, central_atom)
+                reference_structure = tools.get_reference_structure(reference, central_atom)
             else:
                 reference_structure = reference
 
@@ -131,7 +131,7 @@ class Shape:
             Sy = self.measure(shape_label2, central_atom)
             new_theta = np.arcsin(np.sqrt(Sx) / 10) + np.arcsin(np.sqrt(Sy) / 10)
             if isinstance(shape_label1, str):
-                structure_a = tools.get_test_structure(shape_label1, central_atom=central_atom)
+                structure_a = tools.get_reference_structure(shape_label1, central_atom=central_atom)
             else:
                 structure_a = shape_label1
 
@@ -157,7 +157,7 @@ class Shape:
         if key not in self._gen_coord:
             Sq = self.measure(shape_label1, central_atom)
             if isinstance(shape_label1, str):
-                structure_a = tools.get_test_structure(shape_label1, central_atom=central_atom)
+                structure_a = tools.get_reference_structure(shape_label1, central_atom=central_atom)
             else:
                 structure_a = shape_label1
 
