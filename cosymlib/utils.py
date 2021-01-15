@@ -31,10 +31,10 @@ def plot_molecular_orbital_diagram(molecule, wfnsym, mo_range=None):
     labels = wfnsym.IRLab
     if mo_range is not None:
         ird_a_max = [np.argmax(ird_a_orb) for ird_a_orb in wfnsym.mo_IRd_a][mo_range[0]:mo_range[1]]
-        energies = molecule.electronic_structure.energies[mo_range[0]:mo_range[1]]
+        energies = molecule.electronic_structure.alpha_energies[mo_range[0]:mo_range[1]]
     else:
         ird_a_max = [np.argmax(ird_a_orb) for ird_a_orb in wfnsym.mo_IRd_a]
-        energies = molecule.electronic_structure.energies
+        energies = molecule.electronic_structure.alpha_energies
 
     ax1 = plt.axes()
     ax1.axes.get_xaxis().set_visible(False)  # Hide x axis
@@ -83,10 +83,10 @@ def plot_symmetry_energy_evolution(molecules, wfnsym, mo_range=None):
         if mo_range is not None:
             ird_a_max.append(np.array([np.argmax(ird_a_orb) for ird_a_orb in wfnsym[idm].mo_IRd_a]
                                       [mo_range[0]:mo_range[1]]))
-            energies.append(molecule.electronic_structure.energies[mo_range[0]:mo_range[1]])
+            energies.append(molecule.electronic_structure.alpha_energies[mo_range[0]:mo_range[1]])
         else:
             ird_a_max.append(np.array([np.argmax(ird_a_orb) for ird_a_orb in wfnsym[idm].mo_IRd_a]))
-            energies.append(molecule.electronic_structure.energies)
+            energies.append(molecule.electronic_structure.alpha_energies)
 
     energies_x_orbital = np.array(energies).T
     ird_a_x_orbital = np.array(ird_a_max).T

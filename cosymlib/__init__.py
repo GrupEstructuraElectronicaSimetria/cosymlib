@@ -538,28 +538,31 @@ class Cosymlib:
         for molecule in self._molecules:
             ir_mo = molecule.get_mo_irreducible_representations(group, axis=axis, axis2=axis2, center=center)
             data_wf = molecule.get_wf_irreducible_representations(group, axis=axis, axis2=axis2, center=center)
+            alpha_energies = molecule.electronic_structure.alpha_energies
+            beta_energies = molecule.electronic_structure.beta_energies
 
-            # print(data_mo, data_wf)
             txt = '\nMolecule : {}\n'.format(molecule.name)
 
-            sep_line = '     ' + '---------' * len(ir_mo['labels']) + '\n'
+            sep_line = '     ' + '----------' * (len(ir_mo['labels'])) + '\n'
 
             txt += '\nAlpha MOs: Irred. Rep. Decomposition\n'
             txt += sep_line
-            txt += '     ' + '  '.join(['{:^7}'.format(s) for s in ir_mo['labels']])
+            txt += '     ' + '{:^10}'.format('E(eV)') + '  '.join(['{:^7}'.format(s) for s in ir_mo['labels']])
             txt += '\n'
             txt += sep_line
             for i, line in enumerate(ir_mo['alpha']):
-                txt += '{:4d}'.format(i + 1) + '  '.join(['{:7.3f}'.format(s) for s in line])
+                txt += '{:4d}'.format(i + 1) + '{:9.2f}'.format(alpha_energies[i]) \
+                       + '  '.join(['{:7.3f}'.format(s) for s in line])
                 txt += '\n'
 
             txt += '\nBeta MOs: Irred. Rep. Decomposition\n'
             txt += sep_line
-            txt += '     ' + '  '.join(['{:^7}'.format(s) for s in ir_mo['labels']])
+            txt += '     ' + '{:^10}'.format('E(eV)') + '  '.join(['{:^7}'.format(s) for s in ir_mo['labels']])
             txt += '\n'
             txt += sep_line
             for i, line in enumerate(ir_mo['beta']):
-                txt += '{:4d}'.format(i + 1) + '  '.join(['{:7.3f}'.format(s) for s in line])
+                txt += '{:4d}'.format(i + 1) + '{:9.2f}'.format(beta_energies[i]) \
+                       + '  '.join(['{:7.3f}'.format(s) for s in line])
                 txt += '\n'
 
             txt += '\nWaveFunction: Irred. Rep. Decomposition\n'
@@ -601,7 +604,7 @@ class Cosymlib:
             ir_mo = molecule.get_mo_irreducible_representations(group, axis=axis, axis2=axis2, center=center)
 
             ird_a_max = [np.argmax(ird_a_orb) for ird_a_orb in ir_mo['alpha']]
-            energies = molecule.electronic_structure.energies
+            energies = molecule.electronic_structure.alpha_energies
 
             plt.figure()
             plt.title('{}'.format(molecule.name))
@@ -643,7 +646,7 @@ class Cosymlib:
             labels = ir_mo['labels']
 
             ird_a_max.append(np.array([np.argmax(ird_a_orb) for ird_a_orb in ir_mo['alpha']]))
-            energies.append(molecule.electronic_structure.energies)
+            energies.append(molecule.electronic_structure.alpha_energies)
 
         energies_x_orbital = np.array(energies).T
         ird_a_x_orbital = np.array(ird_a_max).T

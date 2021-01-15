@@ -74,7 +74,8 @@ class Molecule:
             eh = ExtendedHuckel(self.geometry)
             self._electronic_structure = ElectronicStructure(basis=eh.get_basis(),
                                                              orbital_coefficients=[eh.get_mo_coefficients(), []],
-                                                             mo_energies=eh.get_mo_energies(),
+                                                             alpha_energies=eh.get_mo_energies(),
+                                                             beta_energies=[],
                                                              multiplicity=eh.get_multiplicity(),
                                                              alpha_occupancy=[1]*eh.get_alpha_electrons(),
                                                              beta_occupancy=[1]*eh.get_beta_electrons())

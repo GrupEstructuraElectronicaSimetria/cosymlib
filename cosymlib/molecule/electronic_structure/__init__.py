@@ -23,7 +23,8 @@ class ElectronicStructure:
                  orbital_coefficients,
                  charge=0,
                  multiplicity=1,
-                 mo_energies=None,
+                 alpha_energies=None,
+                 beta_energies=None,
                  alpha_occupancy=None,
                  beta_occupancy=None):
 
@@ -36,16 +37,16 @@ class ElectronicStructure:
         else:
             self._Cb = orbital_coefficients[1]
 
-        self._mo_energies = mo_energies
+        ha_eV = 27.21139563180092
+        self._alpha_energies = [energy*ha_eV for energy in alpha_energies]
+        if len(beta_energies) == 0:
+            self._beta_energies = [energy*ha_eV for energy in alpha_energies]
+        else:
+            self._beta_energies = [energy*ha_eV for energy in beta_energies]
 
-        # self._alpha_occupancy = [1] * int(alpha_occupancy[0])
-        # self._beta_occupancy = [1] * int(beta_electrons[0])
         self._alpha_occupancy = alpha_occupancy
         self._beta_occupancy = beta_occupancy
         self._occupancy_consistency()
-        # if self._multiplicity > 1:
-        #     for i in range(self._multiplicity-1):
-        #         self._beta_occupancy.append(0)
         self._total_electrons = sum(self._alpha_occupancy) + sum(self._beta_occupancy)
 
     def set_occupancy(self, occupancy):
@@ -100,8 +101,12 @@ class ElectronicStructure:
         return self._Cb
 
     @property
-    def energies(self):
-        return self._mo_energies
+    def alpha_energies(self):
+        return self._alpha_energies
+
+    @property
+    def beta_energies(self):
+        return self._beta_energies
 
     @property
     def alpha_occupancy(self):

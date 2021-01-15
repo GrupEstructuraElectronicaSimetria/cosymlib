@@ -159,7 +159,7 @@ def get_molecule_from_file_fchk(file_name, read_multiple=False):
     key_list = ['Charge', 'Multiplicity', 'Number of alpha electrons', 'Number of beta electrons', 'Atomic numbers',
                 'Current cartesian coordinates', 'Shell type', 'Number of primitives per shell', 'Shell to atom map',
                 'Primitive exponents', 'Contraction coefficients', 'P(S=P) Contraction coefficients',
-                'Alpha Orbital Energies', 'Alpha MO coefficients', 'Beta MO coefficients']
+                'Alpha Orbital Energies', 'Beta Orbital Energies', 'Alpha MO coefficients', 'Beta MO coefficients']
     input_molecule = [[] for _ in range(len(key_list))]
     read = False
     with open(file_name, mode='r') as lines:
@@ -220,10 +220,15 @@ def get_molecule_from_file_fchk(file_name, read_multiple=False):
                             positions=coordinates,
                             name=name)
 
-        Ca = np.array(input_molecule[13], dtype=float).reshape(-1, int(np.sqrt(len(input_molecule[13]))))
-        energies_alpha = np.array(input_molecule[12], dtype=float).tolist()
-        if input_molecule[14]:
-            Cb = np.array(input_molecule[14], dtype=float).reshape(-1, int(np.sqrt(len(input_molecule[14]))))
+        alpha_energies = np.array(input_molecule[12], dtype=float).tolist()
+        if input_molecule[13]:
+            beta_energies = np.array(input_molecule[13], dtype=float).tolist()
+        else:
+            beta_energies = []
+
+        Ca = np.array(input_molecule[14], dtype=float).reshape(-1, int(np.sqrt(len(input_molecule[14]))))
+        if input_molecule[15]:
+            Cb = np.array(input_molecule[15], dtype=float).reshape(-1, int(np.sqrt(len(input_molecule[15]))))
         else:
             Cb = []
 
@@ -231,7 +236,8 @@ def get_molecule_from_file_fchk(file_name, read_multiple=False):
                                                    orbital_coefficients=[Ca, Cb],
                                                    charge=input_molecule[0][0],
                                                    multiplicity=input_molecule[1][0],
-                                                   mo_energies=energies_alpha,
+                                                   alpha_energies=alpha_energies,
+                                                   beta_energies=beta_energies,
                                                    alpha_occupancy=[1]*int(input_molecule[2][0]),
                                                    beta_occupancy=[1]*int(input_molecule[3][0]))
 
@@ -365,11 +371,13 @@ def get_molecule_from_file_molden(file_name, read_multiple=False):
         else:
             Cb = []
 
+        warnings.warn('Beta energies not implemented yet')
         ee = ElectronicStructure(basis=basis,
                                  orbital_coefficients=[Ca, Cb],
                                  charge=input_molecule['Charge'][0],
                                  multiplicity=input_molecule['Multiplicity'][0],
-                                 mo_energies=input_molecule['MO Energies'],
+                                 alpha_energies=input_molecule['MO Energies'],
+                                 beta_energies=[],
                                  alpha_occupancy=occupation['Alpha'],
                                  beta_occupancy=occupation['Beta'])
 
