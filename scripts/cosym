@@ -192,6 +192,8 @@ if args.shp_measure == 'custom':
         [x.set_positions(args.central_atom - 1) for x in reference]
     else:
         sys.exit('Custom reference file not defined (use -cref or --custom_ref filename)')
+elif args.shp_measure == 'all':
+    reference = tools.get_structure_references(vertices)
 else:
     reference = args.shp_measure
 
@@ -223,7 +225,7 @@ elif args.sym_measure:
     symobj.print_geometric_symmetry_measure(args.sym_measure,
                                             central_atom=args.central_atom,
                                             symbols=not args.ignore_atom_labels,
-                                            output=args.output_name)
+                                            output=common_output)
 
 # Wfnsym commands
 if args.qsym_wfn:
@@ -233,11 +235,11 @@ if args.qsym_wfn:
         args.axis2 = np.array(args.axis2).astype(float)
     if args.center is not None:
         args.center = np.array(args.center).astype(float)
-    symobj.OLD_print_wnfsym_measure_verbose(args.qsym_wfn,
-                                            axis=args.axis1,
-                                            axis2=args.axis2,
-                                            center=args.center,
-                                            output=args.output_name)
+    symobj.print_electronic_symmetry_measure(args.qsym_wfn,
+                                             axis=args.axis1,
+                                             axis2=args.axis2,
+                                             center=args.center,
+                                             output=common_output)
 
     # Utils
     if args.mo_diagram:

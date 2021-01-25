@@ -2,33 +2,35 @@ class ElectronicStructure:
     """
     Main Electronic structure class
 
-    :param charge: The charge
-    :type charge: int
-    :param multiplicity: The multiplicity
-    :type multiplicity: int
     :param basis: The basis set
     :type basis: dict
     :param orbital_coefficients: Molecular orbital coefficients
     :type orbital_coefficients: list
-    :param mo_energies: Molecular orbital energies
-    :type mo_energies: list
-    :param alpha_occupancy: Number of alpha electrons
+    # :param charge: The charge
+    # :type charge: int
+    :param multiplicity: The multiplicity
+    :type multiplicity: int
+    :param alpha_energies: Alpha molecular orbital energies
+    :type alpha_energies: list
+    :param beta_energies: Beta molecular orbital energies
+    :type beta_energies: list
+    :param alpha_occupancy: List of alpha electrons
     :type alpha_occupancy: list
-    :param beta_occupancy: Number of beta electrons
+    :param beta_occupancy: List of beta electrons
     :type beta_occupancy: list
 
     """
     def __init__(self,
                  basis,
                  orbital_coefficients,
-                 charge=0,
-                 multiplicity=1,
+                 # charge=None,
+                 multiplicity=None,
                  alpha_energies=None,
                  beta_energies=None,
                  alpha_occupancy=None,
                  beta_occupancy=None):
 
-        self._charge = charge
+        # self._charge = charge
         self._multiplicity = multiplicity
         self._basis = basis
         self._Ca = orbital_coefficients[0]
@@ -48,6 +50,10 @@ class ElectronicStructure:
         self._beta_occupancy = beta_occupancy
         self._occupancy_consistency()
         self._total_electrons = sum(self._alpha_occupancy) + sum(self._beta_occupancy)
+        s = abs(sum([a_electron - self._beta_occupancy[ida] for ida, a_electron in enumerate(self._alpha_occupancy)]))
+        self._s2 = s * (s + 1)
+        if self._multiplicity is None:
+            self._recalculate_spin()
 
     def set_occupancy(self, occupancy):
         self.set_alpha_occupancy(occupancy)
@@ -56,18 +62,19 @@ class ElectronicStructure:
     def set_alpha_occupancy(self, occupancy):
         self._alpha_occupancy = occupancy
         self._occupancy_consistency()
-        self._recalculate_charge_multiplicity()
+        self._recalculate_spin()
 
     def set_beta_occupancy(self, occupancy):
         self._beta_occupancy = occupancy
         self._occupancy_consistency()
-        self._recalculate_charge_multiplicity()
+        self._recalculate_spin()
 
-    def _recalculate_charge_multiplicity(self):
-        self._charge = self._total_electrons - (sum(self._alpha_occupancy) + sum(self._beta_occupancy))
-        self._update_total_electrons()
-        self._multiplicity = abs(sum([a_electron - self._beta_occupancy[ida]
-                                      for ida, a_electron in enumerate(self._alpha_occupancy)])) + 1
+    def _recalculate_spin(self):
+        # self._charge = self._total_electrons - (sum(self._alpha_occupancy) + sum(self._beta_occupancy))
+        # self._update_total_electrons()
+        s = abs(sum([a_electron - self._beta_occupancy[ida] for ida, a_electron in enumerate(self._alpha_occupancy)]))
+        self._multiplicity = s + 1
+        self._s2 = s*(s + 1)
 
     def _occupancy_consistency(self):
         if len(self._beta_occupancy) < len(self._alpha_occupancy):
@@ -77,16 +84,20 @@ class ElectronicStructure:
             for i in range(len(self._beta_occupancy) - len(self._alpha_occupancy)):
                 self._alpha_occupancy.append(0)
 
-    def _update_total_electrons(self):
-        self._total_electrons = sum(self._alpha_occupancy) + sum(self._beta_occupancy)
+    # def _update_total_electrons(self):
+    #     self._total_electrons = sum(self._alpha_occupancy) + sum(self._beta_occupancy)
 
-    @property
-    def charge(self):
-        return self._charge
+    # @property
+    # def charge(self):
+    #     return self._charge
 
     @property
     def multiplicity(self):
         return self._multiplicity
+
+    @property
+    def s2(self):
+        return self._s2
 
     @property
     def basis(self):

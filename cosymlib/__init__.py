@@ -154,8 +154,8 @@ class Cosymlib:
         """
         Prints the shape measure of all structures in format
 
-        :param shape_reference: Reference label
-        :type shape_reference: str
+        :param shape_reference: List of references and/or geometries
+        :type shape_reference: list
         :param central_atom: Position of the central atom
         :type central_atom: int
         :param fix_permutation: Do not permute atoms during shape calculations
@@ -164,20 +164,11 @@ class Cosymlib:
         :type output: hook
         """
 
-        if shape_reference == 'all':
-            vertices = self.get_n_atoms() - int(bool(central_atom))
-            reference_list = get_structure_references(vertices)
-        else:
-            if isinstance(shape_reference, (str, Geometry)):
-                reference_list = [shape_reference]
-            else:
-                reference_list = shape_reference
-
         molecules_names = [molecule.name for molecule in self._molecules]
 
         measure_list = []
         references_names = []
-        for reference in reference_list:
+        for reference in shape_reference:
             measure_list.append(self.get_shape_measure(reference,
                                                        'measure',
                                                        central_atom,
@@ -195,8 +186,8 @@ class Cosymlib:
         """
         Prints the nearest shape structure in format
 
-        :param shape_reference: Reference label
-        :type shape_reference: str
+        :param shape_reference: List of references and/or geometries
+        :type shape_reference: list
         :param central_atom: Position of the central atom
         :type central_atom: int
         :param fix_permutation: Do not permute atoms during shape calculations
@@ -205,26 +196,16 @@ class Cosymlib:
         :type output: hook
         """
 
-        if shape_reference == 'all':
-            vertices = self.get_n_atoms() - int(bool(central_atom))
-            reference_list = get_structure_references(vertices)
-        else:
-            if isinstance(shape_reference, (str, Geometry)):
-                reference_list = [shape_reference]
-            else:
-                reference_list = shape_reference
-
         shape_results_structures = []
         references = []
         sym_labels = []
-        for reference in reference_list:
+        for reference in shape_reference:
             if isinstance(reference, str):
                 references.append(reference)
                 sym_labels.append(get_sym_from_label(reference))
             else:
                 references.append(reference.name)
                 sym_labels.append('')
-                # reference = reference.get_positions()
 
             shape_results_structures.append(self.get_shape_measure(reference,
                                                                    'structure',

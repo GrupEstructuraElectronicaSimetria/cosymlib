@@ -78,7 +78,7 @@ else:
                                      output=output_name)
         print_footer(output_name)
 
-    elif options['%path']:
+    if options['%path']:
         output_name = open(output_name + '.tab', 'w')
         print_header(output_name)
         if len(reference_polyhedron) > 2:
@@ -88,7 +88,8 @@ else:
                                                    central_atom=central_atom,
                                                    output=output_name)
         print_footer(output_name)
-    else:
+
+    if not options['%fullout'] and not options['%path']:
         output_name = open(output_name + '.tab', 'w')
         print_header(output_name)
         symobj.print_shape_measure(reference_polyhedron,

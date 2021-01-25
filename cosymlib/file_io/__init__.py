@@ -234,7 +234,7 @@ def get_molecule_from_file_fchk(file_name, read_multiple=False):
 
         electronic_structure = ElectronicStructure(basis=basis,
                                                    orbital_coefficients=[Ca, Cb],
-                                                   charge=input_molecule[0][0],
+                                                   # charge=input_molecule[0][0],
                                                    multiplicity=input_molecule[1][0],
                                                    alpha_energies=alpha_energies,
                                                    beta_energies=beta_energies,
@@ -268,7 +268,7 @@ def get_molecule_from_file_molden(file_name, read_multiple=False):
     with open(file_name, mode='r') as lines:
         lines.readline()
         lines.readline()
-        name = lines.readline()
+        name = file_name.split('.')[0]
         for line in _non_blank_lines(lines):
 
             if '[' in line:
@@ -374,7 +374,7 @@ def get_molecule_from_file_molden(file_name, read_multiple=False):
         warnings.warn('Beta energies not implemented yet')
         ee = ElectronicStructure(basis=basis,
                                  orbital_coefficients=[Ca, Cb],
-                                 charge=input_molecule['Charge'][0],
+                                 # charge=input_molecule['Charge'][0],
                                  multiplicity=input_molecule['Multiplicity'][0],
                                  alpha_energies=input_molecule['MO Energies'],
                                  beta_energies=[],

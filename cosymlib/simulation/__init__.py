@@ -4,8 +4,8 @@ from huckelpy import file_io
 
 class ExtendedHuckel:
 
-    def __init__(self, geometry):
-        self._EH = huckelpy.ExtendedHuckel(geometry.get_positions(), geometry.get_symbols())
+    def __init__(self, geometry, charge=0):
+        self._EH = huckelpy.ExtendedHuckel(geometry.get_positions(), geometry.get_symbols(), charge=charge)
         self._alpha_electrons = None
         self._beta_electrons = None
         self._total_electrons = self._EH.get_number_of_electrons()

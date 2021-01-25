@@ -1,6 +1,5 @@
 from wfnsympy import WfnSympy
 from symgroupy import Symgroupy
-from cosymlib import tools
 import numpy as np
 
 

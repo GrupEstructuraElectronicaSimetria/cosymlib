@@ -1,6 +1,7 @@
 #from cosymlib.molecule.geometry import Geometry
 from cosymlib.molecule.electronic_structure import ElectronicStructure
 from cosymlib.simulation import ExtendedHuckel
+from cosymlib.tools import element_to_atomic_number
 from warnings import warn
 from copy import deepcopy
 
@@ -70,7 +71,7 @@ class Molecule:
         :rtype: ElectronicStructure
         """
         if self._electronic_structure is None:
-            warn('Warning: Electronic structure auto generated from extended Huckel')
+            warn('Warning: Electronic structure auto generated from Extended-Hückel calculation')
             eh = ExtendedHuckel(self.geometry)
             self._electronic_structure = ElectronicStructure(basis=eh.get_basis(),
                                                              orbital_coefficients=[eh.get_mo_coefficients(), []],
@@ -176,3 +177,13 @@ class Molecule:
         :rtype: str
         """
         return self.geometry.get_point_group(tol=tol)
+
+    def get_charge(self):
+        """
+        Get the charge of the molecule
+        """
+        if self._electronic_structure is None:
+            return None
+        net_electrons = sum([element_to_atomic_number(symbol) for symbol in self.get_symbols()])
+        return net_electrons - (sum(self.electronic_structure.alpha_occupancy) +
+                                sum(self.electronic_structure.beta_occupancy))

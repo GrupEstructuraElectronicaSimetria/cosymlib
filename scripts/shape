@@ -153,6 +153,8 @@ if args.measure == 'custom':
         [x.set_positions(args.central_atom - 1) for x in reference]
     else:
         sys.exit('Custom reference file not selected (use -cref or --custom_ref filename)')
+elif args.measure == 'all':
+    reference = tools.get_structure_references(vertices)
 else:
     reference = args.measure
 
