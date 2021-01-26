@@ -71,7 +71,7 @@ class Molecule:
         :rtype: ElectronicStructure
         """
         if self._electronic_structure is None:
-            warn('Warning: Electronic structure auto generated from Extended-Hückel calculation')
+            warn('Warning: Electronic structure auto generated from Extended-Huckel calculation')
             eh = ExtendedHuckel(self.geometry)
             self._electronic_structure = ElectronicStructure(basis=eh.get_basis(),
                                                              orbital_coefficients=[eh.get_mo_coefficients(), []],
