@@ -44,8 +44,8 @@ class TestPointGroup(unittest.TestCase):
         self.assertEqual(structures[1].get_n_atoms(), 5)
 
     def test_reading_fchk(self):
-        alpha_occupancy = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-        beta_occupancy = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        alpha_occupancy = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        beta_occupancy = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         alpha_electrons = 18
         beta_electrons = 18
         molecule = file_io.get_molecule_from_file_fchk('data/file_io/test.fchk', read_multiple=False)
