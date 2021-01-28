@@ -60,32 +60,31 @@ class ElectronicStructure:
         self.set_beta_occupancy(occupancy)
 
     def set_alpha_occupancy(self, occupancy):
+        if len(occupancy) > len(self._Ca):
+            raise IndexError('Lenght of alpha occupancy list is longer than the molecular orbitals provided')
         self._alpha_occupancy = occupancy
         self._occupancy_consistency()
         self._recalculate_spin()
 
     def set_beta_occupancy(self, occupancy):
+        if len(occupancy) > len(self._Cb):
+            raise IndexError('Lenght of beta occupancy list is longer than the molecular orbitals provided')
         self._beta_occupancy = occupancy
         self._occupancy_consistency()
         self._recalculate_spin()
 
     def _recalculate_spin(self):
-        # self._charge = self._total_electrons - (sum(self._alpha_occupancy) + sum(self._beta_occupancy))
-        # self._update_total_electrons()
         s = abs(sum([a_electron - self._beta_occupancy[ida] for ida, a_electron in enumerate(self._alpha_occupancy)]))
         self._multiplicity = s + 1
         self._s2 = s*(s + 1)
 
     def _occupancy_consistency(self):
-        if len(self._beta_occupancy) < len(self._alpha_occupancy):
-            for i in range(len(self._alpha_occupancy) - len(self._beta_occupancy)):
-                self._beta_occupancy.append(0)
-        elif len(self._alpha_occupancy) < len(self._beta_occupancy):
-            for i in range(len(self._beta_occupancy) - len(self._alpha_occupancy)):
+        if len(self._alpha_occupancy) < len(self._Ca):
+            for i in range(len(self._Ca) - len(self._alpha_occupancy)):
                 self._alpha_occupancy.append(0)
-
-    # def _update_total_electrons(self):
-    #     self._total_electrons = sum(self._alpha_occupancy) + sum(self._beta_occupancy)
+        if len(self._beta_occupancy) < len(self._Cb):
+            for i in range(len(self._Cb) - len(self._beta_occupancy)):
+                self._beta_occupancy.append(0)
 
     # @property
     # def charge(self):

@@ -3,6 +3,7 @@ from cosymlib import Cosymlib, __version__
 from cosymlib import file_io
 from cosymlib.file_io.tools import print_header, print_footer, print_input_info
 from cosymlib.shape import tools
+from cosymlib.symmetry.tools import orthogonal_c4
 import argparse
 import sys
 import yaml
@@ -41,12 +42,14 @@ parser.add_argument('-no_labels', '--ignore_atom_labels', dest='ignore_atom_labe
                     help='ignore atom labels from given structures')
 # parser.add_argument('-connectivity', dest='connectivity', action='store', default=None,
 #                     help='Connect a set of atoms by...')
-parser.add_argument('-axis1', dest='axis1', action='store', default=None, nargs=3,
+parser.add_argument('-axis', dest='axis', action='store', default=None, nargs=3,
                     help='First reference axis for the symmetry calculation')
 parser.add_argument('-axis2', dest='axis2', action='store', default=None, nargs=3,
                     help='Second reference axis for the symmetry calculation')
 parser.add_argument('-center', dest='center', action='store', default=None, nargs=3,
                     help='Center for the symmetry calculation')
+parser.add_argument('-c3_c4', dest='c3_c4', action='store_true', default=False,
+                    help='axis is a c3 rotational axis instead of a c4')
 
 # Shape input flags
 group_shape = parser.add_argument_group('Shape')
@@ -122,12 +125,27 @@ group_qsym.add_argument('-qsym_dens',
                         default=False,
                         help='Density measure of input structure with reference group')
 group_qsym.add_argument('-qsym_mos',
-                        dest='qsym_wfn',
+                        dest='qsym_mos',
                         action='store',
                         default=False,
                         help='Range of orbitals to analyze density or wavefunction symmetry')
 
-# Utils
+# addtional print
+parser.add_argument('-qsym_mo', '--qsym_molecular_orbitals',
+                    dest='qsym_molecular_orbitals',
+                    default=False,
+                    action='store_true',
+                    help='print molecular orbitals symmetry elements')
+parser.add_argument('--qsym_trans_matrices',
+                    dest='qsym_trans_matrices',
+                    default=False,
+                    action='store_true',
+                    help='print the transformation matrices')
+parser.add_argument('--qsym_mo_overlaps',
+                    dest='qsym_mo_overlaps',
+                    default=False,
+                    action='store_true',
+                    help='print the molecular orbitals overlap')
 parser.add_argument('-mo_diagram', dest="mo_diagram", action='store_true', default=False,
                     help='Perform the calculations with the command file')
 
@@ -229,22 +247,50 @@ elif args.sym_measure:
 
 # Wfnsym commands
 if args.qsym_wfn:
-    if args.axis1 is not None:
-        args.axis1 = np.array(args.axis1).astype(float)
+    if args.axis is not None:
+        args.axis = np.array(args.axis).astype(float)
     if args.axis2 is not None:
         args.axis2 = np.array(args.axis2).astype(float)
     if args.center is not None:
         args.center = np.array(args.center).astype(float)
-    symobj.print_electronic_symmetry_measure(args.qsym_wfn,
-                                             axis=args.axis1,
-                                             axis2=args.axis2,
-                                             center=args.center,
-                                             output=common_output)
+    if args.c3_c4:
+        if args.axis is None:
+            raise KeyError('Missing axis')
+        elif args.axis2 is None:
+            raise KeyError('Missing axis2')
+        args.axis, args.axis2 = orthogonal_c4(args.axis, args.axis2)
+
+    if args.qsym_molecular_orbitals:
+        symobj.print_wnfsym_mo_irreducible_repr(args.qsym_wfn,
+                                                axis=args.axis,
+                                                axis2=args.axis2,
+                                                center=args.center,
+                                                output=common_output)
+
+    symobj.print_wnfsym_irreducible_repr(args.qsym_wfn,
+                                         axis=args.axis,
+                                         axis2=args.axis2,
+                                         center=args.center,
+                                         output=common_output)
+
+    if args.qsym_trans_matrices:
+        symobj.print_wnfsym_sym_matrices(args.qsym_wfn,
+                                         axis=args.axis,
+                                         axis2=args.axis2,
+                                         center=args.center,
+                                         output=common_output)
+
+    if args.qsym_mo_overlaps:
+        symobj.print_wnfsym_sym_ovelap(args.qsym_wfn,
+                                       axis=args.axis,
+                                       axis2=args.axis2,
+                                       center=args.center,
+                                       output=common_output)
 
     # Utils
     if args.mo_diagram:
         symobj.plot_mo_diagram(args.qsym_wfn,
-                               axis=args.axis1,
+                               axis=args.axis,
                                axis2=args.axis2,
                                center=args.center)
 

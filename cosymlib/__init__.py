@@ -8,6 +8,7 @@ from cosymlib.utils import swap_vectors
 from cosymlib.utils import get_shape_path, plot_molecular_orbital_diagram, plot_symmetry_energy_evolution
 from cosymlib.shape.tools import get_structure_references, get_sym_from_label
 import matplotlib.pyplot as plt
+from warnings import warn
 
 import sys
 import os
@@ -341,7 +342,7 @@ class Cosymlib:
         self.print_wnfsym_sym_matrices(group, axis=axis, axis2=axis2, center=center, output=output)
         self.print_wnfsym_irreducible_repr(group, axis=axis, axis2=axis2, center=center, output=output)
 
-    def print_electronic_symmetry_measure(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
+    def _print_electronic_symmetry_measure(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
 
         txt = ''
         first = True
@@ -519,32 +520,9 @@ class Cosymlib:
         for molecule in self._molecules:
             ir_mo = molecule.get_mo_irreducible_representations(group, axis=axis, axis2=axis2, center=center)
             data_wf = molecule.get_wf_irreducible_representations(group, axis=axis, axis2=axis2, center=center)
-            alpha_energies = molecule.electronic_structure.alpha_energies
-            beta_energies = molecule.electronic_structure.beta_energies
 
             txt = '\nMolecule : {}\n'.format(molecule.name)
-
-            sep_line = '     ' + '----------' * (len(ir_mo['labels'])) + '\n'
-
-            txt += '\nAlpha MOs: Irred. Rep. Decomposition\n'
-            txt += sep_line
-            txt += '     ' + '{:^10}'.format('E(eV)') + '  '.join(['{:^7}'.format(s) for s in ir_mo['labels']])
-            txt += '\n'
-            txt += sep_line
-            for i, line in enumerate(ir_mo['alpha']):
-                txt += '{:4d}'.format(i + 1) + '{:9.2f}'.format(alpha_energies[i]) \
-                       + '  '.join(['{:7.3f}'.format(s) for s in line])
-                txt += '\n'
-
-            txt += '\nBeta MOs: Irred. Rep. Decomposition\n'
-            txt += sep_line
-            txt += '     ' + '{:^10}'.format('E(eV)') + '  '.join(['{:^7}'.format(s) for s in ir_mo['labels']])
-            txt += '\n'
-            txt += sep_line
-            for i, line in enumerate(ir_mo['beta']):
-                txt += '{:4d}'.format(i + 1) + '{:9.2f}'.format(beta_energies[i]) \
-                       + '  '.join(['{:7.3f}'.format(s) for s in line])
-                txt += '\n'
+            sep_line = '     ' + '---------' * (len(ir_mo['labels'])) + '\n'
 
             txt += '\nWaveFunction: Irred. Rep. Decomposition\n'
             txt += sep_line
@@ -558,6 +536,62 @@ class Cosymlib:
             txt += 'WFN ' + '  '.join(['{:7.3f}'.format(s) for s in data_wf['total']])
             txt += '\n'
 
+        axes_information = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
+        txt += '\nSymmetry parameters\n'
+        txt += 'center: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])
+        txt += '\n'
+        txt += 'axis  : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis']])
+        txt += '\n'
+        txt += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
+        txt += '\n'
+
+        output.write(txt)
+
+    def print_wnfsym_mo_irreducible_repr(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
+
+        txt = ''
+        for molecule in self._molecules:
+            ir_mo = molecule.get_mo_irreducible_representations(group, axis=axis, axis2=axis2, center=center)
+            alpha_energies = molecule.electronic_structure.alpha_energies
+            alpha_occupancy = molecule.electronic_structure.alpha_occupancy
+            beta_energies = molecule.electronic_structure.beta_energies
+            beta_occupancy = molecule.electronic_structure.beta_occupancy
+
+            txt = '\nMolecule : {}\n'.format(molecule.name)
+
+            sep_line = '     ' + '---------' * (2 + len(ir_mo['labels'])) + '\n'
+
+            txt += '\nAlpha MOs: Irred. Rep. Decomposition\n'
+            txt += sep_line
+            txt += '     ' + '{:^10}'.format('occup') + '{:^8}'.format('E(eV)') + \
+                   '  '.join(['{:^7}'.format(s) for s in ir_mo['labels']])
+            txt += '\n'
+            txt += sep_line
+            non_one = False
+            for i, line in enumerate(ir_mo['alpha']):
+                txt += '{:4d}'.format(i + 1) + '{:6d}'.format(alpha_occupancy[i]) + \
+                       '{:10.2f}'.format(alpha_energies[i]) + ' '*2 + '  '.join(['{:7.3f}'.format(s) for s in line])
+                if abs(sum(line) - 1) > 1e-2:
+                    txt += '*'
+                    non_one = True
+                txt += '\n'
+
+            txt += '\nBeta MOs: Irred. Rep. Decomposition\n'
+            txt += sep_line
+            txt += '     ' + '{:^10}'.format('occup') + '{:^8}'.format('E(eV)') + \
+                   '  '.join(['{:^7}'.format(s) for s in ir_mo['labels']])
+            txt += '\n'
+            txt += sep_line
+            for i, line in enumerate(ir_mo['beta']):
+                txt += '{:4d}'.format(i + 1) + '{:6d}'.format(beta_occupancy[i]) + \
+                       '{:10.2f}'.format(beta_energies[i]) + ' '*2 + '  '.join(['{:7.3f}'.format(s) for s in line])
+                if abs(sum(line) - 1) > 1e-2:
+                    txt += '*'
+                    non_one = True
+                txt += '\n'
+
+            if non_one:
+                warn('The sum of some molecular orbital irreducible represaentations are not equal one (*)')
         axes_information = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
         txt += '\nSymmetry parameters\n'
         txt += 'center: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])

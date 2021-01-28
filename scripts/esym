@@ -3,9 +3,11 @@ from cosymlib import Cosymlib, __version__
 from cosymlib.file_io.tools import print_header, print_footer, print_input_info
 from cosymlib.file_io import read_generic_structure_file
 from cosymlib.symmetry.tools import print_symmetry_labels
+from cosymlib.symmetry.tools import orthogonal_c4
 import argparse
 import sys
 import yaml
+import numpy as np
 
 
 parser = argparse.ArgumentParser(description='esym')
@@ -48,46 +50,49 @@ parser.add_argument('-v', '--version',
                     help='print information about the input structures')
 
 # addtional print
+parser.add_argument('-mo', '--molecular_orbitals',
+                    dest='molecular_orbitals',
+                    default=False,
+                    action='store_true',
+                    help='print molecular orbitals symmetry elements')
 parser.add_argument('--trans_matrices',
                     dest='trans_matrices',
                     default=False,
                     action='store_true',
                     help='print the transformation matrices')
-
 parser.add_argument('--mo_overlaps',
                     dest='mo_overlaps',
                     default=False,
                     action='store_true',
                     help='print the molecular orbitals overlap')
 
-parser.add_argument('--irrep',
-                    dest='irrep',
-                    default=False,
-                    action='store_true',
-                    help='print the irreducible representations')
-
 # Modifiers
-parser.add_argument('--center',
+parser.add_argument('-center',
                     dest='center',
                     metavar='R',
                     type=float,
                     default=None,
                     nargs=3,
                     help='fix coordinates x,y,z for the center of symmetry operations (Angs)')
-parser.add_argument('--axis',
+parser.add_argument('-axis',
                     dest='axis',
                     metavar='R',
                     type=float,
                     default=None,
                     nargs=3,
                     help='set main symmetry axis')
-parser.add_argument('--axis2',
+parser.add_argument('-axis2',
                     dest='axis2',
                     metavar='R',
                     type=float,
                     default=None,
                     nargs=3,
                     help='set secondary symmetry axis')
+parser.add_argument('-c3_c4',
+                    dest='c3_c4',
+                    action='store_true',
+                    default=False,
+                    help='axis1 is a c3 rotational axis instead of a c4')
 
 args = parser.parse_args()
 
@@ -124,12 +129,31 @@ if args.info:
 
 # Symgroup commands
 if args.measure:
-    structure_set.print_electronic_symmetry_measure(args.measure,
-                                                    axis=args.axis,
-                                                    axis2=args.axis2,
-                                                    center=args.center,
-                                                    output=common_output)
+    if args.axis is not None:
+        args.axis = np.array(args.axis).astype(float)
+    if args.axis2 is not None:
+        args.axis2 = np.array(args.axis2).astype(float)
+    if args.center is not None:
+        args.center = np.array(args.center).astype(float)
+    if args.c3_c4:
+        if args.axis is None:
+            raise KeyError('Missing axis')
+        elif args.axis2 is None:
+            raise KeyError('Missing axis2')
+        args.axis, args.axis2 = orthogonal_c4(args.axis, args.axis2)
 
+    if args.molecular_orbitals:
+        structure_set.print_wnfsym_mo_irreducible_repr(args.measure,
+                                                       axis=args.axis,
+                                                       axis2=args.axis2,
+                                                       center=args.center,
+                                                       output=common_output)
+
+    structure_set.print_wnfsym_irreducible_repr(args.measure,
+                                                axis=args.axis,
+                                                axis2=args.axis2,
+                                                center=args.center,
+                                                output=common_output)
     if args.trans_matrices:
         structure_set.print_wnfsym_sym_matrices(args.measure,
                                                 axis=args.axis,
@@ -143,12 +167,5 @@ if args.measure:
                                               axis2=args.axis2,
                                               center=args.center,
                                               output=common_output)
-
-    if args.irrep:
-        structure_set.print_wnfsym_irreducible_repr(args.measure,
-                                                    axis=args.axis,
-                                                    axis2=args.axis2,
-                                                    center=args.center,
-                                                    output=common_output)
 
 print_footer(common_output)

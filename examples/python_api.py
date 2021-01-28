@@ -84,7 +84,7 @@ molecules_set.print_minimum_distortion_path_shape('SP-4', 'SS-4', central_atom=1
 geometries_list = file_io.get_geometry_from_file_xyz('../old_examples/coord_2.xyz', read_multiple=True)
 molecules_set = Cosymlib(geometries_list)
 print('\n\n***********{}************'.format('print_electronic_symmetry_measure()'))
-molecules_set.print_electronic_symmetry_measure('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
+molecules_set._print_electronic_symmetry_measure('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
 
 
 molecules_list = file_io.read_generic_structure_file('pirrol.fchk', read_multiple=True)
