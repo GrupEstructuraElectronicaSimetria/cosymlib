@@ -265,6 +265,7 @@ if args.qsym_wfn:
                                                 axis=args.axis,
                                                 axis2=args.axis2,
                                                 center=args.center,
+                                                show_axes=False,
                                                 output=common_output)
 
     symobj.print_wnfsym_irreducible_repr(args.qsym_wfn,

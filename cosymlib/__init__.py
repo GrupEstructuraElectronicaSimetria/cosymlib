@@ -514,7 +514,8 @@ class Cosymlib:
 
         output.write(txt)
 
-    def print_wnfsym_irreducible_repr(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
+    def print_wnfsym_irreducible_repr(self, group, axis=None, axis2=None, center=None, show_axes=True,
+                                      output=sys.stdout):
 
         txt = ''
         for molecule in self._molecules:
@@ -536,18 +537,20 @@ class Cosymlib:
             txt += 'WFN ' + '  '.join(['{:7.3f}'.format(s) for s in data_wf['total']])
             txt += '\n'
 
-        axes_information = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
-        txt += '\nSymmetry parameters\n'
-        txt += 'center: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])
-        txt += '\n'
-        txt += 'axis  : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis']])
-        txt += '\n'
-        txt += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
-        txt += '\n'
+        if show_axes:
+            axes_information = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
+            txt += '\nSymmetry parameters\n'
+            txt += 'center: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])
+            txt += '\n'
+            txt += 'axis  : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis']])
+            txt += '\n'
+            txt += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
+            txt += '\n'
 
         output.write(txt)
 
-    def print_wnfsym_mo_irreducible_repr(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
+    def print_wnfsym_mo_irreducible_repr(self, group, axis=None, axis2=None, center=None, show_axes=True,
+                                         output=sys.stdout):
 
         txt = ''
         for molecule in self._molecules:
@@ -576,30 +579,34 @@ class Cosymlib:
                     non_one = True
                 txt += '\n'
 
-            txt += '\nBeta MOs: Irred. Rep. Decomposition\n'
-            txt += sep_line
-            txt += '     ' + '{:^10}'.format('occup') + '{:^8}'.format('E(eV)') + \
-                   '  '.join(['{:^7}'.format(s) for s in ir_mo['labels']])
-            txt += '\n'
-            txt += sep_line
-            for i, line in enumerate(ir_mo['beta']):
-                txt += '{:4d}'.format(i + 1) + '{:6d}'.format(beta_occupancy[i]) + \
-                       '{:10.2f}'.format(beta_energies[i]) + ' '*2 + '  '.join(['{:7.3f}'.format(s) for s in line])
-                if abs(sum(line) - 1) > 1e-2:
-                    txt += '*'
-                    non_one = True
+            if molecule.electronic_structure.coefficients_b != molecule.electronic_structure.coefficients_a \
+                    and beta_occupancy != alpha_energies:
+                txt += '\nBeta MOs: Irred. Rep. Decomposition\n'
+                txt += sep_line
+                txt += '     ' + '{:^10}'.format('occup') + '{:^8}'.format('E(eV)') + \
+                       '  '.join(['{:^7}'.format(s) for s in ir_mo['labels']])
                 txt += '\n'
+                txt += sep_line
+                for i, line in enumerate(ir_mo['beta']):
+                    txt += '{:4d}'.format(i + 1) + '{:6d}'.format(beta_occupancy[i]) + \
+                           '{:10.2f}'.format(beta_energies[i]) + ' '*2 + '  '.join(['{:7.3f}'.format(s) for s in line])
+                    if abs(sum(line) - 1) > 1e-2:
+                        txt += '*'
+                        non_one = True
+                    txt += '\n'
 
             if non_one:
                 warn('The sum of some molecular orbital irreducible represaentations are not equal one (*)')
-        axes_information = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
-        txt += '\nSymmetry parameters\n'
-        txt += 'center: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])
-        txt += '\n'
-        txt += 'axis  : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis']])
-        txt += '\n'
-        txt += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
-        txt += '\n'
+
+        if show_axes:
+            axes_information = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
+            txt += '\nSymmetry parameters\n'
+            txt += 'center: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])
+            txt += '\n'
+            txt += 'axis  : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis']])
+            txt += '\n'
+            txt += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
+            txt += '\n'
 
         output.write(txt)
 
