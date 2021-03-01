@@ -546,6 +546,11 @@ class Cosymlib:
             txt += '\n'
             txt += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
             txt += '\n'
+            # txt += '\n'
+            # txt += file_io.get_file_xyz_txt(molecule)
+            # txt += '{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format('X1', *axes_information['center'])
+            # txt += '{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format('X2', *axes_information['axis'])
+            # txt += '{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format('X2', *axes_information['axis2'])
 
         output.write(txt)
 
@@ -579,8 +584,8 @@ class Cosymlib:
                     non_one = True
                 txt += '\n'
 
-            if molecule.electronic_structure.coefficients_b != molecule.electronic_structure.coefficients_a \
-                    and beta_occupancy != alpha_energies:
+            if np.array(molecule.electronic_structure.coefficients_b
+                        != molecule.electronic_structure.coefficients_a).all() and beta_occupancy != alpha_energies:
                 txt += '\nBeta MOs: Irred. Rep. Decomposition\n'
                 txt += sep_line
                 txt += '     ' + '{:^10}'.format('occup') + '{:^8}'.format('E(eV)') + \
@@ -607,6 +612,11 @@ class Cosymlib:
             txt += '\n'
             txt += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
             txt += '\n'
+            # txt += '\n'
+            # txt += file_io.get_file_xyz_txt(molecule)
+            # txt += '{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format('X1', *axes_information['center'])
+            # txt += '{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format('X2', *axes_information['axis'])
+            # txt += '{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format('X2', *axes_information['axis2'])
 
         output.write(txt)
 
