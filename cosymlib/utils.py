@@ -64,8 +64,8 @@ def plot_molecular_orbital_diagram(molecule, wfnsym, mo_range=None):
 
 
 def swap_vectors(v1, v2, position):
-    vector1 = v1.copy()
-    vector2 = v2.copy()
+    vector1 = v1.get_copy()
+    vector2 = v2.get_copy()
     for i in range(len(v1)):
         if i >= position:
             vector1[i] = v2[i]

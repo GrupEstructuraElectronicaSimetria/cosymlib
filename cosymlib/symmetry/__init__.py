@@ -54,14 +54,21 @@ class Symmetry:
                  ):
 
         try:
+            # Interpret as Geometry or molecule
             self._coordinates = structure.get_positions()
             self._symbols = structure.get_symbols()
             self._connectivity = structure.get_connectivity()
         except AttributeError:
-            # Interpret as numpy array of coordinates
+            # Interpret as numpy array of coordinates or list of lists
             self._coordinates = structure
             self._symbols = None
             self._connectivity = None
+
+        # If molecule object add electronic structure
+        try:
+            self._electronic_structure = structure.electronic_structure
+        except AttributeError:
+            self._electronic_structure = None
 
         self._central_atom = central_atom
         self._center = center
@@ -70,11 +77,6 @@ class Symmetry:
         self._axis = axis
         self._axis2 = axis2
         self._results = {}
-
-        try:
-            self._electronic_structure = structure.electronic_structure
-        except AttributeError:
-            self._electronic_structure = None
 
     # Modifier methods
     def set_parameters(self, parameters_dict):
@@ -118,6 +120,8 @@ class Symmetry:
         return self._results[key]
 
     def _get_wfnsym_results(self, group):
+        if self._electronic_structure is None:
+            raise Exception('Electronic structure not set')
 
         key = _get_key_wfnsym(group, self._axis, self._axis2, self._center, self._electronic_structure.alpha_occupancy,
                               self._electronic_structure.beta_occupancy)
