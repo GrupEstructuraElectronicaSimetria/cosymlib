@@ -6,6 +6,7 @@ os:
 python:
   - "2.7"
   - "3.6"
+  - "3.8"
 
 branches:
   only:
@@ -45,3 +46,6 @@ deploy:
     on:
       branch: master
       tags: false
+
+allow_failures:
+  - python: "2.7"
