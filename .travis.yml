@@ -19,6 +19,11 @@ notifications:
   - abelcarreras83@gmail.com
   - komuisan@gmail.com
 
+matrix:
+  fast_finish: true
+  allow_failures:
+    - python: "2.7"
+
 install:
     - sudo apt-get install libblas-dev liblapack-dev
     - sudo apt-get install gfortran
@@ -46,6 +51,3 @@ deploy:
     on:
       branch: master
       tags: false
-
-allow_failures:
-  - python: "2.7"
