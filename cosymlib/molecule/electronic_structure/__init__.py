@@ -1,3 +1,6 @@
+HARTREE_TO_EV = 27.21139563180092
+
+
 class ElectronicStructure:
     """
     Main Electronic structure class
@@ -10,13 +13,13 @@ class ElectronicStructure:
     # :type charge: int
     :param multiplicity: The multiplicity
     :type multiplicity: int
-    :param alpha_energies: Alpha molecular orbital energies
+    :param alpha_energies: Alpha molecular orbital energies in Hartree
     :type alpha_energies: list
-    :param beta_energies: Beta molecular orbital energies
+    :param beta_energies: Beta molecular orbital energies in Hartree
     :type beta_energies: list
-    :param alpha_occupancy: List of alpha electrons
+    :param alpha_occupancy: Occupancy of alpha orbitals
     :type alpha_occupancy: list
-    :param beta_occupancy: List of beta electrons
+    :param beta_occupancy: Occupancy of beta orbitals
     :type beta_occupancy: list
 
     """
@@ -39,12 +42,11 @@ class ElectronicStructure:
         else:
             self._Cb = orbital_coefficients[1]
 
-        ha_eV = 27.21139563180092
-        self._alpha_energies = [energy*ha_eV for energy in alpha_energies]
+        self._alpha_energies = [energy * HARTREE_TO_EV for energy in alpha_energies]
         if len(beta_energies) == 0:
-            self._beta_energies = [energy*ha_eV for energy in alpha_energies]
+            self._beta_energies = [energy * HARTREE_TO_EV for energy in alpha_energies]
         else:
-            self._beta_energies = [energy*ha_eV for energy in beta_energies]
+            self._beta_energies = [energy * HARTREE_TO_EV for energy in beta_energies]
 
         self._alpha_occupancy = alpha_occupancy
         self._beta_occupancy = beta_occupancy
@@ -61,14 +63,14 @@ class ElectronicStructure:
 
     def set_alpha_occupancy(self, occupancy):
         if len(occupancy) > len(self._Ca):
-            raise IndexError('Lenght of alpha occupancy list is longer than the molecular orbitals provided')
+            raise IndexError('Alpha occupancy list do not match with molecular orbitals')
         self._alpha_occupancy = occupancy
         self._occupancy_consistency()
         self._recalculate_spin()
 
     def set_beta_occupancy(self, occupancy):
         if len(occupancy) > len(self._Cb):
-            raise IndexError('Lenght of beta occupancy list is longer than the molecular orbitals provided')
+            raise IndexError('Beta occupancy list do not match with molecular orbitals')
         self._beta_occupancy = occupancy
         self._occupancy_consistency()
         self._recalculate_spin()

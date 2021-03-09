@@ -57,6 +57,20 @@ def _get_table_format(labels, molecules_names, data):
     return txt
 
 
+def _get_axis_info(molecule, group, axis, axis2, center):
+
+    txt = ''
+    axis_info = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
+    txt += '\nSymmetry axis orientation\n'
+    txt += 'center: ' + '  '.join(['{:12.8f}'.format(s) for s in axis_info['center']])
+    txt += '\n'
+    txt += 'axis  : ' + '  '.join(['{:12.8f}'.format(s) for s in axis_info['axis']])
+    txt += '\n'
+    txt += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axis_info['axis2']])
+    txt += '\n'
+    return txt
+
+
 class Cosymlib:
     """
     Main cosymlib class
@@ -336,11 +350,6 @@ class Cosymlib:
 
         output.write(txt)
 
-    # This should be substituted by calling methods within this class
-    def OLD_print_wnfsym_measure_verbose(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
-        self.print_wnfsym_sym_matrices(group, axis=axis, axis2=axis2, center=center, output=output)
-        self.print_wnfsym_irreducible_repr(group, axis=axis, axis2=axis2, center=center, output=output)
-
     def _print_electronic_symmetry_measure(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
 
         txt = ''
@@ -520,7 +529,7 @@ class Cosymlib:
             ir_mo = molecule.get_mo_irreducible_representations(group, axis=axis, axis2=axis2, center=center)
             data_wf = molecule.get_wf_irreducible_representations(group, axis=axis, axis2=axis2, center=center)
 
-            txt = '\nMolecule : {}\n'.format(molecule.name)
+            txt += '\nMolecule : {}\n'.format(molecule.name)
             sep_line = '     ' + '---------' * (len(ir_mo['labels'])) + '\n'
 
             txt += '\nWaveFunction: Irred. Rep. Decomposition\n'
@@ -535,14 +544,7 @@ class Cosymlib:
             txt += 'WFN ' + '  '.join(['{:7.3f}'.format(s) for s in data_wf['total']])
             txt += '\n'
 
-        axes_information = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
-        txt += '\nSymmetry parameters\n'
-        txt += 'center: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])
-        txt += '\n'
-        txt += 'axis  : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis']])
-        txt += '\n'
-        txt += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
-        txt += '\n'
+            txt += _get_axis_info(molecule, group, axis, axis2, center)
 
         output.write(txt)
 
@@ -556,7 +558,7 @@ class Cosymlib:
             beta_energies = molecule.electronic_structure.beta_energies
             beta_occupancy = molecule.electronic_structure.beta_occupancy
 
-            txt = '\nMolecule : {}\n'.format(molecule.name)
+            txt += '\nMolecule : {}\n'.format(molecule.name)
 
             sep_line = '     ' + '---------' * (2 + len(ir_mo['labels'])) + '\n'
 
@@ -591,14 +593,8 @@ class Cosymlib:
 
             if non_one:
                 warn('The sum of some molecular orbital irreducible represaentations are not equal one (*)')
-        axes_information = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
-        txt += '\nSymmetry parameters\n'
-        txt += 'center: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])
-        txt += '\n'
-        txt += 'axis  : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis']])
-        txt += '\n'
-        txt += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
-        txt += '\n'
+
+            txt += _get_axis_info(molecule, group, axis, axis2, center)
 
         output.write(txt)
 

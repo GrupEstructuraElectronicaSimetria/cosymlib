@@ -41,7 +41,7 @@ class Molecule:
         self._symmetry = geometry._symmetry
         self._shape = geometry._shape
 
-    def molecule_copy(self):
+    def get_copy(self):
         return deepcopy(self)
 
     def set_name(self, name):
@@ -70,7 +70,7 @@ class Molecule:
         :rtype: ElectronicStructure
         """
         if self._electronic_structure is None:
-            warn('Warning: Electronic structure auto generated from Extended-Huckel calculation')
+            warn('Electronic structure auto generated from Extended-Huckel calculation')
             eh = ExtendedHuckel(self.geometry)
             self._electronic_structure = ElectronicStructure(basis=eh.get_basis(),
                                                              orbital_coefficients=[eh.get_mo_coefficients(), []],
@@ -82,8 +82,8 @@ class Molecule:
 
         return self._electronic_structure
 
-    # TODO: 'symmetry' and 'shape' properties should be removed. All methods inside these
-    # TODO: classes should be mirrored in geometry/molecule class
+    # TODO: 'symmetry' and 'shape' properties may be removed. All methods inside these
+    # TODO: classes may be mirrored in geometry/molecule class? [idea]
     @property
     def symmetry(self):
         return self._symmetry
