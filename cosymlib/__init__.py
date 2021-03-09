@@ -15,7 +15,7 @@ import os
 import numpy as np
 
 
-def _get_symgroup_arguments(locals):
+def _get_symmetry_arguments(locals):
     kwargs = dict(locals)
     del kwargs['self']
     for element in ['self', 'output']:
@@ -25,7 +25,7 @@ def _get_symgroup_arguments(locals):
     return kwargs
 
 
-def get_table_format(labels, molecules_names, data):
+def _get_table_format(labels, molecules_names, data):
 
     txt = 'Structure'
     max_len_name = 12
@@ -180,7 +180,7 @@ class Cosymlib:
             else:
                 references_names.append(reference)
 
-        txt_shape = get_table_format(references_names, molecules_names, measure_list)
+        txt_shape = _get_table_format(references_names, molecules_names, measure_list)
         output.write(txt_shape)
 
     def print_shape_structure(self, shape_reference, central_atom=0, fix_permutation=False, output=sys.stdout):
@@ -224,7 +224,6 @@ class Cosymlib:
         for geometry in geometries:
             output.write(file_io.get_file_xyz_txt(geometry))
 
-    # TODO: Change name of all symgroup named functions
     def print_geometric_measure_info(self, label, multi=1, central_atom=0, center=None, output=sys.stdout):
         """
         Prints geometric symmetry measure verbose
@@ -240,7 +239,7 @@ class Cosymlib:
         :param output: Display hook
         :type: hook
         """
-        kwargs = _get_symgroup_arguments(locals())
+        kwargs = _get_symmetry_arguments(locals())
         sep_line = '..................................................\n'
 
         txt = 'Evaluating symmetry operation : {}\n'.format(label)
@@ -291,7 +290,7 @@ class Cosymlib:
         :param output: Display hook
         :type output: hook
         """
-        kwargs = _get_symgroup_arguments(locals())
+        kwargs = _get_symmetry_arguments(locals())
 
         txt = 'Evaluating symmetry operation : {}\n \n'.format(label)
         for idx, molecule in enumerate(self._molecules):
@@ -319,7 +318,7 @@ class Cosymlib:
         :param output: Display hook
         :type output: hook
         """
-        kwargs = _get_symgroup_arguments(locals())
+        kwargs = _get_symmetry_arguments(locals())
 
         for idm, molecule in enumerate(self._molecules):
             geometry = molecule.geometry.get_symmetry_nearest_structure(**kwargs)
@@ -333,7 +332,7 @@ class Cosymlib:
                              for geometry in self.get_geometries()])
 
         molecules_names = [molecule.name for molecule in self._molecules]
-        txt = get_table_format(labels, molecules_names, csm_list)
+        txt = _get_table_format(labels, molecules_names, csm_list)
 
         output.write(txt)
 

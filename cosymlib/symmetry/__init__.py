@@ -287,22 +287,3 @@ class Symmetry:
         return {'center' : results.center,
                 'axis': results.axis,
                 'axis2': results.axis2}
-
-    # Old method to be deleted
-    def Osymmetry_overlap_analysis(self, group, vector_axis1, vector_axis2, center):
-        results = self._get_wfnsym_results(group)
-
-        return [results.ideal_gt, results.SymLab, results.mo_SOEVs_a,
-                results.mo_SOEVs_b, results.wf_SOEVs_a, results.wf_SOEVs_b,
-                results.wf_SOEVs, results.grim_coef, results.csm_coef]
-
-    # To be deleted
-    def Osymmetry_irreducible_representation_analysis(self, group, vector_axis1, vector_axis2, center):
-        results = self._get_wfnsym_results(group)
-        return [results.IRLab, results.mo_IRd_a, results.mo_IRd_b,
-                results.wf_IRd_a, results.wf_IRd_b, results.wf_IRd]
-
-    # To be deleted
-    def Oold_symmetry_matrix(self, group, vector_axis1, vector_axis2, center):
-        results = self._get_wfnsym_results(group)
-        return results.SymMat
