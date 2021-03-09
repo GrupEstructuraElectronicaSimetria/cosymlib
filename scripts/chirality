@@ -8,7 +8,7 @@ import yaml
 
 
 # positional arguments
-parser = argparse.ArgumentParser(description='gsym')
+parser = argparse.ArgumentParser(description='chirality')
 
 # positional arguments
 parser.add_argument(type=str,
