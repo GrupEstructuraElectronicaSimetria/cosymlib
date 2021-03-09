@@ -7,7 +7,7 @@ import argparse
 import sys
 import yaml
 
-parser = argparse.ArgumentParser(description='Shape_map ')
+parser = argparse.ArgumentParser(description='shape_map ')
 
 # positional arguments
 parser.add_argument(type=str,

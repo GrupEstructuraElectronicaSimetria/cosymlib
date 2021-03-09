@@ -40,7 +40,6 @@ class Molecule:
         self._electronic_structure = electronic_structure
         self._symmetry = geometry._symmetry
         self._shape = geometry._shape
-        self._symmetry.set_electronic_structure(electronic_structure)
 
     def molecule_copy(self):
         return deepcopy(self)
@@ -80,7 +79,6 @@ class Molecule:
                                                              multiplicity=eh.get_multiplicity(),
                                                              alpha_occupancy=[1]*eh.get_alpha_electrons(),
                                                              beta_occupancy=[1]*eh.get_beta_electrons())
-            self.symmetry.set_electronic_structure(self._electronic_structure)
 
         return self._electronic_structure
 
@@ -93,12 +91,6 @@ class Molecule:
     @property
     def shape(self):
         return self._shape
-
-    # TODO: Old method (to be deprecated)
-    @set_parameters
-    def OLD_get_mo_symmetry(self, group, axis=None, axis2=None, center=None):
-        warn('This method is deprecated', DeprecationWarning)
-        return self.symmetry._get_wfnsym_results(group)
 
     # New ones (to substitute get_mo_symmetry)
     @set_parameters
@@ -171,6 +163,7 @@ class Molecule:
     def get_pointgroup(self, tol=0.01):
         """
         Get the symmetry point group
+
         :param tol: The tolerance
         :type tol: float
         :return: The point group
