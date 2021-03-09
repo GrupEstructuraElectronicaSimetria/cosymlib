@@ -37,14 +37,15 @@ methane = geometries_list[0]
 for i in range(100):
     measure = methane.get_shape_measure('SP-4', central_atom=1)
 
-print('final measure:', measure)
+print('final measure: {}'.format(measure))
 
 # Call shape as method of Shape class (semi function call)
 print('measure:', shape.Shape(methane).measure('SP-4', central_atom=1))
 print('structure:\n', shape.Shape(methane).structure('SP-4', central_atom=1))
 
 # test symgroup
-print('\nSYMMETRY\n--------')
+print('\nSYMMETRY'
+      '\n--------')
 
 geometries_list = file_io.get_geometry_from_file_pdb('../old_examples/methane.pdb', read_multiple=True)
 print('measure C3: {} '.format(geometries_list[0].get_symmetry_measure('c3')))
@@ -78,7 +79,7 @@ print('\nCOSYMLIB\n--------')
 geometries_list = file_io.get_geometry_from_file_xyz('../old_examples/coord.xyz', read_multiple=True)
 molecules_set = Cosymlib(geometries_list)
 
-molecules_set.print_shape_measure('SP-4', central_atom=1)
+molecules_set.print_shape_measure(['SP-4'], central_atom=1)
 molecules_set.print_minimum_distortion_path_shape('SP-4', 'SS-4', central_atom=1, max_dev=103, max_gco=200)
 
 geometries_list = file_io.get_geometry_from_file_xyz('../old_examples/coord_2.xyz', read_multiple=True)
