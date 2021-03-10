@@ -369,14 +369,8 @@ class Cosymlib:
             txt += '{:<9} '.format(molecule.name) + '  '.join(['{:7.3f}'.format(s) for s in wf_measure['csm']])
             txt += '\n'
             first = False
-        axes_information = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
-        txt += '\nSymmetry parameters\n'
-        txt += 'center: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])
-        txt += '\n'
-        txt += 'axis  : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis']])
-        txt += '\n'
-        txt += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
-        txt += '\n'
+
+            txt += _get_axis_info(molecule, group, axis, axis2, center)
 
         output.write(txt)
 
@@ -404,15 +398,8 @@ class Cosymlib:
             txt += '{:<9} '.format(molecule.name) + '  '.join(['{:7.3f}'.format(s) for s in dens_measure['csm_coef']])
             txt += '\n'
             first = False
-            axes_information = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
             txt2 += '{:<9} '.format(molecule.name) + '{:7.3f}\n'.format(dens_measure['csm'])
-            txt2 += '\nSymmetry parameters\n'
-            txt2 += 'center: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])
-            txt2 += '\n'
-            txt2 += 'axis  : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis']])
-            txt2 += '\n'
-            txt2 += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
-            txt2 += '\n'
+            txt2 += _get_axis_info(molecule, group, axis, axis2, center)
 
         txt += '\n' + txt2
 
