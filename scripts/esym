@@ -147,6 +147,7 @@ if args.measure:
                                                        axis=args.axis,
                                                        axis2=args.axis2,
                                                        center=args.center,
+                                                       show_axes=False,
                                                        output=common_output)
 
     structure_set.print_wnfsym_irreducible_repr(args.measure,

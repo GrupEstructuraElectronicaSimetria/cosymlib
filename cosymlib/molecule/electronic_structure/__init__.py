@@ -26,14 +26,12 @@ class ElectronicStructure:
     def __init__(self,
                  basis,
                  orbital_coefficients,
-                 # charge=None,
                  multiplicity=None,
                  alpha_energies=None,
                  beta_energies=None,
                  alpha_occupancy=None,
                  beta_occupancy=None):
 
-        # self._charge = charge
         self._multiplicity = multiplicity
         self._basis = basis
         self._Ca = orbital_coefficients[0]
@@ -87,10 +85,6 @@ class ElectronicStructure:
         if len(self._beta_occupancy) < len(self._Cb):
             for i in range(len(self._Cb) - len(self._beta_occupancy)):
                 self._beta_occupancy.append(0)
-
-    # @property
-    # def charge(self):
-    #     return self._charge
 
     @property
     def multiplicity(self):
