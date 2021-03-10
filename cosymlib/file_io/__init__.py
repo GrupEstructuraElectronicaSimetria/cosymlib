@@ -72,7 +72,7 @@ def get_geometry_from_file_xyz(file_name, read_multiple=False):
                     float(line.split()[1])
                     input_molecule[0].append(line.split()[0])
                     input_molecule[1].append(line.split()[1:])
-                except IndexError:
+                except (IndexError, ValueError):
                     if input_molecule[0]:
                         if len(input_molecule[0]) != n_atoms:
                             warnings.warn('Number of atoms in line {} and number '

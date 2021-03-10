@@ -522,7 +522,8 @@ class Cosymlib:
 
         output.write(txt)
 
-    def print_wnfsym_irreducible_repr(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
+    def print_wnfsym_irreducible_repr(self, group, axis=None, axis2=None, center=None, show_axes=True,
+                                      output=sys.stdout):
 
         txt = ''
         for molecule in self._molecules:
@@ -544,11 +545,13 @@ class Cosymlib:
             txt += 'WFN ' + '  '.join(['{:7.3f}'.format(s) for s in data_wf['total']])
             txt += '\n'
 
-            txt += _get_axis_info(molecule, group, axis, axis2, center)
+            if show_axes:
+                txt += _get_axis_info(molecule, group, axis, axis2, center)
 
         output.write(txt)
 
-    def print_wnfsym_mo_irreducible_repr(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
+    def print_wnfsym_mo_irreducible_repr(self, group, axis=None, axis2=None, center=None, show_axes=True,
+                                         output=sys.stdout):
 
         txt = ''
         for molecule in self._molecules:
@@ -594,7 +597,8 @@ class Cosymlib:
             if non_one:
                 warn('The sum of some molecular orbital irreducible represaentations are not equal one (*)')
 
-            txt += _get_axis_info(molecule, group, axis, axis2, center)
+            if show_axes:
+                txt += _get_axis_info(molecule, group, axis, axis2, center)
 
         output.write(txt)
 
