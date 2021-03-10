@@ -1,7 +1,7 @@
 #from cosymlib.molecule.geometry import Geometry
 from cosymlib.molecule.electronic_structure import ElectronicStructure
 from cosymlib.simulation import ExtendedHuckel
-from cosymlib.tools import element_to_atomic_number, element_valence_electron
+from cosymlib.tools import element_to_atomic_number
 from warnings import warn
 from copy import deepcopy
 
@@ -31,7 +31,6 @@ class Molecule:
                  electronic_structure=None,
                  name=None):
 
-        # TODO: this exception has no sense, as you should specify a geometry object not an input file
         if not geometry:
             raise Exception('No geometry found in the input file, check out input file for possible errors')
         if name is None:
@@ -41,8 +40,6 @@ class Molecule:
         self._electronic_structure = electronic_structure
         self._symmetry = geometry._symmetry
         self._shape = geometry._shape
-        self._symmetry.set_electronic_structure(electronic_structure)
-        self._core_atoms = 0
 
     def get_copy(self):
         return deepcopy(self)
@@ -82,9 +79,6 @@ class Molecule:
                                                              multiplicity=eh.get_multiplicity(),
                                                              alpha_occupancy=[1]*eh.get_alpha_electrons(),
                                                              beta_occupancy=[1]*eh.get_beta_electrons())
-            self.symmetry.set_electronic_structure(self._electronic_structure)
-            self._core_atoms = sum([element_to_atomic_number(symbol) for symbol in self.get_symbols()]) - \
-                               sum([element_valence_electron(symbol) for symbol in self.get_symbols()])
 
         return self._electronic_structure
 
@@ -97,12 +91,6 @@ class Molecule:
     @property
     def shape(self):
         return self._shape
-
-    # TODO: Old method (to be deprecated)
-    @set_parameters
-    def OLD_get_mo_symmetry(self, group, axis=None, axis2=None, center=None):
-        warn('This method is deprecated', DeprecationWarning)
-        return self.symmetry._get_wfnsym_results(group)
 
     # New ones (to substitute get_mo_symmetry)
     @set_parameters
@@ -175,6 +163,7 @@ class Molecule:
     def get_pointgroup(self, tol=0.01):
         """
         Get the symmetry point group
+
         :param tol: The tolerance
         :type tol: float
         :return: The point group
@@ -189,5 +178,5 @@ class Molecule:
         if self._electronic_structure is None:
             return None
         net_electrons = sum([element_to_atomic_number(symbol) for symbol in self.get_symbols()])
-        return (net_electrons - self._core_atoms) - (sum(self.electronic_structure.alpha_occupancy) +
-                                                     sum(self.electronic_structure.beta_occupancy))
+        return net_electrons - (sum(self.electronic_structure.alpha_occupancy) +
+                                sum(self.electronic_structure.beta_occupancy))
