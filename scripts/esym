@@ -6,6 +6,7 @@ from cosymlib.symmetry.tools import print_symmetry_labels
 from cosymlib.symmetry.tools import orthogonal_c4
 import argparse
 import sys
+import os
 import yaml
 import numpy as np
 
@@ -88,6 +89,11 @@ parser.add_argument('-axis2',
                     default=None,
                     nargs=3,
                     help='set secondary symmetry axis')
+parser.add_argument('--add_axes',
+                    dest='add_axes',
+                    action='store_true',
+                    default=False,
+                    help='create an xyz file of the molecule with axes orientation as dummies')
 parser.add_argument('-c3_c4',
                     dest='c3_c4',
                     action='store_true',
@@ -168,5 +174,14 @@ if args.measure:
                                               axis2=args.axis2,
                                               center=args.center,
                                               output=common_output)
+
+    if args.add_axes:
+        file_name, file_extension = os.path.splitext(args.input_file)
+        output_str = open(file_name + '_orient.xyz', 'w')
+        structure_set.print_esym_orientation(args.measure,
+                                              axis=args.axis,
+                                              axis2=args.axis2,
+                                              center=args.center,
+                                              output=output_str)
 
 print_footer(common_output)

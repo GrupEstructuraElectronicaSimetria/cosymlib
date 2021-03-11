@@ -146,6 +146,11 @@ parser.add_argument('--qsym_mo_overlaps',
                     default=False,
                     action='store_true',
                     help='print the molecular orbitals overlap')
+parser.add_argument('--esym_add_axes',
+                    dest='esym_add_axes',
+                    action='store_true',
+                    default=False,
+                    help='create an xyz file of the molecule with axes orientation as dummies')
 parser.add_argument('-mo_diagram', dest="mo_diagram", action='store_true', default=False,
                     help='Perform the calculations with the command file')
 
@@ -294,6 +299,15 @@ if args.qsym_wfn:
                                axis=args.axis,
                                axis2=args.axis2,
                                center=args.center)
+
+    if args.esym_add_axes:
+        file_name, file_extension = os.path.splitext(args.input_file)
+        output_str = open(file_name + '_orient.xyz', 'w')
+        symobj.print_esym_orientation(args.measure,
+                                      axis=args.axis,
+                                      axis2=args.axis2,
+                                      center=args.center,
+                                      output=output_str)
 
 # Pointgroup command
 if args.pointgroup:
