@@ -405,7 +405,7 @@ class Cosymlib:
 
         output.write(txt)
 
-    def print_wnfsym_sym_matrices(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
+    def print_esym_matrices(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
 
         txt = ''
         for molecule in self._molecules:
@@ -441,7 +441,7 @@ class Cosymlib:
                                                                       array2[0], array2[1], array2[2])
         output.write(txt)
 
-    def print_wnfsym_sym_ovelap(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
+    def print_esym_sym_overlaps(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
 
         txt = ''
         for molecule in self._molecules:
@@ -509,8 +509,7 @@ class Cosymlib:
 
         output.write(txt)
 
-    def print_wnfsym_irreducible_repr(self, group, axis=None, axis2=None, center=None, show_axes=True,
-                                      output=sys.stdout):
+    def print_esym_irreducible_repr(self, group, axis=None, axis2=None, center=None, show_axes=True, output=sys.stdout):
 
         txt = ''
         for molecule in self._molecules:
@@ -537,8 +536,8 @@ class Cosymlib:
 
         output.write(txt)
 
-    def print_wnfsym_mo_irreducible_repr(self, group, axis=None, axis2=None, center=None, show_axes=True,
-                                         output=sys.stdout):
+    def print_esym_mo_irreducible_repr(self, group, axis=None, axis2=None, center=None, show_axes=True,
+                                       output=sys.stdout):
 
         txt = ''
         for molecule in self._molecules:
@@ -587,6 +586,35 @@ class Cosymlib:
             if show_axes:
                 txt += _get_axis_info(molecule, group, axis, axis2, center)
 
+        output.write(txt)
+
+    def print_esym_orientation(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
+        """
+        Prints down an xyz file of the molecule with the orientation_axis
+
+        :param group: Symmetry group
+        :type group: string
+        :param axis: Main symmetry axis of group
+        :type axis: list
+        :param axis2: Secondary symmetry axis of group
+        :type axis2: list
+        :param center: Center
+        :type center: list
+        :param output: Display hook
+        :type output: hook
+        """
+
+        txt = ''
+        for molecule in self._molecules:
+            txt += file_io.get_file_xyz_txt(molecule.geometry)
+            txt = txt.replace(str(molecule.geometry.get_n_atoms()), str(molecule.geometry.get_n_atoms() + 3), 1)
+            axis_info = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
+            txt += 'X1 ' + ' '.join(['{:11.6f}'.format(s) for s in axis_info['center']])
+            txt += '\n'
+            txt += 'X2 ' + ' '.join(['{:11.6f}'.format(s) for s in axis_info['axis']])
+            txt += '\n'
+            txt += 'X2 ' + ' '.join(['{:11.6f}'.format(s) for s in axis_info['axis2']])
+            txt += '\n'
         output.write(txt)
 
     def plot_mo_diagram(self, group, axis=None, axis2=None, center=None):

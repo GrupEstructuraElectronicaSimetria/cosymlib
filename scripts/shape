@@ -61,11 +61,11 @@ parser.add_argument('-r', '--references',
                     action='store_true',
                     default=False,
                     help='store the coordinates of the reference polyhedra in a file')
-parser.add_argument('-cref', '--custom_ref',
-                    dest='custom_ref',
+parser.add_argument('-m_custom', '--measure_custom',
+                    dest='measure_custom',
                     metavar='filename',
                     default=None,
-                    help='define filename containing the structure/s to be used as reference (requires -m custom)')
+                    help='define filename containing the structure/s to be used as reference')
 
 # Extra options
 parser.add_argument('-l', '--labels', action='store_true',
@@ -147,16 +147,14 @@ if args.labels:
     common_output.write(tools.get_shape_label_info(n_atoms, with_central_atom=args.central_atom))
     exit()
 
-if args.measure == 'custom':
-    if args.custom_ref is not None:
-        reference = file_io.read_generic_structure_file(args.custom_ref, read_multiple=True)
-        [x.set_positions(args.central_atom - 1) for x in reference]
-    else:
-        sys.exit('Custom reference file not selected (use -cref or --custom_ref filename)')
+if args.measure_custom:
+    reference = file_io.read_generic_structure_file(args.measure_custom, read_multiple=True)
+    [x.set_positions(args.central_atom - 1) for x in reference]
+    args.measure = 'custom'
 elif args.measure == 'all':
     reference = tools.get_structure_references(vertices)
 else:
-    reference = args.measure
+    reference = [args.measure]
 
 if args.structure:
     if common_output is sys.stdout:
