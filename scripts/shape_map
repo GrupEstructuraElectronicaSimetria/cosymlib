@@ -21,17 +21,26 @@ parser.add_argument(type=str,
                     help='Input file with keywords')
 
 # Main options
-parser.add_argument('-m', '--map',
-                    dest='map',
-                    metavar='SH',
+parser.add_argument('-m_1', '--measure_1',
+                    dest='m_1',
+                    metavar='SH1',
                     default=None,
-                    nargs=2,
-                    help='get map using shape 2 labels')
-parser.add_argument('-cref', '--custom_ref',
-                    dest='custom_ref',
-                    metavar='filename',
+                    help='shape label for x axis')
+parser.add_argument('-m_2', '--measure_2',
+                    dest='m_2',
+                    metavar='SH2',
                     default=None,
-                    help='get map using custom 2 structures from a file')
+                    help='shape label for y axis')
+parser.add_argument('-m_custom_1', '--measure_custom_1',
+                    dest='m_custom_1',
+                    metavar='SH1',
+                    default=None,
+                    help='shape reference structure for x axis')
+parser.add_argument('-m_custom_2', '--measure_custom_2',
+                    dest='m_custom_2',
+                    metavar='SH2',
+                    default=None,
+                    help='shape reference structure for y axis')
 parser.add_argument('-o', '--output_name',
                     dest='output_name',
                     metavar='filename',
@@ -126,17 +135,25 @@ if args.labels:
     common_output.write(tools.get_shape_label_info(n_atoms, with_central_atom=args.central_atom))
     exit()
 
-reference_polyhedron = []
-if args.custom_ref:
-    reference_polyhedron = file_io.get_geometry_from_file_xyz(args.custom_ref, read_multiple=True)
-    [x.set_positions(args.central_atom - 1) for x in reference_polyhedron]
+if args.m_1 and args.m_custom_1:
+    raise ReferenceError('Either m_1 or m_custom_1 should be pointing to the second axis')
+elif args.m_1:
+    references = [args.m_1]
+elif args.m_custom_1:
+    reference_polyhedron = file_io.get_geometry_from_file_xyz(args.m_custom_1, read_multiple=False)
+    reference_polyhedron.set_positions(args.central_atom - 1)
+    references = [reference_polyhedron]
 
-    references = [geom for geom in reference_polyhedron]
-    args.map = 'custom'
-else:
-    references = args.map
+if args.m_2 and args.m_custom_2:
+    raise ReferenceError('Either m_2 or m_custom_2 should be pointing to the first axis')
+elif args.m_2:
+    references.append(args.m_2)
+elif args.m_custom_2:
+    reference_polyhedron = file_io.get_geometry_from_file_xyz(args.m_custom_1, read_multiple=False)
+    reference_polyhedron.set_positions(args.central_atom - 1)
+    references.append(reference_polyhedron)
 
-if args.map:
+if args.m_1 or args.m_custom_1:
     structure_set.print_minimum_distortion_path_shape(references[0],
                                                       references[1],
                                                       central_atom=args.central_atom,

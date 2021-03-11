@@ -149,27 +149,27 @@ if args.measure:
         args.axis, args.axis2 = orthogonal_c4(args.axis, args.axis2)
 
     if args.molecular_orbitals:
-        structure_set.print_wnfsym_mo_irreducible_repr(args.measure,
-                                                       axis=args.axis,
-                                                       axis2=args.axis2,
-                                                       center=args.center,
-                                                       show_axes=False,
-                                                       output=common_output)
+        structure_set.print_esym_mo_irreducible_repr(args.measure,
+                                                     axis=args.axis,
+                                                     axis2=args.axis2,
+                                                     center=args.center,
+                                                     show_axes=False,
+                                                     output=common_output)
 
-    structure_set.print_wnfsym_irreducible_repr(args.measure,
-                                                axis=args.axis,
-                                                axis2=args.axis2,
-                                                center=args.center,
-                                                output=common_output)
+    structure_set.print_esym_irreducible_repr(args.measure,
+                                              axis=args.axis,
+                                              axis2=args.axis2,
+                                              center=args.center,
+                                              output=common_output)
     if args.trans_matrices:
-        structure_set.print_wnfsym_sym_matrices(args.measure,
-                                                axis=args.axis,
-                                                axis2=args.axis2,
-                                                center=args.center,
-                                                output=common_output)
+        structure_set.print_esym_matrices(args.measure,
+                                          axis=args.axis,
+                                          axis2=args.axis2,
+                                          center=args.center,
+                                          output=common_output)
 
     if args.mo_overlaps:
-        structure_set.print_wnfsym_sym_ovelap(args.measure,
+        structure_set.print_esym_sym_overlaps(args.measure,
                                               axis=args.axis,
                                               axis2=args.axis2,
                                               center=args.center,

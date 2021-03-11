@@ -34,8 +34,8 @@ parser.add_argument('-v', '--version', dest='version', action='store_true', defa
 
 parser.add_argument('-c', '--central_atom', action='store', dest='central_atom',
                     type=int, default=0, help='position of the central atom if exist')
-parser.add_argument('-cref', '--custom_ref', action='store', dest='custom_ref', default=None,
-                    help='take a given structure from the file and use it as reference')
+parser.add_argument('-shp_m_custom', '--shp_measure_custom', action='store', dest='shp_measure_custom', default=None,
+                    help='define filename containing the structure/s to be used as reference')
 parser.add_argument('-fix_perm', '--fix_permutation', dest='fix_permutation', action='store_true', default=False,
                     help='use the given permutation to perform a calculation')
 parser.add_argument('-no_labels', '--ignore_atom_labels', dest='ignore_atom_labels', action='store_true', default=False,
@@ -118,12 +118,12 @@ group_qsym.add_argument('-qsym_wfn',
                         dest='qsym_wfn',
                         action='store',
                         default=False,
-                        help='Wfnsym measure of input structure with reference group')
+                        help='wavefunction symmetry measure of input structure with reference group')
 group_qsym.add_argument('-qsym_dens',
                         dest='qsym_dens',
                         action='store',
                         default=False,
-                        help='Density measure of input structure with reference group')
+                        help='Density symmetry measure of input structure with reference group')
 group_qsym.add_argument('-qsym_mos',
                         dest='qsym_mos',
                         action='store',
@@ -209,16 +209,25 @@ if args.shp_labels:
         print(tools.get_shape_label_info(n_atoms))
 
 reference = []
-if args.shp_measure == 'custom':
-    if args.custom_ref is not None:
-        reference = file_io.get_geometry_from_file_xyz(args.custom_ref, read_multiple=True)
-        [x.set_positions(args.central_atom - 1) for x in reference]
-    else:
-        sys.exit('Custom reference file not defined (use -cref or --custom_ref filename)')
+# if args.shp_measure == 'custom':
+#     if args.custom_ref is not None:
+#         reference = file_io.get_geometry_from_file_xyz(args.custom_ref, read_multiple=True)
+#         [x.set_positions(args.central_atom - 1) for x in reference]
+#     else:
+#         sys.exit('Custom reference file not defined (use -cref or --custom_ref filename)')
+# elif args.shp_measure == 'all':
+#     reference = tools.get_structure_references(vertices)
+# else:
+#     reference = [args.shp_measure]
+
+if args.shp_measure_custom:
+    reference = file_io.read_generic_structure_file(args.shp_measure_custom, read_multiple=True)
+    [x.set_positions(args.central_atom - 1) for x in reference]
+    args.shp_measure = 'custom'
 elif args.shp_measure == 'all':
     reference = tools.get_structure_references(vertices)
-else:
-    reference = args.shp_measure
+elif args.shp_measure:
+    reference = [args.shp_measure]
 
 if args.shp_structure:
     if common_output is sys.stdout:
@@ -266,28 +275,28 @@ if args.qsym_wfn:
         args.axis, args.axis2 = orthogonal_c4(args.axis, args.axis2)
 
     if args.qsym_molecular_orbitals:
-        symobj.print_wnfsym_mo_irreducible_repr(args.qsym_wfn,
-                                                axis=args.axis,
-                                                axis2=args.axis2,
-                                                center=args.center,
-                                                show_axes=False,
-                                                output=common_output)
+        symobj.print_esym_mo_irreducible_repr(args.qsym_wfn,
+                                              axis=args.axis,
+                                              axis2=args.axis2,
+                                              center=args.center,
+                                              show_axes=False,
+                                              output=common_output)
 
-    symobj.print_wnfsym_irreducible_repr(args.qsym_wfn,
-                                         axis=args.axis,
-                                         axis2=args.axis2,
-                                         center=args.center,
-                                         output=common_output)
+    symobj.print_esym_irreducible_repr(args.qsym_wfn,
+                                       axis=args.axis,
+                                       axis2=args.axis2,
+                                       center=args.center,
+                                       output=common_output)
 
     if args.qsym_trans_matrices:
-        symobj.print_wnfsym_sym_matrices(args.qsym_wfn,
-                                         axis=args.axis,
-                                         axis2=args.axis2,
-                                         center=args.center,
-                                         output=common_output)
+        symobj.print_esym_matrices(args.qsym_wfn,
+                                   axis=args.axis,
+                                   axis2=args.axis2,
+                                   center=args.center,
+                                   output=common_output)
 
     if args.qsym_mo_overlaps:
-        symobj.print_wnfsym_sym_ovelap(args.qsym_wfn,
+        symobj.print_esym_sym_overlaps(args.qsym_wfn,
                                        axis=args.axis,
                                        axis2=args.axis2,
                                        center=args.center,

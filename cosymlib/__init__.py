@@ -418,7 +418,7 @@ class Cosymlib:
 
         output.write(txt)
 
-    def print_wnfsym_sym_matrices(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
+    def print_esym_matrices(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
 
         txt = ''
         for molecule in self._molecules:
@@ -454,7 +454,7 @@ class Cosymlib:
                                                                       array2[0], array2[1], array2[2])
         output.write(txt)
 
-    def print_wnfsym_sym_ovelap(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
+    def print_esym_sym_overlaps(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
 
         txt = ''
         for molecule in self._molecules:
@@ -522,8 +522,7 @@ class Cosymlib:
 
         output.write(txt)
 
-    def print_wnfsym_irreducible_repr(self, group, axis=None, axis2=None, center=None, show_axes=True,
-                                      output=sys.stdout):
+    def print_esym_irreducible_repr(self, group, axis=None, axis2=None, center=None, show_axes=True, output=sys.stdout):
 
         txt = ''
         for molecule in self._molecules:
@@ -550,8 +549,8 @@ class Cosymlib:
 
         output.write(txt)
 
-    def print_wnfsym_mo_irreducible_repr(self, group, axis=None, axis2=None, center=None, show_axes=True,
-                                         output=sys.stdout):
+    def print_esym_mo_irreducible_repr(self, group, axis=None, axis2=None, center=None, show_axes=True,
+                                       output=sys.stdout):
 
         txt = ''
         for molecule in self._molecules:
