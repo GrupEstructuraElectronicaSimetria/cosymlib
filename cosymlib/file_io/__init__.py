@@ -83,6 +83,7 @@ def get_geometry_from_file_xyz(file_name, read_multiple=False):
                                                    name=name))
                         n_atoms = None
 
+                    name = ''
                     input_molecule = [[], []]
                     if n_atoms is None:
                         n_atoms = int(line.split()[0])
