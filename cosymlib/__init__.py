@@ -29,15 +29,14 @@ def _get_table_format(labels, molecules_names, data):
 
     txt = 'Structure'
     max_len_name = 12
-    max_name = 0
     names = []
     for name in molecules_names:
         if len(name) > max_len_name:
-            max_name = 12
             names.append(name[:(max_len_name - 1)])
-        elif len(name) > max_name:
-            max_name = len(name)
+        elif len(name) > 0:
             names.append(name)
+        else:
+            names.append('No Name')
 
     n = max_len_name - 3
     for label in labels:
