@@ -284,7 +284,8 @@ class Symmetry:
         results = self._get_wfnsym_results(group)
         return {'labels': results.SymLab,
                 'csm': results.csm_dens,
-                'csm_coef': results.csm_dens_coef}
+                'csm_coef': results.csm_dens_coef,
+                'self_assembly': results.self_assembly}
 
     def axes(self, group):
         results = self._get_wfnsym_results(group)

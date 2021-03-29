@@ -20,6 +20,13 @@ def _non_blank_lines(f):
             yield line
 
 
+def no_name(file_name, n_title_structure):
+    if len(os.path.splitext(os.path.basename(file_name))[0]) > 8:
+        return os.path.splitext(os.path.basename(file_name))[0][:8] + '_' + str(n_title_structure)
+    else:
+        return os.path.splitext(os.path.basename(file_name))[0] + '_' + str(n_title_structure)
+
+
 def check_geometries_vertices(geometries, file_name):
     n_atoms = geometries[0].get_n_atoms()
     for idg, geometry in enumerate(geometries):
@@ -61,6 +68,7 @@ def get_geometry_from_file_xyz(file_name, read_multiple=False):
     geometries = []
     n_atoms = None
     n_atoms_line = 1
+    no_title_structures = 1
     with open(file_name, mode='r') as lines:
         for idl, line in enumerate(lines):
             if line.lstrip().startswith(comment_line):
@@ -78,6 +86,10 @@ def get_geometry_from_file_xyz(file_name, read_multiple=False):
                             warnings.warn('Number of atoms in line {} and number '
                                           'of atoms provided are not equal'.format(n_atoms_line),
                                           errors.MissingAtomWarning)
+                        if name == '':
+                            name = no_name(file_name, no_title_structures)
+                            no_title_structures += 1
+
                         geometries.append(Geometry(symbols=input_molecule[0],
                                                    positions=input_molecule[1],
                                                    name=name))
@@ -95,6 +107,8 @@ def get_geometry_from_file_xyz(file_name, read_multiple=False):
             warnings.warn('Number of atoms in line {} and number '
                           'of atoms provided are not equal'.format(n_atoms_line),
                           errors.MissingAtomWarning)
+        if name == '':
+            name = no_name(file_name, no_title_structures)
 
         geometries.append(Geometry(symbols=input_molecule[0],
                                    positions=input_molecule[1],

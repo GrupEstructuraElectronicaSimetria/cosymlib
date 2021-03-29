@@ -35,8 +35,6 @@ def _get_table_format(labels, molecules_names, data):
             names.append(name[:(max_len_name - 1)])
         elif len(name) > 0:
             names.append(name)
-        else:
-            names.append('No Name')
 
     n = max_len_name - 3
     for label in labels:
@@ -368,8 +366,14 @@ class Cosymlib:
             txt += '{:<9} '.format(molecule.name) + '  '.join(['{:7.3f}'.format(s) for s in wf_measure['csm']])
             txt += '\n'
             first = False
-
-            txt += _get_axis_info(molecule, group, axis, axis2, center)
+        axes_information = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
+        txt += '\nSymmetry parameters\n'
+        txt += 'center: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])
+        txt += '\n'
+        txt += 'axis  : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis']])
+        txt += '\n'
+        txt += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
+        txt += '\n'
 
         output.write(txt)
 
@@ -377,30 +381,43 @@ class Cosymlib:
 
         txt = ''
         txt2 = ''
-        first = True
         for molecule in self._molecules:
             dens_measure = molecule.get_dens_symmetry(group, axis=axis, axis2=axis2, center=center)
 
-            if first:
-                sep_line = '          ' + '---------' * len(dens_measure['labels']) + '\n'
+            sep_line = '          ' + '---------' * len(dens_measure['labels']) + '\n'
 
-                txt += '\nDensity: CSM-like values\n'
-                txt += sep_line
-                txt += '           ' + '  '.join(['{:^7}'.format(s) for s in dens_measure['labels']])
-                txt += '\n'
-                txt += sep_line
-
-                txt2 += '--------------\n'
-                txt2 += 'Total CSM {}\n'.format(group)
-                txt2 += '--------------\n'
+            txt += '--------------------------------------\n'
+            txt += 'Atomic Coordinates (Angstroms)\n'
+            txt += '--------------------------------------\n'
+            for idp, position in enumerate(molecule.geometry.get_positions()):
+                txt += '{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(molecule.geometry.get_symbols()[idp],
+                                                                  position[0], position[1], position[2])
+            txt += '\nDensity: CSM-like values\n'
+            txt += sep_line
+            txt += '           ' + '  '.join(['{:^7}'.format(s) for s in dens_measure['labels']])
+            txt += '\n'
+            txt += sep_line
 
             txt += '{:<9} '.format(molecule.name) + '  '.join(['{:7.3f}'.format(s) for s in dens_measure['csm_coef']])
-            txt += '\n'
-            first = False
-            txt2 += '{:<9} '.format(molecule.name) + '{:7.3f}\n'.format(dens_measure['csm'])
-            txt2 += _get_axis_info(molecule, group, axis, axis2, center)
+            txt += '\n\n'
 
-        txt += '\n' + txt2
+            axes_information = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
+            txt += '----------------------------\n'
+            txt += 'Total density symmetry: {}\n'.format(group)
+            txt += '----------------------------\n'
+            txt += '{:<9} '.format(molecule.name) + '{:7.3f}\n'.format(dens_measure['csm'])
+
+            txt += '\nSelf Assembly: {:7.3f}\n\n'.format(dens_measure['self_assembly'])
+
+            txt += '\nSymmetry axes\n'
+            txt += 'center: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])
+            txt += '\n'
+            txt += 'axis  : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis']])
+            txt += '\n'
+            txt += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
+            txt += '\n'
+
+        # txt += '\n'
 
         output.write(txt)
 
@@ -815,7 +832,7 @@ class Cosymlib:
         txt_params += '{:^8} {:^8}'.format('DevPath', 'GenCoord')
         txt_params += '\n'
 
-        filter_mask = [min_dev < dv < max_dev and min_gco < gc < max_gco for dv, gc in zip(devpath, gen_coord)]
+        filter_mask = [min_dev <= dv <= max_dev and min_gco <= gc <= max_gco for dv, gc in zip(devpath, gen_coord)]
 
         for idx, molecule in enumerate(self._molecules):
             if not filter_mask[idx]:
