@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.com/GrupEstructuraElectronicaSimetria/cosymlib.svg?branch=master)](https://travis-ci.com/GrupEstructuraElectronicaSimetria/cosymlib)
 [![Coverage Status](https://coveralls.io/repos/github/GrupEstructuraElectronicaSimetria/cosymlib/badge.svg?branch=master)](https://coveralls.io/github/GrupEstructuraElectronicaSimetria/cosymlib?branch=master)
 [![PyPI version](https://badge.fury.io/py/cosymlib.svg)](https://badge.fury.io/py/symeess)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/GrupEstructuraElectronicaSimetria/cosymlib/)
 
 CoSymLib
 ========
