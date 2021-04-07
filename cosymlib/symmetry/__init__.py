@@ -285,10 +285,14 @@ class Symmetry:
         return {'labels': results.SymLab,
                 'csm': results.csm_dens,
                 'csm_coef': results.csm_dens_coef,
-                'self_assembly': results.self_assembly}
+                'self_similarity': results.self_similarity}
 
     def axes(self, group):
         results = self._get_wfnsym_results(group)
         return {'center' : results.center,
                 'axis': results.axis,
                 'axis2': results.axis2}
+
+    def symmetry_elements(self, group):
+        results = self._get_wfnsym_results(group)
+        return {'SymAxes' : results.SymAxes}
