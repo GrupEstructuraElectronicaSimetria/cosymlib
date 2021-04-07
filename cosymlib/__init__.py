@@ -68,6 +68,17 @@ def _get_axis_info(molecule, group, axis, axis2, center):
     return txt
 
 
+def _get_geometry_coordinates(geometry):
+
+    txt = ''
+    txt += '--------------------------------------\n'
+    txt += 'Atomic Coordinates (Angstroms)\n'
+    txt += '--------------------------------------\n'
+    for idp, position in enumerate(geometry.get_positions()):
+        txt += '{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idp], *position)
+    return txt
+
+
 class Cosymlib:
     """
     Main cosymlib class
@@ -377,21 +388,16 @@ class Cosymlib:
 
         output.write(txt)
 
-    def print_electronic_density_measure(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
+    def print_edensity_measure(self, group, axis=None, axis2=None, center=None, output=sys.stdout):
 
         txt = ''
-        txt2 = ''
         for molecule in self._molecules:
             dens_measure = molecule.get_dens_symmetry(group, axis=axis, axis2=axis2, center=center)
 
             sep_line = '          ' + '---------' * len(dens_measure['labels']) + '\n'
 
-            txt += '--------------------------------------\n'
-            txt += 'Atomic Coordinates (Angstroms)\n'
-            txt += '--------------------------------------\n'
-            for idp, position in enumerate(molecule.geometry.get_positions()):
-                txt += '{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(molecule.geometry.get_symbols()[idp],
-                                                                  position[0], position[1], position[2])
+            txt += _get_geometry_coordinates(molecule.geometry)
+
             txt += '\nDensity: CSM-like values\n'
             txt += sep_line
             txt += '           ' + '  '.join(['{:^7}'.format(s) for s in dens_measure['labels']])
@@ -407,7 +413,7 @@ class Cosymlib:
             txt += '----------------------------\n'
             txt += '{:<9} '.format(molecule.name) + '{:7.3f}\n'.format(dens_measure['csm'])
 
-            txt += '\nSelf Assembly: {:7.3f}\n\n'.format(dens_measure['self_assembly'])
+            txt += '\nSelf Similarity: {:7.3f}\n\n'.format(dens_measure['self_similarity'])
 
             txt += '\nSymmetry axes\n'
             txt += 'center: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])
@@ -416,8 +422,6 @@ class Cosymlib:
             txt += '\n'
             txt += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
             txt += '\n'
-
-        # txt += '\n'
 
         output.write(txt)
 
@@ -432,16 +436,12 @@ class Cosymlib:
             sym_lables = sym_mat['labels']
             sym_matrices = sym_mat['matrix']
 
-            sep_line = '--------------------------------------------\n'
+            sep_line = '--------------------------------------\n'
             txt += 'MEASURES OF THE SYMMETRY GROUP:   {}\n'.format(group)
             txt += 'Basis: {}\n'.format(list(molecule.electronic_structure.basis.keys())[0])
+            txt += _get_geometry_coordinates(molecule.geometry)
             txt += sep_line
-            txt += ' Atomic Coordinates (Angstroms)\n'
-            txt += sep_line
-            for idn, array in enumerate(geometry.get_positions()):
-                txt += '{:2} {:11.6f} {:11.6f} {:11.6f}\n'.format(geometry.get_symbols()[idn],
-                                                                  array[0], array[1], array[2])
-            txt += sep_line
+
             for i, group in enumerate(sym_lables):
                 txt += '\n'
                 txt += '@@@ Operation {0}: {1}'.format(i + 1, group)
@@ -470,7 +470,7 @@ class Cosymlib:
             sep_line = '     ' + '---------' * len(ideal_gt['ir_labels']) + '\n'
 
             txt += '\nMolecule : {}\n'.format(molecule.name)
-
+            txt += _get_geometry_coordinates(molecule.geometry)
             txt += '\nIdeal Group Table\n'
             txt += sep_line
             txt += '     ' + '  '.join(['{:^7}'.format(s) for s in ideal_gt['labels']])
@@ -533,6 +533,8 @@ class Cosymlib:
             data_wf = molecule.get_wf_irreducible_representations(group, axis=axis, axis2=axis2, center=center)
 
             txt += '\nMolecule : {}\n'.format(molecule.name)
+            txt += _get_geometry_coordinates(molecule.geometry)
+
             sep_line = '     ' + '---------' * (len(ir_mo['labels'])) + '\n'
 
             txt += '\nWaveFunction: Irred. Rep. Decomposition\n'
@@ -564,6 +566,7 @@ class Cosymlib:
             beta_occupancy = molecule.electronic_structure.beta_occupancy
 
             txt += '\nMolecule : {}\n'.format(molecule.name)
+            txt += _get_geometry_coordinates(molecule.geometry)
 
             sep_line = '     ' + '---------' * (2 + len(ir_mo['labels'])) + '\n'
 
@@ -625,101 +628,13 @@ class Cosymlib:
             txt += file_io.get_file_xyz_txt(molecule.geometry)
             txt = txt.replace(str(molecule.geometry.get_n_atoms()), str(molecule.geometry.get_n_atoms() + 3), 1)
             axis_info = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
-            txt += 'X1 ' + ' '.join(['{:11.6f}'.format(s) for s in axis_info['center']])
+            txt += 'X1 ' + ' '.join(['{:11.6f}'.format(s) for s in axis_info['axis']])
             txt += '\n'
-            txt += 'X2 ' + ' '.join(['{:11.6f}'.format(s) for s in axis_info['axis']])
+            txt += 'X1 ' + ' '.join(['{:11.6f}'.format(s) for s in axis_info['axis2']])
             txt += '\n'
-            txt += 'X2 ' + ' '.join(['{:11.6f}'.format(s) for s in axis_info['axis2']])
+            txt += 'X2 ' + ' '.join(['{:11.6f}'.format(s) for s in axis_info['center']])
             txt += '\n'
         output.write(txt)
-
-    def plot_mo_diagram(self, group, axis=None, axis2=None, center=None):
-        """
-        Plots Molecular orbitals diagram
-
-        :param group:
-        :param axis:
-        :param axis2:
-        :param center:
-        :return:
-        """
-
-        for molecule in self._molecules:
-
-            ir_mo = molecule.get_mo_irreducible_representations(group, axis=axis, axis2=axis2, center=center)
-
-            ird_a_max = [np.argmax(ird_a_orb) for ird_a_orb in ir_mo['alpha']]
-            energies = molecule.electronic_structure.alpha_energies
-
-            plt.figure()
-            plt.title('{}'.format(molecule.name))
-
-            ax1 = plt.axes()
-            ax1.axes.get_xaxis().set_visible(False)  # Hide x axis
-            # ax1.axes.get_yaxis().set_visible(True)
-
-            degeneracy = [[energies[0]]]
-            for energy in energies[1:]:
-                if abs(energy - degeneracy[-1][-1]) < 1e-3:
-                    degeneracy[-1].append(energy)
-                else:
-                    degeneracy.append([energy])
-
-            max_value = 5e-3
-            x_center = []
-            for ix in degeneracy:
-                if len(ix) == 1:
-                    x_center.append([0])
-                else:
-                    x_center.append(np.linspace(-max_value, max_value, len(ix)))
-            x_center = [y for x in x_center for y in x]
-
-            plt.scatter(x_center, energies, s=500, marker="_", linewidth=3)
-            for i in range(len(energies)):
-                plt.text(-max_value * 2, energies[i], ir_mo['labels'][ird_a_max[i]])
-
-        plt.show()
-
-    def plot_sym_energy_evolution(self, group, axis=None, axis2=None, center=None):
-
-        energies = []
-        ird_a_max = []
-        for idm, molecule in enumerate(self._molecules):
-
-            ir_mo = molecule.get_mo_irreducible_representations(group, axis=axis, axis2=axis2, center=center)
-
-            labels = ir_mo['labels']
-
-            ird_a_max.append(np.array([np.argmax(ird_a_orb) for ird_a_orb in ir_mo['alpha']]))
-            energies.append(molecule.electronic_structure.alpha_energies)
-
-        energies_x_orbital = np.array(energies).T
-        ird_a_x_orbital = np.array(ird_a_max).T
-
-        for i in range(len(ird_a_x_orbital)):
-            for j in range(len(ird_a_x_orbital[i])):
-                if j == 0:
-                    old_ird = ird_a_x_orbital[i][0]
-                else:
-                    if old_ird != ird_a_x_orbital[i][j]:
-                        for k in range(len(ird_a_x_orbital) - i):
-                            if old_ird == ird_a_x_orbital[k + i][j]:
-                                ird_a_x_orbital[i], ird_a_x_orbital[k + i] = swap_vectors(ird_a_x_orbital[i],
-                                                                                          ird_a_x_orbital[k + i], j)
-                                energies_x_orbital[i], energies_x_orbital[k + i] = swap_vectors(energies_x_orbital[i],
-                                                                                                energies_x_orbital[
-                                                                                                    k + i],
-                                                                                                j)
-                                break
-                old_ird = ird_a_x_orbital[i][j]
-
-        for ide, energy in enumerate(energies_x_orbital):
-            x = np.arange(len(energy))
-            plt.plot(x, energy, marker='_')
-            for i in range(len(energy)):
-                plt.text(x[i], energy[i] + abs(energy[i]) * 0.001, labels[ird_a_x_orbital[ide][i]])
-
-        plt.show()
 
     def get_shape_measure(self, label, kind, central_atom=0, fix_permutation=False):
         """
@@ -784,7 +699,7 @@ class Cosymlib:
         return csm, devpath, generalized_coord
 
     def print_minimum_distortion_path_shape(self, shape_label1, shape_label2, central_atom=0,
-                                            min_dev=0, max_dev=15, min_gco=0, max_gco=101,
+                                            min_dev=None, max_dev=None, min_gco=None, max_gco=None,
                                             num_points=20, output=None):
         """
         Print the minimum distortion path
@@ -821,10 +736,13 @@ class Cosymlib:
 
         csm, devpath, gen_coord = self.get_path_parameters(shape_label1, shape_label2, central_atom=central_atom)
 
-        txt_params = 'Deviation threshold to calculate Path deviation function: ' \
-                     '{:2.1f}% - {:2.1f}%\n'.format(min_dev, max_dev)
-        txt_params += 'Deviation threshold to calculate Generalized Coordinate: ' \
-                      '{:2.1f}% - {:2.1f}%\n'.format(min_gco, max_gco)
+        txt_params = ''
+        if min_dev is not None:
+            txt_params = 'Deviation threshold to calculate Path deviation function: ' \
+                         '{:2.1f}% - {:2.1f}%\n'.format(min_dev, max_dev)
+        if min_gco is not None:
+            txt_params += 'Deviation threshold to calculate Generalized Coordinate: ' \
+                          '{:2.1f}% - {:2.1f}%\n'.format(min_gco, max_gco)
         txt_params += '\n'
         txt_params += '{:9} '.format('structure'.upper())
         for csm_label in list(csm.keys()):
@@ -832,7 +750,14 @@ class Cosymlib:
         txt_params += '{:^8} {:^8}'.format('DevPath', 'GenCoord')
         txt_params += '\n'
 
-        filter_mask = [min_dev <= dv <= max_dev and min_gco <= gc <= max_gco for dv, gc in zip(devpath, gen_coord)]
+        if min_gco is not None and min_dev is not None:
+            filter_mask = [min_dev <= dv <= max_dev and min_gco <= gc <= max_gco for dv, gc in zip(devpath, gen_coord)]
+        elif min_gco is not None:
+            filter_mask = [min_gco <= gc <= max_gco for gc in  gen_coord]
+        elif min_dev is not None:
+            filter_mask = [min_dev <= dv <= max_dev for dv in devpath]
+        else:
+            filter_mask = [True for _ in range(len(self._molecules))]
 
         for idx, molecule in enumerate(self._molecules):
             if not filter_mask[idx]:
