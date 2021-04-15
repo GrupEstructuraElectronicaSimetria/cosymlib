@@ -1,9 +1,6 @@
 .. highlight:: rst
 .. _shape_references:
 
-Shape's references
-==================
-
 .. |D2| replace:: D\ :sub:`2`
 .. |Dih| replace:: D\ :sub:`∞h`
 .. |D3h| replace:: D\ :sub:`3h`

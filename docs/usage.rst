@@ -258,7 +258,8 @@ we find:
 
 which are the possible reference structures for empty L\ :sub:`7`\  polyhedra, since
 now the Co atom is being considered on equal foot to all other six Cl atoms, even if this
-might make no sense from a chemical point of view.
+might make no sense from a chemical point of view. The list of currently available reference structures
+in the cosymlib program is at :ref:`the page end <Shape references>`.
 
 To calculate the octahedral shape measure for the CoCl\ :sub:`6`\  structure contained in the
 ``cocl6.xyz`` file we will use::
@@ -447,15 +448,156 @@ this option.
 
 --------
 
-sym
+gsym
 ^^^^^
-qqqqq
+In the case of running a continuous symmetry measure (CSM), the ``gsym`` script is required plus an input file containing
+a geometric structure as the one used in the shape script. Since the main difference with the continuous shape measures
+is that the reference structure now must contain one or more symmetry elements, the user will need to specify which
+symmetry operation wants to analyse for the input geometry. The Th\ :sub:`8`\ molecule can be a good example to show the
+S\ :sub:`4`\ symmetry that the molecule contains. The Th8.xyz file is shown below:
+::
+
+    8
+    Th8
+    Th  -16.80062  -0.55052  -13.74098
+    Th  -12.80008  -0.09601  -14.54017
+    Th  -15.57778   1.38797  -17.17300
+    Th  -20.18823  -1.83274  -15.67222
+    Th  -16.79762  -4.14442  -15.76983
+    Th  -12.79709  -3.68990  -16.56902
+    Th  -18.96539   0.10576  -19.10423
+    Th  -15.57478  -2.20592  -19.20184
+
+The simplest way to compute the S\ :sub:`4`\ CSM measure for Th\ :sub:`8`\ is to run the following command:
+::
+
+    $ gsym Th8.xyz -m S4
+
+which is equivalent to:
+::
+
+    $ gsym -m S4 Th8.xyz
+
+and will return the CSM result in the cosymlib format:
+::
+
+    ----------------------------------------------------------------------
+     COSYMLIB v0.9.5
+     Electronic Structure & Symmetry Group
+     Institut de Quimica Teorica i Computacional (IQTC)
+     Universitat de Barcelona
+    ----------------------------------------------------------------------
+
+    Evaluating symmetry operation : S4
+
+    th8           0.000
+
+    ----------------------------------------------------------------------
+                        End of calculation
+    ----------------------------------------------------------------------
+
+
+If the user wants to save this information in a file, the ``-o (or --output)`` flag should be added as well as the
+output file name. For example, the following call will execute the previous CSM calculation and will store the
+information in the Th8.txt file:
+::
+
+    $ gsym Th8.xyz -m S4 -o Th8.txt
+
+Additional commands (or flags) can be added to the command line to control the type of calculation that will be run.
+For example, the ``-c N`` command, where N is the position of an atom of the input file, explicitly tells the program
+which atom acts as a central atom of the molecule and that only could permut by himself. Alternatively, the
+``--center x y z``, where x, y and z are the 3D coordinates of a point in space, will set the origin of a structure.
+Similarly, the ``-s`` and ``-l`` commands work as in the shape case. The first returns the coordinates of the ideal
+reference geometry with the size, position, and orientation that is closest to our problem shape and belongs to a
+symmetry group. The second gives information of the available symmetry groups in cosymlib
+::
+
+    Available symmetry groups
+
+    E      Identity Symmetry
+    Ci     Inversion Symmetry Group
+    Cs     Reflection Symmetry Group
+    Cn     Rotational Symmetry Group (n: rotation order)
+    Sn     Rotation-Reflection Symmetry Group (n: rotation-reflection order)
+
+The ``--info`` flag may be used to print the coordinates of the input structure.
+Supplementary, other flags are available to the user to control if the calculation should take into account the
+connectivity ``--ignore_connectivity``, the atom nature ``--ignore_atoms_labels``, the connectivity threshold that
+controls if two atoms are connected ``--connectivity_thresh`` or the file that contains a custom connectivity
+``--connectivity_file``. In the last case, the format of the connectivity file should be as follow,
+::
+
+    1    2    3    4    5
+    2    1
+    3    1
+    4    1
+    5    1
+
+where each number is related to the position of the each atom on the input file. For example, in the first line, the
+connectivity file tells the program that the atom in position one of the the input file is connected to the second,
+third, fourth and fifth atoms, while the second line tells that the second atom is only connected to the first atom.
+For a methane molecule where the input file is written as follow,
+::
+
+     5
+     Methane
+       C      0.0000      0.0000      0.0000
+       H      0.5288      0.1610      0.9359
+       H      0.2051      0.8240     -0.6786
+       H      0.3345     -0.9314     -0.4496
+       H     -1.0685     -0.0537      0.1921
+
+the connectivity file force the carbon atom to be connected to all hydrogen atoms and viceversa.
+Finally, a list of available flags and their uncontracted form is listed below.
+
++-----------------+-----------------------+
+|    Short Flag   |   Explicit flag       |
++-----------------+-----------------------+
+|     ``-h``      |    ``--help``         |
++-----------------+-----------------------+
+|     ``-m``      |    ``--measure``      |
++-----------------+-----------------------+
+|     ``-s``      |    ``--structure``    |
++-----------------+-----------------------+
+|     ``-c``      |    ``--central_atom`` |
++-----------------+-----------------------+
+|     ``-o``      |    ``--output``       |
++-----------------+-----------------------+
+|     ``-l``      |    ``--labels``       |
++-----------------+-----------------------+
+|     ``-v``      |    ``--version``      |
++-----------------+-----------------------+
+
+Note: the actual program only runs for C\ :sub:`n`\, C\ :sub:`s`\, C\ :sub:`i`\  and S\ :sub:`n`\  symmetry groups as
+well as their symmetry operations.
 
 --------
 
 cchir
 ^^^^^
-qqqqq
+
+The ``cchir`` script allows the user to calculate the chirality of a structure by calculating the continuous symmetry
+measure of the S\ :sub:`n` \ improper rotation group. By default the ``-m`` flag will measure the S\ :sub:`1` \ symmetry
+which is equivalent ot the C\ :sub:`s` \ symmetry group. However, the user can control the order of the impropert
+rotation by the ``-order n`` flag where n=1,2,4,6,...
+Other additional flags derived from the gsym script that have the same interaction with the chirality measure are
+available and list below. For more information of these commands go to gsym subsection of this page.
+
++---------------------------------+
+|   Common cchir                  |
+|   and gsym commands             |
++---------------------------------+
+|    ``-o`` or ``--ouput``        |
++---------------------------------+
+|    ``-c`` or ``--central_atom`` |
++---------------------------------+
+|    ``-v`` or ``--version``      |
++---------------------------------+
+|    ``--info``                   |
++---------------------------------+
+|    ``--center``                 |
++---------------------------------+
 
 --------
 
@@ -489,5 +631,7 @@ Using cosymlib's APIs
 ---------------------
 qqqqq
 
+Shape references
+----------------
 
-
+.. include:: shape_references.rst
