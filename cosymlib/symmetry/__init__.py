@@ -105,7 +105,8 @@ class Symmetry:
         """
 
         # Crude calculation call methods
-        key = _get_key_symgroup(group, self._center, self._central_atom, self._connectivity, self._multi, self._connect_thresh)
+        key = _get_key_symgroup(group, self._center, self._central_atom, self._connectivity, self._multi,
+                                self._connect_thresh)
         if key not in self._results:
             self._results[key] = Symgroupy(self._coordinates,
                                            group=group,
@@ -200,7 +201,7 @@ class Symmetry:
         """
         return self._get_symgroup_results(label).reference_axis
 
-    def cms_multi(self, label, multi=1):
+    def csm_multi(self, label, multi=1):
         """
         Get symmetry measure of the optimum N axis
 
@@ -212,7 +213,7 @@ class Symmetry:
         :rtype: list
         """
         self._multi = multi
-        return self._get_symgroup_results(label).cms_multi
+        return self._get_symgroup_results(label).csm_multi
 
     def axis_multi(self, label, multi=1):
         """

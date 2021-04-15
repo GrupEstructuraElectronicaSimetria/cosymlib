@@ -74,7 +74,10 @@ def generate_connectivity_from_geometry(geometry, thresh=1.2):
         warn('failed to generate connectivity')
         return None
 
-    return (np.array(np.where(relative_differences < thresh - 1)).T + 1).tolist()
+    if not (np.array(np.where(relative_differences < thresh - 1)).T + 1).tolist():
+        return None
+    else:
+        return (np.array(np.where(relative_differences < thresh - 1)).T + 1).tolist()
 
 
 def get_connectivity_matrix(connectivity, ndim):

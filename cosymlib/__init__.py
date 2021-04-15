@@ -295,6 +295,8 @@ class Cosymlib:
                 txt += '{:12.8f} {:12.8f} {:12.8f}\n'.format(array[0], array[1], array[2])
             txt += '\n'
             txt += 'Symmetry measure {:.5f}\n'.format(molecule.geometry.get_symmetry_measure(**kwargs))
+            txt += 'Symmetry {} lower values:  '.format(multi)
+            txt += ' '.join(format(csm, '.5f') for csm in molecule.geometry._symmetry.csm_multi(label, multi)) + '\n'
             txt += sep_line
 
         output.write(txt)
