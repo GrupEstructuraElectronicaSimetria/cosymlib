@@ -9,8 +9,6 @@ class ElectronicStructure:
     :type basis: dict
     :param orbital_coefficients: Molecular orbital coefficients
     :type orbital_coefficients: list
-    # :param charge: The charge
-    # :type charge: int
     :param multiplicity: The multiplicity
     :type multiplicity: int
     :param alpha_energies: Alpha molecular orbital energies in Hartree

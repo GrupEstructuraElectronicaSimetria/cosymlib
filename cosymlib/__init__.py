@@ -84,7 +84,6 @@ class Cosymlib:
     Main cosymlib class
 
     :param structures: List of :class:`~cosymlib.molecule.geometry.Geometry` or :class:`~cosymlib.molecule.Molecule`
-    type objects
     :type structures: list
     :param ignore_atoms_labels: Ignore atomic element labels is symmetry calculations
     :type ignore_atoms_labels: bool
@@ -800,7 +799,6 @@ class Cosymlib:
         output2.write(file_io.get_file_xyz_txt(test_structures))
 
         if output1 is sys.stdout:
-            import matplotlib.pyplot as plt
             plt.plot(path[0], path[1], 'k', linewidth=2.0)
             plt.scatter(np.array(csm[label1_name])[filter_mask],
                         np.array(csm[label2_name])[filter_mask], linewidths=0.01)
