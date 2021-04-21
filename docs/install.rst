@@ -1,17 +1,43 @@
 .. highlight:: rst
 
-Install
-=======
+Installation
+============
 
 :program:`cosymlib` is available in both GitHub and PyPI repositories (https://pypi.org/project/cosymlib/).
 Installation via PyPI is simpler and it is recommended for most users.
+
+Requirements
+____________
+:program:`cosymlib` contains libraries written in Fortran that require a compiler to build them.
+Before installing cosymlib make sure you have a working Fortran compiler installed in your system.
+For UNIX based systems you can install it from package repositories by opening a terminal and typing
+the following commands:
+
+- **Linux**
+
+  On YUM-based systems (Feodora/RedHat/CentOS) ::
+
+    sudo yum install yum-utils
+
+  On APT-based systems (Debian/Ubuntu) ::
+
+    sudo apt-get build-dep
+
+- **Mac**
+
+ 1. Install command-line tools: ::
+
+     xcode-select --install
+
+ 2. Get Homebrew following the instructions at https://brew.sh, and install GCC formula by: ::
+
+     brew install gcc
 
 Install from PyPI
 _________________
 
 This installation requires :program:`pip`  ( https://pip.pypa.io/en/stable/installing/) to be installed
-in your system. Once pip is properly installed you can install :program:`cosymlib` by typing the following
-command in the terminal: ::
+in your system. Once pip is properly installed you can install :program:`cosymlib` by typing: ::
 
     pip install cosymlib --user
 
