@@ -2,13 +2,13 @@
 
 Installation
 ============
-:program:`cosymlib` contains libraries written in Fortran that require a compiler to build them.
-Before installing cosymlib make sure you have a working Fortran compiler installed in your system.
 
 Requirements
 ____________
 
-For UNIX based systems you can install it from package repositories by opening a terminal and
+:program:`cosymlib` contains libraries written in Fortran that require a compiler to build them.
+Before installing cosymlib make sure you have a working Fortran compiler installed in your system.
+For UNIX based systems you can install GNU Fortran Compiler from package repositories by opening a terminal and
 typing the following commands:
 
 - **Linux**
