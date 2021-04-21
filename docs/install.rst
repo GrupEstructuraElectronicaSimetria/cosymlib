@@ -2,16 +2,14 @@
 
 Installation
 ============
-
-:program:`cosymlib` is available in both GitHub and PyPI repositories (https://pypi.org/project/cosymlib/).
-Installation via PyPI is simpler and it is recommended for most users.
+:program:`cosymlib` contains libraries written in Fortran that require a compiler to build them.
+Before installing cosymlib make sure you have a working Fortran compiler installed in your system.
 
 Requirements
 ____________
-:program:`cosymlib` contains libraries written in Fortran that require a compiler to build them.
-Before installing cosymlib make sure you have a working Fortran compiler installed in your system.
-For UNIX based systems you can install it from package repositories by opening a terminal and typing
-the following commands:
+
+For UNIX based systems you can install it from package repositories by opening a terminal and
+typing the following commands:
 
 - **Linux**
 
@@ -33,8 +31,14 @@ the following commands:
 
      brew install gcc
 
-Install from PyPI
-_________________
+Install
+_______
+
+:program:`cosymlib` is available in both GitHub and PyPI repositories (https://pypi.org/project/cosymlib/).
+Installation via PyPI is simpler and it is recommended for most users.
+
+from PyPI
+---------
 
 This installation requires :program:`pip`  ( https://pip.pypa.io/en/stable/installing/) to be installed
 in your system. Once pip is properly installed you can install :program:`cosymlib` by typing: ::
@@ -46,8 +50,8 @@ for :program:`python3` use: ::
 
     pip3 install cosymlib --user
 
-Install from GitHub
-___________________
+from GitHub
+-----------
 
 Alternatively you can download the latest version of :program:`cosymlib` from github using :program:`git` (https://git-scm.com)
 and install it manually through :file:`setup.py` file using :program:`setuptools` (https://setuptools.readthedocs.io/).
@@ -65,6 +69,11 @@ Once this is done, move to the repository root directory (where :file:`setup.py`
 following command to install :program:`cosymlib` : ::
 
     python setup.py install --user
+
+.. note::
+    :file:`requirements.txt` file located at the repository root directory contains a list of all dependency
+    python modules needed for :program:`cosymlib` to run. If any of them are missing in your system you will
+    need to install them before running :program:`cosymlib`.
 
 In both cases (PyPI & Github installations) the code will be installed as a :program:`python` module. To check that it is properly
 installed you can run the :program:`python` interpreter and execute: ::

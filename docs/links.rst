@@ -3,17 +3,26 @@
 Links
 =====
 
-Download the code and use :file:`setup.py` to install the code using :program:`setuptools`
-python module ::
+.. figure:: images/logo-ess-text.png
+    :height: 100px
+    :target: http://www.ee.ub.edu
 
-   $ python setup.py install --user
+.. figure:: images/logo_iqtc.png
+    :height: 100px
+    :target: https://www.iqtc.ub.edu
 
-for python3 ::
+.. figure:: https://www.nanogune.eu/sites/default/files/styles/large/public/DonostiaInternationalPhysicsCenter.jpg?itok=uodkqUAl
+    :height: 100px
+    :target: http://dipc.ehu.es
 
-   $ python3 setup.py install --user
+.. figure:: images/kimika_teorikoa.png
+    :height: 100px
+    :target: http://www.ehu.eus/chemistry/theory/
 
-the code will be installed as a python module. To check that it is properly installed you can
-run the :program:`python` interpret and execute ::
+.. figure:: http://csm.ouproj.org.il/assets/images/COSYM_LOGO_168x67.png
+    :height: 100px
+    :target: http://csm.ouproj.org.il
 
-   import symeess
+`Prof. David Avnir Homepage <http://chem.ch.huji.ac.il/avnir/index.html>`_
 
+`Dr. Inbal Tuvi-Arad Homepage <https://www.openu.ac.il/en/personalsites/InbalTuviArad.aspx>`_

@@ -45,17 +45,20 @@ and the Institut de Química Teòrica i Computacional (IQTCUB). University of Ba
 
 ------
 
-.. image:: images/logo-ess.tiff
+.. image:: images/logo-ess.png
     :height: 52px
     :align: left
+    :target: http://www.ee.ub.edu
 
 .. image:: images/logo_ub.jpg
     :height: 52px
     :align: left
+    :target: https://www.ub.edu/
 
 .. image:: images/logo_iqtc.png
     :height: 52px
     :align: left
+    :target: https://www.iqtc.ub.edu
 
 .. image:: images/logo_mmaeztu.png
     :height: 52px
