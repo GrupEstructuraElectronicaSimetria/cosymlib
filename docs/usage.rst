@@ -623,7 +623,38 @@ qqqqq
 
 shape_map
 ^^^^^^^^^
-qqqqq
+The ``shape_map`` script calculate the continuous shape measures of a single or multiple structures with two reference
+structures in the same way the shape script does. However, it computes additional information like the minimum
+distortion pathway between the two reference structures, plus the deviation and the generalized coordinate of each
+user's structure.
+The most common commands available in the script are similar to the commands found in the shape script. The required
+commands are the ``-m_1 SH1` (or ``--measure_1``) and the ``-m_2 SH2`` flags, where SH1 and SH2 are the reference
+structure labels available in the program. Additionally, these flags can be substituted by the ``-m_custom_1 SH1`` or
+the ``-m_custom_2 SH2`` to indicate the program that SH1 and/or SH2 are the files containing a custom reference
+structure.
+Moreover, a set of flags are available to control the different plot options on the shape_map. The
+``--min_dev MIN_DEV`` and ``--max_dev MAX_DEV`` will only show the structures that are between the minimum and maximum
+deviation values (MIN_DEV and MAX_DEV), while the ``--min_gco MIN_GCO`` and ``--max_gco MAX_GCO`` show the structure
+that are at the MIN_GCO to MAX-GCO range of the generalized coordinate. In addition, the  user can plot more resolution
+minimal distortion pathways by setting the number of structures needed to compute the curve with the
+``--n_points N_POINTS`` flag.
+
+Finally, a set of mutual flags found in all scripts is available and listed below:
+
++-----------------+-----------------------+
+|    Short Flag   |   Explicit flag       |
++-----------------+-----------------------+
+|     ``-h``      |    ``--help``         |
++-----------------+-----------------------+
+|     ``-l``      |    ``--labels``       |
++-----------------+-----------------------+
+|     ``-o``      |    ``--output_name``  |
++-----------------+-----------------------+
+|     ``-c``      |    ``--central_atom`` |
++-----------------+-----------------------+
+|     ``-v``      |    ``--version``      |
++-----------------+-----------------------+
+
 
 --------
 
