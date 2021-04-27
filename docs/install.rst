@@ -13,7 +13,7 @@ typing the following commands:
 
 - **Linux**
 
-  On YUM-based systems (Feodora/RedHat/CentOS) ::
+  On YUM-based systems (Fedora/RedHat/CentOS) ::
 
     sudo yum install yum-utils
 

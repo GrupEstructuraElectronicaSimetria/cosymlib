@@ -1,7 +1,7 @@
 .. highlight:: rst
 
-Links
-=====
+Useful links
+============
 
 .. figure:: images/logo-ess-text.png
     :height: 100px
