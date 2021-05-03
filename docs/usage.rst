@@ -76,7 +76,9 @@ included in the present distribution of **cosymlib**.
 
 General task scripts
 --------------------
-qqqqq
+
+In cosymlib library there several task scripts availables that can be run in a terminal as command lines. The following
+subsections describe the general usage of all of them.
 
 --------
 
@@ -603,13 +605,14 @@ available and list below. For more information of these commands go to gsym subs
 
 esym
 ^^^^^^
-qqqqq
+We are currenly working on this feature of the program regarding the electronic structure symmetry of molecules,
+therefore the actual script is under construction.
 
 --------
 
 cosym
 ^^^^^
-qqqqq
+This script is a general script that cover all the previous scripts.
 
 --------
 
@@ -617,7 +620,7 @@ qqqqq
 Specific task scripts
 ---------------------
 
-qqqqq
+In this section the specific task scripts are described.
 
 --------
 
@@ -660,9 +663,12 @@ Finally, a set of mutual flags found in all scripts is available and listed belo
 
 Using cosymlib's APIs
 ---------------------
-qqqqq
+
+The current API's are under construction and a set of tutorials will be provide in a near future.
 
 Shape references
 ----------------
+
+Here are the available shape reference's labels and their symmetry that can be used by the shape program.
 
 .. include:: shape_references.rst
