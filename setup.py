@@ -26,13 +26,13 @@ else:
 class PostInstallCommand(_install):
     def run(self):
         _install.run(self)
-        return
         from shutil import copyfile
         dir = os.path.dirname(__file__)
         files = os.listdir(dir + '/cosymlib/.libs')
         for file in files:
             filename = os.path.join(dir, 'cosymlib', '.libs', file)
             copyfile(filename, os.path.join(dir, 'cosymlib', 'shape', file))
+        return
         site_dir = get_python_lib()
         files = [f for f in os.listdir('./cosymlib/shape/') if os.path.isfile('./cosymlib/shape/' + f)]
         for file in files:
