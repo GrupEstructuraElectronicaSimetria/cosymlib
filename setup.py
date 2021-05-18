@@ -32,7 +32,6 @@ class PostInstallCommand(_install):
         for file in files:
             filename = os.path.join(dir, 'cosymlib', '.libs', file)
             copyfile(filename, os.path.join(dir, 'cosymlib', 'shape', file))
-        return
         site_dir = get_python_lib()
         files = [f for f in os.listdir('./cosymlib/shape/') if os.path.isfile('./cosymlib/shape/' + f)]
         for file in files:
@@ -56,7 +55,7 @@ setup(name='cosymlib',
                 'cosymlib.tools',
                 'cosymlib.simulation',
                 'cosymlib.gui'],
-      cmdclass={'install': PostInstallCommand} if sys.platform.startswith('win') else {},
+      # cmdclass={'install': PostInstallCommand} if sys.platform.startswith('win') else {},
       package_data={'': ['ideal_structures_center.yaml',
                          'periodic_table.yaml', '*.dll', '*.pyd']},
       include_package_data=True,
