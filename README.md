@@ -39,12 +39,12 @@ this software
 Contact info
 ------------
 Abel Carreras
-<br>abelcarreras83@gmail.com
-<br>Donostia International Physics Center (DIPC)
+abelcarreras83@gmail.com  
+Donostia International Physics Center (DIPC)
 
-Pere Alemany
-<br>p.alemany@ub.edu
-<br>Electronic Structure & Symmetry group  
-<br>Department of Materials Science and Physical Chemistry  
-<br>Institut de Química Teòrica i Computacional (IQTC-UB)  
-<br>University of Barcelona
+Pere Alemany  
+p.alemany@ub.edu  
+Electronic Structure & Symmetry group  
+Department of Materials Science and Physical Chemistry  
+Institut de Química Teòrica i Computacional (IQTC-UB)  
+University of Barcelona
