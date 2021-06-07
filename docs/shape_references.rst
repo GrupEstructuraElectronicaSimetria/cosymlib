@@ -40,11 +40,11 @@
 +         +------------+------------------------------------------------------------------+----------+
 |         | vT-2       |   Divacant tetrahedron (V-shape, 109.47°)                        |  |C2v|   |
 +         +------------+------------------------------------------------------------------+----------+
-|         | vOC-2      |   Tetravacant octahedron (L-shape, 90.47°)                       |  |C2v|   |
+|         | vOC-2      |   Tetravacant octahedron (L-shape, 90.00°)                       |  |C2v|   |
 +---------+------------+------------------------------------------------------------------+----------+
 |   3     | TP-3       |   Trigonal planar                                                |  |D3h|   |
 +         +------------+------------------------------------------------------------------+----------+
-|         | vT-3       |   Pyramid‡ (vacant tetrahedron)                                  |  |C3v|   |
+|         | vT-3       |   Pyramid\ :sup:`b`\  (vacant tetrahedron)                       |  |C3v|   |
 +         +------------+------------------------------------------------------------------+----------+
 |         | fac-vOC-3  |   fac-Trivacant octahedron                                       |  |C3v|   |
 +         +------------+------------------------------------------------------------------+----------+
@@ -54,17 +54,17 @@
 +         +------------+------------------------------------------------------------------+----------+
 |         | T-4        |   Tetrahedron                                                    |  |Td|    |
 +         +------------+------------------------------------------------------------------+----------+
-|         | SS-4       |   Seesaw or sawhorse ‡ (cis-divacant octahedron)                 |  |C2v|   |
+|         | SS-4       |   Seesaw or sawhorse\ :sup:`b`\  (cis-divacant octahedron)       |  |C2v|   |
 +         +------------+------------------------------------------------------------------+----------+
 |         | vTBPY-4    |   Axially vacant trigonal bipyramid                              |  |C3v|   |
 +---------+------------+------------------------------------------------------------------+----------+
 |   5     | PP-5       |   Pentagon                                                       |  |D5h|   |
 +         +------------+------------------------------------------------------------------+----------+
-|         | vOC-5      |   Vacant octahedron ‡ (Johnson square pyramid, J1)               |  |C4v|   |
+|         | vOC-5      |   Vacant octahedron\ :sup:`b`\  (Johnson square pyramid, J1)     |  |C4v|   |
 +         +------------+------------------------------------------------------------------+----------+
 |         | TBPY-5     |   Trigonal bipyramid                                             |  |D3h|   |
 +         +------------+------------------------------------------------------------------+----------+
-|         | SPY-5      |   Square pyramid §                                               |  |C4v|   |
+|         | SPY-5      |   Square pyramid\ :sup:`c`\                                      |  |C4v|   |
 +         +------------+------------------------------------------------------------------+----------+
 |         | JTBPY-5    |   Johnson trigonal bipyramid (J12)                               |  |D3h|   |
 +---------+------------+------------------------------------------------------------------+----------+
@@ -84,9 +84,9 @@
 +         +------------+------------------------------------------------------------------+----------+
 |         | PBPY-7     |   Pentagonal bipyramid                                           |  |D5h|   |
 +         +------------+------------------------------------------------------------------+----------+
-|         | COC-7      |   Capped octahedron *                                            |  |C3v|   |
+|         | COC-7      |   Capped octahedron\ :sup:`a`\                                   |  |C3v|   |
 +         +------------+------------------------------------------------------------------+----------+
-|         | CTPR-7     |   Capped trigonal prism *                                        |  |C2v|   |
+|         | CTPR-7     |   Capped trigonal prism\ :sup:`a`\                               |  |C2v|   |
 +         +------------+------------------------------------------------------------------+----------+
 |         | JPBPY-7    |   Johnson pentagonal bipyramid (J13)                             |  |D5h|   |
 +         +------------+------------------------------------------------------------------+----------+
@@ -164,7 +164,7 @@
 +         +------------+------------------------------------------------------------------+----------+
 |         | JSPC-10    |   Sphenocorona (J87)                                             |  |C2v|   |
 +         +------------+------------------------------------------------------------------+----------+
-|         | SDD-10     |   Staggered dodecahedron (2:6:2) #                               |  |D2|    |
+|         | SDD-10     |   Staggered dodecahedron (2:6:2)\ :sup:`e`\                      |  |D2|    |
 +         +------------+------------------------------------------------------------------+----------+
 |         | TD-10      |   Tetradecahedron (2:6:2)                                        |  |C2v|   |
 +         +------------+------------------------------------------------------------------+----------+
@@ -210,7 +210,7 @@
 +         +------------+------------------------------------------------------------------+----------+
 |         | JSPMC-12   |   Sphenomegacorona (J88)                                         |  |Cs|    |
 +---------+------------+------------------------------------------------------------------+----------+
-|   20    | DD-20      |   Dodecahedron †                                                 |  |Ih|    |
+|   20    | DD-20      |   Dodecahedron\ :sup:`d`\                                        |  |Ih|    |
 +---------+------------+------------------------------------------------------------------+----------+
 |   24    | TCU-24     |   Truncated cube                                                 |  |Oh|    |
 +         +------------+------------------------------------------------------------------+----------+
@@ -221,12 +221,12 @@
 |   60    | TRIC-60    |   Truncated icosahedron (fullerene)                              |  |Ih|    |
 +---------+------------+------------------------------------------------------------------+----------+
 
-| \* Non regular polyhedron, for definition of reference shape see references above.
-| ‡ A regular polyhedron with one or two vertices removed.
-| § Spherical distribution of vertices with mass center at the origin (apical-basal bond angles of 104.45°).
-| † For polyhedra with more than 12 vertices the calculation times may be unpractical, for now avoid this calculations
+| a Non regular polyhedron.
+| b  A regular polyhedron with one or two vertices removed.
+| c Spherical distribution of vertices with mass center at the origin (apical-basal bond angles of 104.45°).
+| d For polyhedra with more than 12 vertices the calculation times may be unpractical, for now avoid this calculations
     an upgrade is comming soon.
-| # This is a chiral polyhedron. It must be noticed that the algorithm used by Shape does not distinguish
+| e This is a chiral polyhedron. It must be noticed that the algorithm used by Shape does not distinguish
     the two enantiomers of a chiral shape. Therefore, whenever a chiral reference polyhedron is used, the resulting shape
     measures may not refer to that specific polyhedron but to its enantiomer.
 

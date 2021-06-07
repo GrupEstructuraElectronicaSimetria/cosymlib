@@ -52,7 +52,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'cosymlib'
-copyright = u'2017, E. Bernuz, A. Carreras, M. Llunell & P. Alemany'
+copyright = u'2017-2021, E. Bernuz, A. Carreras, M. Llunell & P. Alemany.'
 author = u'E. Bernuz, A. Carreras, M. Llunell & P. Alemany'
 
 # The version info for the project you're documenting, acts as replacement for

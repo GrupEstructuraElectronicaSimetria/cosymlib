@@ -76,7 +76,9 @@ included in the present distribution of **cosymlib**.
 
 General task scripts
 --------------------
-qqqqq
+
+In cosymlib library there several task scripts availables that can be run in a terminal as command lines. The following
+subsections describe the general usage of all of them.
 
 --------
 
@@ -603,13 +605,14 @@ available and list below. For more information of these commands go to gsym subs
 
 esym
 ^^^^^^
-qqqqq
+We are currenly working on this feature of the program regarding the electronic structure symmetry of molecules,
+therefore the actual script is under construction.
 
 --------
 
 cosym
 ^^^^^
-qqqqq
+This script is a general script that cover all the previous scripts.
 
 --------
 
@@ -617,21 +620,55 @@ qqqqq
 Specific task scripts
 ---------------------
 
-qqqqq
+In this section the specific task scripts are described.
 
 --------
 
 shape_map
 ^^^^^^^^^
-qqqqq
+The ``shape_map`` script calculate the continuous shape measures of a single or multiple structures with two reference
+structures in the same way the shape script does. However, it computes additional information like the minimum
+distortion pathway between the two reference structures, plus the deviation and the generalized coordinate of each
+user's structure.
+The most common commands available in the script are similar to the commands found in the shape script. The required
+commands are the ``-m_1 SH1` (or ``--measure_1``) and the ``-m_2 SH2`` flags, where SH1 and SH2 are the reference
+structure labels available in the program. Additionally, these flags can be substituted by the ``-m_custom_1 SH1`` or
+the ``-m_custom_2 SH2`` to indicate the program that SH1 and/or SH2 are the files containing a custom reference
+structure.
+Moreover, a set of flags are available to control the different plot options on the shape_map. The
+``--min_dev MIN_DEV`` and ``--max_dev MAX_DEV`` will only show the structures that are between the minimum and maximum
+deviation values (MIN_DEV and MAX_DEV), while the ``--min_gco MIN_GCO`` and ``--max_gco MAX_GCO`` show the structure
+that are at the MIN_GCO to MAX-GCO range of the generalized coordinate. In addition, the  user can plot more resolution
+minimal distortion pathways by setting the number of structures needed to compute the curve with the
+``--n_points N_POINTS`` flag.
+
+Finally, a set of mutual flags found in all scripts is available and listed below:
+
++-----------------+-----------------------+
+|    Short Flag   |   Explicit flag       |
++-----------------+-----------------------+
+|     ``-h``      |    ``--help``         |
++-----------------+-----------------------+
+|     ``-l``      |    ``--labels``       |
++-----------------+-----------------------+
+|     ``-o``      |    ``--output_name``  |
++-----------------+-----------------------+
+|     ``-c``      |    ``--central_atom`` |
++-----------------+-----------------------+
+|     ``-v``      |    ``--version``      |
++-----------------+-----------------------+
+
 
 --------
 
 Using cosymlib's APIs
 ---------------------
-qqqqq
+
+The current API's are under construction and a set of tutorials will be provide in a near future.
 
 Shape references
 ----------------
+
+Here are the available shape reference's labels and their symmetry that can be used by the shape program.
 
 .. include:: shape_references.rst
