@@ -10,7 +10,7 @@ def get_version_number():
 
 
 shape = Extension('cosymlib.shape.shp',
-                  # extra_compile_args=['-std=c99'],
+                  extra_f90_compile_args=['-static-libgcc'],
                   #include_dirs=include_dirs_numpy,
                   sources=['fortran/shp.pyf', 'fortran/shp.f90'])
 

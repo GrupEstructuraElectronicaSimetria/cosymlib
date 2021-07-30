@@ -67,6 +67,7 @@ def generate_connectivity_from_geometry(geometry, thresh=1.2):
 
     radii_matrix = np.array([radius]*len(radius))
     radii_matrix = radii_matrix + radii_matrix.T
+    radii_matrix[(radii_matrix == 0.0)] = np.nan # avoid 0 distance division
 
     try:
         relative_differences = np.abs(radii_matrix - distances_matrix)/radii_matrix

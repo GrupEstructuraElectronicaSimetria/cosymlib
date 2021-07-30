@@ -74,7 +74,7 @@ def get_geometry_from_file_xyz(file_name, read_multiple=False):
             if line.lstrip().startswith(comment_line):
                 pass
             elif line.strip() == '':
-                warnings.warn('Line {} is empty'.format(idl + 1), errors.EmptyLineWarning)
+                warnings.warn('Line {} is empty in xyz file'.format(idl + 1), errors.EmptyLineWarning)
             else:
                 try:
                     float(line.split()[1])
