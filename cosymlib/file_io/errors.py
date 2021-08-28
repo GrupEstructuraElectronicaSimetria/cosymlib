@@ -12,7 +12,7 @@ class MissingAtomWarning(Warning):
     pass
 
 
-class DifferentVerteciesWarning(Warning):
+class DifferentVerticesWarning(Warning):
     pass
 
 

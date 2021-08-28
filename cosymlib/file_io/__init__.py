@@ -34,7 +34,7 @@ def check_geometries_vertices(geometries, file_name):
             warnings.warn('Structure {} with name {} of file {}\n '
                           'Number of vertices does not match with other structures\n'.format(idg + 1, geometry.name,
                                                                                              file_name),
-                          errors.DifferentVerteciesWarning)
+                          errors.DifferentVerticesWarning)
 
 
 # Read INPUT files
