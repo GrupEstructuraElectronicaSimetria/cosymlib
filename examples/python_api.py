@@ -67,6 +67,15 @@ print('\nWFNSYM\n--------')
 
 
 molecule = file_io.get_molecule_from_file_fchk('../old_examples/pirrol.fchk', read_multiple=False)
+print(molecule.electronic_structure.basis)
+print(molecule.electronic_structure.coefficients_a)
+
+
+
+
+exit()
+
+
 
 measure_dict = molecule.get_wf_symmetry('C2v',
                                         axis=[0.000000, 0.000000, 1.000000],  # valor defecte
