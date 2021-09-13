@@ -66,7 +66,7 @@ print(Symmetry(methane, central_atom=1).nearest_structure('C4'))
 print('\nWFNSYM\n--------')
 
 
-molecule = file_io.get_molecule_from_file_fchk('../old_examples/pirrol.fchk', read_multiple=False)
+molecule = file_io.get_molecule_from_file_fchk('H.fchk', read_multiple=False)
 print(molecule.electronic_structure.basis)
 print(molecule.electronic_structure.coefficients_a)
 
