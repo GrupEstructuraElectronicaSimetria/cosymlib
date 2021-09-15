@@ -1,3 +1,4 @@
+from cosymlib.molecule.electronic_structure.protoelectronic_structure import ProtoElectronicStructure
 HARTREE_TO_EV = 27.21139563180092
 
 
@@ -21,6 +22,7 @@ class ElectronicStructure:
     :type beta_occupancy: list
 
     """
+
     def __init__(self,
                  basis,
                  orbital_coefficients,
@@ -74,7 +76,7 @@ class ElectronicStructure:
     def _recalculate_spin(self):
         s = abs(sum([a_electron - self._beta_occupancy[ida] for ida, a_electron in enumerate(self._alpha_occupancy)]))
         self._multiplicity = s + 1
-        self._s2 = s*(s + 1)
+        self._s2 = s * (s + 1)
 
     def _occupancy_consistency(self):
         if len(self._alpha_occupancy) < len(self._Ca):

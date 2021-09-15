@@ -1,10 +1,11 @@
+filename
 SP        R                             STO-3G
 Number of atoms                            I               1
 Charge                                     I               0
 Multiplicity                               I               2
 Number of electrons                        I               1
-Number of alpha electrons                  I               2
-Number of beta electrons                   I               -1
+Number of alpha electrons                  I               1
+Number of beta electrons                   I               0
 Atomic numbers                             I   N=           1
            1
 Current cartesian coordinates              R   N=           3

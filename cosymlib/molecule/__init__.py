@@ -1,5 +1,7 @@
 #from cosymlib.molecule.geometry import Geometry
 from cosymlib.molecule.electronic_structure import ElectronicStructure
+from cosymlib.molecule.electronic_structure import ProtoElectronicDensity
+from cosymlib.molecule.electronic_structure import ProtoElectronicStructure
 from cosymlib.simulation import ExtendedHuckel
 from cosymlib.tools import element_to_atomic_number
 from warnings import warn
@@ -71,14 +73,18 @@ class Molecule:
         """
         if self._electronic_structure is None:
             warn('Electronic structure auto generated from Extended-Huckel calculation')
-            eh = ExtendedHuckel(self.geometry)
-            self._electronic_structure = ElectronicStructure(basis=eh.get_basis(),
-                                                             orbital_coefficients=[eh.get_mo_coefficients(), []],
-                                                             alpha_energies=eh.get_mo_energies(),
-                                                             beta_energies=[],
-                                                             multiplicity=eh.get_multiplicity(),
-                                                             alpha_occupancy=[1]*eh.get_alpha_electrons(),
-                                                             beta_occupancy=[1]*eh.get_beta_electrons())
+            #eh = ExtendedHuckel(self.geometry)
+
+            #self._electronic_structure = ElectronicStructure(basis=eh.get_basis(),
+            #                                                 orbital_coefficients=[eh.get_mo_coefficients(), []],
+            #                                                 alpha_energies=eh.get_mo_energies(),
+            #                                                 beta_energies=[],
+            #                                                 multiplicity=eh.get_multiplicity(),
+            #                                                 alpha_occupancy=[1]*eh.get_alpha_electrons(),
+            #                                                 beta_occupancy=[1]*eh.get_beta_electrons())
+            protodensity=ProtoElectronicDensity(self.geometry)
+            self._electronic_structure = ProtoElectronicStructure(basis=protodensity.get_basis(),
+                                                                  orbital_coefficients=[protodensity.get_mo_coefficients(),[]])
 
         return self._electronic_structure
 
