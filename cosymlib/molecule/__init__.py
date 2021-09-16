@@ -30,7 +30,7 @@ class Molecule:
 
     """
     def __init__(self, geometry,
-                 electronic_structure=None,
+                 electronic_structure='HF',
                  name=None):
 
         if not geometry:
@@ -71,18 +71,20 @@ class Molecule:
         :return: The electronic structure
         :rtype: ElectronicStructure
         """
-        if self._electronic_structure is None:
+        if self._electronic_structure == 'EH':
             warn('Electronic structure auto generated from Extended-Huckel calculation')
-            #eh = ExtendedHuckel(self.geometry)
+            eh = ExtendedHuckel(self.geometry)
 
-            #self._electronic_structure = ElectronicStructure(basis=eh.get_basis(),
-            #                                                 orbital_coefficients=[eh.get_mo_coefficients(), []],
-            #                                                 alpha_energies=eh.get_mo_energies(),
-            #                                                 beta_energies=[],
-            #                                                 multiplicity=eh.get_multiplicity(),
-            #                                                 alpha_occupancy=[1]*eh.get_alpha_electrons(),
-            #                                                 beta_occupancy=[1]*eh.get_beta_electrons())
-            protodensity=ProtoElectronicDensity(self.geometry)
+            self._electronic_structure = ElectronicStructure(basis=eh.get_basis(),
+                                                             orbital_coefficients=[eh.get_mo_coefficients(), []],
+                                                             alpha_energies=eh.get_mo_energies(),
+                                                             beta_energies=[],
+                                                             multiplicity=eh.get_multiplicity(),
+                                                             alpha_occupancy=[1]*eh.get_alpha_electrons(),
+                                                             beta_occupancy=[1]*eh.get_beta_electrons())
+        elif self._electronic_structure == 'Dens':
+            warn('Electronic structure now generates electronic densities for quick symmetry measures')
+            protodensity = ProtoElectronicDensity(self.geometry)
             self._electronic_structure = ProtoElectronicStructure(basis=protodensity.get_basis(),
                                                                   orbital_coefficients=[protodensity.get_mo_coefficients(),[]])
 
