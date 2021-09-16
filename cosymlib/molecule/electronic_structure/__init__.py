@@ -1,3 +1,4 @@
+from cosymlib.molecule.electronic_structure.protoelectronic_structure import ProtoElectronicDensity
 from cosymlib.molecule.electronic_structure.protoelectronic_structure import ProtoElectronicStructure
 HARTREE_TO_EV = 27.21139563180092
 

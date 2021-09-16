@@ -1,6 +1,7 @@
 from wfnsympy import WfnSympy
 from symgroupy import Symgroupy
 from cosymlib.molecule.electronic_structure import ElectronicStructure
+from cosymlib.molecule.electronic_structure import ProtoElectronicStructure
 import numpy as np
 
 
@@ -125,7 +126,7 @@ class Symmetry:
         if self._electronic_structure is None:
             raise Exception('Electronic structure not set')
 
-        if isinstance(self._electronic_structure,ElectronicStructure):
+        elif isinstance(self._electronic_structure, ElectronicStructure):
 
             key = _get_key_wfnsym(group, self._axis, self._axis2, self._center, self._electronic_structure.alpha_occupancy,
                                   self._electronic_structure.beta_occupancy)
@@ -142,7 +143,7 @@ class Symmetry:
                                               group=group.upper(),
                                               alpha_occupancy=self._electronic_structure.alpha_occupancy,
                                               beta_occupancy=self._electronic_structure.beta_occupancy)
-        else:
+        elif isinstance(self._electronic_structure, ProtoElectronicStructure):
 
             key = _get_key_symgroup(group, self._center, self._central_atom, self._connectivity, self._multi,
                                     self._connect_thresh)
@@ -152,6 +153,9 @@ class Symmetry:
                                               alpha_mo_coeff=self._electronic_structure.coefficients_a,
                                               group=group.upper(),
                                               axis=self._axis)
+        else:
+            raise ('Electronic structure class not recognized')
+
         return self._results[key]
 
     ##########################################
@@ -294,47 +298,6 @@ class Symmetry:
                 'labels': results.SymLab,
                 'table': results.ideal_gt}
 
-    def analytic_selfsym(self):  # Add molecule and the angle you want to check its selfsymilarity with
-        sym_l = self._symbols
-        coord_a = self._coordinates
-
-
-        nat = len(sym_l)
-
-        coord_cma = coord_a
-
-        a2au = 1.889725
-        coord_cm = coord_cma * a2au
-        coord_cmrot = coord_cm
-        selfsim = 0
-        for i in range(nat):
-            num_weights1=len(self._electronic_structure.basis['atoms'][i]['shells'][0]['p_exponents'])
-            for j in range(nat):
-                num_weights2 = len(self._electronic_structure.basis['atoms'][j]['shells'][0]['p_exponents'])
-                for k in range(num_weights1):
-                    for l in range(num_weights2):
-                        a = 2 * self._electronic_structure.basis['atoms'][i]['shells'][0]['p_exponents'][k]
-                        b = 2 * self._electronic_structure.basis['atoms'][j]['shells'][0]['p_exponents'][l]
-                        weighti=self._electronic_structure.basis['atoms'][i]['shells'][0]['con_coefficients'][k]
-                        weightj=self._electronic_structure.basis['atoms'][j]['shells'][0]['con_coefficients'][l]
-
-                        normi = weighti * (a / np.pi) ** (
-                                3 / 4)
-                        normj = weightj * (b / np.pi) ** (
-                                3 / 4)
-
-                        coef = (np.pi / (a + b)) ** (3 / 2)
-                        expn = -1.0 * a * b / (a + b)
-                        r2 = (coord_cm[i, 0] - coord_cmrot[j, 0]) ** 2 + (coord_cm[i, 1] - coord_cmrot[j, 1]) ** 2 + (
-                                coord_cm[i, 2] - coord_cmrot[j, 2]) ** 2
-                        ex = np.exp(expn * r2)
-
-                        selfsim = selfsim + normi * normj * coef * ex
-        return selfsim
-
-
-
-
     def dens_measure(self, group):
 
         results = self._get_wfnsym_results(group)
@@ -347,7 +310,7 @@ class Symmetry:
             return {'labels': results.SymLab,
                     'csm': (1-results.mo_SOEVs_a[0].sum()/(results.mo_SOEVs_a[0][0]*len(results.mo_SOEVs_a[0]))),
                     'csm_coef': results.mo_SOEVs_a[0] / results.mo_SOEVs_a[0][0],
-                    'self_similarity': self.analytic_selfsym()}
+                    'self_similarity':  results.mo_SOEVs_a[0][0]}
 
 
     def axes(self, group):

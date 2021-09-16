@@ -520,7 +520,7 @@ class ProtoElectronicDensity(object):
             for shell in range(self.num_weights(element)):
                 expi = 2 * self._atomic_values[element][2 * (shell + 1)]
                 coefi = self._atomic_values[element][2 * (shell + 1) + 1]
-                nrmi = ((expi / np.pi) ** (3 / 4))
+                nrmi = ((2*expi / np.pi) ** (3 / 4))
 
                 p_exp.append(expi)
                 con_coef.append(coefi * self._atomic_values[element][0] * nrmi)
@@ -540,6 +540,35 @@ class ProtoElectronicDensity(object):
         return basis
 
     def get_mo_coefficients(self):
+        atomic_values=self._atomic_values
+        sym_l=self._sym_l
+        nat = len(sym_l)
+
+        alpha_mo_coeff=[[]]
+        for i in range(nat):
+            num_weights1=self.num_weights(sym_l[i])
+            selfsim = 0
+            for k in range(num_weights1):
+                for l in range(num_weights1):
+                    a = 2 * atomic_values[sym_l[i]][2 * (k + 1)]
+                    b = 2 * atomic_values[sym_l[i]][2 * (l + 1)]
+
+                    normi = atomic_values[sym_l[i]][2 * (k + 1) + 1] * atomic_values[sym_l[i]][0] * (2*a / np.pi) ** (
+                            3 / 2)
+                    normj = atomic_values[sym_l[i]][2 * (l + 1) + 1] * atomic_values[sym_l[i]][0] * (2*b / np.pi) ** (
+                            3 / 2)
+
+                    coef = ((np.pi / (2*(a + b))) ** (3 / 2))/(2*np.sqrt(2))
+
+
+
+                    selfsim = selfsim + normi * normj * coef
+
+            alpha_mo_coeff[0].append(np.sqrt(selfsim))
+
+        return alpha_mo_coeff
+
+    def OLD_get_mo_coefficients(self):
         alpha_mo_coeff = [[]]
         for atom in range(len(self._sym_l)):
             alpha_mo_coeff[0].append(1.0)

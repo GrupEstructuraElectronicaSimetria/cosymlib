@@ -101,22 +101,29 @@ class Cosymlib:
                  ignore_atoms_labels=False,
                  ignore_connectivity=False,
                  connectivity=None,
-                 connectivity_thresh=None):
+                 connectivity_thresh=None,
+                 mode=0):
 
+        mode_list = [None,'EH', 'Dens']
+        self._mode = mode_list[mode]
         self._molecules = []
         if isinstance(structures, list):
             for structure in structures:
                 if isinstance(structure, Molecule):
+                    if self._mode is not None:
+                        structures._electronic_structure = self._mode
                     self._molecules.append(structure)
                 elif isinstance(structure, Geometry):
-                    self._molecules.append(Molecule(structure))
+                    self._molecules.append(Molecule(structure,electronic_structure=self._mode))
                 else:
                     raise AttributeError('Molecule object not found')
         else:
             if isinstance(structures, Molecule):
+                if self._mode is not None:
+                    structures._electronic_structure = self._mode
                 self._molecules.append(structures)
             elif isinstance(structures, Geometry):
-                self._molecules.append(Molecule(structures))
+                self._molecules.append(Molecule(structures,electronic_structure=self._mode))
             else:
                 raise AttributeError('Molecule object not found')
 
@@ -129,6 +136,7 @@ class Cosymlib:
                 molecule.geometry.set_connectivity(connectivity)
             if ignore_connectivity:
                 molecule.geometry.set_connectivity(None)
+
 
     def get_n_atoms(self):
         """
@@ -393,7 +401,10 @@ class Cosymlib:
 
         txt = ''
         for molecule in self._molecules:
-            dens_measure = molecule.get_dens_symmetry(group, axis=axis, axis2=axis2, center=center)
+            dens_measure = molecule.get_dens_symmetry(group,
+                                                      axis=axis,
+                                                      axis2=axis2,
+                                                      center=center)
 
             sep_line = '          ' + '---------' * len(dens_measure['labels']) + '\n'
 
