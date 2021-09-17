@@ -147,12 +147,25 @@ class Symmetry:
 
             key = _get_key_symgroup(group, self._center, self._central_atom, self._connectivity, self._multi,
                                     self._connect_thresh)
+            if self._center is None:
+                coord_a = np.array(self._coordinates)
+                sym_m = []
+                for i in range(len(self._symbols)):
+                    sym_m.append(self._electronic_structure.basis['atoms'][i]['atomic_number'])
+                sym_m = np.array(sym_m)
+                self._center = [np.sum(coord_a[:, 0] * sym_m[:]) / np.sum(sym_m),
+                                              np.sum(coord_a[:, 1] * sym_m[:]) / np.sum(sym_m),
+                                              np.sum(coord_a[:, 2] * sym_m[:]) / np.sum(sym_m)]
+
+
             self._results[key] = WfnSympy(coordinates=self._coordinates,
                                               symbols=self._symbols,
                                               basis=self._electronic_structure.basis,
                                               alpha_mo_coeff=self._electronic_structure.coefficients_a,
                                               group=group.upper(),
+                                              center=self._center,
                                               axis=self._axis)
+
         else:
             raise ('Electronic structure class not recognized')
 
@@ -315,6 +328,7 @@ class Symmetry:
 
     def axes(self, group):
         results = self._get_wfnsym_results(group)
+
         return {'center' : results.center,
                 'axis': results.axis,
                 'axis2': results.axis2}

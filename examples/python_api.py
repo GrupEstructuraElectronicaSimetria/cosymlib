@@ -24,10 +24,10 @@ def print_csm(data):
 
 
 #geometries = file_io.get_geometry_from_file_xyz('../old_examples/coord.xyz')
-geometries = file_io.get_molecule_from_file_fchk('h2.fchk', read_multiple=False)
+geometries = file_io.get_molecule_from_file_fchk('../old_examples/sf6.fchk', read_multiple=False)
 mol = Cosymlib(geometries,mode=2)
 
-print(mol.print_edensity_measure('c6',axis=[1,0,0]))
+print(mol.print_edensity_measure('c4'))
 exit()
 
 # Get structures from files
