@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/GrupEstructuraElectronicaSimetria/cosymlib.svg?branch=master)](https://travis-ci.com/GrupEstructuraElectronicaSimetria/cosymlib)
+[![Build Status](https://app.travis-ci.com/GrupEstructuraElectronicaSimetria/cosymlib.svg?branch=master)](https://app.travis-ci.com/github/GrupEstructuraElectronicaSimetria/cosymlib)
 [![Coverage Status](https://coveralls.io/repos/github/GrupEstructuraElectronicaSimetria/cosymlib/badge.svg?branch=master)](https://coveralls.io/github/GrupEstructuraElectronicaSimetria/cosymlib?branch=master)
 [![PyPI version](https://badge.fury.io/py/cosymlib.svg)](https://badge.fury.io/py/symeess)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4925766.svg)](https://doi.org/10.5281/zenodo.4925766)
