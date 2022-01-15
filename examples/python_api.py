@@ -88,7 +88,7 @@ print('\n\n***********{}************'.format('print_electronic_symmetry_measure(
 molecules_set._print_electronic_symmetry_measure('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
 
 
-molecules_list = file_io.read_generic_structure_file('pirrol.fchk', read_multiple=True)
+molecules_list = file_io.read_generic_structure_file('../old_examples/pirrol.fchk', read_multiple=True)
 molecules_set = Cosymlib(molecules_list)
 print('\n\n***********{}************'.format('print_info()'))
 molecules_set.print_info()
@@ -98,3 +98,5 @@ print('\n\n***********{}************'.format('print_wnfsym_sym_ovelap()'))
 molecules_set.print_esym_sym_overlaps('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
 print('\n\n***********{}************'.format('print_wnfsym_sym_matrices()'))
 molecules_set.print_esym_matrices('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
+
+molecules_set.print_edensity_measure('C2v', axis=[0, 0, 1], center=[1.0, 0.0, 0.0])
