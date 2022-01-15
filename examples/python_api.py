@@ -28,7 +28,7 @@ geometries = file_io.get_molecule_from_file_fchk('../old_examples/sf6.fchk', rea
 mol = Cosymlib(geometries,mode=2)
 
 print(mol.print_edensity_measure('c4'))
-exit()
+
 
 # Get structures from files
 geometries_list = file_io.get_geometry_from_file_xyz('../old_examples/coord.xyz', read_multiple=True)
@@ -91,10 +91,6 @@ measure_dict = molecule.get_wf_symmetry('C2v',
 print_csm(measure_dict)
 
 
-exit()
-
-
-
 
 
 print('\nCOSYMLIB\n--------')
@@ -107,9 +103,8 @@ molecules_set.print_minimum_distortion_path_shape('SP-4', 'SS-4', central_atom=1
 
 geometries_list = file_io.get_geometry_from_file_xyz('../old_examples/coord_2.xyz', read_multiple=True)
 molecules_set = Cosymlib(geometries_list)
-print('\n\n***********{}************'.format('print_electronic_symmetry_measure()'))
-molecules_set._print_electronic_symmetry_measure('C2v', axis=[0, 0, 1], center=[0.0, 0.0, 0.0])
 
+print('\n\n***********{}************'.format('print_electronic_symmetry_measure()'))
 
 molecules_list = file_io.read_generic_structure_file('../old_examples/pirrol.fchk', read_multiple=True)
 molecules_set = Cosymlib(molecules_list)
