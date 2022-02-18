@@ -321,7 +321,7 @@ class Symmetry:
                     'self_similarity': results.self_similarity}
         else:
             return {'labels': results.SymLab,
-                    'csm': (1-results.mo_SOEVs_a[0].sum()/(results.mo_SOEVs_a[0][0]*len(results.mo_SOEVs_a[0]))),
+                    'csm': 100*(1-results.mo_SOEVs_a[0].sum()/(results.mo_SOEVs_a[0][0]*len(results.mo_SOEVs_a[0]))),
                     'csm_coef': results.mo_SOEVs_a[0] / results.mo_SOEVs_a[0][0],
                     'self_similarity':  results.mo_SOEVs_a[0][0]}
 
