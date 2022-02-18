@@ -51,4 +51,4 @@ deploy:
     on:
       branch: master
       tags: false
-      condition: $TRAVIS_PYTHON_VERSION != "2.7"
+      condition: $TRAVIS_PYTHON_VERSION == "3.8"
