@@ -104,28 +104,14 @@ class Cosymlib:
                  connectivity_thresh=None,
                  mode=0):
 
-        mode_list = [None,'EH', 'Dens']
+        mode_list = [None, 'EH', 'Dens']
         self._mode = mode_list[mode]
         self._molecules = []
-        if isinstance(structures, list):
+        if isinstance(structures, (list, tuple)):
             for structure in structures:
-                if isinstance(structure, Molecule):
-                    if self._mode is not None:
-                        structures._electronic_structure = self._mode
-                    self._molecules.append(structure)
-                elif isinstance(structure, Geometry):
-                    self._molecules.append(Molecule(structure,electronic_structure=self._mode))
-                else:
-                    raise AttributeError('Molecule object not found')
+                self._molecules.append(Molecule(structure, electronic_structure=self._mode))
         else:
-            if isinstance(structures, Molecule):
-                if self._mode is not None:
-                    structures._electronic_structure = self._mode
-                self._molecules.append(structures)
-            elif isinstance(structures, Geometry):
-                self._molecules.append(Molecule(structures,electronic_structure=self._mode))
-            else:
-                raise AttributeError('Molecule object not found')
+            self._molecules.append(Molecule(structures, electronic_structure=self._mode))
 
         for molecule in self._molecules:
             if ignore_atoms_labels:

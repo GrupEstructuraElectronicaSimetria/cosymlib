@@ -22,19 +22,22 @@ class Molecule:
     Main molecule class
 
     :param geometry: The geometry
-    :type geometry: Geometry
+    :type geometry: Geometry, Molecule
     :param electronic_structure: The electronic structure
-    :type electronic_structure: ElectronicStructure
+    :type electronic_structure: ElectronicStructure, str
     :param name: Molecule name
     :type name: str
 
     """
     def __init__(self, geometry,
-                 electronic_structure='HF',
+                 electronic_structure=None,
                  name=None):
 
-        if not geometry:
-            raise Exception('No geometry found in the input file, check out input file for possible errors')
+        # handle if geometry is already a molecule
+        if isinstance(geometry, Molecule):
+            if electronic_structure is None:
+                electronic_structure = geometry.electronic_structure
+            geometry = geometry.geometry
         if name is None:
             self._name = geometry.name
 
@@ -71,8 +74,13 @@ class Molecule:
         :return: The electronic structure
         :rtype: ElectronicStructure
         """
-        if self._electronic_structure == 'EH':
+
+        # if None default electronic structure is ExtendedHuckel
+        if self._electronic_structure is None:
+            self._electronic_structure = 'EH'
             warn('Electronic structure auto generated from Extended-Huckel calculation')
+
+        if self._electronic_structure == 'EH':
             eh = ExtendedHuckel(self.geometry)
 
             self._electronic_structure = ElectronicStructure(basis=eh.get_basis(),
@@ -82,8 +90,8 @@ class Molecule:
                                                              multiplicity=eh.get_multiplicity(),
                                                              alpha_occupancy=[1]*eh.get_alpha_electrons(),
                                                              beta_occupancy=[1]*eh.get_beta_electrons())
+
         elif self._electronic_structure == 'Dens':
-            warn('Electronic structure now generates electronic densities for quick symmetry measures')
             protodensity = ProtoElectronicDensity(self.geometry)
             self._electronic_structure = ProtoElectronicStructure(basis=protodensity.get_basis(),
                                                                   orbital_coefficients=[protodensity.get_mo_coefficients(),[]])
