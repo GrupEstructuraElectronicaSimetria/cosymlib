@@ -1,7 +1,8 @@
-from wfnsympy import WfnSympy
-from symgroupy import Symgroupy
 from cosymlib.molecule.electronic_structure import ElectronicStructure
 from cosymlib.molecule.electronic_structure import ProtoElectronicStructure
+from wfnsympy import WfnSympy
+from symgroupy import Symgroupy
+from collections import namedtuple
 import numpy as np
 
 
@@ -123,26 +124,36 @@ class Symmetry:
         return self._results[key]
 
     def _get_wfnsym_results(self, group):
-        if self._electronic_structure is None:
-            raise Exception('Electronic structure not set')
 
-        elif isinstance(self._electronic_structure, ElectronicStructure):
+        # Use of complete Electronic Structure using wfnsym
+        if isinstance(self._electronic_structure, ElectronicStructure):
 
             key = _get_key_wfnsym(group, self._axis, self._axis2, self._center, self._electronic_structure.alpha_occupancy,
                                   self._electronic_structure.beta_occupancy)
 
             if key not in self._results:
-                self._results[key] = WfnSympy(coordinates=self._coordinates,
-                                              symbols=self._symbols,
-                                              basis=self._electronic_structure.basis,
-                                              center=self._center,
-                                              axis=self._axis,
-                                              axis2=self._axis2,
-                                              alpha_mo_coeff=self._electronic_structure.coefficients_a,
-                                              beta_mo_coeff=self._electronic_structure.coefficients_b,
-                                              group=group.upper(),
-                                              alpha_occupancy=self._electronic_structure.alpha_occupancy,
-                                              beta_occupancy=self._electronic_structure.beta_occupancy)
+                wfnsym_data = WfnSympy(coordinates=self._coordinates,
+                                       symbols=self._symbols,
+                                       basis=self._electronic_structure.basis,
+                                       center=self._center,
+                                       axis=self._axis,
+                                       axis2=self._axis2,
+                                       alpha_mo_coeff=self._electronic_structure.coefficients_a,
+                                       beta_mo_coeff=self._electronic_structure.coefficients_b,
+                                       group=group.upper(),
+                                       alpha_occupancy=self._electronic_structure.alpha_occupancy,
+                                       beta_occupancy=self._electronic_structure.beta_occupancy)
+
+                properties_list = ['IRLab', 'mo_IRd_a', 'mo_IRd_b', 'SymLab', 'wf_IRd_a', 'wf_IRd_b',
+                                   'wf_IRd', 'mo_SOEVs_a', 'mo_SOEVs_b', 'wf_SOEVs_a', 'wf_SOEVs_b',
+                                   'wf_SOEVs', 'SymMat', 'csm_coef', 'grim_coef', 'ideal_gt', 'csm_dens',
+                                   'csm_dens_coef', 'self_similarity', 'center', 'axis', 'axis2', 'SymAxes']
+
+                self._results[key] = namedtuple('electronic_symmetry', properties_list)
+                for property in properties_list:
+                    setattr(self._results[key], property, getattr(wfnsym_data, property))
+
+        # Use of ProtoElectronicStructure
         elif isinstance(self._electronic_structure, ProtoElectronicStructure):
 
             key = _get_key_symgroup(group, self._center, self._central_atom, self._connectivity, self._multi,
@@ -157,14 +168,25 @@ class Symmetry:
                                               np.sum(coord_a[:, 1] * sym_m[:]) / np.sum(sym_m),
                                               np.sum(coord_a[:, 2] * sym_m[:]) / np.sum(sym_m)]
 
+            wfnsym_data = WfnSympy(coordinates=self._coordinates,
+                                   symbols=self._symbols,
+                                   basis=self._electronic_structure.basis,
+                                   alpha_mo_coeff=self._electronic_structure.coefficients_a,
+                                   group=group.upper(),
+                                   center=self._center,
+                                   axis=self._axis)
 
-            self._results[key] = WfnSympy(coordinates=self._coordinates,
-                                              symbols=self._symbols,
-                                              basis=self._electronic_structure.basis,
-                                              alpha_mo_coeff=self._electronic_structure.coefficients_a,
-                                              group=group.upper(),
-                                              center=self._center,
-                                              axis=self._axis)
+            properties_list = ['IRLab', 'SymLab', 'csm_dens', 'csm_dens_coef', 'self_similarity',
+                               'center', 'axis', 'axis2', 'SymAxes']
+
+            self._results[key] = namedtuple('electronic_symmetry', properties_list)
+            for property in properties_list:
+                setattr(self._results[key], property, getattr(wfnsym_data, property))
+
+            self._results[key].csm_dens = 100*(1-wfnsym_data.mo_SOEVs_a[0].sum()/(wfnsym_data.mo_SOEVs_a[0][0]*
+                                                                                  len(wfnsym_data.mo_SOEVs_a[0])))
+            self._results[key].csm_dens_coef = wfnsym_data.mo_SOEVs_a[0] / wfnsym_data.mo_SOEVs_a[0][0]
+            self._results[key].self_similarity = wfnsym_data.mo_SOEVs_a[0][0]
 
         else:
             raise ('Electronic structure class not recognized')
@@ -312,19 +334,11 @@ class Symmetry:
                 'table': results.ideal_gt}
 
     def dens_measure(self, group):
-
         results = self._get_wfnsym_results(group)
-        if isinstance(self._electronic_structure,ElectronicStructure):
-            return {'labels': results.SymLab,
-                    'csm': results.csm_dens,
-                    'csm_coef': results.csm_dens_coef,
-                    'self_similarity': results.self_similarity}
-        else:
-            return {'labels': results.SymLab,
-                    'csm': 100*(1-results.mo_SOEVs_a[0].sum()/(results.mo_SOEVs_a[0][0]*len(results.mo_SOEVs_a[0]))),
-                    'csm_coef': results.mo_SOEVs_a[0] / results.mo_SOEVs_a[0][0],
-                    'self_similarity':  results.mo_SOEVs_a[0][0]}
-
+        return {'labels': results.SymLab,
+                'csm': results.csm_dens,
+                'csm_coef': results.csm_dens_coef,
+                'self_similarity': results.self_similarity}
 
     def axes(self, group):
         results = self._get_wfnsym_results(group)
