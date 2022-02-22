@@ -530,7 +530,8 @@ class Cosymlib:
             ir_mo = molecule.get_mo_irreducible_representations(group, axis=axis, axis2=axis2, center=center)
             data_wf = molecule.get_wf_irreducible_representations(group, axis=axis, axis2=axis2, center=center)
 
-            txt += '\nMolecule : {}\n'.format(molecule.name)
+            txt += '\nSymmetry group : {}\n'.format(group)
+            txt += 'Molecule : {}\n'.format(molecule.name)
             txt += _get_geometry_coordinates(molecule.geometry)
 
             sep_line = '     ' + '---------' * (len(ir_mo['labels'])) + '\n'

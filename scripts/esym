@@ -148,6 +148,12 @@ if args.measure:
             raise KeyError('Missing axis2')
         args.axis, args.axis2 = orthogonal_c4(args.axis, args.axis2)
 
+    structure_set.print_esym_irreducible_repr(args.measure,
+                                              axis=args.axis,
+                                              axis2=args.axis2,
+                                              center=args.center,
+                                              output=common_output)
+
     if args.molecular_orbitals:
         structure_set.print_esym_mo_irreducible_repr(args.measure,
                                                      axis=args.axis,
@@ -156,11 +162,6 @@ if args.measure:
                                                      show_axes=False,
                                                      output=common_output)
 
-    structure_set.print_esym_irreducible_repr(args.measure,
-                                              axis=args.axis,
-                                              axis2=args.axis2,
-                                              center=args.center,
-                                              output=common_output)
     if args.trans_matrices:
         structure_set.print_esym_matrices(args.measure,
                                           axis=args.axis,
