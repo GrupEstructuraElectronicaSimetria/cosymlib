@@ -796,12 +796,13 @@ class Cosymlib:
                                             positions=structure, name='map_structure{}'.format(ids)))
         output2.write(file_io.get_file_xyz_txt(test_structures))
 
+        plt.plot(path[0], path[1], 'k', linewidth=2.0)
+        plt.scatter(np.array(csm[label1_name])[filter_mask],
+                    np.array(csm[label2_name])[filter_mask], linewidths=0.01)
+        plt.xlabel(label1_name)
+        plt.ylabel(label2_name)
+        plt.savefig('shape_map.png')
         if output1 is sys.stdout:
-            plt.plot(path[0], path[1], 'k', linewidth=2.0)
-            plt.scatter(np.array(csm[label1_name])[filter_mask],
-                        np.array(csm[label2_name])[filter_mask], linewidths=0.01)
-            plt.xlabel(label1_name)
-            plt.ylabel(label2_name)
             plt.show()
 
     def get_point_group(self, tol=0.01):
