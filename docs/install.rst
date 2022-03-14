@@ -81,3 +81,24 @@ installed you can run the :program:`python` interpreter and execute: ::
    import cosymlib
 
 if the execution do not show any errors :program:`cosymlib` has been installed successfully.
+
+Possible errors
+---------------
+- **Mac**
+
+Possible errors  for M1 users:
+
+ 1. For users with Apple M1, scipy library might not properly install when following the next instructions,
+    to solve this, install manually: ::
+
+     brew install openblas
+     brew install lapack
+     brew install python
+     pip install cython pybind11 pythran numpy
+     OPENBLAS=$(brew --prefix openblas) CFLAGS="-falign-functions=8 ${CFLAGS}" pip install --no-use-pep517 scipy==1.7.0
+
+ 2. When using an IDE remember to select the python interpreter in the hombrew path, to find it: ::
+
+     which python3
+     >> /opt/homebrew/bin/python3
+
