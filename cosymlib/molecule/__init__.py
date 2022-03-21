@@ -81,15 +81,7 @@ class Molecule:
             warn('Electronic structure auto generated from Extended-Huckel calculation')
 
         if self._electronic_structure == 'EH':
-            eh = ExtendedHuckel(self.geometry)
-
-            self._electronic_structure = ElectronicStructure(basis=eh.get_basis(),
-                                                             orbital_coefficients=[eh.get_mo_coefficients(), []],
-                                                             alpha_energies=eh.get_mo_energies(),
-                                                             beta_energies=[],
-                                                             multiplicity=eh.get_multiplicity(),
-                                                             alpha_occupancy=[1]*eh.get_alpha_electrons(),
-                                                             beta_occupancy=[1]*eh.get_beta_electrons())
+            self._electronic_structure = ExtendedHuckel(self.geometry)
 
         elif self._electronic_structure == 'Dens':
             protodensity = ProtoElectronicDensity(self.geometry)

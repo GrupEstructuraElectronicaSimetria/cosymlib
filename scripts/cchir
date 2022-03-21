@@ -91,23 +91,10 @@ if args.info:
     print_input_info(structure_set.get_geometries(), output=common_output)
     exit()
 
-if args.order == 1:
-    reference = ['Cs']
-elif args.order == 2:
-    reference = ['Ci']
-elif int(args.order) > 8:
-    raise ValueError('Maximum value available for Sn chirality measure is 8')
-else:
-    reference = ['Cs', 'Ci']
-    for n in range(3, args.order + 1):
-        if n%2 == 0:
-            reference.append('S'+str(n))
-
-reference = [r.lower() for r in reference]
 
 # Chirality commands
 if args.measure:
-    structure_set.print_chirality_measure(reference,
+    structure_set.print_chirality_measure(args.order,
                                           central_atom=args.central_atom,
                                           center=args.center,
                                           output=common_output)

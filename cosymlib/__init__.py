@@ -84,7 +84,7 @@ class Cosymlib:
     Main cosymlib class
 
     :param structures: List of :class:`~cosymlib.molecule.geometry.Geometry` or :class:`~cosymlib.molecule.Molecule`
-    :type structures: list
+    :type structures: list, :class:`~cosymlib.molecule.geometry.Geometry`, :class:`~cosymlib.molecule.Molecule`
     :param ignore_atoms_labels: Ignore atomic element labels is symmetry calculations
     :type ignore_atoms_labels: bool
     :param ignore_connectivity: Ignore connectivity in symmetry calculations
@@ -341,15 +341,32 @@ class Cosymlib:
             geometry = molecule.geometry.get_symmetry_nearest_structure(**kwargs)
             output.write(file_io.get_file_xyz_txt(geometry))
 
-    def print_chirality_measure(self, labels, central_atom=0, center=None, output=sys.stdout):
+    def print_chirality_measure(self, order=1, central_atom=0, center=None, output=sys.stdout):
+
+        if order < 1:
+            raise Exception('Chirality order should be greater than 0')
+
+        if order == 1:
+            reference = ['Cs']
+        elif order == 2:
+            reference = ['Ci']
+        elif int(order) > 8:
+            raise ValueError('Maximum value available for Sn chirality measure is 8')
+        else:
+            reference = ['Cs', 'Ci']
+            for n in range(3, order + 1):
+                if n % 2 == 0:
+                    reference.append('S' + str(n))
+
+        reference = [r.lower() for r in reference]
 
         csm_list = []
-        for label in labels:
+        for label in reference:
             csm_list.append([geometry.get_symmetry_measure(label, central_atom=central_atom, center=center)
                              for geometry in self.get_geometries()])
 
         molecules_names = [molecule.name for molecule in self._molecules]
-        txt = _get_table_format(labels, molecules_names, csm_list)
+        txt = _get_table_format(reference, molecules_names, csm_list)
 
         output.write(txt)
 
