@@ -14,7 +14,7 @@ geometry = Geometry(positions=[[ 0.0000,  0.0000,  0.0000],
                     name='Methane')
 
 # Build Molecule with ExtendedHuckel electronic structure
-huckel_ee = ExtendedHuckel(geometry)
+huckel_ee = ExtendedHuckel(geometry, charge=0)
 print('alpha electrons: ', huckel_ee.alpha_electrons)
 print('beta electrons: ', huckel_ee.beta_electrons)
 molecule = Molecule(geometry=geometry, electronic_structure=huckel_ee)
