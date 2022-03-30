@@ -28,7 +28,7 @@ def get_reference_structure(label, central_atom=0):
     if ideal_structures is None:
         file_path = os.path.dirname(os.path.abspath(__file__)) + '/ideal_structures_center.yaml'
         with open(file_path, 'r') as stream:
-            ideal_structures = yaml.load(stream, Loader=yaml.FullLoader)
+            ideal_structures = yaml.safe_load(stream)
 
     try:
         if central_atom == 0:
