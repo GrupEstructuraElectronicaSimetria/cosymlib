@@ -378,9 +378,17 @@ class Cosymlib:
             wf_measure = molecule.get_wf_symmetry(group, axis=axis, axis2=axis2, center=center)
 
             if first:
+                axes_information = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
+                txt += '\nSymmetry parameters\n'
+                txt += 'center: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])
+                txt += '\n'
+                txt += 'axis  : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis']])
+                txt += '\n'
+                txt += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
+                txt += '\n'
                 sep_line = '          ' + '---------' * len(wf_measure['labels']) + '\n'
 
-                txt += '\nWaveFunction: CSM-like values\n'
+                txt += '\nWaveFunction: normalized SOEV values\n'
                 txt += sep_line
                 txt += '           ' + '  '.join(['{:^7}'.format(s) for s in wf_measure['labels']])
                 txt += '\n'
@@ -389,14 +397,7 @@ class Cosymlib:
             txt += '{:<9} '.format(molecule.name) + '  '.join(['{:7.3f}'.format(s) for s in wf_measure['csm']])
             txt += '\n'
             first = False
-        axes_information = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
-        txt += '\nSymmetry parameters\n'
-        txt += 'center: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])
-        txt += '\n'
-        txt += 'axis  : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis']])
-        txt += '\n'
-        txt += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
-        txt += '\n'
+
 
         output.write(txt)
 
@@ -410,25 +411,7 @@ class Cosymlib:
                                                       center=center)
 
             sep_line = '          ' + '---------' * len(dens_measure['labels']) + '\n'
-
-            txt += _get_geometry_coordinates(molecule.geometry)
-
-            txt += '\nDensity: CSM-like values\n'
-            txt += sep_line
-            txt += '           ' + '  '.join(['{:^7}'.format(s) for s in dens_measure['labels']])
-            txt += '\n'
-            txt += sep_line
-
-            txt += '{:<9} '.format(molecule.name) + '  '.join(['{:7.3f}'.format(s) for s in dens_measure['csm_coef']])
-            txt += '\n\n'
-
             axes_information = molecule.get_symmetry_axes(group, axis=axis, axis2=axis2, center=center)
-            txt += '----------------------------\n'
-            txt += 'Total density symmetry: {}\n'.format(group)
-            txt += '----------------------------\n'
-            txt += '{:<9} '.format(molecule.name) + '{:7.3f}\n'.format(dens_measure['csm'])
-
-            txt += '\nSelf Similarity: {:7.3f}\n\n'.format(dens_measure['self_similarity'])
 
             txt += '\nSymmetry axes\n'
             txt += 'center: ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['center']])
@@ -437,6 +420,28 @@ class Cosymlib:
             txt += '\n'
             txt += 'axis2 : ' + '  '.join(['{:12.8f}'.format(s) for s in axes_information['axis2']])
             txt += '\n'
+            txt += '\n'
+
+            txt += _get_geometry_coordinates(molecule.geometry)
+
+            txt += '\nDensity: normalized SOEV values\n'
+            txt += sep_line
+            txt += '           ' + '  '.join(['{:^7}'.format(s) for s in dens_measure['labels']])
+            txt += '\n'
+            txt += sep_line
+
+            txt += '{:<9} '.format(molecule.name) + '  '.join(['{:7.3f}'.format(s) for s in dens_measure['csm_coef']])
+            txt += '\n\n'
+
+
+            txt += '----------------------------\n'
+            txt += 'Total density CSM: {}\n'.format(group)
+            txt += '----------------------------\n'
+            txt += '{:<9} '.format(molecule.name) + '{:7.3f}\n'.format(dens_measure['csm'])
+
+            txt += '\nSelf Similarity: {:7.3f}\n\n'.format(dens_measure['self_similarity'])
+
+
 
         output.write(txt)
 
@@ -813,11 +818,14 @@ class Cosymlib:
                                             positions=structure, name='map_structure{}'.format(ids)))
         output2.write(file_io.get_file_xyz_txt(test_structures))
 
+        fig,axes = plt.subplots(1,1)
         plt.plot(path[0], path[1], 'k', linewidth=2.0)
         plt.scatter(np.array(csm[label1_name])[filter_mask],
                     np.array(csm[label2_name])[filter_mask], linewidths=0.01)
         plt.xlabel(label1_name)
         plt.ylabel(label2_name)
+        axes.set_aspect('equal')
+
         plt.savefig('shape_map.png')
         if output1 is sys.stdout:
             plt.show()
