@@ -45,6 +45,7 @@ setup(name='cosymlib',
                'scripts/gsym',
                'scripts/cchir',
                'scripts/esym',
+               'scripts/mosym',
                'scripts/shape_map',
                'scripts/shape_classic'],
       ext_modules=ext_modules)
