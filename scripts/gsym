@@ -42,6 +42,11 @@ parser.add_argument('-c', '--central_atom',
                     type=int,
                     default=0,
                     help='central atom is in position N in the input structure')
+parser.add_argument('-pg', '--determine_pg',
+                    dest='determine_pg',
+                    action='store_true',
+                    default=False,
+                    help='determine point group')
 
 # Extra options
 parser.add_argument('-l', '--labels',
@@ -81,13 +86,18 @@ parser.add_argument('--connectivity_file',
                     metavar='filename',
                     default=None,
                     help='use connectivity stored in file')
-
 parser.add_argument('--center',
                     dest='center', metavar='R',
                     type=float,
                     default=None,
                     nargs=3,
                     help='fix coordinates x,y,z for the center of symmetry operations (Angs)')
+parser.add_argument('--pg_thresh',
+                    dest='pg_thresh',
+                    metavar='R',
+                    type=float,
+                    default=0.01,
+                    help='tolerance for determination of point group (default: 0.01)')
 
 
 args = parser.parse_args()
@@ -107,16 +117,16 @@ if args.version:
     exit()
 
 common_output = open(args.output_name, 'w') if args.output_name is not None else sys.stdout
-print_header(common_output)
 
 if args.input_file is None:
     parser.error('No input file selected! An existing file must be provide')
-
 
 if args.connectivity_file:
     connectivity = get_connectivity_from_file(args.connectivity_file)
 else:
     connectivity = None
+
+print_header(common_output)
 
 structures = read_generic_structure_file(args.input_file, read_multiple=True)
 structure_set = Cosymlib(structures,
@@ -151,5 +161,10 @@ if args.structure:
                                                    central_atom=args.central_atom,
                                                    center=args.center,
                                                    output=structure_output)
+
+# point group
+if args.determine_pg:
+    structure_set.print_point_group(args.pg_thresh)
+
 
 print_footer(common_output)

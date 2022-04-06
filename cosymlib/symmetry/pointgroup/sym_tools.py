@@ -1,3 +1,5 @@
+import warnings
+
 import numpy as np
 from cosymlib.tools import element_mass
 
@@ -5,7 +7,11 @@ from cosymlib.tools import element_mass
 def get_mass(symbols):
     mass_vector = []
     for symbol in symbols:
-        mass_vector.append(element_mass(symbol))
+        try:
+            mass_vector.append(element_mass(symbol))
+        except KeyError as e:
+            warnings.warn('Atomic mass of element {} not found, using 1 u'.format(e))
+            mass_vector.append(1.0)
     return mass_vector
 
 

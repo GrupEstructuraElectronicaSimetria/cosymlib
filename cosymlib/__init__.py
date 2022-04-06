@@ -639,7 +639,7 @@ class Cosymlib:
         :param axis2: Secondary symmetry axis of group
         :type axis2: list
         :param center: Center
-        :type center: list
+        :type center: list, tuple
         :param output: Display hook
         :type output: hook
         """
@@ -829,6 +829,21 @@ class Cosymlib:
         plt.savefig('shape_map.png')
         if output1 is sys.stdout:
             plt.show()
+
+    def print_point_group(self, tol=0.01, output=sys.stdout):
+        """
+        Print point group of all structures
+
+        :param tol: Tolerance
+        :type tol: float
+        """
+
+        txt = 'Determined point group\n \n'
+        for idx, molecule in enumerate(self._molecules):
+            txt += '{:15} '.format(molecule.name)
+            txt += ' {}\n'.format(molecule.geometry.get_pointgroup(tol))
+
+        output.write(txt)
 
     def get_point_group(self, tol=0.01):
         """
