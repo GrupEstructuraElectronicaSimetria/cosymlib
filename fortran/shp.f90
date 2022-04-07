@@ -179,11 +179,6 @@
       integer :: mt_py
 
       ilbl=.false.
- ! Fixperm seguint l'ordre enviat des del python cd_py == cr_py \\
-      ifixp=.true.
-      do kfix=1,mef
-        fixp(kfix)=kfix
-      enddo
   ! Fixperm seguint l'ordre enviat des del python cd_py == cr_py //
       ixyz=.false.
       iout=.false.
@@ -204,6 +199,13 @@
       mef=max(1,mnf)
       if ((nl.lt.2).or.(nl.gt.nlmx)) stop 'ERROR * Wrong number of ligands'
       if ((ipm.lt.0).or.(ipm.gt.m)) stop 'ERROR * Invalid metal position'
+
+      ! Fixperm seguint l'ordre enviat des del python cd_py == cr_py \\
+      ifixp=.true.
+      do kfix=1,mef
+        fixp(kfix)=kfix
+      enddo
+
       call get_topology
 
       nid=1
@@ -233,7 +235,7 @@
 
       call anl_geometry (1)
 
-      cshm=csm(0)
+      cshm_fix=csm(0)
 
   999 return
 
