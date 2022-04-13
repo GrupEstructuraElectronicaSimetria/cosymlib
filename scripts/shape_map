@@ -141,7 +141,7 @@ elif args.m_1:
     references = [args.m_1]
 elif args.m_custom_1:
     reference_polyhedron = file_io.get_geometry_from_file_xyz(args.m_custom_1, read_multiple=False)
-    reference_polyhedron.set_positions(args.central_atom - 1)
+    # reference_polyhedron.set_positions(args.central_atom - 1)
     references = [reference_polyhedron]
 
 if args.m_2 and args.m_custom_2:
@@ -150,7 +150,7 @@ elif args.m_2:
     references.append(args.m_2)
 elif args.m_custom_2:
     reference_polyhedron = file_io.get_geometry_from_file_xyz(args.m_custom_1, read_multiple=False)
-    reference_polyhedron.set_positions(args.central_atom - 1)
+    # reference_polyhedron.set_positions(args.central_atom - 1)
     references.append(reference_polyhedron)
 
 if args.m_1 or args.m_custom_1:
