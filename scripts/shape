@@ -149,7 +149,6 @@ if args.labels:
 
 if args.measure_custom:
     reference = file_io.read_generic_structure_file(args.measure_custom, read_multiple=True)
-    [x.set_positions(args.central_atom - 1) for x in reference]
     args.measure = 'custom'
 elif args.measure == 'all':
     reference = tools.get_structure_references(vertices)
