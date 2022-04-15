@@ -1,0 +1,42 @@
+{
+  "description": "<p>Institut de Qu&iacute;mica Te&ograve;rica i Computacional &ndash; Universitat de Barcelona (IQTCUB)</p>\n\n<p>&nbsp;</p>\n\n<p><strong>Cosymlib</strong>&nbsp;is a python library for computing continuous symmetry &amp; shape measures (CSMs &amp; CShMs). Although its main aim is to provide simple and ready-to-use tools for the analysis of the symmetry &amp; shape of molecules, many of the procedures contained in <strong>Cosymlib</strong>&nbsp;can be easily applied to any finite geometrical object defined by a set of vertices or a by mass distribution function.</p>\n\n<p>The basic tasks included in the current version of <strong>Cosymlib</strong>&nbsp;are:</p>\n\n<ol>\n\t<li><strong>Molecular structure analysis</strong>\n\n\t<ul>\n\t\t<li>Calculation of Continuous Shape Measures (CShMs)</li>\n\t\t<li>Calculation of Continuous Symmetry Measures (CSMs)</li>\n\t\t<li>Calculation of Continuous Chirality Measures (CCMs)</li>\n\t</ul>\n\t</li>\n\t<li><strong>Electronic structure analysis</strong>\n\t<ul>\n\t\t<li>Pseudosymmetry analysis of molecular orbitals &amp; wavefunctions</li>\n\t\t<li>Continuous Symmetry &amp; Chirality Measures for the molecular electron density</li>\n\t</ul>\n\t</li>\n</ol>",
+  "license": "https://opensource.org/licenses/MIT",
+  "creator": [
+    {
+      "affiliation": "University of Barcelona",
+      "@id": "https://orcid.org/0000-0002-3139-6189",
+      "@type": "Person",
+      "name": "Pere Alemany"
+    },
+    {
+      "affiliation": "University of Barcelona",
+      "@type": "Person",
+      "name": "Efrem Bernuz"
+    },
+    {
+      "affiliation": "Donostia International Physics Center (DIPC)",
+      "@id": "https://orcid.org/0000-0001-5529-2440",
+      "@type": "Person",
+      "name": "Abel Carreras"
+    },
+    {
+      "affiliation": "University of Barcelona",
+      "@id": "https://orcid.org/0000-0001-7796-7656",
+      "@type": "Person",
+      "name": "Miquel Llunell"
+    }
+  ],
+  "url": "https://zenodo.org/record/4925767",
+  "codeRepository": "https://github.com/GrupEstructuraElectronicaSimetria/cosymlib/tree/v0.9.5",
+  "datePublished": "2021-06-11",
+  "version": "v0.9.5",
+  "keywords": [
+    "Cosymlib",
+    "Symmetry"
+  ],
+  "@context": "https://schema.org/",
+  "identifier": "https://doi.org/10.5281/zenodo.4925767",
+  "@id": "https://doi.org/10.5281/zenodo.4925767",
+  "@type": "SoftwareSourceCode",
+  "name": "Cosymlib: a Python library for continuous symmetry measures"
+}
