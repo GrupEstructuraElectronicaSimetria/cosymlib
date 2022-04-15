@@ -29,8 +29,10 @@ Requirements
  - Blas & Lapack libraries
  - Fortran compiler
  
-Shape measure
--------------
+Examples using command line tools 
+---------------------------------
+### Shape measure
+
 ````bash
 $ shape cf4.xyz -c 1 -l
 
@@ -71,8 +73,7 @@ cf4,             33.333,     0.000,     9.790,     3.573,
 ----------------------------------------------------------------------
 ````
 
-Geometrical symmetry measure
-----------------------------
+### Geometrical symmetry measure
 ````bash
 $ gsym cf4.xyz -l
 
@@ -111,8 +112,7 @@ cf4          16.667
 ----------------------------------------------------------------------
 ````
 
-Wave function symmetry analysis
--------------------------------
+### Wave function symmetry analysis
 ````bash 
 $ mosym NF3.fchk -m C3 -mo
 
@@ -211,9 +211,8 @@ Beta MOs: Irred. Rep. Decomposition
 ----------------------------------------------------------------------
 ````
 
-
-Python API example
-------------------
+Example using Python API
+------------------------
 
 ````python
 from cosymlib import Molecule, Geometry
