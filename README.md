@@ -6,36 +6,60 @@
 
 CoSymLib
 ========
-Python library for continuous shape and symmetry measures
+Python library to compute continuous shape and symmetry measures of molecular structures  
+Online manual: http://cosymlib.readthedocs.io
+
 
 Main features
 -------------
 - Continuous Shape and Symmetry measures of molecular geometries
 - Continuous Symmetry measures of electronic structure of molecules
-- Support for XYZ, coor & fchk file types
+- Support for common file types including XYZ, coor, pdb & fchk 
+- Usage through python API or command line tools
+
+Requirements
+------------
+ - Python 2.7/3.4 or higher
+ - Matplotlib
+ - Numpy
+ - PyYaml
+ - Symgroupy
+ - Wfnsympy
+ - Huckelpy
+ - Blas & Lapack libraries
+ - Fortran compiler
+
+Python API example
+------------------
+
+````python
+from cosymlib import Molecule, Geometry
 
 
-Installation instructions
--------------------------
-1. Requirements
-    - Python 2.7/3.4 or higher
-    - Matplotlib
-    - Numpy
-    - PyYaml
-    - Symgroupy
-    - Wfnsympy
-    - Huckelpy
-    - Blas & Lapack libraries
-    - Fortran compiler
+# Define geometry
+geometry = Geometry(positions=[[ 0.0000,  0.0000,  0.0000],
+                               [ 0.5288,  0.1610,  0.9359],
+                               [ 0.2051,  0.8240, -0.6786],
+                               [ 0.3345, -0.9314, -0.4496],
+                               [-1.0685, -0.0537,  0.1921]],
+                    symbols=['C', 'H', 'H', 'H', 'H'])
 
-2. Download the source code and place it in the installation
-directory
+# Shape measure
+shp_measure = geometry.get_shape_measure('T-4', central_atom=1)
 
-3. Run setup.py script to install
-python setup.py install --user
+# Geometrical symmetry measure
+sym_geom_measure = geometry.get_symmetry_measure('C3', central_atom=1)
 
-4. Use the provided script cosym inside scripts folder to run
-this software
+#Create molecule from geometry (generate electronic structure with Extended Hukel method)
+molecule = Molecule(geometry)
+
+# Wave function symmetry measure
+wf_sym_measure = molecule.get_wf_symmetry('Td')
+
+# Electronic density measure
+dens_sym_measure = molecule.get_dens_symmetry('Td')
+````
+
 
 Contact info
 ------------
