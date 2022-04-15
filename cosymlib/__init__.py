@@ -826,9 +826,7 @@ class Cosymlib:
         plt.ylabel(label2_name)
         axes.set_aspect('equal')
 
-        plt.savefig('shape_map.png')
-        if output1 is sys.stdout:
-            plt.show()
+        return plt
 
     def print_point_group(self, tol=0.01, output=sys.stdout):
         """

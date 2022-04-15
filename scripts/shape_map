@@ -154,7 +154,7 @@ elif args.m_custom_2:
     references.append(reference_polyhedron)
 
 if args.m_1 or args.m_custom_1:
-    structure_set.print_minimum_distortion_path_shape(references[0],
+    plt = structure_set.print_minimum_distortion_path_shape(references[0],
                                                       references[1],
                                                       central_atom=args.central_atom,
                                                       min_dev=args.min_dev,
@@ -162,6 +162,11 @@ if args.m_1 or args.m_custom_1:
                                                       min_gco=args.min_gco,
                                                       max_gco=args.max_gco,
                                                       num_points=args.n_points,
-                                                      output=args.output_name)
+                                                      output=common_output)
+
+    if args.output_name is None:
+        plt.show()
+    else:
+        plt.savefig('shape_map.png')
 
 print_footer(common_output)
