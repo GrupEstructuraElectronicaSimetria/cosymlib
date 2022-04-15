@@ -155,14 +155,14 @@ elif args.m_custom_2:
 
 if args.m_1 or args.m_custom_1:
     plt = structure_set.print_minimum_distortion_path_shape(references[0],
-                                                      references[1],
-                                                      central_atom=args.central_atom,
-                                                      min_dev=args.min_dev,
-                                                      max_dev=args.max_dev,
-                                                      min_gco=args.min_gco,
-                                                      max_gco=args.max_gco,
-                                                      num_points=args.n_points,
-                                                      output=common_output)
+                                                            references[1],
+                                                            central_atom=args.central_atom,
+                                                            min_dev=args.min_dev,
+                                                            max_dev=args.max_dev,
+                                                            min_gco=args.min_gco,
+                                                            max_gco=args.max_gco,
+                                                            num_points=args.n_points,
+                                                            output=common_output)
 
     if args.output_name is None:
         plt.show()
