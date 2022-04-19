@@ -164,9 +164,8 @@ if args.m_1 or args.m_custom_1:
                                                             num_points=args.n_points,
                                                             output=common_output)
 
+    plt.savefig('shape_map.png')
     if args.output_name is None:
         plt.show()
-    else:
-        plt.savefig('shape_map.png')
 
 print_footer(common_output)
