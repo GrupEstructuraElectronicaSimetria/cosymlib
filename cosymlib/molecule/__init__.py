@@ -1,7 +1,7 @@
-#from cosymlib.molecule.geometry import Geometry
+#from cosymlib.molecule.electronic_structure import ProtoElectronicDensity
+#from cosymlib.molecule.electronic_structure import ProtoElectronicStructure
 from cosymlib.molecule.electronic_structure import ElectronicStructure
-from cosymlib.molecule.electronic_structure import ProtoElectronicDensity
-from cosymlib.molecule.electronic_structure import ProtoElectronicStructure
+from cosymlib.molecule.geometry import Geometry
 from cosymlib.simulation import ExtendedHuckel
 from cosymlib.tools import element_to_atomic_number
 from warnings import warn
@@ -29,7 +29,8 @@ class Molecule:
     :type name: str
 
     """
-    def __init__(self, geometry,
+    def __init__(self,
+                 geometry,
                  electronic_structure=None,
                  name=None):
 
@@ -77,16 +78,8 @@ class Molecule:
 
         # if None default electronic structure is ExtendedHuckel
         if self._electronic_structure is None:
-            self._electronic_structure = 'EH'
-            warn('Electronic structure auto generated from Extended-Huckel calculation')
-
-        if self._electronic_structure == 'EH':
+            warn('Electronic structure auto generated from Extended-Huckel calculation with charge=0')
             self._electronic_structure = ExtendedHuckel(self.geometry)
-
-        elif self._electronic_structure == 'Dens':
-            protodensity = ProtoElectronicDensity(self.geometry)
-            self._electronic_structure = ProtoElectronicStructure(basis=protodensity.get_basis(),
-                                                                  orbital_coefficients=[protodensity.get_mo_coefficients(),[]])
 
         return self._electronic_structure
 
@@ -183,8 +176,8 @@ class Molecule:
         """
         Get the charge of the molecule
         """
-        if self._electronic_structure is None:
-            return None
+        #if self._electronic_structure is None:
+        #    return None
         net_electrons = sum([element_to_atomic_number(symbol) for symbol in self.get_symbols()])
         return net_electrons - (sum(self.electronic_structure.alpha_occupancy) +
                                 sum(self.electronic_structure.beta_occupancy))

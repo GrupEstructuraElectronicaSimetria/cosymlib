@@ -68,6 +68,18 @@ parser.add_argument('--mo_overlaps',
                     help='print the molecular orbitals overlap')
 
 # Modifiers
+parser.add_argument('--mode',
+                    dest='mode',
+                    metavar='I',
+                    type=int,
+                    default=0,
+                    help='working mode. Check manual for further details (default:0) ')
+parser.add_argument('--charge',
+                    dest='charge',
+                    metavar='I',
+                    type=int,
+                    default=0,
+                    help='Charge in Extended Huckel calculations default:0) ')
 parser.add_argument('-center',
                     dest='center',
                     metavar='R',
@@ -123,7 +135,7 @@ if args.input_file is None:
 
 print_header(common_output)
 structures = read_generic_structure_file(args.input_file, read_multiple=True)
-structure_set = Cosymlib(structures)
+structure_set = Cosymlib(structures, mode=args.mode, charge_eh=args.charge)
 
 if args.labels:
     print_symmetry_labels()

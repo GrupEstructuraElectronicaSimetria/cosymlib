@@ -2,17 +2,21 @@ __version__ = '0.10.6'
 
 from cosymlib.molecule import Molecule
 from cosymlib.molecule.geometry import Geometry
-from cosymlib import file_io
-from cosymlib import tools
+from cosymlib.molecule.electronic_structure import ElectronicStructure
+from cosymlib.molecule.electronic_structure import ProtoElectronicDensity
+from cosymlib.molecule.electronic_structure import ProtoElectronicStructure
+from cosymlib.simulation import ExtendedHuckel
 from cosymlib.utils import swap_vectors
 from cosymlib.utils import get_shape_path, plot_molecular_orbital_diagram, plot_symmetry_energy_evolution
 from cosymlib.shape.tools import get_structure_references, get_sym_from_label
-import matplotlib.pyplot as plt
+from cosymlib import file_io
+from cosymlib import tools
 from warnings import warn
 
+import matplotlib.pyplot as plt
+import numpy as np
 import sys
 import os
-import numpy as np
 
 
 def _get_symmetry_arguments(locals):
@@ -102,16 +106,27 @@ class Cosymlib:
                  ignore_connectivity=False,
                  connectivity=None,
                  connectivity_thresh=None,
+                 charge_eh=0,
                  mode=0):
 
-        mode_list = [None, 'EH', 'Dens']
-        self._mode = mode_list[mode]
+        def get_electronic_structure(structure):
+            if mode == 0:
+                return None
+            elif mode == 1:
+                return ExtendedHuckel(structure, charge=charge_eh)
+            elif mode == 2:
+                protodensity = ProtoElectronicDensity(structure)
+                return ProtoElectronicStructure(basis=protodensity.get_basis(),
+                                                orbital_coefficients=[protodensity.get_mo_coefficients(),[]])
+            else:
+                raise Exception('Mode {} not available'.format(mode))
+
         self._molecules = []
         if isinstance(structures, (list, tuple)):
             for structure in structures:
-                self._molecules.append(Molecule(structure, electronic_structure=self._mode))
+                self._molecules.append(Molecule(structure, electronic_structure=get_electronic_structure(structure)))
         else:
-            self._molecules.append(Molecule(structures, electronic_structure=self._mode))
+            self._molecules.append(Molecule(structures, electronic_structure=get_electronic_structure(structures)))
 
         for molecule in self._molecules:
             if ignore_atoms_labels:
@@ -394,7 +409,7 @@ class Cosymlib:
                 txt += '\n'
                 txt += sep_line
 
-            txt += '{:<9} '.format(molecule.name) + '  '.join(['{:7.3f}'.format(s) for s in wf_measure['csm']])
+            txt += '{:<9} '.format(molecule.name)[:9]  + '  '.join(['{:7.3f}'.format(s) for s in wf_measure['csm']])
             txt += '\n'
             first = False
 
@@ -430,7 +445,7 @@ class Cosymlib:
             txt += '\n'
             txt += sep_line
 
-            txt += '{:<9} '.format(molecule.name) + '  '.join(['{:7.3f}'.format(s) for s in dens_measure['csm_coef']])
+            txt += '{:<9} '.format(molecule.name)[:9] + '  '.join(['{:7.3f}'.format(s) for s in dens_measure['csm_coef']])
             txt += '\n\n'
 
 

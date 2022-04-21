@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import warnings
+
 from cosymlib import Cosymlib, __version__
 from cosymlib.file_io.tools import print_header, print_footer, print_input_info
 from cosymlib.file_io import read_generic_structure_file
@@ -56,7 +58,13 @@ parser.add_argument('--mode',
                     metavar='I',
                     type=int,
                     default=0,
-                    help='working mode. Check manual for further details (default:0) ')
+                    help='working mode. Check manual for further details (default:0)')
+parser.add_argument('--charge',
+                    dest='charge',
+                    metavar='I',
+                    type=int,
+                    default=0,
+                    help='Charge in Extended Huckel calculations default:0)')
 parser.add_argument('-center',
                     dest='center',
                     metavar='R',
@@ -105,9 +113,12 @@ common_output = open(args.output_name, 'w') if args.output_name is not None else
 if args.input_file is None:
     parser.error('No input file selected! An existing file must be provide')
 
+if args.charge != 0 and args.mode != 1:
+    warnings.warn('Charge only works in mode 1. For other modes it will be ignored')
+
 print_header(common_output)
 structures = read_generic_structure_file(args.input_file, read_multiple=True)
-structure_set = Cosymlib(structures, mode=args.mode)
+structure_set = Cosymlib(structures, mode=args.mode, charge_eh=args.charge)
 
 if args.labels:
     print_symmetry_labels()
