@@ -69,6 +69,7 @@ def get_geometry_from_file_xyz(file_name, read_multiple=False):
     n_atoms = None
     n_atoms_line = 1
     no_title_structures = 1
+    name = ''
     with open(file_name, mode='r') as lines:
         for idl, line in enumerate(lines):
             if line.lstrip().startswith(comment_line):
