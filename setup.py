@@ -48,4 +48,9 @@ setup(name='cosymlib',
                'scripts/mosym',
                'scripts/shape_map',
                'scripts/shape_classic'],
-      ext_modules=ext_modules)
+      ext_modules=ext_modules,
+      url='https://github.com/GrupEstructuraElectronicaSimetria/cosymlib',
+      classifiers=[
+          "Programming Language :: Python",
+          "License :: OSI Approved :: MIT License"]
+      )
