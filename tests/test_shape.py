@@ -5,12 +5,16 @@ from cosymlib.file_io import classic_inputs
 from cosymlib import file_io
 import cosymlib.shape as shape
 import cosymlib.shape.maps as maps
+import os
+
+
+data_dir = os.path.join(os.path.dirname(__file__), 'data')
 
 
 class TestShape(unittest.TestCase):
 
     def test_example01(self):
-        molecules, options = classic_inputs.read_old_input('data/shape/example01.dat')
+        molecules, options = classic_inputs.read_old_input(data_dir + '/shape/example01.dat')
         reference_polyhedron = []
         for number in options['%labels']:
             reference_polyhedron.append(shape.tools.get_shape_label(int(number), options['%n_atoms']))
@@ -29,7 +33,7 @@ class TestShape(unittest.TestCase):
                          [5.047, 36.698],
                          [5.234, 36.822],
                          [5.1, 36.733]]
-        molecules, options = classic_inputs.read_old_input('data/shape/example02.dat')
+        molecules, options = classic_inputs.read_old_input(data_dir + '/shape/example02.dat')
         reference_polyhedron = []
         for number in options['%labels']:
             reference_polyhedron.append(shape.tools.get_shape_label(int(number), options['%n_atoms']))
@@ -44,7 +48,7 @@ class TestShape(unittest.TestCase):
     def test_example03(self):
         nice_measures = [[31.375, 0.97],
                          [33.44, 0.16]]
-        molecules, options = classic_inputs.read_old_input('data/shape/example03.dat')
+        molecules, options = classic_inputs.read_old_input(data_dir + '/shape/example03.dat')
         reference_polyhedron = []
         for number in options['%labels']:
             reference_polyhedron.append(shape.tools.get_shape_label(int(number), options['%n_atoms']))
@@ -79,7 +83,7 @@ class TestShape(unittest.TestCase):
                            [-5.66862241e-01, -1.42522607e+00, 1.26951447e+00],
                            [-1.72449417e+00, 9.49990377e-01, 2.96491640e-01],
                            [1.72449417e+00, -9.49990377e-01, -2.96491640e-01]]
-        molecules, options = classic_inputs.read_old_input('data/shape/example04.dat')
+        molecules, options = classic_inputs.read_old_input(data_dir + '/shape/example04.dat')
         reference_polyhedron = []
         for number in options['%labels']:
             reference_polyhedron.append(shape.tools.get_shape_label(int(number), options['%n_atoms']))
@@ -125,7 +129,7 @@ class TestShape(unittest.TestCase):
                                           [15.097, 0.05],
                                           [16.737, 0.]])
 
-        molecules, options = classic_inputs.read_old_input('data/shape/example05.dat')
+        molecules, options = classic_inputs.read_old_input(data_dir + '/shape/example05.dat')
         reference_polyhedron = []
         for number in options['%labels']:
             reference_polyhedron.append(shape.tools.get_shape_label(int(number), options['%n_atoms']))
@@ -164,7 +168,7 @@ class TestShape(unittest.TestCase):
                          4.4, 1.6, 3.5, 3.8, 3.6, 4.7, 4.8, 3.7, 1.8, 1.6, 2.3, 3.7, 3.,
                          1.3, 0.9, 2.8, 0.9, 4.1, 3.2, 4.6, 1.7, 0.8, 1., 0.7, 0.6, 0.2,
                          4.6, 1.5, 1.5, 1.7, 2.5, 2.9, 0.5, 0.8, 1.3]
-        molecules, options = classic_inputs.read_old_input('data/shape/example06.dat')
+        molecules, options = classic_inputs.read_old_input(data_dir + '/shape/example06.dat')
         reference_polyhedron = []
         for number in options['%labels']:
             reference_polyhedron.append(shape.tools.get_shape_label(int(number), options['%n_atoms']))
@@ -179,7 +183,7 @@ class TestShape(unittest.TestCase):
         self.assertTrue(np.allclose(nice_dev_path, devpath, atol=1e-1))
 
     def test_example07(self):
-        molecules, options = classic_inputs.read_old_input('data/shape/example06.dat')
+        molecules, options = classic_inputs.read_old_input(data_dir + '/shape/example06.dat')
         reference_polyhedron = []
         for number in options['%labels']:
             reference_polyhedron.append(shape.tools.get_shape_label(int(number), options['%n_atoms']))
@@ -195,13 +199,13 @@ class TestShape(unittest.TestCase):
     def test_example08(self):
         nice_measures = [[1.976, 3.699],
                          [6.955, 0.602]]
-        molecules, options = classic_inputs.read_old_input('data/shape/example08.dat')
+        molecules, options = classic_inputs.read_old_input(data_dir + '/shape/example08.dat')
         central_atom = options['%central_atom']
         reference_polyhedron = []
         if options['%labels'] != 0:
             for number in options['%labels']:
                 if int(number) == 0:
-                    for ref in file_io.get_geometry_from_file_ref('data/shape/example08.ref', read_multiple=True):
+                    for ref in file_io.get_geometry_from_file_ref(data_dir + '/shape/example08.ref', read_multiple=True):
                         reference_polyhedron.append(ref)
                 else:
                     reference_polyhedron.append(shape.tools.get_shape_label(int(number), options['%n_atoms']))
@@ -226,5 +230,5 @@ class TestShape(unittest.TestCase):
     #     ref_str1 = shape.shape_tools.order_coordinates(ref_str1, [len(ref_str1), central_atom])
     #     ref_str2 = shape.shape_tools.get_test_structure('CSAPR-9', central_atom)
     #     ref_str2 = shape.shape_tools.order_coordinates(ref_str2, [len(ref_str2), central_atom])
-    #     good_results = np.loadtxt('data/shape/example09_results')
+    #     good_results = np.loadtxt(data_dir + '/shape/example09_results')
     #     self.assertTrue(np.allclose(good_results, ref_str1, atol=1e-3))

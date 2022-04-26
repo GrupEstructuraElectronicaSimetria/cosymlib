@@ -2,12 +2,16 @@ import unittest
 from cosymlib import file_io
 from numpy import testing
 from cosymlib.molecule.geometry import Geometry
+import os
+
+
+data_dir = os.path.join(os.path.dirname(__file__), 'data')
 
 
 class TestSymgroupFchk(unittest.TestCase):
 
     def setUp(self):
-        self._structure = file_io.read_generic_structure_file('data/wfnsym/tih4_5d.fchk')
+        self._structure = file_io.read_generic_structure_file(data_dir + '/wfnsym/tih4_5d.fchk')
         self._geometry = self._structure.geometry
 
     def test_symmetry_measure(self):

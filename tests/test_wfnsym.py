@@ -1,12 +1,16 @@
 import unittest
 from cosymlib import file_io
 from numpy import testing
+import os
+
+
+data_dir = os.path.join(os.path.dirname(__file__), 'data')
 
 
 class TestWfnsym(unittest.TestCase):
 
     def setUp(self):
-        self.structure = file_io.read_generic_structure_file('data/wfnsym/tih4_5d.fchk')
+        self.structure = file_io.read_generic_structure_file(data_dir + '/wfnsym/tih4_5d.fchk')
 
     def test_symmetry_overlap_analysis(self):
         td_labels = ['E', '2C3', '2C3', '2C3', '2C3', 'C2', 'C2', 'C2', '2S4', '2S4', '2S4',
