@@ -132,6 +132,7 @@ def get_geometry_from_file_cor(file_name, read_multiple=False):
     """
     input_molecule = [[], []]
     geometries = []
+    name = ''
     with open(file_name, mode='r') as lines:
 
         for idl, line in enumerate(lines):
