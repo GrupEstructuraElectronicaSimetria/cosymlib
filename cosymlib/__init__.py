@@ -1,4 +1,16 @@
-__version__ = '0.10.6'
+__version__ = '0.10.7'
+
+# Windows support
+import os
+import sys
+
+extra_dll_dir = os.path.join(os.path.dirname(__file__), '.libs')
+if sys.platform == 'win32' and os.path.isdir(extra_dll_dir):
+    if sys.version_info >= (3, 8):
+        os.add_dll_directory(extra_dll_dir)
+    else:
+        os.environ.setdefault('PATH', '')
+        os.environ['PATH'] += os.pathsep + extra_dll_dir
 
 from cosymlib.molecule import Molecule
 from cosymlib.molecule.geometry import Geometry
@@ -15,8 +27,6 @@ from warnings import warn
 
 import matplotlib.pyplot as plt
 import numpy as np
-import sys
-import os
 
 
 def _get_symmetry_arguments(locals):
