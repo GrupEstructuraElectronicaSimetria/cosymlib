@@ -3,10 +3,11 @@ import os
 
 
 def get_version_number():
-    for l in open('cosymlib/__init__.py', 'r').readlines():
-        if not(l.find('__version__')):
-            exec(l, globals())
-            return __version__
+    main_ns = {}
+    for line in open('cosymlib/__init__.py', 'r').readlines():
+        if not(line.find('__version__')):
+            exec(line, main_ns)
+            return main_ns['__version__']
 
 
 shape = Extension('cosymlib.shape.shp',
