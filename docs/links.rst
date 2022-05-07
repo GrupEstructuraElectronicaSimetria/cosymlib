@@ -11,7 +11,7 @@ Useful links
     :height: 100px
     :target: https://www.iqtc.ub.edu
 
-.. figure:: https://www.nanogune.eu/sites/default/files/styles/large/public/DonostiaInternationalPhysicsCenter.jpg?itok=uodkqUAl
+.. figure:: images/logo-dipc.png
     :height: 100px
     :target: http://dipc.ehu.es
 
