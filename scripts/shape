@@ -22,7 +22,7 @@ def write_reference_structures(vertices, central_atom, directory):
 
 
 # positional arguments
-parser = argparse.ArgumentParser(description='Shape', allow_abbrev=False)
+parser = argparse.ArgumentParser(description='shape', allow_abbrev=False)
 parser.add_argument(type=str,
                     dest='input_file',
                     nargs='?',

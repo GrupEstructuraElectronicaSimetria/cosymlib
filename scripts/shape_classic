@@ -9,7 +9,7 @@ import argparse
 import os
 import sys
 
-parser = argparse.ArgumentParser(description='Shape')
+parser = argparse.ArgumentParser(description='shape')
 parser.add_argument(type=str, dest='input_file', nargs='?', help='input file name(+extension)')
 parser.add_argument('-n', dest='n', action='store', default=None,
                     type=int, help='show the reference labels for a given structure')

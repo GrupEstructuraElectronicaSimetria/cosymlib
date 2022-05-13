@@ -23,7 +23,7 @@ def write_reference_structures(vertices, central_atom, directory):
         output_references.write(file_io.get_file_xyz_txt(ref_structure))
 
 
-parser = argparse.ArgumentParser(description='Cosym')
+parser = argparse.ArgumentParser(description='cosym')
 parser.add_argument(type=str, dest='input_file', nargs='?', default=None, help='input file name(+extension)')
 parser.add_argument(type=str, dest="yaml_input", nargs='?', default=None,
                     help='Perform the calculations with the command file')
@@ -52,7 +52,7 @@ parser.add_argument('-c3_c4', dest='c3_c4', action='store_true', default=False,
                     help='axis is a c3 rotational axis instead of a c4')
 
 # Shape input flags
-group_shape = parser.add_argument_group('Shape')
+group_shape = parser.add_argument_group('shape')
 group_shape.add_argument('-shp_m', '--shp_measure',
                          dest='shp_measure',
                          action='store',
@@ -90,7 +90,7 @@ group_pointgroup.add_argument('-pointgroup',
                               help='Gives the point group of an input structure')
 
 # Symgroup input flags
-group_symgroup = parser.add_argument_group('Symgroup')
+group_symgroup = parser.add_argument_group('symgroup')
 group_symgroup.add_argument('-sym_m', '--sym_measure',
                             dest='sym_measure',
                             action='store',
@@ -113,7 +113,7 @@ group_symgroup.add_argument('-sym_chirality',
                             help='search for a possible chirality in molecule')
 
 # Qsym input flags
-group_qsym = parser.add_argument_group('Qsym')
+group_qsym = parser.add_argument_group('qsym')
 group_qsym.add_argument('-qsym_wfn',
                         dest='qsym_wfn',
                         action='store',

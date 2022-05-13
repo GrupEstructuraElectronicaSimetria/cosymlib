@@ -10,43 +10,50 @@ from PyPI (recommended)
 -----------------------
 
 This installation requires :program:`pip`  ( https://pip.pypa.io/en/stable/installing/) to be installed
-in your system. We strongly recommend the use of python environments (https://docs.python.org/3/library/venv.html).
-For most users the basic installation instructions are:
+in your system. We strongly recommend the use of python environments, for more details refer to
+https://docs.python.org/3/library/venv.html . For most users the basic installation proceed as follows:
 
 1. Create a virtual environment at path <venv>::
 
-    python3 -m venv <venv>
+    $ python3 -m venv <venv>
 
 2. Activate environment ::
 
-    # on MAC / Linux (bash shell)
-    source <venv>/bin/activate
+    # on MAC / Linux
+    $ source <venv>/bin/activate
 
-    # on windows (powershell)
+    # on windows (powershell) [see note below]
     C:\> <venv>\Scripts\Activate.ps1
 
 3. Install cosymlib ::
 
-    pip install numpy
-    pip install cosymlib
+    $ pip install numpy
+    $ pip install cosymlib
 
 4. Deactivate environmen ::
 
-    deactivate
+    $ deactivate
+
+
+To use :program:`cosymlib` it is necessary to activate the environment every time a new shell is open.
+On Linux/MAC all the scripts contained in :program:`cosymlib` will be accessible in this environment. ::
+
+    $ source <venv>/bin/activate
+    $ <script_name> <script_options>
+    $ deactivate
+
+
+On windows, to execute the scripts it is necessary to type *python* followed by the full path of the script name ::
+
+    C:\> python <venv>\Scripts\<script_name> <script_options>
 
 .. note::
-    To use :program:`cosymlib` it is necessary to activate the environment every time a new shell is open.
-    All the scripts contained in :program:`cosymlib` will be accessible in this environment. On windows
-    it is necessary to type *python* before the script name ::
-
-        python <script_name> <script_options>
-
-.. note::
-   On windows it may be necessary to add user execution permissions to activate the environment.
+    On windows it may be necessary to add user execution permissions to activate the environment.
     To do this open a poweshell as administrator and type ::
 
       Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
+    this has to be done only once to gain execution permissions.
 
 from source code
 ----------------

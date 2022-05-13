@@ -11,7 +11,7 @@ import yaml
 import numpy as np
 
 
-parser = argparse.ArgumentParser(description='esym')
+parser = argparse.ArgumentParser(description='mosym')
 
 # positional arguments
 parser.add_argument(type=str,
