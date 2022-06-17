@@ -21,7 +21,7 @@ The basic tasks included in the current version of **cosymlib** are:
 
     * Calculation of Continuous Shape Measures (CShMs)
     * Calculation of Continuous Symmetry Measures (CSMs)
-    * Calculation of Continuous Chirality Measures (CCM)
+    * Calculation of Continuous Chirality Measures (CCMs)
 
 2. **Electronic structure analysis**
 
@@ -40,7 +40,7 @@ The basic tasks included in the current version of **cosymlib** are:
     api
 
 **Cosymlib** is being developed by the **Electronic Structure & Symmetry (ESS)** group
-at the Department de Ciència de Material i Química Física
+at the Department de Ciència de Materials i Química Física
 and the Institut de Química Teòrica i Computacional (IQTCUB). University of Barcelona.
 
 ------

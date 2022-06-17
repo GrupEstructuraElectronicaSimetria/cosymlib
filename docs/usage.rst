@@ -6,9 +6,9 @@ How to use cosymlib
 **Cosymlib** is a a python library for computing continuous symmetry & shape measures (CSMs & CShMs).
 Besides using the APIs contained in **cosymlib** to build your own custom-made python programs we have
 also written some general scripts to perform standard tasks such as calculating a continuous shape
-measure for a given structure without need of writing a python script. All this general task scripts
-are called using a similar syntax wich inludes the name of the script, the name of the file containing
-the structural data and optional arguments specifying the tasks we want to perform::
+measure for a given structure without the need of writing a python script. All this general task scripts
+are called using a similar syntax which includes the name of the script, the name of the file containing
+the structural data, and optional arguments specifying the tasks we want to perform::
 
    $ script filename -task1 -task2 ... -taskn
 
@@ -24,19 +24,31 @@ for a H\ :sub:`4`\  molecule in an approximately square geometry:
     H   -0.9  -1.2  0.0
     H    1.1  -1.0  0.0
 
-if we would like to compute the square shape measure S(SP-4) for this 4-vertex
-polygon we simply can call the shape script indicating the name of the .xyz file
+If we would like to compute the square shape measure S(SP-4) for this 4-vertex
+polygon we simply can call the shape script indicating the name of our .xyz file
 containing the coordinates and use the ``-m`` flag (m stands for measure) with the
 SP-4 label to indicate that we want to compute a shape measure using a perfect square
 (SP-4 stands for square planar structure with 4 vertices) as the reference shape::
 
    $ shape struct.xyz -m SP-4
 
-and the shape script wil call the APIs in cosymlib to read first your input file, generate a
+and the shape script wil call the APIs in **cosymlib** to read first our input file, generate a
 molecule object, calculate the S(SP-4) continuous shape measure for it, and print
-the result of the calculation on the screen.
+the result of the calculation on the screen::
 
-If, for instance, we also want the coordinates for the square with the best overlap
+ ----------------------------------------------------------------------
+  COSYMLIB v0.10.5
+  Electronic Structure & Symmetry Group
+  Institut de Quimica Teorica i Computacional (IQTC)
+  Universitat de Barcelona
+ ----------------------------------------------------------------------
+  Structure         SP-4
+  H4,               0.520,
+ ----------------------------------------------------------------------
+                    End of calculation
+ ----------------------------------------------------------------------
+
+If, for instance, we also want the coordinates for the square with the optimal overlap
 with our problem structure, we just need to include the ``-s`` flag (where s stands
 for structure) in our call::
 
@@ -47,11 +59,12 @@ these explicit flags the previous command becomes::
 
    $ shape struct.xyz --measure SP-4 --structure
 
-The general task scripts include also ``sym`` and ``cchir`` for
-calculating continuous symmetry and chirality measures for polyhedral structures, as well as
-the ``esym`` script for the continuous symmetry analysis of wavefunctions and electron densities.
+The general task scripts include also ``gsym`` and ``cchir`` for
+calculating continuous symmetry and chirality measures for polyhedral structures, ``shape_map`` for plotting
+shape maps, as well as the ``esym`` and ``mosym`` scripts for the continuous symmetry analysis of electron
+densities and the pseudosymmetry analysis of molecular orbitals, respectively.
 
-Besides these four basic scripts we have also developed ``cosym``, a general script that allows to perform
+Besides these six basic scripts, we have also developed ``cosym``, a general script that allows to perform
 any of the basic calculations above. We could, for instance, use directly ``cosym`` to calculate the previous
 shape measure using the following command::
 
@@ -77,19 +90,25 @@ included in the present distribution of **cosymlib**.
 General task scripts
 --------------------
 
-In cosymlib library there several task scripts availables that can be run in a terminal as command lines. The following
-subsections describe the general usage of all of them.
+The **cosymlib** library includes several scripts to perform basic tasks that can be run in a
+terminal as command line instructions, without the need of writing a full python script. The
+following subsections describe the general usage of all of them.
 
 --------
 
 
 shape
 ^^^^^
-The minimal information needed to run ``shape`` is an input file containing a geometric structure
-described by the coordinates of a set of vertices. Since ``shape`` is mainly intended to be used
-in the context of structural chemistry, the main source of structural information will be a ``fname.xyz``
-file containing a molecular geometry in xyz format (`<http://en.wikipedia.org/wiki/XYZ_file_format>`_)
-An example of a ``cocl6.xyz`` file with the structure for an octahedral CoCl\ :sub:`6`\  fragment
+``shape`` can be used for computing continuous shape measures (CShMs) for geometrical structures
+defined by the cartesian coordinates for a set of vertices, for instance, a molecular structure
+defined by the positions of the atomic nuclei.
+
+The minimal information needed to run ``shape`` is an input file containing the coordinates of a set
+of vertices. Since ``shape`` is mainly intended to be used in the context of structural chemistry, the main
+source of structural information will be a ``fname.xyz`` file containing a molecular geometry in xyz
+format (`<http://en.wikipedia.org/wiki/XYZ_file_format>`_).
+
+An example of a ``cocl6.xyz`` file with the structure for a perfect octahedral CoCl\ :sub:`6`\  fragment
 with 2.4Å Co-Cl interatomic distances is:
 ::
 
@@ -109,20 +128,22 @@ indicated in the first line) contain a label (usually the atomic symbol) and the
 x, y, z for each atom (vertex) in the structure.
 
 ``fname.xyz`` files read by shape may contain a single structure as in the previous example or
-multiple structures (all with the same number of atoms), in which case a block:
+multiple structures (all with the same number N of atoms). In this case  you must append a
 ::
 
-    Title
-    label1 x  y  z
+    N
+    Structure_name
+    label_1  x1  y1  z1
      ...
-    label  x  y  z
+    label_N  xN  yN  zN
 
-describing each structure is repeated as many times as necessary, without leaving
-blank lines between the different structures.
+block for each structure, without leaving any blank lines between them. Note that even if the
+number of vertices N must be the same for all structures, it is mandatory to include it explicitly
+for each block.
 
 Shape is also able to read input structures from files in other formats used in structural chemistry.
-A detailed description of the structural files read by shape can be found in *(include link to
-file formats)*.
+A detailed description of the structural files read by shape can be found in the :ref:`information on input
+formats <input_formats>` section.
 
 The basic call to the shape script must provide the the file containing the input structure and the
 reference shape with respect to which the shape measure is calculated.

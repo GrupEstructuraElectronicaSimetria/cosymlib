@@ -57,7 +57,7 @@ p\ :sub:`i`\  are the position vectors of the vertices of Q and P, respectively,
 and q\ :sub:`0`\  the geometric center of the problem structure Q. The minimization in this
 equation refers to the relative position, orientation, and scaling that must be applied
 to P\ :sub:`0`\  to minimize the sum of squares of distances between their respective vertices,
-which is equivalent to maximizing the overlap <Q|P>. If the matching of the two shapes is described,
+which is equivalent to maximizing the overlap <Q|P>. If the mismatch of the two shapes is described,
 as in the equation above by the distance between vertices of the two objects, a further minimization
 with respect to all possible ways to label the N vertices in the reference structure P\ :sub:`0`\  is
 also needed.
@@ -67,7 +67,7 @@ then S\ :sub:`P`\ (Q) = 0. Since S\ :sub:`P`\ (Q)  is always positive, the large
 less similar is Q to the ideal shape P. It can be shown that the maximum value for
 S\ :sub:`P`\ (Q) is 100, corresponding to the unphysical situation for which all vertices
 of Q collapse into a single point. A more detailed description of continuous shape measures and
-some of their applications in chemistry may be found in the following references: [CShM]_.
+some of their applications in chemistry may be found in the following references [CShM]_:
 
 ---------------------------
 
@@ -115,7 +115,7 @@ is, in principle, previously unknown and must be found in the procedure of compu
 Consider, for instance that we would like to measure the rectangular symmetry for a given general
 quadrangle. Besides optimizing to seek for the translation, rotation, and scaling that leads to the
 optimal overlap of our quadrangle Q with a particular rectangle P as in a shape measure, we will need
-to consider also which is the ratio between the side lengths of best matching rectangle and
+to consider also which is the ratio between the side lengths of the best matching rectangle and
 optimize also with respect to this parameter.
 
 .. image:: images/CSM_def.png
@@ -125,10 +125,12 @@ optimize also with respect to this parameter.
 Although this additional optimization process may seem difficult to generalize for any
 given symmetry group, it has been shown that it is possible to do it efficiently
 using either the folding–unfolding algorithm or via the calculation of intermediate symmetry
-operation measures. As in the case of shape measures, the values of CSMs are also limited
+operation measures.
+
+As in the case of shape measures, the values of CSMs are also limited
 between 0 and 100, with S\ :sub:`G`\ (Q) = 0, meaning that Q is a G-symmetric shape. A more detailed
 description of continuous shape measures and some of their applications in chemistry may be found
-in the following references: [CSM]_.
+in the following references [CSM]_:
 
 ---------------------------
 
@@ -182,7 +184,7 @@ structure is enough in order to guess which one could be the nearest S\ :sub:`n`
 a practical solution is just to calculate this particular S\ :sub:`G`\ (Q) value, or in case of
 doubt, a few S\ :sub:`G`\ (Q) values  for different S\ :sub:`n`\  and pick the smallest one.
 A more detailed description of continuous shape measures and some of their applications in
-chemistry may be found in the following references: [CCM]_.
+chemistry may be found in the following references [CCM]_:
 
 ---------------------------
 
@@ -205,7 +207,7 @@ CSMs for quantum chemical objects
 
 The use of the overlap <Q|P> between two general objects Q and P allows the generalization of
 continuous symmetry and shape measures to more complex objects that cannot be simply described
-by a set of vertices such as matrices or functions. In this case the definition of the continuous
+by a set of vertices, such as matrices or functions. In this case the definition of the continuous
 symmetry measure is:
 
 .. image:: images/QCSM_eq.png
@@ -245,7 +247,7 @@ defined by a set of vertices.
 An interesting extension for functions which are not restricted to positive values, for instance,
 molecular orbitals, is the possibility of calculating continuous symmetry measures for each individual
 irreducible representation of a given point group. A more detailed description of the development and
-some applications of CSMs in quantum chemistry may be found in the following references: [QCSMs]_.
+some applications of CSMs in quantum chemistry may be found in the following references [QCSMs]_:
 
 ---------------------------
 
