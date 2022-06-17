@@ -260,7 +260,7 @@ class Cosymlib:
                                                             sym_labels[idl])
                 geometries.append(shape_results_structures[idl][idm])
 
-        print("\nOriginal structures vs reference polyhedra in file {}\n".format(output.name))
+        # print("\nOriginal structures vs reference polyhedra in file {}\n".format(output.name))
         for geometry in geometries:
             output.write(file_io.get_file_xyz_txt(geometry))
 
