@@ -68,6 +68,47 @@ def _get_table_format(labels, molecules_names, data):
     return txt
 
 
+def _get_table_format_chir(labels, molecules_names, data, axis):
+
+    txt = 'Structure'
+    max_len_name = 12
+    names = []
+    for name in molecules_names:
+        if len(name) > max_len_name:
+            names.append(name[:(max_len_name - 1)])
+        elif len(name) > 0:
+            names.append(name)
+
+    n = max_len_name - 3
+    for label in labels:
+        n += len(label)
+        txt += '{}'.format(label.rjust(n))
+        n = 11 - len(label)
+    txt += '\n\n'
+
+    for idx, name in enumerate(names):
+        txt += '{:{width}}'.format(name + ',', width=max_len_name)
+        n = 11
+        for idn, label in enumerate(labels):
+            txt += '{:>{width}.{prec}f},'.format(data[idn][idx], width=n, prec=3)
+            n = 10
+        txt += '\n'
+
+        txt += '\n'
+
+        for idn, c_lab in enumerate(['x', 'y', 'z']):
+            txt += ' ' * (max_len_name-1) + c_lab + ' '
+
+            for c in np.array(axis).T[idn][0]:
+                txt += '{:>{width}.{prec}f},'.format(c, width=n, prec=3)
+            n = 10
+            txt += '\n'
+
+        txt += '\n'
+    txt += '\n'
+    return txt
+
+
 def _get_axis_info(molecule, group, axis, axis2, center):
 
     txt = ''
@@ -319,7 +360,7 @@ class Cosymlib:
 
         output.write(txt)
 
-    def print_geometric_symmetry_measure(self, label, central_atom=0, center=None, output=sys.stdout):
+    def print_geometric_symmetry_measure(self, label, central_atom=0, center=None, permutation=None, output=sys.stdout):
         """
         Prints geometric symmetry measure in format
 
@@ -328,26 +369,32 @@ class Cosymlib:
         :param central_atom: Position of the central atom
         :type central_atom: int
         :param center: Center of symmetry in Cartesian coordinates. If None center is optimized
-        :type center: list
+        :type center: list, tuple
+        :param permutation: Define permutation
+        :type permutation: list, tuple
         :param output: Display hook
         :type output: hook
         """
         kwargs = _get_symmetry_arguments(locals())
 
         txt = 'Evaluating symmetry operation : {}\n \n'.format(label)
+
+        txt += '              CSM      permutation\n'
         for idx, molecule in enumerate(self._molecules):
             csm = molecule.geometry.get_symmetry_measure(**kwargs)
+            permutation = molecule.geometry.get_symmetry_permutation(**kwargs)
+
             max_name = len(max(molecule.name, key=len))
             txt += '{} '.format(molecule.name)
             if max_name < 9:
                 n = 18 - len(molecule.name)
             else:
                 n = 9 + max_name - len(molecule.name)
-            txt += '{:{width}.{prec}f}\n'.format(csm, width=n, prec=3)
+            txt += '{:{width}.{prec}f}'.format(csm, width=n, prec=3) + '   {}\n'.format(permutation)
 
         output.write(txt)
 
-    def print_symmetry_nearest_structure(self, label, central_atom=0, center=None, output=sys.stdout):
+    def print_symmetry_nearest_structure(self, label, central_atom=0, center=None, permutation=None, output=sys.stdout):
         """
         Prints the nearest structure to ideal symmetric structure
 
@@ -357,6 +404,8 @@ class Cosymlib:
         :type central_atom: int
         :param center: Center of symmetry in Cartesian coordinates. If None center is optimized
         :type center: int
+        :param permutation: Define permutation
+        :type permutation: list, tuple
         :param output: Display hook
         :type output: hook
         """
@@ -366,15 +415,28 @@ class Cosymlib:
             geometry = molecule.geometry.get_symmetry_nearest_structure(**kwargs)
             output.write(file_io.get_file_xyz_txt(geometry))
 
-    def print_chirality_measure(self, order=1, central_atom=0, center=None, output=sys.stdout):
+    def print_chirality_measure(self, order=1, central_atom=0, center=None, permutation=None, output=sys.stdout):
+        """
+        Prints the chirality measure
 
+        :param order: Order of the chirality measure (1: Cs, 2:Ci, n:S_n)
+        :type order: int
+        :param central_atom: Position of the central atom
+        :type central_atom: int
+        :param center: Center of symmetry in Cartesian coordinates. If None center is optimized
+        :type center: int
+        :param permutation: Define permutation
+        :type permutation: list, tuple
+        :param output: Display hook
+        :type output: hook
+        """
         if order < 1:
             raise Exception('Chirality order should be greater than 0')
 
         if order == 1:
             reference = ['Cs']
-        elif order == 2:
-            reference = ['Ci']
+        # elif order == 2:
+        #     reference = ['Ci']
         elif int(order) > 8:
             raise ValueError('Maximum value available for Sn chirality measure is 8')
         else:
@@ -386,12 +448,18 @@ class Cosymlib:
         reference = [r.lower() for r in reference]
 
         csm_list = []
+        axis_list = []
         for label in reference:
-            csm_list.append([geometry.get_symmetry_measure(label, central_atom=central_atom, center=center)
+            csm_list.append([geometry.get_symmetry_measure(label, central_atom=central_atom,
+                                                           center=center, permutation=permutation)
+                             for geometry in self.get_geometries()])
+            axis_list.append([geometry.get_symmetry_optimum_axis(label, central_atom=central_atom,
+                                                                 center=center, permutation=permutation)
                              for geometry in self.get_geometries()])
 
         molecules_names = [molecule.name for molecule in self._molecules]
-        txt = _get_table_format(reference, molecules_names, csm_list)
+        txt = 'Chirality measure and symmetry axis\n\n'
+        txt += _get_table_format_chir(reference, molecules_names, csm_list, axis_list)
 
         output.write(txt)
 

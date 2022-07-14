@@ -555,7 +555,10 @@ def get_connectivity_from_file(file_name):
 
     connect = []
     for line in file_txt.split('\n'):
-            connect.append([int(num) for num in line.split()])
+            try:
+                connect.append([int(num) for num in line.split()])
+            except ValueError:
+                raise Exception('Error reading connectivity file')
 
     connectivity = []
     for atom in connect:
@@ -563,6 +566,18 @@ def get_connectivity_from_file(file_name):
             connectivity.append((atom[0], j))
 
     return connectivity
+
+
+def get_permutation_from_file(file_name):
+    permutation = []
+    with open(file_name, 'r') as f:
+        for line in f:
+            try:
+                permutation += np.array(line.strip().split(), dtype=int).tolist()
+            except ValueError:
+                raise Exception('Error reading permutation file')
+
+    return permutation
 
 
 # Get OUPUT files
