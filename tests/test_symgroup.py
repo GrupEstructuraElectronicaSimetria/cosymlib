@@ -1,4 +1,7 @@
 import unittest
+
+import numpy as np
+
 from cosymlib import file_io
 from numpy import testing
 from cosymlib.molecule.geometry import Geometry
@@ -47,10 +50,11 @@ class TestSymgroupCycles(unittest.TestCase):
 
     def test_symmetry_nearest(self):
         nearest = self._geometry.get_symmetry_nearest_structure('C5').get_positions()
-        # print(nearest)
-        reference = [[ 4.05078542e-01, -1.24670356e+00,  0.00000000e+00],
-                     [ 1.31086170e+00, -1.33226763e-16,  0.00000000e+00],
-                     [ 4.05078542e-01,  1.24670356e+00,  0.00000000e+00],
-                     [-1.06050939e+00,  7.70505174e-01,  0.00000000e+00],
-                     [-1.06050939e+00, -7.70505174e-01,  0.00000000e+00]]
+
+        reference = [[ 4.97849193e-01, -1.24670356e+00, 0.00000000e+00],
+                     [ 1.40363235e+00, -1.33226763e-16, 0.00000000e+00],
+                     [ 4.97849193e-01,  1.24670356e+00, 0.00000000e+00],
+                     [-9.67738740e-01,  7.70505174e-01, 0.00000000e+00],
+                     [-9.67738740e-01, -7.70505174e-01, 0.00000000e+00]]
+
         testing.assert_array_almost_equal(nearest, reference, decimal=6)
