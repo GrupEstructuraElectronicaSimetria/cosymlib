@@ -573,7 +573,7 @@ def get_permutation_from_file(file_name):
     with open(file_name, 'r') as f:
         for line in f:
             try:
-                permutation += np.array(line.strip().split(), dtype=int).tolist()
+                permutation.append(np.array(line.strip().split(), dtype=int).tolist())
             except ValueError:
                 raise Exception('Error reading permutation file')
 

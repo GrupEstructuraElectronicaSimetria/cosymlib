@@ -39,7 +39,7 @@ def _get_symmetry_arguments(locals):
     return kwargs
 
 
-def _get_table_format(labels, molecules_names, data):
+def _get_table_format_measures(labels, molecules_names, data, precision=3):
 
     txt = 'Structure'
     max_len_name = 12
@@ -61,14 +61,14 @@ def _get_table_format(labels, molecules_names, data):
         txt += '{:{width}}'.format(name + ',', width=max_len_name)
         n = 11
         for idn, label in enumerate(labels):
-            txt += '{:>{width}.{prec}f},'.format(data[idn][idx], width=n, prec=3)
+            txt += '{:>{width}.{prec}f},'.format(data[idn][idx], width=n, prec=precision)
             n = 10
         txt += '\n'
     txt += '\n'
     return txt
 
 
-def _get_table_format_chir(labels, molecules_names, data, axis):
+def _get_table_format_axes(labels, molecules_names, axis, precision=3):
 
     txt = 'Structure'
     max_len_name = 12
@@ -90,7 +90,7 @@ def _get_table_format_chir(labels, molecules_names, data, axis):
         txt += '{:{width}}'.format(name + ',', width=max_len_name)
         n = 11
         for idn, label in enumerate(labels):
-            txt += '{:>{width}.{prec}f},'.format(data[idn][idx], width=n, prec=3)
+            #txt += '{:>{width}.{prec}f},'.format(data[idn][idx], width=n, prec=precision)
             n = 10
         txt += '\n'
 
@@ -100,12 +100,68 @@ def _get_table_format_chir(labels, molecules_names, data, axis):
             txt += ' ' * (max_len_name-1) + c_lab + ' '
 
             for c in np.array(axis).T[idn][0]:
-                txt += '{:>{width}.{prec}f},'.format(c, width=n, prec=3)
+                txt += '{:>{width}.{prec}f},'.format(c, width=n, prec=precision)
             n = 10
             txt += '\n'
 
         txt += '\n'
     txt += '\n'
+    return txt
+
+
+def _get_table_format_permutation(labels, molecules_names, permutation):
+
+    txt = 'Structure'
+    max_len_name = 12
+    names = []
+    for name in molecules_names:
+        if len(name) > max_len_name:
+            names.append(name[:(max_len_name - 1)])
+        elif len(name) > 0:
+            names.append(name)
+
+    n = max_len_name - 3
+    for label in labels:
+        n += len(label)
+        txt += '{}'.format(label.rjust(n))
+        n = 11 - len(label)
+    txt += '\n\n'
+
+    for idx, name in enumerate(names):
+        txt += '{:{width}}'.format(name + ',', width=max_len_name)
+        n = 11
+        for idn, label in enumerate(labels):
+            # txt += '{:>{width}.{prec}f},'.format(data[idn][idx], width=n, prec=precision)
+            n = 10
+        txt += '\n\n'
+
+        for idn in range(len(np.array(permutation)[idn][0])):
+            txt += ' ' * (max_len_name + 1)
+            for c in np.array(permutation).T[idn][0]:
+                txt += '{:^{width}}'.format(c, width=n+1 )
+            n = 10
+            txt += '\n'
+        txt += '\n'
+    txt += '\n'
+    return txt
+
+
+def _get_table_format_gsym(molecules_names, csm_list, permutation_list, axis_list, precision=3):
+
+    txt = '               CSM '+ (2*precision)*' '+ 'Symmetry axis (x,y,z) '+ ' '*(1*precision) + 'permutation\n\n'
+    for idx, name in enumerate(molecules_names):
+
+        max_name = len(max(name, key=len))
+        txt += '{} '.format(name)
+        if max_name < 9:
+            n = 18 - len(name)
+        else:
+            n = 9 + max_name - len(name)
+
+        txt += '{:{width}.{prec}f}   '.format(csm_list[idx], width=n, prec=precision) + \
+               '   {:.{prec}f} {:.{prec}f} {:.{prec}f}'.format(*axis_list[idx], width=n, prec=precision) + \
+               '       {}\n'.format(permutation_list[idx])
+
     return txt
 
 
@@ -158,7 +214,8 @@ class Cosymlib:
                  connectivity=None,
                  connectivity_thresh=None,
                  charge_eh=0,
-                 mode=0):
+                 mode=0,
+                 precision=3):
 
         def get_electronic_structure(structure):
             if mode == 0:
@@ -189,6 +246,7 @@ class Cosymlib:
             if ignore_connectivity:
                 molecule.geometry.set_connectivity(None)
 
+        self._precision = precision
 
     def get_n_atoms(self):
         """
@@ -261,7 +319,7 @@ class Cosymlib:
             else:
                 references_names.append(reference)
 
-        txt_shape = _get_table_format(references_names, molecules_names, measure_list)
+        txt_shape = _get_table_format_measures(references_names, molecules_names, measure_list, self._precision)
         output.write(txt_shape)
 
     def print_shape_structure(self, shape_reference, central_atom=0, fix_permutation=False, output=sys.stdout):
@@ -379,18 +437,20 @@ class Cosymlib:
 
         txt = 'Evaluating symmetry operation : {}\n \n'.format(label)
 
-        txt += '              CSM      permutation\n'
-        for idx, molecule in enumerate(self._molecules):
-            csm = molecule.geometry.get_symmetry_measure(**kwargs)
-            permutation = molecule.geometry.get_symmetry_permutation(**kwargs)
+        molecules_names = []
+        csm_list = []
+        permutation_list = []
+        axis_list = []
 
-            max_name = len(max(molecule.name, key=len))
-            txt += '{} '.format(molecule.name)
-            if max_name < 9:
-                n = 18 - len(molecule.name)
-            else:
-                n = 9 + max_name - len(molecule.name)
-            txt += '{:{width}.{prec}f}'.format(csm, width=n, prec=3) + '   {}\n'.format(permutation)
+        for idx, molecule in enumerate(self._molecules):
+            csm_list.append(molecule.geometry.get_symmetry_measure(**kwargs))
+            permutation_list.append(molecule.geometry.get_symmetry_permutation(**kwargs))
+            molecules_names.append(molecule.name)
+            axis_list.append(molecule.geometry.get_symmetry_optimum_axis(label, central_atom=central_atom,
+                                                                 center=center, permutation=permutation))
+
+
+        txt += _get_table_format_gsym(molecules_names, csm_list, permutation_list, axis_list, precision=self._precision)
 
         output.write(txt)
 
@@ -449,6 +509,7 @@ class Cosymlib:
 
         csm_list = []
         axis_list = []
+        permutation_list = []
         for label in reference:
             csm_list.append([geometry.get_symmetry_measure(label, central_atom=central_atom,
                                                            center=center, permutation=permutation)
@@ -457,9 +518,25 @@ class Cosymlib:
                                                                  center=center, permutation=permutation)
                              for geometry in self.get_geometries()])
 
+            permutation_list.append([geometry.get_symmetry_permutation(label, central_atom=central_atom,
+                                                                       center=center, permutation=permutation)
+                                     for geometry in self.get_geometries()])
+
         molecules_names = [molecule.name for molecule in self._molecules]
-        txt = 'Chirality measure and symmetry axis\n\n'
-        txt += _get_table_format_chir(reference, molecules_names, csm_list, axis_list)
+
+        txt = 'Chirality measures\n\n'
+        txt += _get_table_format_measures(reference, molecules_names, csm_list, precision=self._precision)
+
+        txt += '\nChirality plane axes\n\n'
+
+        txt += _get_table_format_axes(reference, molecules_names, axis_list, precision=self._precision)
+
+
+        if permutation is not None:
+            txt += 'Custom permutation: {}\n'.format(permutation)
+        else:
+            txt += 'Atoms permutation \n\n'
+            txt += _get_table_format_permutation(reference, molecules_names, permutation_list)
 
         output.write(txt)
 
@@ -487,7 +564,7 @@ class Cosymlib:
                 txt += '\n'
                 txt += sep_line
 
-            txt += '{:<9} '.format(molecule.name)[:9]  + '  '.join(['{:7.3f}'.format(s) for s in wf_measure['csm']])
+            txt += '{:<9} '.format(molecule.name)[:9] + '  '.join(['{:7.3f}'.format(s) for s in wf_measure['csm']])
             txt += '\n'
             first = False
 

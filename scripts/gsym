@@ -102,7 +102,12 @@ parser.add_argument('--permutation_file',
                     dest='permutation_file',
                     metavar='filename',
                     default=None,
-                    help='define the atoms permutation to be used in the calculations')
+                    help='use atoms permutation stored in file')
+parser.add_argument('--print_precision',
+                    dest='print_precision', metavar='I',
+                    type=int,
+                    default=3,
+                    help='number of decimal places to print (default: 3)')
 
 
 args = parser.parse_args()
@@ -134,7 +139,7 @@ else:
 if args.permutation_file:
     permutation = get_permutation_from_file(args.permutation_file)
 else:
-    permutation = None
+    permutation = [None]
 
 print_header(common_output)
 
@@ -143,7 +148,8 @@ structure_set = Cosymlib(structures,
                          ignore_atoms_labels=args.ignore_atoms_labels,
                          ignore_connectivity=args.ignore_connectivity,
                          connectivity=connectivity,
-                         connectivity_thresh=args.connectivity_thresh)
+                         connectivity_thresh=args.connectivity_thresh,
+                         precision=args.print_precision)
 
 if args.labels:
     print_symmetry_labels()
@@ -155,11 +161,14 @@ if args.info:
 
 # Symgroup commands
 if args.measure:
-    structure_set.print_geometric_symmetry_measure(args.measure,
-                                                   central_atom=args.central_atom,
-                                                   center=args.center,
-                                                   permutation=permutation,
-                                                   output=common_output)
+    for i, p in enumerate(permutation):
+        structure_set.print_geometric_symmetry_measure(args.measure,
+                                                       central_atom=args.central_atom,
+                                                       center=args.center,
+                                                       permutation=p,
+                                                       output=common_output)
+        if i < len(permutation)-1:
+            print('.'*70 + '\n')
 
 if args.structure:
     if args.output_name is None:
@@ -168,11 +177,15 @@ if args.structure:
     else:
         structure_output = open(args.output_name + '_sym.xyz', 'w')
 
-    structure_set.print_symmetry_nearest_structure(args.measure,
-                                                   central_atom=args.central_atom,
-                                                   center=args.center,
-                                                   permutation=permutation,
-                                                   output=structure_output)
+    for i, p in enumerate(permutation):
+        structure_set.print_symmetry_nearest_structure(args.measure,
+                                                       central_atom=args.central_atom,
+                                                       center=args.center,
+                                                       permutation=permutation,
+                                                       output=structure_output)
+
+        if i < len(permutation)-1:
+            print('.'*70 + '\n')
 
 # point group
 if args.determine_pg:

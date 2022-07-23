@@ -88,7 +88,13 @@ parser.add_argument('--permutation_file',
                     metavar='filename',
                     type=str,
                     default=None,
-                    help='define the atoms permutation to be used in the calculations')
+                    help='use atoms permutation stored in file')
+parser.add_argument('--print_precision',
+                    dest='print_precision', metavar='I',
+                    type=int,
+                    default=3,
+                    help='number of decimal places to print (default: 3)')
+
 
 args = parser.parse_args()
 
@@ -110,7 +116,7 @@ else:
 if args.permutation_file:
     permutation = get_permutation_from_file(args.permutation_file)
 else:
-    permutation = None
+    permutation = [None]
 
 if args.version:
     print('Cosymlib version = {}'.format(__version__))
@@ -128,7 +134,8 @@ structure_set = Cosymlib(structures,
                          ignore_atoms_labels=args.ignore_atoms_labels,
                          ignore_connectivity=args.ignore_connectivity,
                          connectivity=connectivity,
-                         connectivity_thresh=args.connectivity_thresh)
+                         connectivity_thresh=args.connectivity_thresh,
+                         precision=args.print_precision)
 
 if args.info:
     print_input_info(structure_set.get_geometries(), output=common_output)
@@ -137,10 +144,13 @@ if args.info:
 
 # Chirality commands
 if args.measure:
-    structure_set.print_chirality_measure(args.order,
-                                          central_atom=args.central_atom,
-                                          center=args.center,
-                                          permutation=permutation,
-                                          output=common_output)
+    for i, p in enumerate(permutation):
+        structure_set.print_chirality_measure(args.order,
+                                              central_atom=args.central_atom,
+                                              center=args.center,
+                                              permutation=p,
+                                              output=common_output)
+        if i < len(permutation)-1:
+            print('.'*70 + '\n')
 
 print_footer(common_output)
