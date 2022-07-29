@@ -6,14 +6,15 @@ from collections import namedtuple
 import numpy as np
 
 
-def _get_key_symgroup(label, center, central_atom, connectivity, multi, connect_thresh):
+def _get_key_symgroup(label, center, central_atom, connectivity, multi, connect_thresh, permutation):
     group_key = label.lower()
     center_key = ' '.join(['{:10.8f}'.format(n) for n in center]) if center is not None else None
     connectivity_key = np.array2string(np.array(connectivity), precision=10) if connectivity is not None else None
     multi_key = int(multi)
     central_atom_key = int(central_atom)
     connect_thresh_key = '{:10.8f}'.format(connect_thresh)
-    return group_key, center_key, central_atom_key, connectivity_key, multi_key, connect_thresh_key
+    permutation_key = tuple(permutation) if permutation is not None else None
+    return group_key, center_key, central_atom_key, connectivity_key, multi_key, connect_thresh_key, permutation_key
 
 
 def _get_key_wfnsym(group, vector_axis1, vector_axis2, center, alpha_occupancy, beta_occupancy):
@@ -54,6 +55,7 @@ class Symmetry:
                  multi=1,
                  axis=None,
                  axis2=None,
+                 permutation=None,
                  ):
 
         try:
@@ -79,6 +81,7 @@ class Symmetry:
         self._multi = multi
         self._axis = axis
         self._axis2 = axis2
+        self._permutation = permutation
         self._results = {}
 
     # Modifier methods
@@ -109,7 +112,7 @@ class Symmetry:
 
         # Crude calculation call methods
         key = _get_key_symgroup(group, self._center, self._central_atom, self._connectivity, self._multi,
-                                self._connect_thresh)
+                                self._connect_thresh, self._permutation)
         if key not in self._results:
             self._results[key] = Symgroupy(self._coordinates,
                                            group=group,
@@ -119,8 +122,13 @@ class Symmetry:
                                            center=self._center,
                                            connectivity=self._connectivity,
                                            connect_thresh=self._connect_thresh,
-                                           permutation=None)
+                                           permutation=self._permutation)
 
+        permu = self._results[key].optimum_permutation
+        key_2 = _get_key_symgroup(group, self._center, self._central_atom, self._connectivity, self._multi,
+                                self._connect_thresh, permu)
+
+        self._results[key_2] = self._results[key]
         return self._results[key]
 
     def _get_wfnsym_results(self, group):
@@ -157,7 +165,7 @@ class Symmetry:
         elif isinstance(self._electronic_structure, ProtoElectronicStructure):
 
             key = _get_key_symgroup(group, self._center, self._central_atom, self._connectivity, self._multi,
-                                    self._connect_thresh)
+                                    self._connect_thresh, self._permutation)
             if self._center is None:
                 coord_a = np.array(self._coordinates)
                 sym_m = []
