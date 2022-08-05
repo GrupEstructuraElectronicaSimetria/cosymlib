@@ -168,24 +168,27 @@ if args.measure:
                                                        permutation=p,
                                                        output=common_output)
         if i < len(permutation)-1:
-            print('.'*70 + '\n')
+            common_output.write('.'*70 + '\n\n')
 
 if args.structure:
-    if args.output_name is None:
-        structure_output = common_output
-        print('\nClosest structure/s to reference')
-    else:
-        structure_output = open(args.output_name + '_sym.xyz', 'w')
-
     for i, p in enumerate(permutation):
-        structure_set.print_symmetry_nearest_structure(args.measure,
-                                                       central_atom=args.central_atom,
-                                                       center=args.center,
-                                                       permutation=permutation,
-                                                       output=structure_output)
+        if args.output_name is None:
+            structure_output = common_output
+            # print('\nClosest structure/s to reference')
+        else:
+            if len(permutation) > 1:
+                structure_output = open(args.output_name + '_sym_{}.xyz'.format(i), 'w')
+            else:
+                structure_output = open(args.output_name + '_sym.xyz', 'w')
 
-        if i < len(permutation)-1:
-            print('.'*70 + '\n')
+            structure_set.print_symmetry_nearest_structure(args.measure,
+                                                           central_atom=args.central_atom,
+                                                           center=args.center,
+                                                           permutation=p,
+                                                           output=structure_output)
+
+            if i < len(permutation)-1:
+                common_output.write('.'*70 + '\n\n')
 
 # point group
 if args.determine_pg:

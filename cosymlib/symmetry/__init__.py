@@ -4,6 +4,7 @@ from wfnsympy import WfnSympy
 from symgroupy import Symgroupy
 from collections import namedtuple
 import numpy as np
+import warnings
 
 
 def _get_key_symgroup(label, center, central_atom, connectivity, multi, connect_thresh, permutation):
@@ -110,9 +111,15 @@ class Symmetry:
         self._connect_thresh = connect_thresh
         """
 
+        # patch for permutations
+        if group.lower() not in ['cs', 'ci', 'c1']:
+            warnings.warn('Custom permutation for this group is not implemented')
+            self._permutation = None
+
         # Crude calculation call methods
         key = _get_key_symgroup(group, self._center, self._central_atom, self._connectivity, self._multi,
                                 self._connect_thresh, self._permutation)
+
         if key not in self._results:
             self._results[key] = Symgroupy(self._coordinates,
                                            group=group,
