@@ -170,7 +170,7 @@ class Molecule:
         :return: The point group
         :rtype: str
         """
-        return self.geometry.get_point_group(tol=tol)
+        return self.geometry.get_pointgroup(tol=tol)
 
     def get_charge(self):
         """

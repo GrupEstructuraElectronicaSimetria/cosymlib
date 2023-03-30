@@ -1,6 +1,6 @@
 import numpy as np
 from warnings import warn
-from cosymlib.symmetry.pointgroup.operations import rotation_matrix
+from pointgroup.operations import rotation_matrix
 
 
 def print_symmetry_labels():
@@ -51,9 +51,9 @@ def orthogonal_c4(c3, c4):
     if abs(diff_angle) <= 1E-8:
         new_c4 = c4
     else:
-        new_c4 = np.dot(rotation_matrix(np.cross(c3, c4), diff_angle), c4)
+        new_c4 = np.dot(rotation_matrix(np.cross(c3, c4), np.deg2rad(diff_angle)), c4)
         warn('ChangedAxisWarning: Set C4 axis to: {}'.format(new_c4))
 
-    rot_mat = rotation_matrix(c3, 120.0)
+    rot_mat = rotation_matrix(c3, np.deg2rad(120.0))
     c4_2 = np.dot(rot_mat, new_c4)
     return new_c4, c4_2/np.linalg.norm(c4_2)

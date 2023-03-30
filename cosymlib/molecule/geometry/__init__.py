@@ -1,9 +1,9 @@
 from cosymlib import shape, tools
 from cosymlib.symmetry import Symmetry
-from cosymlib.symmetry.pointgroup import PointGroup
 from cosymlib.tools import generate_connectivity_from_geometry
-import numpy as np
 from functools import wraps
+from pointgroup import PointGroup
+import numpy as np
 
 
 def set_parameters(func):
@@ -270,7 +270,7 @@ class Geometry:
         :return: The point group
         :rtype: str
         """
-        return PointGroup(self, tolerance=tol).get_point_group()
+        return PointGroup(self._positions, self._symbols, tolerance_eig=tol).get_point_group()
 
 
 def chunks(l, n):
