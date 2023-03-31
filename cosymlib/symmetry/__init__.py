@@ -112,7 +112,7 @@ class Symmetry:
         """
 
         # patch for permutations
-        if group.lower() not in ['cs', 'ci', 'c1']:
+        if self._permutation is not None and group.lower() not in ['cs', 'ci', 'c1']:
             warnings.warn('Custom permutation for this group is not implemented')
             self._permutation = None
 
