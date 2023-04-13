@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class ProtoElectronicDensity(object):
+class ProtoElectronicDensity:
 
     def __init__(self, geometry):
         self._name = geometry.name
