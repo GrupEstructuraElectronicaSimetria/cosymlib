@@ -1,8 +1,8 @@
 ##############################################
 # Reduced requirements list for ReadTheDocs  #
 ##############################################
-setuptools
-numpy==1.24.3
+
+numpy>=1.8.2
 matplotlib
 PyYAML
 huckelpy
