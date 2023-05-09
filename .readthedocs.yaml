@@ -18,8 +18,10 @@ build:
     - build-essential
     - make
     - llvm
+  commands:
+    - pip install setuptools==59.8.0
 
-# Build documentation in the docs/ directory with Sphinx
+    # Build documentation in the docs/ directory with Sphinx
 sphinx:
    configuration: docs/conf.py
 
