@@ -15,8 +15,19 @@ build:
     # rust: "1.64"
     # golang: "1.19"
   apt_packages:
-    - build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev curl
-    - libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+    - build-essential
+    - libssl-dev
+      zlib1g-dev
+    - libbz2-dev
+    - libreadline-dev
+    - libsqlite3-dev
+    - curl
+    - libncursesw5-dev
+    - xz-utils tk-dev
+    - libxml2-dev
+    - libxmlsec1-dev
+    - libffi-dev
+    - liblzma-dev
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
