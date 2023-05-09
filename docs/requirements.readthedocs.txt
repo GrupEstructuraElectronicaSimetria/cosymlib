@@ -2,7 +2,7 @@
 # Reduced requirements list for ReadTheDocs  #
 ##############################################
 
-setuptools < 60
+setuptools < 60.0
 numpy>=1.8.2
 matplotlib
 PyYAML
