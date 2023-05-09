@@ -15,9 +15,9 @@ build:
     # rust: "1.64"
     # golang: "1.19"
   commands:
-    - sudo apt update; sudo apt install build-essential libssl-dev zlib1g-dev
-    - sudo apt update libbz2-dev libreadline-dev libsqlite3-dev curl
-    - sudo apt update libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+    - apt update; sudo apt install build-essential libssl-dev zlib1g-dev
+    - apt update libbz2-dev libreadline-dev libsqlite3-dev curl
+    - apt update libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
