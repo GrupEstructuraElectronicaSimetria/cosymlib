@@ -2,8 +2,8 @@
 # Reduced requirements list for ReadTheDocs  #
 ##############################################
 
-numpy>=1.8.2, <1.21.5
+numpy>=1.8.2, <1.24.2
 matplotlib
 PyYAML
-huckelpy
+huckelpy==0.2.2
 pointgroup

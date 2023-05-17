@@ -2,7 +2,7 @@
 # Required packages for Cosymlib  #
 ###################################
 
-numpy>=1.16.6,<1.21.5
+numpy>=1.16.6,<1.24.2
 matplotlib
 PyYAML>=5.1
 symgroupy>=0.5.9
