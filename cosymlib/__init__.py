@@ -192,7 +192,8 @@ def _get_geometry_coordinates(geometry):
 
 class Cosymlib:
     """
-    Main cosymlib class
+    This class contains all the high level methods used in the command line interface scripts.
+    The methods return formatted results of multiple molecules calculations
 
     :param structures: List of :class:`~cosymlib.molecule.geometry.Geometry` or :class:`~cosymlib.molecule.Molecule`
     :type structures: list, :class:`~cosymlib.molecule.geometry.Geometry`, :class:`~cosymlib.molecule.Molecule`

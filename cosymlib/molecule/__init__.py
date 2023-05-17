@@ -19,7 +19,10 @@ def set_parameters(func):
 
 class Molecule:
     """
-    Main molecule class
+    This is the main class that contains all the information and calculations methods that can a apply
+    to a single molecule. The functionality is divided in two objects: Geometry and Electronic Structure.
+    In the base class (Molecule) implements the methods thatrequire both the electronic structure and
+    molecular geometry information such as the symmetry of the wave function.
 
     :param geometry: The geometry
     :type geometry: Geometry, Molecule
@@ -27,7 +30,6 @@ class Molecule:
     :type electronic_structure: ElectronicStructure, str
     :param name: Molecule name
     :type name: str
-
     """
     def __init__(self,
                  geometry,
@@ -96,18 +98,54 @@ class Molecule:
     # New ones (to substitute get_mo_symmetry)
     @set_parameters
     def get_mo_irreducible_representations(self, group, axis=None, axis2=None, center=None):
+        """
+        get the symmetry measure of the molecular orbitals in irreducible representations
+
+        :param group: the point group label
+        :param axis: the group orientation axis
+        :param axis2: the group orientation axis2
+        :param center: the center of the group
+        :return: a dictionary with the molecular orbitals symmetry measure info
+        """
         return self._symmetry.mo_irreducible_representations(group)
 
     @set_parameters
     def get_wf_irreducible_representations(self, group, axis=None, axis2=None, center=None):
+        """
+        get the symmetry measure of the wave function in irreducible representations
+
+        :param group: the point group label
+        :param axis: the group orientation axis
+        :param axis2: the group orientation axis2
+        :param center: the center of the group
+        :return: a dictionary with the wave function symmetry measure info
+        """
         return self._symmetry.wf_irreducible_representations(group)
 
     @set_parameters
     def get_mo_overlaps(self, group, axis=None, axis2=None, center=None):
+        """
+        get the symmetry measure of the molecular orbitals in symmetry operations
+
+        :param group: the point group label
+        :param axis: the group orientation axis
+        :param axis2: the group orientation axis2
+        :param center: the center of the group
+        :return: a dictionary with the wave function symmetry measure info
+        """
         return self._symmetry.mo_overlaps(group)
 
     @set_parameters
     def get_wf_overlaps(self, group, axis=None, axis2=None, center=None):
+        """
+        get the symmetry measure of the wave function in symmetry operations
+
+        :param group: the point group label
+        :param axis: the group orientation axis
+        :param axis2: the group orientation axis2
+        :param center: the center of the group
+        :return: a dictionary with the wave function symmetry measure info
+        """
         return self._symmetry.wf_overlaps(group)
 
     @set_parameters
@@ -116,14 +154,39 @@ class Molecule:
 
     @set_parameters
     def get_wf_symmetry(self, group, axis=None, axis2=None, center=None):
+        """
+        the symmetry measure of the wave function (CSM like/GRIM)
+
+        :param group: the point group label
+        :param axis: the group orientation axis
+        :param axis2: the group orientation axis2
+        :param center: the center of the group
+        :return: a dictionary with the wave function symmetry measure
+        """
         return self._symmetry.wf_measure(group)
 
     @set_parameters
     def get_dens_symmetry(self, group, axis=None, axis2=None, center=None):
+        """
+        the symmetry measure of the electronic density
+
+        :param group: the point group label
+        :param axis: the group orientation axis
+        :param axis2: the group orientation axis2
+        :param center: the center of the group
+        :return: a dictionary with the electronic density symmetry measure
+        """
         return self._symmetry.dens_measure(group)
 
     @set_parameters
     def get_symmetry_axes(self, group, axis=None, axis2=None, center=None):
+        """
+        the optimized orientation of the group in which the measures are performed
+
+        :param group: the point group
+
+        :return: the orientation axis
+        """
         return self._symmetry.axes(group)
 
     @set_parameters
@@ -132,6 +195,12 @@ class Molecule:
 
     # Mirror methods in geometry
     def get_connectivity(self):
+        """
+        Get the atoms connectivity
+
+        :return: the atoms connectivity
+        :rtype: list
+        """
         return self.geometry.get_connectivity()
 
     def get_positions(self):
@@ -167,7 +236,7 @@ class Molecule:
 
         :param tol: The tolerance
         :type tol: float
-        :return: The point group
+        :return: The point group label
         :rtype: str
         """
         return self.geometry.get_pointgroup(tol=tol)

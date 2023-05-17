@@ -5,7 +5,7 @@ HARTREE_TO_EV = 27.21139563180092
 
 class ElectronicStructure:
     """
-    Main Electronic structure class
+    This class contains basically the access to electronic structure data
 
     :param basis: The basis set
     :type basis: dict
@@ -21,7 +21,6 @@ class ElectronicStructure:
     :type alpha_occupancy: list
     :param beta_occupancy: Occupancy of beta orbitals
     :type beta_occupancy: list
-
     """
 
     def __init__(self,
@@ -89,30 +88,65 @@ class ElectronicStructure:
 
     @property
     def multiplicity(self):
+        """
+        get the multiplicity
+
+        :return: the multiplicity
+        """
         return self._multiplicity
 
     @property
     def s2(self):
+        """
+        get the expected value of spin square operator S2 = (s * (s + 1))
+
+        :return: S2
+        """
         return self._s2
 
     @property
     def basis(self):
+        """
+        get the basis set name
+
+        :return: basis set
+        """
         return self._basis
 
     @property
     def coefficients_a(self):
+        """
+        get the alpha molecular orbitals coefficients
+
+        :return: the alpha molecular orbitals
+        """
         return self._Ca
 
     @property
     def coefficients_b(self):
+        """
+        get the beta molecular orbitals coefficients
+
+        :return: the beta molecular orbitals
+        """
         return self._Cb
 
     @property
     def alpha_energies(self):
+        """
+        get the energies of the alpha  molecular orbitals
+
+        :return: the energies
+        """
         return self._alpha_energies
 
     @property
     def beta_energies(self):
+        """
+        get the energies of the beta molecular orbitals
+
+        :return: the energies
+        """
         return self._beta_energies
 
     @property
@@ -125,8 +159,18 @@ class ElectronicStructure:
 
     @property
     def alpha_electrons(self):
+        """
+        get the number of alpha electrons
+
+        :return: alpha electrons
+        """
         return sum(self._alpha_occupancy)
 
     @property
     def beta_electrons(self):
+        """
+        get the number of beta electrons
+
+        :return: beta electrons
+        """
         return sum(self._beta_occupancy)

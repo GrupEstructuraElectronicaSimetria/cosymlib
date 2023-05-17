@@ -14,10 +14,6 @@ build:
     # nodejs: "19"
     # rust: "1.64"
     # golang: "1.19"
-  apt_packages:
-    - build-essential
-    - make
-    - llvm
 
     # Build documentation in the docs/ directory with Sphinx
 sphinx:
@@ -30,5 +26,5 @@ formats:
 # Optionally declare the Python requirements required to build your docs
 python:
   system_packages: true
-#  install:
-#   - requirements: docs/requirements.readthedocs.txt
+  install:
+   - requirements: docs/requirements.readthedocs.txt

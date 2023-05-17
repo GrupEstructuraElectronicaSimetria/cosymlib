@@ -29,7 +29,7 @@ More detailed information on the file formats above is given in the sections bel
 corresponding links.
 
 xyz files
-^^^^^^^^
+^^^^^^^^^
 The xyz format (`<http://en.wikipedia.org/wiki/XYZ_file_format>`_) is possybly the simplest
 format used in computational chemistry to indicate a molecular geometry. To do so  you need
 just to specify the number of atoms, a descriptive label and the cartesian coordinates for each

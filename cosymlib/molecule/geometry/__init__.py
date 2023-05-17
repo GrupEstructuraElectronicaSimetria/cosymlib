@@ -16,7 +16,7 @@ def set_parameters(func):
 
 class Geometry:
     """
-    Main geometry class
+    This class contains the methods related to shape and geometric symmetry calculations
 
     :param positions: Cartesian coordinates
     :type positions: list
@@ -265,6 +265,7 @@ class Geometry:
     def get_pointgroup(self, tol=0.01):
         """
         Get the symmetry point group
+
         :param tol: The tolerance
         :type tol: float
         :return: The point group
