@@ -5,6 +5,6 @@
 numpy>=1.8.2, <1.21.5
 matplotlib
 PyYAML
-huckelpy==0.2.2
+#huckelpy==0.2.2
 pointgroup
 wheel
