@@ -11,11 +11,11 @@ build:
   tools:
     python: "3.7"
     # You can also specify other tool versions:
-    nodejs: "18"
+#    nodejs: "18"
     # rust: "1.64"
     # golang: "1.19"
-  jobs:
-    post_checkout:
+#  jobs:
+#    post_checkout:
       # Unshallow the git repository to
       # have access to its full history
       - pip install --force-reinstall "numpy<=1.21.5"

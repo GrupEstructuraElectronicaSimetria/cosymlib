@@ -7,3 +7,4 @@ matplotlib
 PyYAML
 huckelpy==0.2.2
 pointgroup
+wheel
