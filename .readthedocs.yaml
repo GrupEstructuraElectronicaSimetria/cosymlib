@@ -18,7 +18,7 @@ build:
 #    post_checkout:
       # Unshallow the git repository to
       # have access to its full history
-      - pip install --force-reinstall "numpy<=1.21.5"
+#      - pip install --force-reinstall "numpy<=1.21.5"
 #  commands:
 #    - pip install --force-reinstall "numpy<=1.21.5"
 #    - cd docs/ # && npm install
