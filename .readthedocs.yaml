@@ -16,6 +16,7 @@ build:
     # golang: "1.19"
   commands:
     - pip install --force-reinstall "numpy<=1.21.5"
+    - apt-get install npm
     - cd docs/ && npm install
     # Build the site
     - cd docs/ && npm run build
