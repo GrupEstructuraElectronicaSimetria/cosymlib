@@ -83,7 +83,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 todo_include_todos = False
 
 
-autodoc_mock_imports = ['cosymlib.shape.shp', 'wfnsympy', 'symgroupy', 'pointgroup']
+autodoc_mock_imports = ['cosymlib.shape.shp', 'wfnsympy', 'symgroupy', 'pointgroup', 'huckelpy']
 
 # -- Options for HTML output ----------------------------------------------
 
