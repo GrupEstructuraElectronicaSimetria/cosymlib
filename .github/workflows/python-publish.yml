@@ -59,7 +59,7 @@ jobs:
     if: github.ref == 'refs/heads/master'
     strategy:
       matrix:
-        os: [ubuntu-20.04, windows-2019, macos-10.15]
+        os: [ubuntu-20.04, windows-2019, macos-11]
 
     steps:
 
@@ -102,6 +102,8 @@ jobs:
       - name: Install dependencies
         run:  |
           python -m pip install numpy==1.22.0
+          python -m pip install wheel
+
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Build sdist
