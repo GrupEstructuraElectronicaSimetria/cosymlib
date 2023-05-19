@@ -16,9 +16,9 @@ build:
     # golang: "1.19"
   commands:
     - pip install --force-reinstall "numpy<=1.21.5"
-    - cd docs/ && npm install
+    - cd docs/ # && npm install
     # Build the site
-    - cd docs/ && npm run build
+    # - cd docs/ && npm run build
     # Copy generated files into Read the Docs directory
     - mkdir --parents _readthedocs/html/
     - cp --recursive docs/build/* _readthedocs/html/
