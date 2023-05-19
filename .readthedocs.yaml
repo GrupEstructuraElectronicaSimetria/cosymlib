@@ -11,12 +11,11 @@ build:
   tools:
     python: "3.7"
     # You can also specify other tool versions:
-    # nodejs: "19"
+    nodejs: "18"
     # rust: "1.64"
     # golang: "1.19"
   commands:
     - pip install --force-reinstall "numpy<=1.21.5"
-    - sudo apt-get install npm
     - cd docs/ && npm install
     # Build the site
     - cd docs/ && npm run build
