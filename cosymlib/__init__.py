@@ -892,7 +892,7 @@ class Cosymlib:
 
     def print_minimum_distortion_path_shape(self, shape_label1, shape_label2, central_atom=0,
                                             min_dev=None, max_dev=None, min_gco=None, max_gco=None,
-                                            num_points=20, output=None):
+                                            num_points=20, output=sys.stdout):
         """
         Print the minimum distortion path
 
@@ -916,15 +916,14 @@ class Cosymlib:
         :type output1: hook
         """
 
-        if output is not None:
+        if output is not sys.stdout:
             output_name, file_extension = os.path.splitext(output.name)
             output1 = open(output_name + '_pth.csv', 'w')
             output2 = open(output_name + '_pth.xyz', 'w')
             output3 = output
         else:
-            output1 = sys.stdout
-            output2 = sys.stdout
-            output3 = sys.stdout
+            devnull = open(os.devnull, 'w')
+            output1 = output2 = output3 = devnull
 
         csm, devpath, gen_coord = self.get_path_parameters(shape_label1, shape_label2, central_atom=central_atom)
 
