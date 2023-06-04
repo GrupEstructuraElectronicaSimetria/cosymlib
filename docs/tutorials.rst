@@ -3,6 +3,7 @@
 Tutorials
 =========
 
-.. image:: images/under-construction.png
-    :height: 200px
-    :align: center
+
+
+:download:`Introduction <tutorials/S1_Intro.pdf>`
+:download:`Molecular Shapes <tutorials/S2_Mol_shape.pdf>`
