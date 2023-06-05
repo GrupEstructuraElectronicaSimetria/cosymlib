@@ -24,3 +24,9 @@ Slides
 
 Notebooks & data files
 ----------------------
+
+Example link:
+
+.. figure:: https://colab.research.google.com/assets/colab-badge.svg
+    :target: http://colab.research.google.com/github/GrupEstructuraElectronicaSimetria/cosymlib/blob/pere_tutorial/docs/tutorials/test_tutorial.ipynb
+
