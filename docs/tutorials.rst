@@ -3,7 +3,24 @@
 Tutorials
 =========
 
+Slides and notebooks used in the course "Symmetry & Shape in Structural Chemistry"
+given by P. Alemany at the Universidad de Santiago de Chile (USACH) from 5-9 June 2023.
 
+The notebooks and the associated data files give an overview of the main uses of
+the *cosymlib*. They can be run directly on *Google colab* without the need of installing
+locally the *cosymlib* in the user's computer. If the *cosymlib* is installed in the user's computer,
+the notebooks can be also run locally or, alternatively, the commands included in them may
+be directly executed, without the need of the notebook. For a routine calculation of CSMs & CShMs
+we recommend to download and install the *cosymlib* in your computer and run the scripts
+directly, without the need of using notebooks.
+
+Slides
+------
 
 :download:`Introduction <tutorials/S1_Intro.pdf>`
+
 :download:`Molecular Shapes <tutorials/S2_Mol_shape.pdf>`
+
+
+Notebooks & data files
+----------------------
