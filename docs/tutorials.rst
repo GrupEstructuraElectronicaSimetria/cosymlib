@@ -17,9 +17,9 @@ directly, without the need of using notebooks.
 Slides
 ------
 
-:download:`Introduction <tutorials/S1_Intro.pdf>`
+:download:`Introduction <tutorials/S1_Intro_red.pdf>`
 
-:download:`Molecular Shapes <tutorials/S2_Mol_shape.pdf>`
+:download:`Molecular Shapes <tutorials/S2_Mol_shape_red.pdf>`
 
 
 Notebooks & data files
