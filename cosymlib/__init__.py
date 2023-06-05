@@ -3,6 +3,7 @@ __version__ = '0.11'
 # Windows support
 import os
 import sys
+import warnings
 
 extra_dll_dir = os.path.join(os.path.dirname(__file__), '.libs')
 if sys.platform == 'win32' and os.path.isdir(extra_dll_dir):
@@ -222,6 +223,8 @@ class Cosymlib:
             if mode == 0:
                 return None
             elif mode == 1:
+                if charge_eh == 0:
+                    warnings.warn('Charge defined in original file will be ignored in EH. Use -charge tag to define it')
                 return ExtendedHuckel(structure, charge=charge_eh)
             elif mode == 2:
                 protodensity = ProtoElectronicDensity(structure)
