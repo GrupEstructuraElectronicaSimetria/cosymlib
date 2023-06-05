@@ -21,11 +21,15 @@ Slides
 
 :download:`Molecular Shapes <tutorials/S2_Mol_shape_red.pdf>`
 
+:download:`Molecular Symmetry <tutorials/S2_Mol_sym_red.pdf>`
+
+:download:`Polyhedra in Chemistry <tutorials/S2_Polyh_red.pdf>`
+
 
 Notebooks & data files
 ----------------------
 
-Example link:
+Example Notebook:
 
 .. figure:: https://colab.research.google.com/assets/colab-badge.svg
     :target: http://colab.research.google.com/github/GrupEstructuraElectronicaSimetria/cosymlib/blob/pere_tutorial/docs/tutorials/test_tutorial.ipynb
