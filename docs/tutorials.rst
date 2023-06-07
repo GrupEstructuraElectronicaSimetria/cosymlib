@@ -42,12 +42,12 @@ Point Group Determinaton:
 Continuous Symmetry Measures:
 
 .. figure:: https://colab.research.google.com/assets/colab-badge.svg
-    :target: http://colab.research.google.com/github/GrupEstructuraElectronicaSimetria/cosymlib/blob/pere_tutorial/docs/tutorials/Shape.ipynb
+    :target: http://colab.research.google.com/github/GrupEstructuraElectronicaSimetria/cosymlib/blob/pere_tutorial/docs/tutorials/CSM.ipynb
 
 Shape Measures:
 
 .. figure:: https://colab.research.google.com/assets/colab-badge.svg
-    :target: http://colab.research.google.com/github/GrupEstructuraElectronicaSimetria/cosymlib/blob/pere_tutorial/docs/tutorials/CSM.ipynb
+    :target: http://colab.research.google.com/github/GrupEstructuraElectronicaSimetria/cosymlib/blob/pere_tutorial/docs/tutorials/Shape.ipynb
 
 Data files:
 
