@@ -25,12 +25,25 @@ Slides
 
 :download:`Polyhedra in Chemistry <tutorials/S4_Polyh_red.pdf>`
 
+:download:`Group Theory <tutorials/S6_GT.pdf>`
+
+:download:`Representation Theory <tutorials/S7_RepT.pdf>`
+
+:download:`Irreducible Representations <tutorials/S8_IReps.pdf>`
 
 Notebooks & data files
 ----------------------
+
+Point Group Determinaton:
+
+.. figure:: https://colab.research.google.com/assets/colab-badge.svg
+    :target: http://colab.research.google.com/github/GrupEstructuraElectronicaSimetria/cosymlib/blob/pere_tutorial/docs/tutorials/Pointgroup.ipynb
 
 Example Notebook:
 
 .. figure:: https://colab.research.google.com/assets/colab-badge.svg
     :target: http://colab.research.google.com/github/GrupEstructuraElectronicaSimetria/cosymlib/blob/pere_tutorial/docs/tutorials/test_tutorial.ipynb
 
+Data files:
+
+:download:`Adamantane <tutorials/adamantane.xyz>`
