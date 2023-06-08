@@ -25,6 +25,8 @@ Slides
 
 :download:`Polyhedra in Chemistry <tutorials/S4_Polyh_red.pdf>`
 
+:download:`Continuous Symmetry Measures <tutorials/S5_CSM_red.pdf>`
+
 :download:`Group Theory <tutorials/S6_GT.pdf>`
 
 :download:`Representation Theory <tutorials/S7_RepT.pdf>`
@@ -34,22 +36,50 @@ Slides
 Notebooks & data files
 ----------------------
 
+You can execute directly the notebooks in Google Colab just by clicking at the links
+below or you may download the notebooks to your computer and run them there. To do this
+you will need to install the *cosymlib* in your computer and download also the data files
+associated to each notebook. If you run the notebooks in your computer you don't need
+to execute the first cells loading the *cosymlib* and loading the data files, just make
+sure that the data files are in the same folder where you have the .ipynb files.
+
 Point Group Determinaton:
+-------------------------
 
 .. figure:: https://colab.research.google.com/assets/colab-badge.svg
     :target: http://colab.research.google.com/github/GrupEstructuraElectronicaSimetria/cosymlib/blob/pere_tutorial/docs/tutorials/Pointgroup.ipynb
+:download:`Download notebook <tutorials/Pointgroup.ipynb>`
+:download:`Download datafile 1 <tutorials/h2o.xyz>`
+:download:`Download datafile 2 <tutorials/square.xyz>`
+:download:`Download datafile 3 <tutorials/h2o2_path.xyz>`
+
 
 Continuous Symmetry Measures:
+-----------------------------
 
 .. figure:: https://colab.research.google.com/assets/colab-badge.svg
     :target: http://colab.research.google.com/github/GrupEstructuraElectronicaSimetria/cosymlib/blob/pere_tutorial/docs/tutorials/CSM.ipynb
+:download:`Download notebook <tutorials/CSM.ipynb>`
+:download:`Download datafile 1 <tutorials/h2o2_path.xyz>`
+:download:`Download datafile 2 <tutorials/equilateral_triang.xyz>`
+:download:`Download datafile 3 <tutorials/isosceles_triang.xyz>`
+
 
 Shape Measures:
+---------------
 
 .. figure:: https://colab.research.google.com/assets/colab-badge.svg
     :target: http://colab.research.google.com/github/GrupEstructuraElectronicaSimetria/cosymlib/blob/pere_tutorial/docs/tutorials/Shape.ipynb
+:download:`Download notebook <tutorials/CSM.ipynb>`
+:download:`Download datafile 1 <tutorials/sqplanar.xyz>`
+:download:`Download datafile 2 <tutorials/cent_sqplanar.xyz>`
+:download:`Download datafile 3 <tutorials/crn6.xyz>`
+:download:`Download datafile 4 <tutorials/S_coord_9.xyz>`
+:download:`Download datafile 5 <tutorials/S_coord_8.xyz>`
 
-Data files:
+
+Data files with additional molecular structures:
+------------------------------------------------
 
 :download:`adamantane <tutorials/adamantane.xyz>`
 :download:`allene <tutorials/allene.xyz>`
