@@ -77,6 +77,12 @@ Shape Measures:
 :download:`Download datafile 4 <tutorials/S_coord_9.xyz>`
 :download:`Download datafile 5 <tutorials/S_coord_8.xyz>`
 
+Symmetry Measures for the Electronic Structure:
+-----------------------------------------------
+
+.. figure:: https://colab.research.google.com/assets/colab-badge.svg
+    :target: http://colab.research.google.com/github/GrupEstructuraElectronicaSimetria/cosymlib/blob/pere_tutorial/docs/tutorials/eCSM.ipynb
+
 
 Data files with additional molecular structures:
 ------------------------------------------------
