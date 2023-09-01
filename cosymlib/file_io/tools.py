@@ -23,7 +23,7 @@ def print_input_info(initial_geometries, output=sys.stdout):
         output.write('Structure {} : {}\n'.format(ids+1, geometry.name))
 
         for idn, array in enumerate(geometry.get_positions()):
-            output.write('{:2s}'.format(geometry.get_symbols()[idn]))
+            output.write('{:4} {:2s}'.format(idn + 1, geometry.get_symbols()[idn]))
             output.write(' {:11.7f} {:11.7f} {:11.7f}'.format(array[0], array[1], array[2]))
 
             if geometry.get_connectivity() is not None:

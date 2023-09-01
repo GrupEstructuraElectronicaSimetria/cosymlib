@@ -92,8 +92,8 @@ parser.add_argument('--center',
                     default=None,
                     nargs=3,
                     help='fix coordinates x,y,z for the center of symmetry operations (Angs)')
-parser.add_argument('--pg_thresh',
-                    dest='pg_thresh',
+parser.add_argument('--pg_tolerence',
+                    dest='pg_tolerence',
                     metavar='R',
                     type=float,
                     default=0.01,
@@ -192,7 +192,7 @@ if args.structure:
 
 # point group
 if args.determine_pg:
-    structure_set.print_point_group(args.pg_thresh)
+    structure_set.print_point_group(args.pg_tolerence)
 
 
 print_footer(common_output)
