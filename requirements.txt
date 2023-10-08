@@ -5,7 +5,7 @@
 numpy>=1.16.6,<1.24.2
 matplotlib
 PyYAML>=5.1
-symgroupy>=0.5.9
+posym>=1.0
 wfnsympy>=0.3.5
 huckelpy>=0.2
 pointgroup>=0.4
