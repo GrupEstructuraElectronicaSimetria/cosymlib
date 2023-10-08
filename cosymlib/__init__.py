@@ -149,18 +149,19 @@ def _get_table_format_permutation(labels, molecules_names, permutation):
 
 def _get_table_format_gsym(molecules_names, csm_list, permutation_list, axis_list, precision=3):
 
-    txt = '               CSM '+ (2*precision)*' '+ 'Symmetry axis (x,y,z) '+ ' '*(1*precision) + 'permutation\n\n'
+    width = precision + 4
+    txt = ' '* 15 + '{:^{width}} {:^{width_2}} {:^20}\n\n'.format('CSM ', 'Symmetry axis (x,y,z) ', 'permutation',
+                                                               width=width,
+                                                               width_2=width * 3 + 3)
+
     for idx, name in enumerate(molecules_names):
 
         max_name = len(max(name, key=len))
-        txt += '{} '.format(name)
-        if max_name < 9:
-            n = 18 - len(name)
-        else:
-            n = 9 + max_name - len(name)
-
-        txt += '{:{width}.{prec}f}   '.format(csm_list[idx], width=n, prec=precision) + \
-               '   {:.{prec}f} {:.{prec}f} {:.{prec}f}'.format(*axis_list[idx], width=n, prec=precision) + \
+        txt += '{:12} '.format(name)
+        txt += '{:{width}.{prec}f} '.format(csm_list[idx], width=width, prec=precision) + \
+               ' {:{width}.{prec}f} {:{width}.{prec}f} {:{width}.{prec}f}'.format(*axis_list[idx],
+                                                                                  width=width,
+                                                                                  prec=precision) + \
                '       {}\n'.format(permutation_list[idx])
 
     return txt

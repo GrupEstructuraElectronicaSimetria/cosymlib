@@ -8,7 +8,7 @@ from cosymlib import Cosymlib
 # the eclipsed and the staggered forms. The first thing to do is to read the xyz file that contains the molecules and
 # creates one or multiple Geometry objects which will storage all the structural information
 
-structures = get_geometry_from_file_xyz('../Symgroup/ethane.xyz', read_multiple=True)
+structures = get_geometry_from_file_xyz('../data/ethane.xyz', read_multiple=True)
 
 # Now we are going to create a Cosymlib object with all these Geometry objects to simplify the printing process
 

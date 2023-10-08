@@ -1,7 +1,7 @@
 from cosymlib.molecule.electronic_structure import ElectronicStructure
 from cosymlib.molecule.electronic_structure import ProtoElectronicStructure
 from wfnsympy import WfnSympy
-from symgroupy import Symgroupy
+from posym import SymmetryMolecule
 from collections import namedtuple
 import numpy as np
 import warnings
@@ -101,19 +101,9 @@ class Symmetry:
 
     def _get_symgroup_results(self, group):
 
-        """
-        # Temporal interface
-        if central_atom is not None:
-            self._central_atom = central_atom
-
-        self._multi = multi
-        self._center = center
-        self._connect_thresh = connect_thresh
-        """
-
         # patch for permutations
-        if self._permutation is not None and group.lower() not in ['cs', 'ci', 'c1']:
-            warnings.warn('Custom permutation for this group is not implemented')
+        if self._permutation is not None:
+            warnings.warn('Custom permutation is not implemented')
             self._permutation = None
 
         # Crude calculation call methods
@@ -121,21 +111,11 @@ class Symmetry:
                                 self._connect_thresh, self._permutation)
 
         if key not in self._results:
-            self._results[key] = Symgroupy(self._coordinates,
-                                           group=group,
-                                           labels=self._symbols,
-                                           central_atom=self._central_atom,
-                                           multi=self._multi,
-                                           center=self._center,
-                                           connectivity=self._connectivity,
-                                           connect_thresh=self._connect_thresh,
-                                           permutation=self._permutation)
-
-        permu = self._results[key].optimum_permutation
-        key_2 = _get_key_symgroup(group, self._center, self._central_atom, self._connectivity, self._multi,
-                                self._connect_thresh, permu)
-
-        self._results[key_2] = self._results[key]
+            self._results[key] = SymmetryMolecule(group=group,
+                                                  coordinates=self._coordinates,
+                                                  symbols=self._symbols,
+                                                  orientation_angles=None,
+                                                  center=self._center)
         return self._results[key]
 
     def _get_wfnsym_results(self, group):
@@ -221,7 +201,7 @@ class Symmetry:
         :return: The measure
         :rtype: float
         """
-        return self._get_symgroup_results(label).csm
+        return self._get_symgroup_results(label).measure
 
     def nearest_structure(self, label):
         """
@@ -234,7 +214,7 @@ class Symmetry:
         """
         # TODO: Improve this docstring
 
-        return self._get_symgroup_results(label).nearest_structure
+        return self._get_symgroup_results(label).symmetrized_coordinates
 
     def optimum_axis(self, label):
         """
@@ -245,7 +225,15 @@ class Symmetry:
         :return: The axis
         :rtype: list
         """
-        return self._get_symgroup_results(label).optimum_axis
+        sm = self._get_symgroup_results(label)
+        for operation in sm.get_oriented_operations():
+            try:
+
+                return operation.axis
+            except AttributeError:
+                pass
+
+        return [0, 0, 0]
 
     def optimum_permutation(self, label):
         """
@@ -255,7 +243,10 @@ class Symmetry:
         :return: The permutation
         :rtype: list
         """
-        return self._get_symgroup_results(label).optimum_permutation
+        sm = self._get_symgroup_results(label)
+        op = sm.get_oriented_operations()[1]
+        permu = op._get_permutation(op.operation_matrix_list[0], self._coordinates, self._symbols)
+        return list(np.array(permu) + 1)
 
     def reference_axis(self, label):
         """
@@ -266,7 +257,13 @@ class Symmetry:
         :return: The axis
         :rtype: list
         """
-        return self._get_symgroup_results(label).reference_axis
+        sm = self._get_symgroup_results(label)
+        for operation in sm.get_oriented_operations():
+            try:
+                return operation.axis
+            except AttributeError:
+                pass
+        return [[0, 0, 0]]
 
     def csm_multi(self, label, multi=1):
         """
@@ -279,8 +276,7 @@ class Symmetry:
         :return: The measures
         :rtype: list
         """
-        self._multi = multi
-        return self._get_symgroup_results(label).csm_multi
+        return [self._get_symgroup_results(label).measure]
 
     def axis_multi(self, label, multi=1):
         """
@@ -293,8 +289,13 @@ class Symmetry:
         :return: List of axis
         :rtype: list
         """
-        self._multi = multi
-        return self._get_symgroup_results(label).axis_multi
+        sm = self._get_symgroup_results(label)
+        for operation in sm.get_oriented_operations():
+            try:
+                return operation.axis
+            except AttributeError:
+                pass
+        return [[0, 0, 0]]
 
     ##########################################
     #       Electronic symmetry methods      #
