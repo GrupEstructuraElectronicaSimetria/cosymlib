@@ -226,12 +226,12 @@ def get_molecule_from_file_fchk(file_name, read_multiple=False):
         basis = basis_format(basis_set_name=basis_set,
                              atomic_numbers=atomic_number,
                              atomic_symbols=symbols,
-                             shell_type=input_molecule[6],
-                             n_primitives=input_molecule[7],
-                             atom_map=input_molecule[8],
-                             p_exponents=input_molecule[9],
-                             c_coefficients=input_molecule[10],
-                             p_c_coefficients=input_molecule[11])
+                             shell_type=np.array(input_molecule[6], dtype=int),
+                             n_primitives=np.array(input_molecule[7], dtype=int),
+                             atom_map=np.array(input_molecule[8], dtype=int),
+                             p_exponents=np.array(input_molecule[9], dtype=float),
+                             c_coefficients=np.array(input_molecule[10], dtype=float),
+                             p_c_coefficients=np.array(input_molecule[11], dtype=float))
 
         geometry = Geometry(symbols=symbols,
                             positions=coordinates,
