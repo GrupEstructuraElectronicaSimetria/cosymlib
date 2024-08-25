@@ -147,22 +147,42 @@ def _get_table_format_permutation(labels, molecules_names, permutation):
     return txt
 
 
-def _get_table_format_gsym(molecules_names, csm_list, permutation_list, axis_list, precision=3):
+def _get_table_format_gsym(molecules_names, csm_list, operations_info, precision=3):
 
     width = precision + 4
-    txt = ' '* 15 + '{:^{width}} {:^{width_2}} {:^20}\n\n'.format('CSM ', 'Symmetry axis (x,y,z) ', 'permutation',
-                                                               width=width,
-                                                               width_2=width * 3 + 3)
+    txt = ''
 
     for idx, name in enumerate(molecules_names):
 
         max_name = len(max(name, key=len))
-        txt += '{:12} '.format(name)
-        txt += '{:{width}.{prec}f} '.format(csm_list[idx], width=width, prec=precision) + \
-               ' {:{width}.{prec}f} {:{width}.{prec}f} {:{width}.{prec}f}'.format(*axis_list[idx],
-                                                                                  width=width,
-                                                                                  prec=precision) + \
-               '       {}\n'.format(permutation_list[idx])
+
+        txt += '\n' + '*' * 50 + '\n'
+        txt += ' {:12}\n'.format(name)
+        txt += '*' * 50 + '\n'
+
+        txt += 'CSM: {:{width}.{prec}f}\n'.format(csm_list[idx], width=width, prec=precision)
+
+        for op in operations_info[idx]:
+            txt += '\n'
+            txt += '{}: {}\n'.format('label: ', op['label'])
+
+            if op['order'] is not None:
+                txt += '{}: {} ({})\n'.format('order:', op['order'], op['exponent'])
+
+            if op['axis'] is not None:
+                txt += '{}: {}\n'.format('axis', op['axis'])
+
+            txt += '{}: {}\n'.format('permutation', op['permutation'])
+            txt += '{}: {}\n'.format('orbits', op['orbits'])
+            txt += '{}\n'.format('matrix_rep')
+            for row in op['matrix_rep']:
+                txt += '{:12.8} {:12.8} {:12.8}\n'.format(*row)
+
+            #for k, v in op.items():
+            #    if v is not None:
+            #        txt += '{}: {}\n'.format(k, v)
+
+    txt += '\n'
 
     return txt
 
@@ -423,7 +443,13 @@ class Cosymlib:
 
         output.write(txt)
 
-    def print_geometric_symmetry_measure(self, label, central_atom=0, center=None, permutation=None, output=sys.stdout):
+    def print_geometric_symmetry_measure(self,
+                                         label,
+                                         central_atom=0,
+                                         center=None,
+                                         permutation=None,
+                                         algorithm=None,
+                                         output=sys.stdout):
         """
         Prints geometric symmetry measure in format
 
@@ -435,6 +461,8 @@ class Cosymlib:
         :type center: list, tuple
         :param permutation: Define permutation
         :type permutation: list, tuple
+        :param algorithm: Define algoritm to generate the permutations
+        :type algorithm: str
         :param output: Display hook
         :type output: hook
         """
@@ -444,18 +472,14 @@ class Cosymlib:
 
         molecules_names = []
         csm_list = []
-        permutation_list = []
-        axis_list = []
+        operations_info = []
 
         for idx, molecule in enumerate(self._molecules):
             csm_list.append(molecule.geometry.get_symmetry_measure(**kwargs))
-            permutation_list.append(molecule.geometry.get_symmetry_permutation(**kwargs))
+            operations_info.append(molecule.geometry.get_symmetry_operations_info(**kwargs))
             molecules_names.append(molecule.name)
-            axis_list.append(molecule.geometry.get_symmetry_optimum_axis(label, central_atom=central_atom,
-                                                                 center=center, permutation=permutation))
 
-
-        txt += _get_table_format_gsym(molecules_names, csm_list, permutation_list, axis_list, precision=self._precision)
+        txt += _get_table_format_gsym(molecules_names, csm_list, operations_info, precision=self._precision)
 
         output.write(txt)
 

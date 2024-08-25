@@ -200,7 +200,7 @@ class Geometry:
 
     # Symmetry methods
     @set_parameters
-    def get_symmetry_measure(self, label, central_atom=0, center=None, multi=1, permutation=None):
+    def get_symmetry_measure(self, label, central_atom=0, center=None, multi=1, permutation=None, algorithm=None):
         """
         Get the symmetry measure
 
@@ -217,25 +217,6 @@ class Geometry:
         """
 
         return self._symmetry.measure(label)
-
-    @set_parameters
-    def get_symmetry_permutation(self, label, central_atom=0, center=None, multi=1, permutation=None):
-        """
-        Get the optimum atoms permutation for geometrical symmetry measures
-
-        :param label: Symmetry point group
-        :type label: str
-        :param central_atom: central atom position (0 if no central atom)
-        :type central_atom: int
-        :param center: center of the measure in Cartesian coordinates
-        :type center: list
-        :param permutation: define permutation
-        :type permutation: list, tuple
-        :return: The symmetry measure
-        :rtype: float
-        """
-
-        return self._symmetry.optimum_permutation(label)
 
     @set_parameters
     def get_symmetry_nearest_structure(self, label, central_atom=0, center=None, multi=1, permutation=None):
@@ -259,8 +240,8 @@ class Geometry:
         # return self._symmetry.nearest_structure(label)
 
     @set_parameters
-    def get_symmetry_optimum_axis(self, label, central_atom=0, permutation=None, center=None):
-        return self._symmetry.optimum_axis(label)
+    def get_symmetry_operations_info(self, label, central_atom=0, permutation=None, center=None, algorithm=None):
+        return self._symmetry.operations_info(label)
 
     def get_pointgroup(self, tol=0.01):
         """

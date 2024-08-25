@@ -108,6 +108,11 @@ parser.add_argument('--print_precision',
                     type=int,
                     default=3,
                     help='number of decimal places to print (default: 3)')
+parser.add_argument('--algorithm',
+                    dest='algorithm',
+                    metavar='name',
+                    default=None,
+                    help='algorithm to use to compute permutations (exact, hungarian)')
 
 
 args = parser.parse_args()
@@ -161,14 +166,12 @@ if args.info:
 
 # Symgroup commands
 if args.measure:
-    for i, p in enumerate(permutation):
-        structure_set.print_geometric_symmetry_measure(args.measure,
-                                                       central_atom=args.central_atom,
-                                                       center=args.center,
-                                                       permutation=p,
-                                                       output=common_output)
-        if i < len(permutation)-1:
-            common_output.write('.'*70 + '\n\n')
+    structure_set.print_geometric_symmetry_measure(args.measure,
+                                                   central_atom=args.central_atom,
+                                                   center=args.center,
+                                                   permutation=permutation,
+                                                   output=common_output,
+                                                   algorithm=args.algorithm)
 
 if args.structure:
     for i, p in enumerate(permutation):

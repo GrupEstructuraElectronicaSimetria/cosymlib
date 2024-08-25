@@ -9,14 +9,18 @@ import numpy as np
 import warnings
 
 
-def _get_key_symgroup(label, center, central_atom, connectivity, multi, connect_thresh, permutation):
+def _get_key_symetry(label, center, central_atom, connectivity, multi, connect_thresh, permutation):
     group_key = label.lower()
     center_key = ' '.join(['{:10.8f}'.format(n) for n in center]) if center is not None else None
     connectivity_key = np.array2string(np.array(connectivity), precision=10) if connectivity is not None else None
     multi_key = int(multi)
     central_atom_key = int(central_atom)
     connect_thresh_key = '{:10.8f}'.format(connect_thresh)
-    permutation_key = tuple(permutation) if permutation is not None else None
+    if permutation is not None:
+        permutation_key = tuple(tuple(x) for x in permutation)
+    else:
+        permutation_key = None
+
     return group_key, center_key, central_atom_key, connectivity_key, multi_key, connect_thresh_key, permutation_key
 
 
@@ -61,9 +65,8 @@ class Symmetry:
                  axis=None,
                  axis2=None,
                  permutation=None,
+                 algorithm=None
                  ):
-
-        Configuration().algorithm = 'exact'
 
         try:
             # Interpret as Geometry or molecule
@@ -88,8 +91,40 @@ class Symmetry:
         self._multi = multi
         self._axis = axis
         self._axis2 = axis2
-        self._permutation = permutation
+        self._permutation= permutation
         self._results = {}
+        self._algorithm = algorithm
+
+        if central_atom > 0:
+            self._center = self._coordinates[central_atom-1]
+
+    def get_symgroup_permutation(self, group):
+
+        """
+        get permutation from symgroup (Cn and Sn only)
+
+        """
+
+        if group.lower() in ['td', 'th', 't', 'o', 'oh', 'I', 'Ih']:
+            return None
+
+        from symgroupy import Symgroupy
+
+        # patch for permutations
+        if self._permutation is not None and group.lower() not in ['cs', 'ci', 'c1']:
+            warnings.warn('Custom permutation for this group is not implemented')
+            self._permutation = None
+
+        symgroup_res = Symgroupy(self._coordinates,
+                                 group=group,
+                                 labels=self._symbols,
+                                 central_atom=self._central_atom,
+                                 multi=self._multi,
+                                 center=self._center,
+                                 connectivity=self._connectivity,
+                                 connect_thresh=self._connect_thresh)
+
+        return [list(symgroup_res.optimum_permutation - 1)]
 
     # Modifier methods
     def set_parameters(self, parameters_dict):
@@ -105,23 +140,36 @@ class Symmetry:
     def set_electronic_structure(self, electronic_structure):
         self._electronic_structure = electronic_structure
 
-    def _get_symgroup_results(self, group):
-
-        # patch for permutations
-        if self._permutation is not None:
-            warnings.warn('Custom permutation is not implemented')
-            self._permutation = None
+    def _get_geom_sym_object(self, group):
 
         # Crude calculation call methods
-        key = _get_key_symgroup(group, self._center, self._central_atom, self._connectivity, self._multi,
-                                self._connect_thresh, self._permutation)
+        key = _get_key_symetry(group, self._center, self._central_atom, self._connectivity, self._multi,
+                               self._connect_thresh, self._permutation)
 
         if key not in self._results:
+            if self._permutation is None:
+                permutation_set = self.get_symgroup_permutation(group)
+            else:
+                permutation_set = [list(np.array(x)-1) for x in self._permutation]
+
+            symbols = self._symbols
+
+            if self._central_atom > 0:
+                symbols[self._central_atom-1] = 'CenAt'
+
+            algorithm_bak = Configuration().algorithm
+            if self._algorithm is not None:
+                Configuration().algorithm = self._algorithm
+
             self._results[key] = SymmetryMolecule(group=group,
                                                   coordinates=self._coordinates,
-                                                  symbols=self._symbols,
+                                                  symbols=symbols,
                                                   orientation_angles=None,
-                                                  center=self._center)
+                                                  center=self._center,
+                                                  permutation_set=permutation_set
+                                                  )
+            Configuration().algorithm = algorithm_bak
+
         return self._results[key]
 
     def _get_wfnsym_results(self, group):
@@ -213,8 +261,8 @@ class Symmetry:
         # Use of ProtoElectronicStructure
         elif isinstance(self._electronic_structure, ProtoElectronicStructure):
 
-            key = _get_key_symgroup(group, self._center, self._central_atom, self._connectivity, self._multi,
-                                    self._connect_thresh, self._permutation)
+            key = _get_key_symetry(group, self._center, self._central_atom, self._connectivity, self._multi,
+                                   self._connect_thresh, self._permutation)
             if self._center is None:
                 coord_a = np.array(self._coordinates)
                 sym_m = []
@@ -263,7 +311,7 @@ class Symmetry:
         :return: The measure
         :rtype: float
         """
-        return self._get_symgroup_results(label).measure
+        return self._get_geom_sym_object(label).measure
 
     def nearest_structure(self, label):
         """
@@ -276,28 +324,9 @@ class Symmetry:
         """
         # TODO: Improve this docstring
 
-        return self._get_symgroup_results(label).symmetrized_coordinates
+        return self._get_geom_sym_object(label).symmetrized_coordinates
 
-    def optimum_axis(self, label):
-        """
-        Get the optimum main symmetry axis
-
-        :param label: Point group label
-        :type label: str
-        :return: The axis
-        :rtype: list
-        """
-        sm = self._get_symgroup_results(label)
-        for operation in sm.get_oriented_operations():
-            try:
-
-                return [operation.axis]
-            except AttributeError:
-                pass
-
-        return [[0, 0, 0]]
-
-    def optimum_permutation(self, label):
+    def operations_info(self, label):
         """
         Get the optimum atoms permutation
 
@@ -305,61 +334,39 @@ class Symmetry:
         :return: The permutation
         :rtype: list
         """
-        sm = self._get_symgroup_results(label)
+        operations_info = []
+
+        sm = self._get_geom_sym_object(label)
         sm._generate_permutation_set(sm.orientation_angles)
-        op = sm.get_oriented_operations()[1]
-        permu = op.permutation
-        return list(np.array(permu) + 1)
+        for op in sm.get_oriented_operations():
+            op_dict = {}
 
-    def reference_axis(self, label):
-        """
-        Get reference axis
+            op_dict['label'] = op.label
 
-        :param label: point group label
-        :type label: str
-        :return: The axis
-        :rtype: list
-        """
-        sm = self._get_symgroup_results(label)
-        for operation in sm.get_oriented_operations():
             try:
-                return [operation.axis]
+                op_dict['order'] = op.order
+                op_dict['exponent'] = op.exp
             except AttributeError:
-                pass
-
-        return [[0, 0, 0]]
-
-    def csm_multi(self, label, multi=1):
-        """
-        Get symmetry measure of the optimum N axis
-
-        :param label: point group label
-        :type label: str
-        :param multi: number of axis
-        :type multi: int
-        :return: The measures
-        :rtype: list
-        """
-        return [self._get_symgroup_results(label).measure]
-
-    def axis_multi(self, label, multi=1):
-        """
-        Get the optimum N axis
-
-        :param label: point group label
-        :type label: str
-        :param multi: number of axis
-        :type multi: int
-        :return: List of axis
-        :rtype: list
-        """
-        sm = self._get_symgroup_results(label)
-        for operation in sm.get_oriented_operations():
+                op_dict['order'] = None
+                op_dict['exponent'] = None
             try:
-                return [operation.axis]
+                op_dict['axis'] = op.axis
             except AttributeError:
-                pass
-        return [[0, 0, 0]]
+                op_dict['axis'] = None
+
+            # permutation indices starts by one
+            op_dict['permutation'] = list(np.array(op.permutation) + 1)
+
+            from posym.permutation import Permutation
+            permutation = Permutation(op.permutation)
+            # orbit indices starts by one
+            op_dict['orbits'] = [list(np.array(orbit) + 1) for orbit in permutation.get_orbits()]
+
+            op_dict['matrix_rep'] = op.matrix_representation
+
+            operations_info.append(op_dict)
+
+        return operations_info # list(np.array(permu) + 1)
 
     ##########################################
     #       Electronic symmetry methods      #
