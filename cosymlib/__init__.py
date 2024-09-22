@@ -187,6 +187,20 @@ def _get_table_format_gsym(molecules_names, csm_list, operations_info, precision
     return txt
 
 
+def _get_table_format_csm(molecules_names, csm_list, precision=3):
+
+    width = precision + 4
+
+    txt = 'Continuous Symmetry Measure (CSM) \n\n'
+    for idx, name in enumerate(molecules_names):
+
+        txt += '{:10} {:{width}.{prec}f}\n'.format(name, csm_list[idx], width=width, prec=precision)
+
+    txt += '\n'
+
+    return txt
+
+
 def _get_axis_info(molecule, group, axis, axis2, center):
 
     txt = ''
@@ -444,6 +458,46 @@ class Cosymlib:
         output.write(txt)
 
     def print_geometric_symmetry_measure(self,
+                                         label,
+                                         central_atom=0,
+                                         center=None,
+                                         permutation=None,
+                                         algorithm=None,
+                                         output=sys.stdout):
+        """
+        Prints geometric symmetry measure in format
+
+        :param label: Symmetry point group label
+        :type label: str
+        :param central_atom: Position of the central atom
+        :type central_atom: int
+        :param center: Center of symmetry in Cartesian coordinates. If None center is optimized
+        :type center: list, tuple
+        :param permutation: Define permutation
+        :type permutation: list, tuple
+        :param algorithm: Define algoritm to generate the permutations
+        :type algorithm: str
+        :param output: Display hook
+        :type output: hook
+        """
+        kwargs = _get_symmetry_arguments(locals())
+
+        txt = 'Evaluating symmetry operation : {}\n \n'.format(label)
+
+        molecules_names = []
+        csm_list = []
+        operations_info = []
+
+        for idx, molecule in enumerate(self._molecules):
+            csm_list.append(molecule.geometry.get_symmetry_measure(**kwargs))
+            operations_info.append(molecule.geometry.get_symmetry_operations_info(**kwargs))
+            molecules_names.append(molecule.name)
+
+        txt += _get_table_format_csm(molecules_names, csm_list, precision=self._precision)
+
+        output.write(txt)
+
+    def print_geometric_symmetry_extended(self,
                                          label,
                                          central_atom=0,
                                          center=None,
@@ -1034,7 +1088,7 @@ class Cosymlib:
         :type tol: float
         """
 
-        txt = 'Determined point group\n \n'
+        txt = 'Point group\n \n'
         for idx, molecule in enumerate(self._molecules):
             txt += '{:15} '.format(molecule.name)
             txt += ' {}\n'.format(molecule.geometry.get_pointgroup(tol))

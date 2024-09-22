@@ -117,6 +117,10 @@ parser.add_argument('--algorithm',
 
 args = parser.parse_args()
 
+# default paramters
+connectivity = None
+permutation = None
+
 if args.yaml_input:
     with open(args.yaml_input, 'r') as stream:
         input_parameters = yaml.safe_load(stream)
@@ -138,13 +142,10 @@ if args.input_file is None:
 
 if args.connectivity_file:
     connectivity = get_connectivity_from_file(args.connectivity_file)
-else:
-    connectivity = None
 
 if args.permutation_file:
     permutation = get_permutation_from_file(args.permutation_file)
-else:
-    permutation = [None]
+
 
 print_header(common_output)
 
@@ -174,6 +175,10 @@ if args.measure:
                                                    algorithm=args.algorithm)
 
 if args.structure:
+
+    if permutation is None:
+        permutation = [None]
+
     for i, p in enumerate(permutation):
         if args.output_name is None:
             structure_output = common_output

@@ -243,6 +243,10 @@ class Geometry:
     def get_symmetry_operations_info(self, label, central_atom=0, permutation=None, center=None, algorithm=None):
         return self._symmetry.operations_info(label)
 
+    @set_parameters
+    def get_ir_representation(self, label, central_atom=0, permutation=None, center=None, algorithm=None):
+        return self._symmetry.ir_representation(label)
+
     def get_pointgroup(self, tol=0.01):
         """
         Get the symmetry point group

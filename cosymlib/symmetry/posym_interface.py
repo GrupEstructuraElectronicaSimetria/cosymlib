@@ -313,6 +313,18 @@ class Symmetry:
         """
         return self._get_geom_sym_object(label).measure
 
+    def ir_representation(self, label):
+        """
+        Get IR representation
+
+        :param label: Point group label
+        :type label: str
+        :return: The IR representation
+        :rtype: pandas dataframe
+        """
+        return self._get_geom_sym_object(label).get_ir_representation()
+
+
     def nearest_structure(self, label):
         """
         Get nearest structure
