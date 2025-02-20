@@ -40,7 +40,7 @@ Before proceeding, ensure that you have Anaconda or Miniconda installed on your 
 
 
 To use :program:`cosymlib` you will need to activate the virtual environment every time that you open a new shell.
-On Linux/MAC all the scripts contained in :program:`cosymlib` will be accessible in this environment: ::
+The scripts contained in :program:`cosymlib` will be accessible in this environment: ::
 
     $ conda activate cosym_env
     $ <script_name> <script_options>
