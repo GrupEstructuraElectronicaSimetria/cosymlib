@@ -7,8 +7,8 @@ Installation
 Installation via PyPI is simpler and it is recommended for most users. Follow the instructions below to
 install :program:`cosymlib` in your computer.
 
-Installing cosymlib with conda (recomended)
--------------------------------------------
+Installing cosymlib with conda (recommended)
+--------------------------------------------
 
 Before proceeding, ensure that you have Anaconda or Miniconda installed on your system. If not, download and install it from:
 
@@ -37,6 +37,14 @@ Before proceeding, ensure that you have Anaconda or Miniconda installed on your 
 .. note::
     cosymlib relies in setuptools<60.0 and numpy 1.x. If you have any issues make sure that you have the correct version of
     these libraries installed in your system
+
+
+To use :program:`cosymlib` you will need to activate the virtual environment every time that you open a new shell.
+On Linux/MAC all the scripts contained in :program:`cosymlib` will be accessible in this environment: ::
+
+    $ conda activate cosym_env
+    $ <script_name> <script_options>
+    $ conda deactivate
 
 
 Installing cosymlib from PyPI
@@ -91,8 +99,8 @@ On Windows, to execute the scripts you should type *python* followed by the full
 
     You should do this only once in order to gain execution permissions.
 
-Installing cosymlib's source code
----------------------------------
+Installing cosymlib from source code
+------------------------------------
 
 Alternatively, you can download the latest version of :program:`cosymlib` from github using :program:`git` (https://git-scm.com)
 and install it manually through the :file:`setup.py` file using :program:`setuptools` (https://setuptools.readthedocs.io/).
