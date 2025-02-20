@@ -48,6 +48,7 @@ Point Group Determinaton:
 
 .. figure:: https://colab.research.google.com/assets/colab-badge.svg
     :target: http://colab.research.google.com/github/GrupEstructuraElectronicaSimetria/cosymlib/blob/pere_tutorial/docs/tutorials/Pointgroup.ipynb
+
 :download:`Download notebook <tutorials/Pointgroup.ipynb>`
 :download:`Download datafile 1 <tutorials/h2o.xyz>`
 :download:`Download datafile 2 <tutorials/square.xyz>`
@@ -59,6 +60,7 @@ Continuous Symmetry Measures:
 
 .. figure:: https://colab.research.google.com/assets/colab-badge.svg
     :target: http://colab.research.google.com/github/GrupEstructuraElectronicaSimetria/cosymlib/blob/pere_tutorial/docs/tutorials/CSM.ipynb
+
 :download:`Download notebook <tutorials/CSM.ipynb>`
 :download:`Download datafile 1 <tutorials/h2o2_path.xyz>`
 :download:`Download datafile 2 <tutorials/equilateral_triang.xyz>`
@@ -70,6 +72,7 @@ Shape Measures:
 
 .. figure:: https://colab.research.google.com/assets/colab-badge.svg
     :target: http://colab.research.google.com/github/GrupEstructuraElectronicaSimetria/cosymlib/blob/pere_tutorial/docs/tutorials/Shape.ipynb
+
 :download:`Download notebook <tutorials/CSM.ipynb>`
 :download:`Download datafile 1 <tutorials/sqplanar.xyz>`
 :download:`Download datafile 2 <tutorials/cent_sqplanar.xyz>`

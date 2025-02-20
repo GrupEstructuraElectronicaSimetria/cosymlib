@@ -7,18 +7,54 @@ Installation
 Installation via PyPI is simpler and it is recommended for most users. Follow the instructions below to
 install :program:`cosymlib` in your computer.
 
-Installing cosymlib from PyPI (recommended)
+Installing cosymlib with conda (recomended)
 -------------------------------------------
+
+Before proceeding, ensure that you have Anaconda or Miniconda installed on your system. If not, download and install it from:
+
+- https://www.anaconda.com/download
+- https://docs.conda.io/en/latest/miniconda.html
+
+
+1. Create a virtual environment for cosymlib ::
+
+    $ conda create -n cosym_env python=3.10 numpy=1.22 -y
+
+2. Activate this virtual environment ::
+
+    $ conda activate cosym_env
+
+3. Install :program:`cosymlib` ::
+
+    $ pip install cosymlib
+    $ pip install numpy==1.22
+
+4. Deactivate the virtual environment ::
+
+    $ conda deactivate
+
+
+.. note::
+    cosymlib relies in setuptools<60.0 and numpy 1.x. If you have any issues make sure that you have the correct version of
+    these libraries installed in your system
+
+
+Installing cosymlib from PyPI
+-----------------------------
 
 This installation requires :program:`pip` (https://pip.pypa.io/en/stable/installing/) to be installed
 in your system. We strongly recommend the use of python environments, for more details on this, refer to
-https://docs.python.org/3/library/venv.html. For most users the basic installation should proceed as follows:
+https://docs.python.org/3/library/venv.html.For most users the basic installation should proceed as follows:
 
-1. Create a virtual environment at path <venv> ::
+1. Install one of the following python versions: ::
+
+    3.6, 3.7, 3.8, 3.9, 3.10.
+
+2. Create a virtual environment at path <venv> ::
 
     $ python3 -m venv <venv>
 
-2. Activate this virtual environment ::
+3. Activate this virtual environment ::
 
     # on MAC / Linux
     $ source <venv>/bin/activate
@@ -26,12 +62,12 @@ https://docs.python.org/3/library/venv.html. For most users the basic installati
     # on windows (powershell) [see note below]
     C:\> <venv>\Scripts\Activate.ps1
 
-3. Install :program:`cosymlib` ::
+4. Install :program:`cosymlib` ::
 
-    $ pip install numpy
+    $ pip install numpy==1.22
     $ pip install cosymlib
 
-4. Deactivate the virtual environment ::
+5. Deactivate the virtual environment ::
 
     $ deactivate
 
