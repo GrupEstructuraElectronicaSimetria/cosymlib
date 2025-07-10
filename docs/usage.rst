@@ -68,12 +68,12 @@ Besides these six basic scripts, we have also developed ``cosym``, a general scr
 any of the basic calculations above. We could, for instance, use directly ``cosym`` to calculate the previous
 shape measure using the following command::
 
-$ cosym struct.xyz -shp_m SP-4 -s
+    $ cosym struct.xyz -shp_m SP-4 -shp_s
 
 Note that when using ``cosym`` some of the optional flags in ``shape`` change to indicate which type
 of calculation we would like to perform. For instance, ``-m`` becomes ``-shp_m`` to distinguish it from a
 symmetry measure ( ``-m`` flag in ``sym``) that becomes ``-sym_m`` when called from ``cosym``.
-On the other hand, other arguments such as ``-s``, which have the same meaning when calculating
+On the other hand, other arguments such as ``-shp_s``, which have the same meaning when calculating
 shape, symmetry or chirality measures, remain unchanged when used in combination with the
 general ``cosym`` script.
 
@@ -388,13 +388,12 @@ the reference structure. Before doing the actual calculation it will be necessar
 run shape with the ``-r`` flag to print the coordinates of the reference shape and order
 the vertices in the problem structure accordingly.
 
-A quite useful flag is ``-cref filename`` that allows the user to specify a custom reference
-structure in the filename file. Use this option if you want to use a reference structure
-different from any of those provided by shape. To use this feature you will need to include
-the ``-m custom`` flag in your call:
-::
+A quite useful flag is ``-m_custom`` that allows the user to compute a shape measure
+using a custom reference structure in the filename file. Use this option if you want
+to use a reference structure different from any of those provided by shape. To use
+this feature you need to use ``-m custom`` flag in your call: ::
 
-   $ shape input_file -m custom -cref filename
+   $ shape input_file -m_custom filename
 
 Besides the shorthand version of the flags described above, it is also possible to use
 an explicit version by writing them preceded by a double ``--`` sign. The explicit versions
@@ -417,7 +416,7 @@ of the flags are:
 +-----------------+-----------------------+
 |     ``-r``      |    ``--references``   |
 +-----------------+-----------------------+
-|     ``-cref``   |    ``--custom_ref``   |
+|  ``-m_custom``  |  ``--measure_custom`` |
 +-----------------+-----------------------+
 |     ``-fixp``   | ``--fix_permutation`` |
 +-----------------+-----------------------+
@@ -438,7 +437,7 @@ containing the options in YAML format (`<http://en.wikipedia.org/wiki/YAML>`_):
     central_atom :   1
     measure      :   OC-6
     structure    :   True
-    output       :   struct.out
+    output_name  :   struct.out
 
 and then call shape just using:
 ::
