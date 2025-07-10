@@ -26,8 +26,9 @@ Before proceeding, ensure that you have Anaconda or Miniconda installed on your 
 
 3. Install :program:`cosymlib` ::
 
+    $ pip install scipy==1.10.1
+    $ pip install matplotlib==3.4.2
     $ pip install cosymlib
-    $ pip install numpy==1.22
 
 4. Deactivate the virtual environment ::
 
@@ -73,6 +74,8 @@ https://docs.python.org/3/library/venv.html.For most users the basic installatio
 4. Install :program:`cosymlib` ::
 
     $ pip install numpy==1.22
+    $ pip install scipy==1.10.1
+    $ pip install matplotlib==3.4.2
     $ pip install cosymlib
 
 5. Deactivate the virtual environment ::
