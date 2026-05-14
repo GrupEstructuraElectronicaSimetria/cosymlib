@@ -28,7 +28,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install --force-reinstall ninja
-          python -m pip install flake8 pytest meson meson-python charset-normalizer setuptools
+          python -m pip install flake8 numpy pytest meson meson-python charset-normalizer setuptools
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         working-directory: ${{env.working-directory}}
       - name: Lint with flake8
@@ -98,7 +98,7 @@ jobs:
           CIBW_BEFORE_ALL_LINUX: |
             python -m pip install --upgrade pip
             python -m pip install --force-reinstall ninja
-            python -m pip install flake8 pytest meson meson-python charset-normalizer setuptools
+            python -m pip install flake8 numpy pytest meson meson-python charset-normalizer setuptools
             if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
           CIBW_BEFORE_BUILD_WINDOWS: |
