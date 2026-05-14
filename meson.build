@@ -28,7 +28,7 @@ incdir_f2py = run_command(py,
 
 inc_np = include_directories(incdir_numpy, incdir_f2py)
 
-cosymlib = py.extension_module('cosymlib.shape.shp',
+cosymlib = py.extension_module('shp',
       fortran_sources,
       incdir_f2py / 'fortranobject.c',
       include_directories: inc_np,
