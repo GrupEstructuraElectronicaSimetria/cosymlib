@@ -59,7 +59,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     needs: [ test_code ]
-    if: github.ref == 'refs/heads/master'  ||  github.ref == 'refs/heads/migration_meson'
+    if: github.ref == 'refs/heads/master'  ||  github.ref == 'refs/heads/meson_migration'
     strategy:
       matrix:
         os: [windows-2022, ubuntu-latest]
@@ -120,7 +120,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     needs: [ test_code ]
-    if: github.ref == 'refs/heads/master' ||  github.ref == 'refs/heads/migration_meson'
+    if: github.ref == 'refs/heads/master' ||  github.ref == 'refs/heads/meson_migration'
     strategy:
       matrix:
         os: [macos-14]
@@ -174,7 +174,7 @@ jobs:
     needs: [ test_code ]
     runs-on: ubuntu-latest
 
-    if: github.ref == 'refs/heads/master' ||  github.ref == 'refs/heads/migration_meson'
+    if: github.ref == 'refs/heads/master' ||  github.ref == 'refs/heads/meson_migration'
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
