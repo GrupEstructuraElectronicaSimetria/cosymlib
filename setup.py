@@ -113,6 +113,8 @@ ext_modules = []
 setup(name='cosymlib',
       version=get_version_number(),
       description='Continuous measures of shape and symmetry',
+      long_description=open('readme.md').read(),
+      long_description_content_type='text/markdown',
       author='Efrem Bernuz & Abel Carreras',
       author_email='abelcarreras83@gmail.com',
       packages=find_packages(where="."),
