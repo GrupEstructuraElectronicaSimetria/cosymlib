@@ -1,8 +1,6 @@
 from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext
 from setuptools.command.install import install
-from distutils.dir_util import copy_tree
-from distutils.errors import DistutilsFileError
 import sys, os
 import subprocess
 import pathlib
