@@ -29,7 +29,6 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install --force-reinstall ninja
           python -m pip install flake8 numpy pytest meson meson-python charset-normalizer setuptools
-          # python -m pip install --no-build-isolation huckelpy
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         working-directory: ${{env.working-directory}}
       - name: Lint with flake8
@@ -59,7 +58,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     needs: [ test_code ]
-    if: github.ref == 'refs/heads/master'  ||  github.ref == 'refs/heads/meson_migration'
+    if: github.ref == 'refs/heads/master'  # ||  github.ref == 'refs/heads/meson_migration'
     strategy:
       matrix:
         os: [windows-2022, ubuntu-latest]
@@ -115,7 +114,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     needs: [ test_code ]
-    if: github.ref == 'refs/heads/master' ||  github.ref == 'refs/heads/meson_migration'
+    if: github.ref == 'refs/heads/master' # ||  github.ref == 'refs/heads/meson_migration'
     strategy:
       matrix:
         os: [macos-14]
@@ -169,7 +168,7 @@ jobs:
     needs: [ test_code ]
     runs-on: ubuntu-latest
 
-    if: github.ref == 'refs/heads/master' ||  github.ref == 'refs/heads/meson_migration'
+    if: github.ref == 'refs/heads/master' # ||  github.ref == 'refs/heads/meson_migration'
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
