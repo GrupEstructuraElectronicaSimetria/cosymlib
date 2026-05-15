@@ -87,15 +87,15 @@ jobs:
             pip install numpy meson meson-python charset-normalizer setuptools ninja
             rm -rf build/ wheelhouse/ dist/
             find . -name "*.egg-info" -type d -exec rm -rf {} +
-            pip install --only-binary=:all: numpy scipy
-            if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+            python -m pip install scipy
+            if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
 
           CIBW_BUILD: cp310-* cp311-* cp312-*
           CIBW_BEFORE_ALL_LINUX: |
             python -m pip install --upgrade pip
             python -m pip install --force-reinstall ninja
             python -m pip install flake8 pytest meson meson-python charset-normalizer setuptools
-            #pip install --only-binary=:all: numpy scipy
+            #pip install --only-binary=:all: scipy
 
           CIBW_BEFORE_BUILD_WINDOWS: |
             echo $MINGW_PREFIX
