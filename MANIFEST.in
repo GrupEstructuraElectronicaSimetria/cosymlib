@@ -1,2 +1,3 @@
-include README.md
 include fortran/*.pyf
+include repair_wheel_mac.py
+include readme.md

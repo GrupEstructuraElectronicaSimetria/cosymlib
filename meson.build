@@ -1,0 +1,40 @@
+project('cosymlib', 'c', 'fortran', version: '0.1.0')
+
+py = import('python').find_installation(pure: false)
+py_dep = py.dependency()
+
+#locate libraries quadmath (needed for windows)
+quadmath_dep = meson.get_compiler('fortran').find_library('quadmath')
+
+# fortran source files
+fortran_sources = [
+    'fortran/shpmodule.c',
+    'fortran/shp-f2pywrappers.f',
+    'fortran/shp.f90',
+]
+
+# Fortran compiler option
+fortran_flags = ['-ffixed-line-length-0', '-O2']
+
+incdir_numpy = run_command(py,
+  ['-c', 'import os; os.chdir(".."); import numpy; print(numpy.get_include())'],
+  check : true
+).stdout().strip()
+
+incdir_f2py = run_command(py,
+    ['-c', 'import os; os.chdir(".."); import numpy.f2py; print(numpy.f2py.get_include())'],
+    check : true
+).stdout().strip()
+
+inc_np = include_directories(incdir_numpy, incdir_f2py)
+
+cosymlib = py.extension_module('shp',
+      fortran_sources,
+      incdir_f2py / 'fortranobject.c',
+      include_directories: inc_np,
+      dependencies : [py_dep, quadmath_dep],
+      fortran_args: fortran_flags,
+      install : true,
+      # link_args: ['-static-libgfortran', '-Wl,-rpath,@loader_path/../symgroupy.dylibs'],
+      install_dir : get_option('prefix')
+)
