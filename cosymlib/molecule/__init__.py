@@ -230,7 +230,7 @@ class Molecule:
         """
         return self.geometry.get_symbols()
 
-    def get_pointgroup(self, tol=0.01):
+    def get_point_group(self, tol=0.01):
         """
         Get the symmetry point group
 
@@ -239,7 +239,7 @@ class Molecule:
         :return: The point group label
         :rtype: str
         """
-        return self.geometry.get_pointgroup(tol=tol)
+        return self.geometry.get_point_group(tol=tol)
 
     def get_charge(self):
         """

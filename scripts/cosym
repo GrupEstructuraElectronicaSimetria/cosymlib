@@ -320,7 +320,7 @@ if args.qsym_wfn:
 
 # Pointgroup command
 if args.pointgroup:
-    for idm, pg in enumerate(symobj.get_point_group()):
+    for idm, pg in enumerate(symobj.get_pointgroup()):
         print('The point group of molecule{} is: {}'.format(idm, pg))
 
 print_footer(common_output)

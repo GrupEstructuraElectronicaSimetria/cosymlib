@@ -1012,7 +1012,7 @@ class Cosymlib:
         txt = 'Determined point group\n \n'
         for idx, molecule in enumerate(self._molecules):
             txt += '{:15} '.format(molecule.name)
-            txt += ' {}\n'.format(molecule.geometry.get_pointgroup(tol))
+            txt += ' {}\n'.format(molecule.geometry.get_point_group(tol))
 
         output.write(txt)
 
@@ -1025,4 +1025,4 @@ class Cosymlib:
         :return: a list of point group labels
         :rtype: list
         """
-        return [molecule.geometry.get_pointgroup(tol) for molecule in self._molecules]
+        return [molecule.geometry.get_point_group(tol) for molecule in self._molecules]

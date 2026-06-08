@@ -262,7 +262,7 @@ class Geometry:
     def get_symmetry_optimum_axis(self, label, central_atom=0, permutation=None, center=None):
         return self._symmetry.optimum_axis(label)
 
-    def get_pointgroup(self, tol=0.01):
+    def get_point_group(self, tol=0.01):
         """
         Get the symmetry point group
 
