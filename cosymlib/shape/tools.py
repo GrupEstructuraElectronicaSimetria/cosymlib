@@ -74,7 +74,7 @@ def get_shape_label(code, vertices):
 
 
 def get_sym_from_label(label):
-    vertices = label[-1]
+    vertices = label.split('-')[-1]
     for labels in shape_structure_references['{} Vertices'.format(vertices)]:
         if labels[0] == label:
             return labels[2]
