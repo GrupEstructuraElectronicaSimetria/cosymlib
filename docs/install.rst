@@ -18,7 +18,7 @@ Before proceeding, ensure that you have Anaconda or Miniconda installed on your 
 
 1. Create a virtual environment for cosymlib ::
 
-    $ conda create -n cosym_env python=3.10 numpy=1.22 -y
+    $ conda create -n cosym_env python=3.11 numpy=2.4.2 -y
 
 2. Activate this virtual environment ::
 
@@ -26,8 +26,8 @@ Before proceeding, ensure that you have Anaconda or Miniconda installed on your 
 
 3. Install :program:`cosymlib` ::
 
-    $ pip install scipy==1.10.1
-    $ pip install matplotlib==3.4.2
+    $ pip install scipy==1.17.1
+    $ pip install matplotlib==3.10.8
     $ pip install cosymlib
 
 4. Deactivate the virtual environment ::
@@ -57,7 +57,7 @@ https://docs.python.org/3/library/venv.html.For most users the basic installatio
 
 1. Install one of the following python versions: ::
 
-    3.6, 3.7, 3.8, 3.9, 3.10.
+    3.10, 3.11, 3.12
 
 2. Create a virtual environment at path <venv> ::
 
@@ -73,9 +73,9 @@ https://docs.python.org/3/library/venv.html.For most users the basic installatio
 
 4. Install :program:`cosymlib` ::
 
-    $ pip install numpy==1.22
-    $ pip install scipy==1.10.1
-    $ pip install matplotlib==3.4.2
+    $ pip install numpy==2.4.2
+    $ pip install scipy==1.17.1
+    $ pip install matplotlib==3.10.8
     $ pip install cosymlib
 
 5. Deactivate the virtual environment ::
