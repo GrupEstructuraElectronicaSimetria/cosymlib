@@ -1,6 +1,7 @@
 import os
 import yaml
 import numpy as np
+import re
 
 ideal_structures = None
 
@@ -74,7 +75,8 @@ def get_shape_label(code, vertices):
 
 
 def get_sym_from_label(label):
-    vertices = label.split('-')[-1]
+    m = re.search(r'(\d+)$',label)
+    vertices = m.group(1) if m else label[-1]
     for labels in shape_structure_references['{} Vertices'.format(vertices)]:
         if labels[0] == label:
             return labels[2]
